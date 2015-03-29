@@ -1,13 +1,14 @@
 package com.yan.durak.activities;
 
 import com.yan.durak.screens.PrototypeGameScreen;
-import com.yan.glengine.EngineActivity;
-import com.yan.glengine.assets.YANAssetDescriptor;
-import com.yan.glengine.renderer.YANGLRenderer;
-import com.yan.glengine.screens.YANIScreen;
 
 import java.io.File;
 import java.util.ArrayList;
+import glengine.yan.glengine.EngineActivity;
+import glengine.yan.glengine.assets.YANAssetDescriptor;
+import glengine.yan.glengine.renderer.YANGLRenderer;
+import glengine.yan.glengine.screens.YANIScreen;
+
 
 public class GameActivity extends EngineActivity {
 

@@ -1,12 +1,13 @@
 package com.yan.durak.layouting.impl;
 
 import com.yan.durak.layouting.CardsLayoutStrategy;
-import com.yan.glengine.util.geometry.YANVector2;
-import com.yan.glengine.util.math.YANMathUtils;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import glengine.yan.glengine.util.geometry.YANVector2;
+import glengine.yan.glengine.util.math.YANMathUtils;
 
 /**
  * Created by Yan-Home on 11/8/2014.

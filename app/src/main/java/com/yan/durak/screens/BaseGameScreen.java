@@ -1,11 +1,11 @@
 package com.yan.durak.screens;
 
-import com.yan.glengine.assets.YANAssetManager;
-import com.yan.glengine.assets.atlas.YANTextureAtlas;
-import com.yan.glengine.nodes.YANTexturedNode;
-import com.yan.glengine.renderer.YANGLRenderer;
-import com.yan.glengine.screens.YANNodeScreen;
-import com.yan.glengine.util.colors.YANColor;
+import glengine.yan.glengine.assets.YANAssetManager;
+import glengine.yan.glengine.assets.atlas.YANTextureAtlas;
+import glengine.yan.glengine.nodes.YANTexturedNode;
+import glengine.yan.glengine.renderer.YANGLRenderer;
+import glengine.yan.glengine.screens.YANNodeScreen;
+import glengine.yan.glengine.util.colors.YANColor;
 
 /**
  * Created by Yan-Home on 11/21/2014.

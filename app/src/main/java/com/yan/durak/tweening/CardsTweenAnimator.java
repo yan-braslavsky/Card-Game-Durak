@@ -1,13 +1,13 @@
 package com.yan.durak.tweening;
 
 import com.yan.durak.layouting.CardsLayoutSlot;
-import com.yan.glengine.nodes.YANTexturedNode;
-import com.yan.glengine.tween.YANTweenNodeAccessor;
 
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenManager;
+import glengine.yan.glengine.nodes.YANTexturedNode;
+import glengine.yan.glengine.tween.YANTweenNodeAccessor;
 
 /**
  * Created by Yan-Home on 11/21/2014.
@@ -42,7 +42,7 @@ public class CardsTweenAnimator {
                 .start(mTweenManager);
     }
 
-    public void animateCardToValues(YANTexturedNode card, float targetXPosition, float targetYPosition,float targetWidthPosition, float targetHeightPosition, float targetRotation, TweenCallback animationEndCallback) {
+    public void animateCardToValues(YANTexturedNode card, float targetXPosition, float targetYPosition, float targetWidthPosition, float targetHeightPosition, float targetRotation, TweenCallback animationEndCallback) {
         Timeline.createSequence()
                 .beginParallel()
                 .push(Tween.to(card, YANTweenNodeAccessor.POSITION_X, 0.5f).target(targetXPosition))

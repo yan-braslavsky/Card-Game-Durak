@@ -4,17 +4,18 @@ import com.yan.durak.entities.cards.Card;
 import com.yan.durak.entities.cards.CardsHelper;
 import com.yan.durak.nodes.CardNode;
 import com.yan.durak.tweening.CardsTweenAnimator;
-import com.yan.glengine.assets.atlas.YANTextureAtlas;
-import com.yan.glengine.nodes.YANTexturedNode;
-import com.yan.glengine.util.YANLogger;
-import com.yan.glengine.util.geometry.YANReadOnlyVector2;
-import com.yan.glengine.util.geometry.YANVector2;
-import com.yan.glengine.util.math.YANMathUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import glengine.yan.glengine.assets.atlas.YANTextureAtlas;
+import glengine.yan.glengine.nodes.YANTexturedNode;
+import glengine.yan.glengine.util.YANLogger;
+import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
+import glengine.yan.glengine.util.geometry.YANVector2;
+import glengine.yan.glengine.util.math.YANMathUtils;
 
 /**
  * Created by Yan-Home on 1/29/2015.

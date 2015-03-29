@@ -3,11 +3,12 @@ package com.yan.durak.screen_fragments.hud;
 import android.support.annotation.IntDef;
 
 import com.yan.durak.screen_fragments.IScreenFragment;
-import com.yan.glengine.nodes.YANButtonNode;
-import com.yan.glengine.nodes.YANTexturedNode;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import glengine.yan.glengine.nodes.YANButtonNode;
+import glengine.yan.glengine.nodes.YANTexturedNode;
 
 /**
  * Created by Yan-Home on 1/25/2015.

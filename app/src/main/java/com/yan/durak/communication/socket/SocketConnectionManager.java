@@ -1,12 +1,13 @@
 package com.yan.durak.communication.socket;
 
 import com.yan.durak.gamelogic.communication.connection.SocketClient;
-import com.yan.glengine.util.YANLogger;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.Queue;
+
+import glengine.yan.glengine.util.YANLogger;
 
 /**
  * Created by Yan-Home on 12/24/2014.

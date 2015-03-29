@@ -3,8 +3,9 @@ package com.yan.durak.nodes;
 import android.support.annotation.NonNull;
 
 import com.yan.durak.entities.cards.Card;
-import com.yan.glengine.assets.atlas.YANAtlasTextureRegion;
-import com.yan.glengine.nodes.YANTexturedNode;
+import glengine.yan.glengine.assets.atlas.YANAtlasTextureRegion;
+import glengine.yan.glengine.nodes.YANTexturedNode;
+
 
 /**
  * Created by Yan-Home on 10/26/2014.

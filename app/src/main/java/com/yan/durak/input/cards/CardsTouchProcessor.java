@@ -3,15 +3,16 @@ package com.yan.durak.input.cards;
 import com.yan.durak.input.cards.states.CardsTouchProcessorDefaultState;
 import com.yan.durak.nodes.CardNode;
 import com.yan.durak.tweening.CardsTweenAnimator;
-import com.yan.glengine.input.YANInputManager;
-import com.yan.glengine.nodes.YANTexturedNode;
-import com.yan.glengine.util.geometry.YANReadOnlyVector2;
-import com.yan.glengine.util.geometry.YANVector2;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import glengine.yan.glengine.input.YANInputManager;
+import glengine.yan.glengine.nodes.YANTexturedNode;
+import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
+import glengine.yan.glengine.util.geometry.YANVector2;
 
 /**
  * Created by Yan-Home on 11/21/2014.

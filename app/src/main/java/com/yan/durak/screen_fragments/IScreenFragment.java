@@ -1,10 +1,11 @@
 package com.yan.durak.screen_fragments;
 
-import com.yan.glengine.assets.atlas.YANTextureAtlas;
-import com.yan.glengine.nodes.YANTexturedNode;
-import com.yan.glengine.util.geometry.YANReadOnlyVector2;
 
 import java.util.Collection;
+
+import glengine.yan.glengine.assets.atlas.YANTextureAtlas;
+import glengine.yan.glengine.nodes.YANTexturedNode;
+import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
 
 /**
  * Created by Yan-Home on 1/29/2015.

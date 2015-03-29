@@ -30,16 +30,17 @@ import com.yan.durak.screen_fragments.cards.ICardsScreenFragment;
 import com.yan.durak.screen_fragments.hud.HudScreenFragment;
 import com.yan.durak.screen_fragments.hud.IHudScreenFragment;
 import com.yan.durak.tweening.CardsTweenAnimator;
-import com.yan.glengine.nodes.YANButtonNode;
-import com.yan.glengine.nodes.YANTexturedNode;
-import com.yan.glengine.renderer.YANGLRenderer;
-import com.yan.glengine.util.YANLogger;
-import com.yan.glengine.util.geometry.YANVector2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import glengine.yan.glengine.nodes.YANButtonNode;
+import glengine.yan.glengine.nodes.YANTexturedNode;
+import glengine.yan.glengine.renderer.YANGLRenderer;
+import glengine.yan.glengine.util.YANLogger;
+import glengine.yan.glengine.util.geometry.YANVector2;
 
 /**
  * Created by Yan-Home on 10/3/2014.
@@ -171,9 +172,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
                             }
                         } else if (mRequestedRetaliation) {
                             //TODO : do nothing
-                        }
-
-                        else {
+                        } else {
                             layoutBottomPlayerCards();
                         }
                     }

@@ -1,9 +1,10 @@
 package com.yan.durak.layouting.threepoint;
 
 import com.yan.durak.layouting.impl.CardsLayouterSlotImpl;
-import com.yan.glengine.util.geometry.YANVector2;
 
 import java.util.List;
+
+import glengine.yan.glengine.util.geometry.YANVector2;
 
 /**
  * Created by Yan-Home on 12/28/2014.

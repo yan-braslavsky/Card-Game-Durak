@@ -6,16 +6,17 @@ import com.yan.durak.layouting.impl.CardsLayouterSlotImpl;
 import com.yan.durak.layouting.threepoint.ThreePointFanLayouter;
 import com.yan.durak.layouting.threepoint.ThreePointLayouter;
 import com.yan.durak.tweening.CardsTweenAnimator;
-import com.yan.glengine.nodes.YANTexturedNode;
-import com.yan.glengine.renderer.YANGLRenderer;
-import com.yan.glengine.util.geometry.YANVector2;
-import com.yan.glengine.util.math.YANMathUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.TweenCallback;
+import glengine.yan.glengine.nodes.YANTexturedNode;
+import glengine.yan.glengine.renderer.YANGLRenderer;
+import glengine.yan.glengine.util.geometry.YANVector2;
+import glengine.yan.glengine.util.math.YANMathUtils;
+
 
 /**
  * Created by Yan-Home on 10/3/2014.

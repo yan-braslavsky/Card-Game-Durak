@@ -1,7 +1,8 @@
 package com.yan.durak.layouting.impl;
 
 import com.yan.durak.layouting.CardsLayoutSlot;
-import com.yan.glengine.util.geometry.YANVector2;
+
+import glengine.yan.glengine.util.geometry.YANVector2;
 
 /**
  * Created by Yan-Home on 11/8/2014.

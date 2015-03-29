@@ -3,11 +3,12 @@ package com.yan.durak.input.cards.states;
 import com.yan.durak.input.cards.CardsTouchProcessor;
 import com.yan.durak.input.cards.CardsTouchProcessorState;
 import com.yan.durak.nodes.CardNode;
-import com.yan.glengine.EngineWrapper;
-import com.yan.glengine.input.YANInputManager;
-import com.yan.glengine.util.geometry.YANVector2;
 
 import java.util.ArrayList;
+
+import glengine.yan.glengine.EngineWrapper;
+import glengine.yan.glengine.input.YANInputManager;
+import glengine.yan.glengine.util.geometry.YANVector2;
 
 /**
  * Created by Yan-Home on 11/21/2014.

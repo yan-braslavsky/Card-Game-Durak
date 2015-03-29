@@ -1,14 +1,15 @@
 package com.yan.durak.screen_fragments.hud;
 
-import com.yan.glengine.assets.atlas.YANTextureAtlas;
-import com.yan.glengine.nodes.YANButtonNode;
-import com.yan.glengine.nodes.YANTexturedNode;
-import com.yan.glengine.nodes.YANTexturedScissorNode;
-import com.yan.glengine.util.geometry.YANReadOnlyVector2;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import glengine.yan.glengine.assets.atlas.YANTextureAtlas;
+import glengine.yan.glengine.nodes.YANButtonNode;
+import glengine.yan.glengine.nodes.YANTexturedNode;
+import glengine.yan.glengine.nodes.YANTexturedScissorNode;
+import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
 
 /**
  * Created by Yan-Home on 1/25/2015.
