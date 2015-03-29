@@ -1,0 +1,40 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:gravity="center"
+              tools:context="com.example.yan_home.openglengineandroid.activities.MainMenuActivity">
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/quick_btn_list"
+        android:id="@+id/quick_btn"
+        android:onClick="buttonClicked"
+        android:layout_margin="10dp"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/online_btn_list"
+        android:layout_margin="10dp"
+        android:id="@+id/online_btn"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/story_btn_list"
+        android:id="@+id/story_btn"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/challenge_btn_list"
+        android:layout_margin="10dp"
+        android:id="@+id/challenge_btn"/>
+
+</LinearLayout>

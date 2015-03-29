@@ -1,0 +1,17 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="android:Theme.NoTitleBar.Fullscreen">
+        <item name="android:windowBackground">@color/game_green_color</item>
+        <item name="android:colorBackground">@color/game_green_color</item>
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="SplashTheme" parent="android:Theme.NoTitleBar.Fullscreen">
+        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/game_green_color</item>
+        <item name="android:colorBackground">@color/game_green_color</item>
+        <item name="android:background">@drawable/main_bg</item>
+    </style>
+
+</resources>
