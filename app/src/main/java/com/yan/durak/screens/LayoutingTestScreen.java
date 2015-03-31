@@ -1,6 +1,6 @@
 package com.yan.durak.screens;
 
-import com.yan.durak.entities.cards.Card;
+import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.entities.cards.CardsHelper;
 import com.yan.durak.input.cards.CardsTouchProcessor;
 import com.yan.durak.layouting.CardsLayoutSlot;

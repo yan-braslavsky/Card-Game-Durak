@@ -2,7 +2,7 @@ package com.yan.durak.nodes;
 
 import android.support.annotation.NonNull;
 
-import com.yan.durak.entities.cards.Card;
+import com.yan.durak.gamelogic.cards.Card;
 import glengine.yan.glengine.assets.atlas.YANAtlasTextureRegion;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 

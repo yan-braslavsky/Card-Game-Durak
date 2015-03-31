@@ -1,16 +1,16 @@
 package com.yan.durak.communication.game_server;
 
-import com.yan.durak.communication.socket.SocketConnectionManager;
-import com.yan.durak.protocol.BaseProtocolMessage;
-import com.yan.durak.protocol.messages.BlankProtocolMessage;
-import com.yan.durak.protocol.messages.CardMovedProtocolMessage;
-import com.yan.durak.protocol.messages.GameSetupProtocolMessage;
-import com.yan.durak.protocol.messages.PlayerTakesActionMessage;
-import com.yan.durak.protocol.messages.RequestCardForAttackMessage;
-import com.yan.durak.protocol.messages.RequestRetaliatePilesMessage;
-import com.yan.durak.protocol.messages.RequestThrowInsMessage;
-import com.yan.durak.protocol.messages.RetaliationInvalidProtocolMessage;
 import com.google.gson.Gson;
+import com.yan.durak.communication.socket.SocketConnectionManager;
+import com.yan.durak.gamelogic.communication.protocol.BaseProtocolMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.CardMovedProtocolMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.GameSetupProtocolMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.PlayerTakesActionMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.RequestCardForAttackMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.RequestRetaliatePilesMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.RequestThrowInsMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.RetaliationInvalidProtocolMessage;
+import com.yan.durak.protocol.messages.BlankProtocolMessage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public class RemoteGameServerCommunicator implements IGameServerConnector {
 
-    private static final String SERVER_ADDRESS = "192.168.1.103";
+    private static final String SERVER_ADDRESS = "192.168.1.101";
     private static final int SERVER_PORT = 7000;
 
     private Gson mGson;

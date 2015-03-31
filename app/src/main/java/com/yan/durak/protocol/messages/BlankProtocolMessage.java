@@ -1,6 +1,5 @@
 package com.yan.durak.protocol.messages;
-
-import com.yan.durak.protocol.BaseProtocolMessage;
+import com.yan.durak.gamelogic.communication.protocol.BaseProtocolMessage;
 
 
 /**

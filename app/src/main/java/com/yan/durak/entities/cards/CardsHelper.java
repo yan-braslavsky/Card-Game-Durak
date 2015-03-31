@@ -1,5 +1,7 @@
 package com.yan.durak.entities.cards;
 
+import com.yan.durak.gamelogic.cards.Card;
+
 import java.util.ArrayList;
 import java.util.Collection;
 

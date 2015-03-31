@@ -1,6 +1,6 @@
 package com.yan.durak.screen_fragments.cards;
 
-import com.yan.durak.entities.cards.Card;
+import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.entities.cards.CardsHelper;
 import com.yan.durak.nodes.CardNode;
 import com.yan.durak.tweening.CardsTweenAnimator;

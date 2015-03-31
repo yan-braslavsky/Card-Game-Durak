@@ -1,7 +1,7 @@
 package com.yan.durak.communication.game_server;
 
 
-import com.yan.durak.protocol.BaseProtocolMessage;
+import com.yan.durak.gamelogic.communication.protocol.BaseProtocolMessage;
 
 /**
  * Created by Yan-Home on 1/25/2015.
