@@ -1,6 +1,8 @@
-package com.yan.durak.communication.game_server;
+package com.yan.durak.communication.game_server.connector;
 
 import com.google.gson.Gson;
+import com.yan.durak.communication.game_server.connector.filter.CardMoveBatchMessageFilter;
+import com.yan.durak.communication.game_server.connector.filter.IGameServerMessageFilter;
 import com.yan.durak.communication.socket.SocketConnectionManager;
 import com.yan.durak.gamelogic.communication.protocol.BaseProtocolMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.CardMovedProtocolMessage;
@@ -16,24 +18,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Yan-Home on 1/25/2015.
- * <p/>
- * This class is responsible to handle communication between local server and client in an easy manner.
+ * Created by Yan-Home on 4/2/2015.
  */
-public class LocalGameServerCommunicator implements IGameServerConnector {
-
-    private Gson mGson;
-    private IGameServerCommunicatorListener mCommunicatorListener;
+public abstract class BaseGameServerConnector implements IGameServerConnector {
 
     //used for easy access to class of the message by it's name
     private Map<String, Class<? extends BaseProtocolMessage>> mNamesToClassMap;
 
-    public LocalGameServerCommunicator() {
+    //used to preprocess the message before it get dispatched to the client
+    private IGameServerMessageFilter mMessageFilter;
+
+    private Gson mGson;
+
+    protected BaseGameServerConnector() {
         mGson = new Gson();
         mNamesToClassMap = new HashMap<>();
 
+        //we are applying batch filter on incoming messages
+        //certain messages will be batched together and dispatched
+        //while others will be hold
+        mMessageFilter = new CardMoveBatchMessageFilter();
+
         //put all message classes and their names into a map
         fillNameToClassMap();
+
     }
 
     private void fillNameToClassMap() {
@@ -48,30 +56,12 @@ public class LocalGameServerCommunicator implements IGameServerConnector {
     }
 
     @Override
-    public void connect() {
-        SocketConnectionManager.getInstance().connectToLocalServer();
-    }
-
-    @Override
-    public void disconnect() {
-        SocketConnectionManager.getInstance().disconnectFromLocalServer();
-    }
-
-    @Override
-    public void update() {
+    public void update(float deltaTimeSeconds) {
         //read messages from remote socket server
         readMessageFromServer();
-    }
 
-    @Override
-    public void setListener(IGameServerCommunicatorListener listener) {
-        mCommunicatorListener = listener;
-    }
-
-    @Override
-    public void sentMessageToServer(BaseProtocolMessage message) {
-        SocketConnectionManager.getInstance().sendMessageToRemoteServer(message.toJsonString());
-        //TODO : handle differently
+        //update the filter
+        mMessageFilter.update(deltaTimeSeconds);
     }
 
     private void readMessageFromServer() {
@@ -84,7 +74,7 @@ public class LocalGameServerCommunicator implements IGameServerConnector {
         String msg = SocketConnectionManager.getInstance().readMessageFromRemoteServer();
 
         //in case there was no message or no listener to process it ,we will do nothing
-        if (msg == null || mCommunicatorListener == null)
+        if (msg == null || mMessageFilter == null)
             return;
 
         //handle the message
@@ -96,7 +86,11 @@ public class LocalGameServerCommunicator implements IGameServerConnector {
         BlankProtocolMessage message = mGson.fromJson(msg, BlankProtocolMessage.class);
 
         //forward the actual message to listener
-        mCommunicatorListener.handleServerMessage(mGson.fromJson(msg, mNamesToClassMap.get(message.getMessageName())));
+        mMessageFilter.handleServerMessage(mGson.fromJson(msg, mNamesToClassMap.get(message.getMessageName())));
     }
 
+    @Override
+    public void setListener(IGameServerCommunicatorListener listener) {
+        mMessageFilter.setWrappedServerListener(listener);
+    }
 }

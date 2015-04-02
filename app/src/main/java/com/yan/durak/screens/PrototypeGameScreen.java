@@ -1,7 +1,7 @@
 package com.yan.durak.screens;
 
-import com.yan.durak.communication.game_server.IGameServerConnector;
-import com.yan.durak.communication.game_server.LocalGameServerCommunicator;
+import com.yan.durak.communication.game_server.connector.IGameServerConnector;
+import com.yan.durak.communication.game_server.connector.LocalGameServerConnector;
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.communication.protocol.BaseProtocolMessage;
 import com.yan.durak.gamelogic.communication.protocol.data.CardData;
@@ -90,7 +90,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
         //TODO : inject game server connector
 //        mGameServerConnector = new RemoteGameServerCommunicator();
-        mGameServerConnector = new LocalGameServerCommunicator();
+        mGameServerConnector = new LocalGameServerConnector();
         mGameServerConnector.setListener(new IGameServerConnector.IGameServerCommunicatorListener() {
             @Override
             public void handleServerMessage(BaseProtocolMessage serverMessage) {
@@ -419,7 +419,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
     @Override
     public void onUpdate(float deltaTimeSeconds) {
         super.onUpdate(deltaTimeSeconds);
-        mGameServerConnector.update();
+        mGameServerConnector.update(deltaTimeSeconds);
         mCardsTweenAnimator.update(deltaTimeSeconds * 1);
         mHudNodesManager.update(deltaTimeSeconds);
         mCardsScreenFragment.update(deltaTimeSeconds);
