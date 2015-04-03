@@ -1,7 +1,6 @@
 package com.yan.durak.screens;
 
 import com.yan.durak.communication.game_server.connector.IGameServerConnector;
-import com.yan.durak.communication.game_server.connector.LocalGameServerConnector;
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.communication.protocol.BaseProtocolMessage;
 import com.yan.durak.gamelogic.communication.protocol.data.CardData;
@@ -69,7 +68,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
     private ArrayList<Card> mSelectedThrowInCards;
     private CardsTouchProcessorMultipleChoiceState mThrowInInputProcessorState;
 
-    public PrototypeGameScreen(YANGLRenderer renderer) {
+    public PrototypeGameScreen(YANGLRenderer renderer,IGameServerConnector gameServerConnector) {
         super(renderer);
 
         mCardsPendingRetaliationMap = new HashMap<>();
@@ -89,8 +88,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
 
         //TODO : inject game server connector
-//        mGameServerConnector = new RemoteGameServerConnector();
-        mGameServerConnector = new LocalGameServerConnector();
+        mGameServerConnector = gameServerConnector;
         mGameServerConnector.setListener(new IGameServerConnector.IGameServerCommunicatorListener() {
             @Override
             public void handleServerMessage(BaseProtocolMessage serverMessage) {

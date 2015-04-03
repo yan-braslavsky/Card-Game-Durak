@@ -4,25 +4,46 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.yan.durak.R;
+import com.yan.durak.communication.game_server.connector.IGameServerConnector;
+import com.yan.durak.communication.game_server.connector.LocalGameServerConnector;
+import com.yan.durak.communication.game_server.connector.RemoteGameServerConnector;
 import com.yan.durak.communication.socket.LocalServerClient;
 import com.yan.durak.gamelogic.GameStarter;
 
 public class MainMenuActivity extends Activity {
 
+    public static String EXTRA_CONNECTOR_CLASS_KEY = "EXTRA_CONNECTOR_CLASS_KEY";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-
-//        getWindow().setBackgroundDrawable(null);
-//        getWindow().setBackgroundDrawableResource(android.R.color.transparent);
     }
 
     public void buttonClicked(View buttonClicked) {
+        switch (buttonClicked.getId()) {
+            case R.id.quick_btn:
+                startLocalGame();
+                break;
+            case R.id.online_btn:
+                startOnlineGame();
+                break;
+            default:
+                Toast.makeText(this, "This mode not supported yet", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
 
-        //TODO : open server on different thread
+    private void startOnlineGame() {
+        Class<? extends IGameServerConnector> connectorClass = RemoteGameServerConnector.class;
+        startGameActivity(connectorClass);
+    }
+
+    private void startLocalGame() {
+        //open local server on different thread
         (new Thread(new Runnable() {
             @Override
             public void run() {
@@ -30,39 +51,14 @@ public class MainMenuActivity extends Activity {
             }
         })).start();
 
-        Intent myIntent = new Intent(MainMenuActivity.this, GameActivity.class);
-        //Optional parameters
-//                myIntent.putExtra("key", value);
-        startActivity(myIntent);
-
-        //TODO : custom transition animation ?
-//                overridePendingTransition();
-
-        //we no longer need this activity
-        finish();
-
+        Class<? extends IGameServerConnector> connectorClass = LocalGameServerConnector.class;
+        startGameActivity(connectorClass);
     }
 
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main_menu, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
+    private void startGameActivity(Class<? extends IGameServerConnector> connectorClass) {
+        Intent myIntent = new Intent(MainMenuActivity.this, GameActivity.class);
+        myIntent.putExtra(EXTRA_CONNECTOR_CLASS_KEY, connectorClass);
+        startActivity(myIntent);
+        finish();
+    }
 }
