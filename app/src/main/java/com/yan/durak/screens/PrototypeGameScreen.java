@@ -89,7 +89,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
 
         //TODO : inject game server connector
-//        mGameServerConnector = new RemoteGameServerCommunicator();
+//        mGameServerConnector = new RemoteGameServerConnector();
         mGameServerConnector = new LocalGameServerConnector();
         mGameServerConnector.setListener(new IGameServerConnector.IGameServerCommunicatorListener() {
             @Override

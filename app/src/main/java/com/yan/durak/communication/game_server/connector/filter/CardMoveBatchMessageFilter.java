@@ -75,7 +75,7 @@ public class CardMoveBatchMessageFilter implements IGameServerMessageFilter {
 
         //in case message has different destanation or origin we
         //reseting the batching by releasing previous messages
-        if (!(sameOrigin || sameDestination)) {
+        if ((sameOrigin || sameDestination)) {
             releaseBatchedMessages();
         }
 
