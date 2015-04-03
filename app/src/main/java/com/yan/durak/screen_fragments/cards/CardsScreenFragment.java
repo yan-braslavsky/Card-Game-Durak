@@ -29,8 +29,8 @@ public class CardsScreenFragment implements ICardsScreenFragment {
     private int mStockPileIndex;
     private int mDiscardPileIndex;
     private int mBottomPlayerPileIndex;
-    private int mTopPlayerToTheRightPileIndex;
-    private int mTopLeftPlayerToTheLeftPileIndex;
+    private int mTopRightPlayerPileIndex;
+    private int mTopLeftPlayerPileIndex;
 
     private int mTopCardOnFieldSortingLayer = 50;
 
@@ -116,7 +116,7 @@ public class CardsScreenFragment implements ICardsScreenFragment {
         float stockPileScaleSize = 0.7f;
 
         //init "field piles" ( can be no more than 2 cards)
-        for (int i = (mTopLeftPlayerToTheLeftPileIndex + 1); i < CARDS_COUNT / 2; i++) {
+        for (int i = (mTopLeftPlayerPileIndex + 1); i < CARDS_COUNT / 2; i++) {
             mPileIndexToCardListMap.put(i, new ArrayList<Card>(2));
         }
 
@@ -137,10 +137,10 @@ public class CardsScreenFragment implements ICardsScreenFragment {
         layoutPile(mBottomPlayerPileIndex, (sceneSize.getX() - mCardWidth) / 2, sceneSize.getY() - mCardHeight, 90, 1f);
 
         //player two pile (top right)
-        layoutPile(mTopPlayerToTheRightPileIndex, (sceneSize.getX() - mCardWidth), 0, 90, 1f);
+        layoutPile(mTopRightPlayerPileIndex, (sceneSize.getX() - mCardWidth), 0, 90, 1f);
 
         //player three pile (top left)
-        layoutPile(mTopLeftPlayerToTheLeftPileIndex, 0, 0, 90, 1f);
+        layoutPile(mTopLeftPlayerPileIndex, 0, 0, 90, 1f);
 
         float leftBorderX = mCardWidth *0.2f;
         float rightBorderX = sceneSize.getX() - (mCardWidth * 0.8f);
@@ -154,7 +154,7 @@ public class CardsScreenFragment implements ICardsScreenFragment {
         float currentY = topBorderY;
 
         //init "field piles" positions
-        for (int i = (mTopLeftPlayerToTheLeftPileIndex + 1); i < CARDS_COUNT / 2; i++) {
+        for (int i = (mTopLeftPlayerPileIndex + 1); i < CARDS_COUNT / 2; i++) {
             float x = currentX;
             float y = currentY;
             mPileIndexToPositionMap.put(i, new YANVector2(x, y));
@@ -195,19 +195,19 @@ public class CardsScreenFragment implements ICardsScreenFragment {
 
     @Override
     public int getTopRightPlayerPileIndex() {
-        return mTopPlayerToTheRightPileIndex;
+        return mTopRightPlayerPileIndex;
     }
 
     @Override
     public int getTopLeftPlayerPileIndex() {
-        return mTopLeftPlayerToTheLeftPileIndex;
+        return mTopLeftPlayerPileIndex;
     }
 
     @Override
     public CardNode findUnderlyingCard(CardNode cardNode) {
 
         //iterate all field piles
-        for (int i = (mTopLeftPlayerToTheLeftPileIndex + 1); i < CARDS_COUNT / 2; i++) {
+        for (int i = (mTopLeftPlayerPileIndex + 1); i < CARDS_COUNT / 2; i++) {
             Collection<Card> cards = mPileIndexToCardListMap.get(i);
 
             //we don't want to choose piles that are already covered
@@ -269,7 +269,7 @@ public class CardsScreenFragment implements ICardsScreenFragment {
         mCardsTweenAnimator.animateCardToValues(cardNode, destX, destY, destRotation, null);
         mCardsTweenAnimator.animateSize(cardNode, mCardWidth, mCardHeight, 0.5f);
 
-        if (fromPile == mBottomPlayerPileIndex || toPile == mBottomPlayerPileIndex || toPile > mTopLeftPlayerToTheLeftPileIndex || toPile == mDiscardPileIndex) {
+        if (fromPile == mBottomPlayerPileIndex || toPile == mBottomPlayerPileIndex || toPile > mTopLeftPlayerPileIndex || toPile == mDiscardPileIndex) {
 
             //show the card
             cardNode.useFrontTextureRegion();
@@ -278,14 +278,14 @@ public class CardsScreenFragment implements ICardsScreenFragment {
             cardNode.useBackTextureRegion();
         }
 
-        if (toPile > mTopLeftPlayerToTheLeftPileIndex) {
+        if (toPile > mTopLeftPlayerPileIndex) {
             //moving to field pile
             //we need to adjust sorting layer
             int sortingLayer = (mPileIndexToCardListMap.get(toPile).size() == 1) ? 1 : 2;
             cardNode.setSortingLayer(sortingLayer);
         }
 
-        if (fromPile > mTopLeftPlayerToTheLeftPileIndex) {
+        if (fromPile > mTopLeftPlayerPileIndex) {
             //we need to adjust sorting layer
             int sortingLayer = (mPileIndexToCardListMap.get(fromPile).size() > 0) ? 2 : 1;
             cardNode.setSortingLayer(sortingLayer);
@@ -305,8 +305,8 @@ public class CardsScreenFragment implements ICardsScreenFragment {
         }
 
         //player 2
-        else if (toPile == mTopPlayerToTheRightPileIndex || fromPile == mTopPlayerToTheRightPileIndex) {
-            if (toPile == mTopPlayerToTheRightPileIndex) {
+        else if (toPile == mTopRightPlayerPileIndex || fromPile == mTopRightPlayerPileIndex) {
+            if (toPile == mTopRightPlayerPileIndex) {
                 mTopRightPlayerCardNodes.add(mCardNodes.get(movedCard));
             } else {
                 mTopRightPlayerCardNodes.remove(mCardNodes.get(movedCard));
@@ -317,8 +317,8 @@ public class CardsScreenFragment implements ICardsScreenFragment {
         }
 
         //player 3
-        else if (toPile == mTopLeftPlayerToTheLeftPileIndex || fromPile == mTopLeftPlayerToTheLeftPileIndex) {
-            if (toPile == mTopLeftPlayerToTheLeftPileIndex) {
+        else if (toPile == mTopLeftPlayerPileIndex || fromPile == mTopLeftPlayerPileIndex) {
+            if (toPile == mTopLeftPlayerPileIndex) {
                 mTopLeftPlayerCardNodes.add(mCardNodes.get(movedCard));
             } else {
                 mTopLeftPlayerCardNodes.remove(mCardNodes.get(movedCard));
@@ -381,8 +381,8 @@ public class CardsScreenFragment implements ICardsScreenFragment {
         this.mStockPileIndex = stockPileIndex;
         this.mDiscardPileIndex = discardPileIndex;
         this.mBottomPlayerPileIndex = bottomPlayerPileIndex;
-        this.mTopPlayerToTheRightPileIndex = topPlayerToTheRightPileIndex;
-        this.mTopLeftPlayerToTheLeftPileIndex = topLeftPlayerToTheLeftPileIndex;
+        this.mTopRightPlayerPileIndex = topPlayerToTheRightPileIndex;
+        this.mTopLeftPlayerPileIndex = topLeftPlayerToTheLeftPileIndex;
 
         //clear the map
         mPileIndexToCardListMap.clear();

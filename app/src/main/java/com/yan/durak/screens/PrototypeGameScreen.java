@@ -470,8 +470,15 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
         //TODO : get rid of the statics and make it more generic
         int bottomPlayerPileIndex = gameSetupProtocolMessage.getMessageData().getMyPileIndex();
-        int topPlayerToTheRightPileIndex = (bottomPlayerPileIndex + 1) % 5;
-        int topLeftPlayerToTheLeftPileIndex = (bottomPlayerPileIndex + 2) % 5;
+        int topPlayerToTheRightPileIndex = (bottomPlayerPileIndex + 1);
+        int topLeftPlayerToTheLeftPileIndex = (bottomPlayerPileIndex + 2);
+
+        //correct positions
+        if((topPlayerToTheRightPileIndex / 5) > 0)
+            topPlayerToTheRightPileIndex = (topPlayerToTheRightPileIndex % 5) + 2;
+
+        if((topLeftPlayerToTheLeftPileIndex / 5) > 0)
+            topLeftPlayerToTheLeftPileIndex = (topLeftPlayerToTheLeftPileIndex % 5) + 2;
 
         //TODO :load all pile indexes from server
         mCardsScreenFragment.setPilesIndexes(0, 1, bottomPlayerPileIndex, topPlayerToTheRightPileIndex, topLeftPlayerToTheLeftPileIndex);

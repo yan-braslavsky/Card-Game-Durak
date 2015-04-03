@@ -63,7 +63,8 @@ public class RemoteGameServerConnector extends BaseGameServerConnector {
         List<NameValuePair> params = new ArrayList<>();
 
         //TODO : make it dynamic
-        params.add(new BasicNameValuePair("payload", "{gameType:\"ONE_PLAYER_TWO_BOTS\",userId:\"s\"}"));
+//        params.add(new BasicNameValuePair("payload", "{gameType:\"ONE_PLAYER_TWO_BOTS\",userId:\"s\"}"));
+        params.add(new BasicNameValuePair("payload", "{gameType:\"TWO_PLAYERS_ONE_BOT\",userId:\"s\"}"));
         try {
             httpPost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
