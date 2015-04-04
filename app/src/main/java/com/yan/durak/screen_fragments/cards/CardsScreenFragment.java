@@ -41,6 +41,13 @@ public class CardsScreenFragment implements ICardsScreenFragment {
      */
     public static final int FIELD_CARDS_ROTATION_ANGLE = 11;
 
+    /**
+     * When cards are put on field they become smaller
+     * This multiplier define how much smaller of original size
+     * they are become.
+     */
+    public static final float CARDS_ON_FIELD_SIZE_MULTIPLIER = 0.8f;
+
     //pile indexes that will be loaded from the game server
     private int mStockPileIndex;
     private int mDiscardPileIndex;
@@ -158,13 +165,16 @@ public class CardsScreenFragment implements ICardsScreenFragment {
         //player three pile (top left)
         layoutPile(mTopLeftPlayerPileIndex, 0, 0, 90, 1f);
 
-        float leftBorderX = mCardWidth * 0.2f;
-        float rightBorderX = sceneSize.getX() - (mCardWidth * 0.8f);
+        float cardWidthOnField = mCardWidth * CARDS_ON_FIELD_SIZE_MULTIPLIER;
+        float cardHeightOnField = mCardHeight * CARDS_ON_FIELD_SIZE_MULTIPLIER;
+
+        float leftBorderX = cardWidthOnField * 0.2f;
+        float rightBorderX = sceneSize.getX() - (cardWidthOnField * 0.8f);
         float topBorderY = sceneSize.getY() * 0.3f;
         float bottomBorderY = sceneSize.getY() * 0.5f;
 
-        float xAdvance = mCardWidth * 1.2f;
-        float yAdvance = mCardHeight * 1.2f;
+        float xAdvance = cardWidthOnField * 1.2f;
+        float yAdvance = cardHeightOnField * 1.2f;
 
         float currentX = leftBorderX;
         float currentY = topBorderY;
@@ -233,8 +243,8 @@ public class CardsScreenFragment implements ICardsScreenFragment {
 
             for (Card card : cards) {
 
-                //we dont want to find temporary covered cards
-                if (mCardNodes.get(card).getTag() instanceof CardNode.TemporaryCoveredTag)
+                //we don't want to find temporary covered cards
+                if (mCardNodes.get(card).containsTag(CardNode.TAG_TEMPORALLY_COVERED))
                     continue;
 
                 if (isCollides(cardNode, mCardNodes.get(card))) {
@@ -251,7 +261,7 @@ public class CardsScreenFragment implements ICardsScreenFragment {
     @Override
     public void removeTagsFromCards() {
         for (CardNode cardNode : mCardNodes.values()) {
-            cardNode.setTag(null);
+            cardNode.removeAllTags();
         }
     }
 
@@ -285,14 +295,21 @@ public class CardsScreenFragment implements ICardsScreenFragment {
         //if it is a second card in field pile it should be rotated slightly to the right
         //if it is not a field pile , rotation is zero
 
+        float destintationWidth = mCardWidth;
+        float destintationHeigth = mCardHeight;
         float destRotation = 0;
         if (toPile > MAX_PLAYER_INDEX) {
             destRotation = (mPileIndexToCardListMap.get(toPile).size() > 1) ? FIELD_CARDS_ROTATION_ANGLE : -FIELD_CARDS_ROTATION_ANGLE;
+
+            //make card smaller
+            destintationWidth *= CARDS_ON_FIELD_SIZE_MULTIPLIER;
+            destintationHeigth *= CARDS_ON_FIELD_SIZE_MULTIPLIER;
         }
+
 
         //make the animation
         mCardsTweenAnimator.animateCardToValues(cardNode, destX, destY, destRotation, null);
-        mCardsTweenAnimator.animateSize(cardNode, mCardWidth, mCardHeight, 0.5f);
+        mCardsTweenAnimator.animateSize(cardNode, destintationWidth, destintationHeigth, 0.5f);
 
         if (fromPile == mBottomPlayerPileIndex || toPile == mBottomPlayerPileIndex || toPile > mTopLeftPlayerPileIndex || toPile == mDiscardPileIndex) {
 
@@ -432,5 +449,10 @@ public class CardsScreenFragment implements ICardsScreenFragment {
     @Override
     public Collection<Card> getCardsInPileWithIndex(int pileIndex) {
         return mPileIndexToCardListMap.get(pileIndex);
+    }
+
+    @Override
+    public Map<Card, CardNode> getCardToNodesMap() {
+        return mCardNodes;
     }
 }

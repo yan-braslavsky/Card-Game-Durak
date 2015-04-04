@@ -3,6 +3,9 @@ package com.yan.durak.nodes;
 import android.support.annotation.NonNull;
 
 import com.yan.durak.gamelogic.cards.Card;
+
+import java.util.HashSet;
+
 import glengine.yan.glengine.assets.atlas.YANAtlasTextureRegion;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 
@@ -12,23 +15,20 @@ import glengine.yan.glengine.nodes.YANTexturedNode;
  */
 public class CardNode extends YANTexturedNode {
 
+    public static final String TAG_TEMPORALLY_COVERED = "TAG_TEMPORALLY_COVERED";
+    public static final String TAG_SHOULD_NOT_RESIZE = "TAG_SHOULD_NOT_RESIZE";
+
     private final YANAtlasTextureRegion mFrontTextureRegion;
     private final YANAtlasTextureRegion mBackTextureRegion;
     private Card mCard;
-    private Object mTag;
-
-    /**
-     * Used to indicate that current card is temporary covered by other card
-     */
-    public static class TemporaryCoveredTag {
-
-    }
+    private HashSet<String> mTags;
 
     public CardNode(@NonNull YANAtlasTextureRegion frontTextureRegion, @NonNull YANAtlasTextureRegion backTextureRegion, @NonNull Card card) {
         super(frontTextureRegion);
         mFrontTextureRegion = frontTextureRegion;
         mBackTextureRegion = backTextureRegion;
         mCard = card;
+        mTags = new HashSet<>();
     }
 
     @Override
@@ -53,12 +53,20 @@ public class CardNode extends YANTexturedNode {
         setTextureRegion(mBackTextureRegion);
     }
 
-    public Object getTag() {
-        return mTag;
+    public boolean containsTag(String tag) {
+        return mTags.contains(tag);
     }
 
-    public void setTag(Object tag) {
-        mTag = tag;
+    public void addTag(String tag) {
+        mTags.add(tag);
+    }
+
+    public void removeTag(String tag) {
+        mTags.remove(tag);
+    }
+
+    public void removeAllTags() {
+        mTags.clear();
     }
 
 //    @Override

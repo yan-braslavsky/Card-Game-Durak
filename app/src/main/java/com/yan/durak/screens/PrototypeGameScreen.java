@@ -182,6 +182,9 @@ public class PrototypeGameScreen extends BaseGameScreen {
                 if (mCardForAttackRequested) {
                     mCardForAttackRequested = false;
 
+                    //prevent card from being resized
+                    cardNode.addTag(CardNode.TAG_SHOULD_NOT_RESIZE);
+
                     ResponseCardForAttackMessage responseCardForAttackMessage = new ResponseCardForAttackMessage(cardNode.getCard());
                     mGameServerConnector.sentMessageToServer(responseCardForAttackMessage);
 
@@ -196,6 +199,9 @@ public class PrototypeGameScreen extends BaseGameScreen {
                         return;
                     }
 
+                    //prevent card from being resized
+                    cardNode.addTag(CardNode.TAG_SHOULD_NOT_RESIZE);
+
                     //update underlying card with retaliation card
                     mCardsPendingRetaliationMap.put(underlyingCard.getCard(), cardNode.getCard());
 
@@ -203,8 +209,8 @@ public class PrototypeGameScreen extends BaseGameScreen {
                     mCardsTweenAnimator.animateCardToXY(cardNode, underlyingCard.getPosition().getX(), underlyingCard.getPosition().getY(), 0.5f);
 
                     //we are tagging both cards as covered in order do not test collision with them later
-                    underlyingCard.setTag(new CardNode.TemporaryCoveredTag());
-                    cardNode.setTag(new CardNode.TemporaryCoveredTag());
+                    underlyingCard.addTag(CardNode.TAG_TEMPORALLY_COVERED);
+                    cardNode.addTag(CardNode.TAG_TEMPORALLY_COVERED);
 
                     //check if more retaliation cards left
                     for (Card card : mCardsPendingRetaliationMap.values()) {
@@ -230,25 +236,11 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
                     //now we should clear all the tags
                     mCardsScreenFragment.removeTagsFromCards();
-
                 }
-//                else if (mRequestThrowIn) {
-//                    for (CardData throwInPossibleCard : mThrowInPossibleCards) {
-//                        if (cardNode.getCard().getRank().equals(throwInPossibleCard.getRank()) && cardNode.getCard().getSuit().equals(throwInPossibleCard.getSuit())) {
-//                            //add selected card
-//                            mSelectedThrowInCards.add(cardNode.getCard());
-//                            mThrowInCardsAllowed--;
-//
-//                            if (mThrowInCardsAllowed == 0) {
-//                                sendThrowInResponse();
-//                            }
-//                        } else {
-//                            layoutBottomPlayerCards();
-//                        }
-//                    }
-//                }
 
                 else {
+
+                    //Card will be returned to place
                     layoutBottomPlayerCards();
                 }
             }
@@ -426,25 +418,25 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
     private void handleInvalidRetaliationMessage(RetaliationInvalidProtocolMessage retaliationInvalidProtocolMessage) {
 
+        //TODO : cache the value for efficiency
+        ArrayList<Card> cardsToRemoveTagFrom = new ArrayList<>();
+
         //remove from map all invalid retaliations
         for (RetaliationSetData retaliationSetData : retaliationInvalidProtocolMessage.getMessageData().getInvalidRetaliationsList()) {
-            mCardsPendingRetaliationMap.remove(new Card(retaliationSetData.getCoveredCardData().getRank(), retaliationSetData.getCoveredCardData().getSuit()));
+
+            Card coveredCard = new Card(retaliationSetData.getCoveredCardData().getRank(), retaliationSetData.getCoveredCardData().getSuit());
+            Card coveringCard = new Card(retaliationSetData.getCoveringCardData().getRank(), retaliationSetData.getCoveringCardData().getSuit());
+
+            mCardsPendingRetaliationMap.remove(coveredCard);
+
+            cardsToRemoveTagFrom.add(coveredCard);
+            cardsToRemoveTagFrom.add(coveringCard);
         }
 
-        ArrayList<CardNode> nodesToRemoveFromPlayerHand = new ArrayList<>();
-        for (Card card : mCardsPendingRetaliationMap.values()) {
-            //all valid retaliation does not belong to player any more
-            for (CardNode cardNode : mCardsScreenFragment.getBottomPlayerCardNodes()) {
-                if (cardNode.getCard().equals(card)) {
-                    nodesToRemoveFromPlayerHand.add(cardNode);
-                }
-            }
+        for (Card card : cardsToRemoveTagFrom) {
+            CardNode cardNode = mCardsScreenFragment.getCardToNodesMap().get(card);
+            cardNode.removeTag(CardNode.TAG_TEMPORALLY_COVERED);
         }
-
-        //FIXME : that causes visual bug : cards are staying on the field
-//        for (CardNode cardNode : nodesToRemoveFromPlayerHand) {
-//            mCardsScreenFragment.getBottomPlayerCardNodes().remove(cardNode);
-//        }
 
         layoutBottomPlayerCards();
     }
@@ -570,6 +562,10 @@ public class PrototypeGameScreen extends BaseGameScreen {
             CardsLayoutSlot slot = mPlayerCardsLayouter.getSlotAtPosition(i);
             card.setSortingLayer(slot.getSortingLayer());
             mCardsTweenAnimator.animateCardToSlot(card, slot);
+
+            //animate card size back to normal
+            card.removeTag(CardNode.TAG_SHOULD_NOT_RESIZE);
+            mCardsTweenAnimator.animateSize(card, mCardsScreenFragment.getCardNodeWidth(), mCardsScreenFragment.getCardNodeHeight(), 0.5f);
         }
     }
 }

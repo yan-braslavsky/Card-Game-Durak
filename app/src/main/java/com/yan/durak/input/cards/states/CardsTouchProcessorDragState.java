@@ -3,6 +3,7 @@ package com.yan.durak.input.cards.states;
 import com.yan.durak.input.cards.CardsTouchProcessor;
 import com.yan.durak.input.cards.CardsTouchProcessorState;
 import com.yan.durak.nodes.CardNode;
+import com.yan.durak.screen_fragments.cards.CardsScreenFragment;
 
 import glengine.yan.glengine.EngineWrapper;
 import glengine.yan.glengine.input.YANInputManager;
@@ -24,7 +25,12 @@ public class CardsTouchProcessorDragState extends CardsTouchProcessorState {
 
     @Override
     public void applyState() {
-
+        //make card smaller
+        float destintationWidth = mDraggedCard.getSize().getX();
+        float destintationHeigth = mDraggedCard.getSize().getY();
+        destintationWidth *= CardsScreenFragment.CARDS_ON_FIELD_SIZE_MULTIPLIER;
+        destintationHeigth *= CardsScreenFragment.CARDS_ON_FIELD_SIZE_MULTIPLIER;
+        mCardsTouchProcessor.getCardsTweenAnimator().animateSize(mDraggedCard, destintationWidth, destintationHeigth, 0.5f);
     }
 
     @Override
@@ -35,7 +41,6 @@ public class CardsTouchProcessorDragState extends CardsTouchProcessorState {
             mCardsTouchProcessor.getCardsTouchProcessorListener().onDraggedCardReleased(mDraggedCard);
         }
 
-        //go back to default state
         CardsTouchProcessorDefaultState defaultState = new CardsTouchProcessorDefaultState(mCardsTouchProcessor);
         mCardsTouchProcessor.setCardsTouchProcessorState(defaultState);
         return true;

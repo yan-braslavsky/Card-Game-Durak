@@ -6,6 +6,7 @@ import com.yan.durak.screen_fragments.IScreenFragment;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Created by Yan-Home on 1/29/2015.
@@ -26,6 +27,8 @@ public interface ICardsScreenFragment extends IScreenFragment {
      * Goes over all cards and removes tags from them
      */
     void removeTagsFromCards();
+
+    Map<Card, CardNode> getCardToNodesMap();
 
     public interface ICardMovementListener {
         void onCardMovesToBottomPlayerPile();

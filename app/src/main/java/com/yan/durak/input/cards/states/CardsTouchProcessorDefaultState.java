@@ -6,7 +6,6 @@ import com.yan.durak.nodes.CardNode;
 
 import glengine.yan.glengine.EngineWrapper;
 import glengine.yan.glengine.input.YANInputManager;
-import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.util.geometry.YANVector2;
 
 
@@ -23,8 +22,12 @@ public class CardsTouchProcessorDefaultState extends CardsTouchProcessorState {
     @Override
     public void applyState() {
         //Make all the cards at their regular alpha , position and size
-        for (YANTexturedNode card : mCardsTouchProcessor.getCardNodesArray()) {
+        for (CardNode card : mCardsTouchProcessor.getCardNodesArray()) {
             mCardsTouchProcessor.getCardsTweenAnimator().animateCardToAlpha(card, 1f, BACK_IN_PLACE_ANIMATION_DURATION);
+
+            if (!card.containsTag(CardNode.TAG_SHOULD_NOT_RESIZE)) {
+                mCardsTouchProcessor.getCardsTweenAnimator().animateSize(card, mCardsTouchProcessor.getOriginalCardSize().getX(), mCardsTouchProcessor.getOriginalCardSize().getY(), 0.5f);
+            }
         }
     }
 

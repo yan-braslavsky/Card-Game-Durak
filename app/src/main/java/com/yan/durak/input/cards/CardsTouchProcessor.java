@@ -21,7 +21,6 @@ public class CardsTouchProcessor {
 
     public interface CardsTouchProcessorListener {
         void onSelectedCardTap(CardNode card);
-
         void onDraggedCardReleased(CardNode card);
     }
 
