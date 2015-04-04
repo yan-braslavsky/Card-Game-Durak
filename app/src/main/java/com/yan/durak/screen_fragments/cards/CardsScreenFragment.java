@@ -1,7 +1,7 @@
 package com.yan.durak.screen_fragments.cards;
 
-import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.entities.cards.CardsHelper;
+import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.nodes.CardNode;
 import com.yan.durak.tweening.CardsTweenAnimator;
 
@@ -15,7 +15,6 @@ import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.util.YANLogger;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
 import glengine.yan.glengine.util.geometry.YANVector2;
-import glengine.yan.glengine.util.math.YANMathUtils;
 
 /**
  * Created by Yan-Home on 1/29/2015.
@@ -23,7 +22,24 @@ import glengine.yan.glengine.util.math.YANMathUtils;
 public class CardsScreenFragment implements ICardsScreenFragment {
 
     private static final int CARDS_COUNT = 36;
+
+    /**
+     * Used to calculate the dimentions of the cards.
+     * Exact amount of cards should fit the width of the screen
+     */
     private static final int MAX_CARDS_IN_LINE = 8;
+
+    /**
+     * This is the index of the last player (for example index of bottom player is 2 , index
+     * of top right player is 3 , of top left is 4)
+     */
+    public static final int MAX_PLAYER_INDEX = 4;
+
+    /**
+     * When card put on field they have a sligh rotation to the
+     * left or to the right
+     */
+    public static final int FIELD_CARDS_ROTATION_ANGLE = 11;
 
     //pile indexes that will be loaded from the game server
     private int mStockPileIndex;
@@ -142,7 +158,7 @@ public class CardsScreenFragment implements ICardsScreenFragment {
         //player three pile (top left)
         layoutPile(mTopLeftPlayerPileIndex, 0, 0, 90, 1f);
 
-        float leftBorderX = mCardWidth *0.2f;
+        float leftBorderX = mCardWidth * 0.2f;
         float rightBorderX = sceneSize.getX() - (mCardWidth * 0.8f);
         float topBorderY = sceneSize.getY() * 0.3f;
         float bottomBorderY = sceneSize.getY() * 0.5f;
@@ -154,7 +170,8 @@ public class CardsScreenFragment implements ICardsScreenFragment {
         float currentY = topBorderY;
 
         //init "field piles" positions
-        for (int i = (mTopLeftPlayerPileIndex + 1); i < CARDS_COUNT / 2; i++) {
+        //field piles starting from index 5 always in game with 3 players
+        for (int i = (MAX_PLAYER_INDEX + 1); i < CARDS_COUNT / 2; i++) {
             float x = currentX;
             float y = currentY;
             mPileIndexToPositionMap.put(i, new YANVector2(x, y));
@@ -262,8 +279,16 @@ public class CardsScreenFragment implements ICardsScreenFragment {
         //find destination position
         float destX = mPileIndexToPositionMap.get(toPile).getX();
         float destY = mPileIndexToPositionMap.get(toPile).getY();
-        int rotationRange = 15;
-        float destRotation = YANMathUtils.randomInRange(-rotationRange, rotationRange);
+
+
+        //if it is the first card in field pile , than it should be rotated slightly to the left
+        //if it is a second card in field pile it should be rotated slightly to the right
+        //if it is not a field pile , rotation is zero
+
+        float destRotation = 0;
+        if (toPile > MAX_PLAYER_INDEX) {
+            destRotation = (mPileIndexToCardListMap.get(toPile).size() > 1) ? FIELD_CARDS_ROTATION_ANGLE : -FIELD_CARDS_ROTATION_ANGLE;
+        }
 
         //make the animation
         mCardsTweenAnimator.animateCardToValues(cardNode, destX, destY, destRotation, null);
