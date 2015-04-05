@@ -12,9 +12,9 @@ import java.util.Map;
 
 import glengine.yan.glengine.assets.atlas.YANTextureAtlas;
 import glengine.yan.glengine.nodes.YANTexturedNode;
-import glengine.yan.glengine.util.YANLogger;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
 import glengine.yan.glengine.util.geometry.YANVector2;
+import glengine.yan.glengine.util.loggers.YANLogger;
 
 /**
  * Created by Yan-Home on 1/29/2015.

@@ -9,6 +9,7 @@ import glengine.yan.glengine.input.YANInputManager;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.tasks.YANDelayedTask;
 import glengine.yan.glengine.util.geometry.YANVector2;
+import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
 
 /**
@@ -51,7 +52,9 @@ public class CardsTouchProcessorSelectedState extends CardsTouchProcessorState {
 //                mCardsTouchProcessor.getOriginalCardSize().getX() * SELECTED_CARD_SIZE_SCALE, mCardsTouchProcessor.getOriginalCardSize().getY() * SELECTED_CARD_SIZE_SCALE,
 //                mSelectedCard.getPosition().getX(), mSelectedCard.getPosition().getY() - yOffset, SELECTION_ANIMATION_DURATION);
 
-        mDelayedTask = new YANDelayedTask(RETURN_TO_DEFAULT_STATE_DELAY_SECONDS, new YANDelayedTask.YANDelayedTaskListener() {
+        mDelayedTask = YANObjectPool.getInstance().obtain(YANDelayedTask.class);
+        mDelayedTask.setDurationSeconds(RETURN_TO_DEFAULT_STATE_DELAY_SECONDS);
+        mDelayedTask.setDelayedTaskListener(new YANDelayedTask.YANDelayedTaskListener() {
             @Override
             public void onComplete() {
                 returnToDefaultState();
@@ -64,6 +67,8 @@ public class CardsTouchProcessorSelectedState extends CardsTouchProcessorState {
 
     private void returnToDefaultState() {
         mDelayedTask.stop();
+        YANObjectPool.getInstance().offer(mDelayedTask);
+
         mSelectedCard.setSortingLayer(originalSortingLayer);
 
 //        mCardsTouchProcessor.getCardsTweenAnimator().animateSizeAndPositionXY(mSelectedCard,

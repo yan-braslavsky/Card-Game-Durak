@@ -39,8 +39,8 @@ import java.util.Map;
 import glengine.yan.glengine.nodes.YANButtonNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.renderer.YANGLRenderer;
-import glengine.yan.glengine.util.YANLogger;
 import glengine.yan.glengine.util.geometry.YANVector2;
+import glengine.yan.glengine.util.loggers.YANLogger;
 
 /**
  * Created by Yan-Home on 10/3/2014.

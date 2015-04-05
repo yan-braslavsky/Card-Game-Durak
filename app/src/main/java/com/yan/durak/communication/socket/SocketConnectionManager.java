@@ -7,7 +7,7 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import glengine.yan.glengine.util.YANLogger;
+import glengine.yan.glengine.util.loggers.YANLogger;
 
 /**
  * Created by Yan-Home on 12/24/2014.
