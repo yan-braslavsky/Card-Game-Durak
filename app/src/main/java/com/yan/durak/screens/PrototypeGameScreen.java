@@ -6,6 +6,7 @@ import com.yan.durak.gamelogic.communication.protocol.BaseProtocolMessage;
 import com.yan.durak.gamelogic.communication.protocol.data.CardData;
 import com.yan.durak.gamelogic.communication.protocol.data.RetaliationSetData;
 import com.yan.durak.gamelogic.communication.protocol.messages.CardMovedProtocolMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.GameOverProtocolMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.GameSetupProtocolMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.PlayerTakesActionMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestCardForAttackMessage;
@@ -68,7 +69,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
     private ArrayList<Card> mSelectedThrowInCards;
     private CardsTouchProcessorMultipleChoiceState mThrowInInputProcessorState;
 
-    public PrototypeGameScreen(YANGLRenderer renderer,IGameServerConnector gameServerConnector) {
+    public PrototypeGameScreen(YANGLRenderer renderer, IGameServerConnector gameServerConnector) {
         super(renderer);
 
         mCardsPendingRetaliationMap = new HashMap<>();
@@ -108,6 +109,8 @@ public class PrototypeGameScreen extends BaseGameScreen {
                     handleInvalidRetaliationMessage((RetaliationInvalidProtocolMessage) serverMessage);
                 } else if (serverMessage.getMessageName().equals(RequestThrowInsMessage.MESSAGE_NAME)) {
                     handleRequestThrowInsMessageMessage((RequestThrowInsMessage) serverMessage);
+                } else if (serverMessage.getMessageName().equals(GameOverProtocolMessage.MESSAGE_NAME)) {
+                    handleGameOverMessage((GameOverProtocolMessage) serverMessage);
                 }
             }
         });
@@ -236,15 +239,18 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
                     //now we should clear all the tags
                     mCardsScreenFragment.removeTagsFromCards();
-                }
-
-                else {
+                } else {
 
                     //Card will be returned to place
                     layoutBottomPlayerCards();
                 }
             }
         });
+    }
+
+    private void handleGameOverMessage(GameOverProtocolMessage gameOverMessage) {
+        //TODO :
+        YANLogger.log("Received Game over message !!");
     }
 
     private void sendThrowInResponse() {
@@ -466,10 +472,10 @@ public class PrototypeGameScreen extends BaseGameScreen {
         int topLeftPlayerToTheLeftPileIndex = (bottomPlayerPileIndex + 2);
 
         //correct positions
-        if((topPlayerToTheRightPileIndex / 5) > 0)
+        if ((topPlayerToTheRightPileIndex / 5) > 0)
             topPlayerToTheRightPileIndex = (topPlayerToTheRightPileIndex % 5) + 2;
 
-        if((topLeftPlayerToTheLeftPileIndex / 5) > 0)
+        if ((topLeftPlayerToTheLeftPileIndex / 5) > 0)
             topLeftPlayerToTheLeftPileIndex = (topLeftPlayerToTheLeftPileIndex % 5) + 2;
 
         //TODO :load all pile indexes from server

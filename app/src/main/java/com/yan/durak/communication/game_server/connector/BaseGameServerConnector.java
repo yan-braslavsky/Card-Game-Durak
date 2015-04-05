@@ -5,13 +5,7 @@ import com.yan.durak.communication.game_server.connector.filter.CardMoveBatchMes
 import com.yan.durak.communication.game_server.connector.filter.IGameServerMessageFilter;
 import com.yan.durak.communication.socket.SocketConnectionManager;
 import com.yan.durak.gamelogic.communication.protocol.BaseProtocolMessage;
-import com.yan.durak.gamelogic.communication.protocol.messages.CardMovedProtocolMessage;
-import com.yan.durak.gamelogic.communication.protocol.messages.GameSetupProtocolMessage;
-import com.yan.durak.gamelogic.communication.protocol.messages.PlayerTakesActionMessage;
-import com.yan.durak.gamelogic.communication.protocol.messages.RequestCardForAttackMessage;
-import com.yan.durak.gamelogic.communication.protocol.messages.RequestRetaliatePilesMessage;
-import com.yan.durak.gamelogic.communication.protocol.messages.RequestThrowInsMessage;
-import com.yan.durak.gamelogic.communication.protocol.messages.RetaliationInvalidProtocolMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.*;
 import com.yan.durak.protocol.messages.BlankProtocolMessage;
 
 import java.util.HashMap;
@@ -52,6 +46,7 @@ public abstract class BaseGameServerConnector implements IGameServerConnector {
         mNamesToClassMap.put(PlayerTakesActionMessage.MESSAGE_NAME, PlayerTakesActionMessage.class);
         mNamesToClassMap.put(RetaliationInvalidProtocolMessage.MESSAGE_NAME, RetaliationInvalidProtocolMessage.class);
         mNamesToClassMap.put(RequestThrowInsMessage.MESSAGE_NAME, RequestThrowInsMessage.class);
+        mNamesToClassMap.put(GameOverProtocolMessage.MESSAGE_NAME, GameOverProtocolMessage.class);
         //TODO : add more protocol message classes as they will be added...
     }
 
