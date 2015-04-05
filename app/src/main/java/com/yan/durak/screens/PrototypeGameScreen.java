@@ -482,9 +482,12 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mCardsScreenFragment.setPilesIndexes(0, 1, bottomPlayerPileIndex, topPlayerToTheRightPileIndex, topLeftPlayerToTheLeftPileIndex);
 
         //extract trump card
-        CardData cardData = gameSetupProtocolMessage.getMessageData().getTrumpCard();
-        mCardsScreenFragment.setTrumpCard(new Card(cardData.getRank(), cardData.getSuit()));
+        CardData trumpCardData = gameSetupProtocolMessage.getMessageData().getTrumpCard();
+        mCardsScreenFragment.setTrumpCard(new Card(trumpCardData.getRank(), trumpCardData.getSuit()));
         mCardsScreenFragment.layoutNodes(getSceneSize());
+
+        //set the suit of the trump on the hud to be visible even when cards are gone
+        mHudNodesManager.setTrumpSuit(trumpCardData.getSuit());
 
     }
 

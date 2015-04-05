@@ -17,6 +17,8 @@ public interface IHudScreenFragment extends IScreenFragment {
 
     void setNodeNodeAttachmentChangeListener(INodeAttachmentChangeListener nodeVisibilityChangeListener);
 
+    void setTrumpSuit(String suit);
+
     public interface INodeAttachmentChangeListener {
         void onNodeVisibilityChanged(YANTexturedNode node, boolean isAttached);
     }
@@ -40,6 +42,7 @@ public interface IHudScreenFragment extends IScreenFragment {
             COCK_SCISSOR_INDEX,
             BITO_BUTTON_INDEX,
             TAKE_BUTTON_INDEX,
+            TRUMP_IMAGE_INDEX
     })
     public @interface HudNode {
     }
@@ -53,6 +56,7 @@ public interface IHudScreenFragment extends IScreenFragment {
     public static final int COCK_SCISSOR_INDEX = 6;
     public static final int BITO_BUTTON_INDEX = 7;
     public static final int TAKE_BUTTON_INDEX = 8;
+    public static final int TRUMP_IMAGE_INDEX = 9;
 
     void resetCockAnimation(@HudNode int index);
 }

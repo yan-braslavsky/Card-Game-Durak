@@ -28,6 +28,7 @@ public class HudScreenFragment implements IHudScreenFragment {
     private float mScissoringCockVisibleStartY;
 
     private INodeAttachmentChangeListener mNodeVisibilityChangeListener;
+    private YANTextureAtlas mHudAtlas;
 
 
     public HudScreenFragment() {
@@ -36,6 +37,12 @@ public class HudScreenFragment implements IHudScreenFragment {
 
     @Override
     public void createNodes(YANTextureAtlas hudAtlas) {
+
+        //cache HUD atlas for later use
+        mHudAtlas = hudAtlas;
+
+        //add image of the trump
+        putToNodeMap(TRUMP_IMAGE_INDEX, createTrumpImage(hudAtlas));
 
         //create avatars
         putToNodeMap(AVATAR_BOTTOM_RIGHT_INDEX, createAvatar(hudAtlas));
@@ -48,12 +55,18 @@ public class HudScreenFragment implements IHudScreenFragment {
         putToNodeMap(COCK_TOP_LEFT_INDEX, createCock(hudAtlas));
         putToNodeMap(COCK_SCISSOR_INDEX, createScissorCock(hudAtlas));
 
+        //create action buttons
         putToNodeMap(BITO_BUTTON_INDEX, createBitoButton(hudAtlas));
         putToNodeMap(TAKE_BUTTON_INDEX, createTakeButton(hudAtlas));
 
-
         //top left cock is looking the other way
         getNode(COCK_TOP_LEFT_INDEX).setRotationY(180);
+    }
+
+    private YANTexturedNode createTrumpImage(YANTextureAtlas hudAtlas) {
+        YANTexturedNode trumpImage = new YANTexturedNode(hudAtlas.getTextureRegion("trump_marker_hearts.png"));
+        trumpImage.setSortingLayer(-50);
+        return trumpImage;
     }
 
     private YANButtonNode createTakeButton(YANTextureAtlas hudAtlas) {
@@ -99,9 +112,11 @@ public class HudScreenFragment implements IHudScreenFragment {
         float newWidth = sceneSize.getX() * 0.2f;
         float newHeight = newWidth / aspectRatio;
 
+        //set action buttons size
         getNode(BITO_BUTTON_INDEX).setSize(newWidth, newHeight);
         getNode(TAKE_BUTTON_INDEX).setSize(newWidth, newHeight);
 
+        //avatars
         getNode(AVATAR_BOTTOM_RIGHT_INDEX).setSize(newWidth, newHeight);
         getNode(AVATAR_TOP_RIGHT_INDEX).setSize(newWidth, newHeight);
         getNode(AVATAR_TOP_LEFT_INDEX).setSize(newWidth, newHeight);
@@ -112,10 +127,19 @@ public class HudScreenFragment implements IHudScreenFragment {
         newWidth = sceneSize.getX() * 0.1f;
         newHeight = newWidth / aspectRatio;
 
+        //all cocks
         getNode(COCK_BOTTOM_RIGHT_INDEX).setSize(newWidth, newHeight);
         getNode(COCK_TOP_RIGHT_INDEX).setSize(newWidth, newHeight);
         getNode(COCK_TOP_LEFT_INDEX).setSize(newWidth, newHeight);
         getNode(COCK_SCISSOR_INDEX).setSize(newWidth, newHeight);
+
+        //set trump image size
+        YANTexturedNode trumpImage = getNode(TRUMP_IMAGE_INDEX);
+//        aspectRatio = trumpImage.getTextureRegion().getWidth() / trumpImage.getTextureRegion().getHeight();
+//        newWidth = sceneSize.getX() * 0.1f;
+//        newHeight = newWidth / aspectRatio;
+//        trumpImage.setSize(newWidth, newHeight);
+        trumpImage.setSize(trumpImage.getTextureRegion().getWidth() , trumpImage.getTextureRegion().getHeight());
     }
 
     @Override
@@ -139,11 +163,11 @@ public class HudScreenFragment implements IHudScreenFragment {
 
         //take action is at the same place as bottom avatar
         getNode(TAKE_BUTTON_INDEX).setSortingLayer(avatar.getSortingLayer() + 1);
-        getNode(TAKE_BUTTON_INDEX).setPosition(avatar.getPosition().getX() - avatar.getSize().getX(), avatar.getPosition().getY()- avatar.getSize().getY());
+        getNode(TAKE_BUTTON_INDEX).setPosition(avatar.getPosition().getX() - avatar.getSize().getX(), avatar.getPosition().getY() - avatar.getSize().getY());
 
         //bito action is at the same place as bottom avatar
         getNode(BITO_BUTTON_INDEX).setSortingLayer(avatar.getSortingLayer() + 1);
-        getNode(BITO_BUTTON_INDEX).setPosition(avatar.getPosition().getX() - avatar.getSize().getX(), avatar.getPosition().getY()- avatar.getSize().getY());
+        getNode(BITO_BUTTON_INDEX).setPosition(avatar.getPosition().getX() - avatar.getSize().getX(), avatar.getPosition().getY() - avatar.getSize().getY());
 
 
         //setup avatar for top right player
@@ -167,6 +191,10 @@ public class HudScreenFragment implements IHudScreenFragment {
 
         //filled in cock by default is out of the screen
         getNode(COCK_SCISSOR_INDEX).setPosition(-sceneSize.getX(), 0);
+
+        //trump image
+        getNode(TRUMP_IMAGE_INDEX).setPosition((sceneSize.getX() - getNode(TRUMP_IMAGE_INDEX).getSize().getX()) / 2, sceneSize.getY() * 0.03f);
+
     }
 
     @Override
@@ -218,6 +246,13 @@ public class HudScreenFragment implements IHudScreenFragment {
     @Override
     public void setNodeNodeAttachmentChangeListener(INodeAttachmentChangeListener nodeVisibilityChangeListener) {
         mNodeVisibilityChangeListener = nodeVisibilityChangeListener;
+    }
+
+    @Override
+    public void setTrumpSuit(String suit) {
+        //change texture region
+        YANTexturedNode trumpImage = getNode(TRUMP_IMAGE_INDEX);
+        trumpImage.setTextureRegion(mHudAtlas.getTextureRegion("trump_marker_" + suit.toLowerCase() + ".png"));
     }
 
 }
