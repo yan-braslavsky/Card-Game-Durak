@@ -311,6 +311,11 @@ public class CardsScreenFragment implements ICardsScreenFragment {
         mCardsTweenAnimator.animateCardToValues(cardNode, destX, destY, destRotation, null);
         mCardsTweenAnimator.animateSize(cardNode, destintationWidth, destintationHeigth, 0.5f);
 
+        //make cards that are coming from the stock pile fully opaque
+        if (fromPile == mStockPileIndex) {
+            cardNode.setOpacity(1f);
+        }
+
         if (fromPile == mBottomPlayerPileIndex || toPile == mBottomPlayerPileIndex || toPile > mTopLeftPlayerPileIndex || toPile == mDiscardPileIndex) {
 
             //show the card
@@ -446,8 +451,7 @@ public class CardsScreenFragment implements ICardsScreenFragment {
         mTrumpCard = card;
 
         //put the trump card at the bottom
-        mCardNodes.get(card).setSortingLayer(-1);
-
+        mCardNodes.get(mTrumpCard).setSortingLayer(-1);
     }
 
     @Override

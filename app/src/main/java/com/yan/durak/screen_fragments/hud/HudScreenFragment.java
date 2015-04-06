@@ -135,11 +135,10 @@ public class HudScreenFragment implements IHudScreenFragment {
 
         //set trump image size
         YANTexturedNode trumpImage = getNode(TRUMP_IMAGE_INDEX);
-//        aspectRatio = trumpImage.getTextureRegion().getWidth() / trumpImage.getTextureRegion().getHeight();
-//        newWidth = sceneSize.getX() * 0.1f;
-//        newHeight = newWidth / aspectRatio;
-//        trumpImage.setSize(newWidth, newHeight);
-        trumpImage.setSize(trumpImage.getTextureRegion().getWidth() , trumpImage.getTextureRegion().getHeight());
+        aspectRatio = trumpImage.getTextureRegion().getWidth() / trumpImage.getTextureRegion().getHeight();
+        newWidth = sceneSize.getX() * 0.1f;
+        newHeight = newWidth / aspectRatio;
+        trumpImage.setSize(newWidth, newHeight);
     }
 
     @Override
@@ -193,7 +192,7 @@ public class HudScreenFragment implements IHudScreenFragment {
         getNode(COCK_SCISSOR_INDEX).setPosition(-sceneSize.getX(), 0);
 
         //trump image
-        getNode(TRUMP_IMAGE_INDEX).setPosition((sceneSize.getX() - getNode(TRUMP_IMAGE_INDEX).getSize().getX()) / 2, sceneSize.getY() * 0.03f);
+        getNode(TRUMP_IMAGE_INDEX).setPosition((sceneSize.getX() - getNode(TRUMP_IMAGE_INDEX).getSize().getX()) / 2, sceneSize.getY() * 0.06f);
 
     }
 
