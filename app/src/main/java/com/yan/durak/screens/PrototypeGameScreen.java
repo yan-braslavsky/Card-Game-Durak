@@ -466,19 +466,19 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
     private void handleGameSetupMessage(GameSetupProtocolMessage gameSetupProtocolMessage) {
 
-        //TODO : get rid of the statics and make it more generic
+        //depending on my player index we need to identify indexes of all players
         int bottomPlayerPileIndex = gameSetupProtocolMessage.getMessageData().getMyPileIndex();
         int topPlayerToTheRightPileIndex = (bottomPlayerPileIndex + 1);
         int topLeftPlayerToTheLeftPileIndex = (bottomPlayerPileIndex + 2);
 
-        //correct positions
+        //correct other players positions
         if ((topPlayerToTheRightPileIndex / 5) > 0)
             topPlayerToTheRightPileIndex = (topPlayerToTheRightPileIndex % 5) + 2;
 
         if ((topLeftPlayerToTheLeftPileIndex / 5) > 0)
             topLeftPlayerToTheLeftPileIndex = (topLeftPlayerToTheLeftPileIndex % 5) + 2;
 
-        //TODO :load all pile indexes from server
+        //TODO :load all pile indexes from server ?
         mCardsScreenFragment.setPilesIndexes(0, 1, bottomPlayerPileIndex, topPlayerToTheRightPileIndex, topLeftPlayerToTheLeftPileIndex);
 
         //extract trump card

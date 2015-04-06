@@ -380,7 +380,7 @@ public class CardsScreenFragment implements ICardsScreenFragment {
 
     @Override
     public void update(float deltaTimeSeconds) {
-
+        //Does nothing
     }
 
     @Override
@@ -444,6 +444,10 @@ public class CardsScreenFragment implements ICardsScreenFragment {
     @Override
     public void setTrumpCard(Card card) {
         mTrumpCard = card;
+
+        //put the trump card at the bottom
+        mCardNodes.get(card).setSortingLayer(-1);
+
     }
 
     @Override
