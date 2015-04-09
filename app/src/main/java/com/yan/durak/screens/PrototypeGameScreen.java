@@ -78,6 +78,9 @@ public class PrototypeGameScreen extends BaseGameScreen {
      */
     private YANTexturedNode mMaskCard;
 
+    //cached index of current player in the game
+    private int mMyGameIndex;
+
     public PrototypeGameScreen(YANGLRenderer renderer, IGameServerConnector gameServerConnector) {
         super(renderer);
 
@@ -190,7 +193,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
                                 sendThrowInResponse();
                             }
                         } else if (mRequestedRetaliation) {
-                            //TODO : do nothing
+                            // do nothing
                         } else {
                             layoutBottomPlayerCards();
                         }
@@ -267,8 +270,14 @@ public class PrototypeGameScreen extends BaseGameScreen {
     }
 
     private void handleGameOverMessage(GameOverProtocolMessage gameOverMessage) {
-        //TODO :
-        YANLogger.log("Received Game over message !!");
+
+        boolean iLostTheGame = (mMyGameIndex == gameOverMessage.getMessageData().getLoosingPlayer().getPlayerIndexInGame());
+        if (iLostTheGame) {
+            //TODO : make tween manager independant of cards animator
+            mHudNodesManager.showYouWonMessage(mCardsTweenAnimator.getTweenManager());
+        } else {
+            mHudNodesManager.showYouLooseMessage(mCardsTweenAnimator.getTweenManager());
+        }
     }
 
     private void sendThrowInResponse() {
@@ -493,8 +502,10 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
     private void handleGameSetupMessage(GameSetupProtocolMessage gameSetupProtocolMessage) {
 
+        mMyGameIndex = gameSetupProtocolMessage.getMessageData().getMyPileIndex().getPlayerIndexInGame();
+
         //depending on my player index we need to identify indexes of all players
-        int bottomPlayerPileIndex = gameSetupProtocolMessage.getMessageData().getMyPileIndex();
+        int bottomPlayerPileIndex = gameSetupProtocolMessage.getMessageData().getMyPileIndex().getPlayerPileIndex();
         int topPlayerToTheRightPileIndex = (bottomPlayerPileIndex + 1);
         int topLeftPlayerToTheLeftPileIndex = (bottomPlayerPileIndex + 2);
 

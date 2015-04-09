@@ -5,10 +5,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import aurelienribon.tweenengine.Timeline;
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.assets.atlas.YANTextureAtlas;
 import glengine.yan.glengine.nodes.YANButtonNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.nodes.YANTexturedScissorNode;
+import glengine.yan.glengine.tween.YANTweenNodeAccessor;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
 
 /**
@@ -20,6 +24,11 @@ public class HudScreenFragment implements IHudScreenFragment {
      * By default hud will be placed on hud sorting layer and above
      */
     private static final int HUD_SORTING_LAYER = 50;
+
+    /**
+     * Duration of appearing of the popup window
+     */
+    private static final float POPUP_ANIMATION_DURATION = 0.7f;
 
     /**
      * All nodes that exist in the hud manager will be placed in this map
@@ -59,8 +68,40 @@ public class HudScreenFragment implements IHudScreenFragment {
         putToNodeMap(BITO_BUTTON_INDEX, createBitoButton(hudAtlas));
         putToNodeMap(TAKE_BUTTON_INDEX, createTakeButton(hudAtlas));
 
+        //end game popups
+        putToNodeMap(YOU_WIN_IMAGE_INDEX, createYouWonImage(hudAtlas));
+        putToNodeMap(YOU_LOOSE_IMAGE_INDEX, createYouLooseImage(hudAtlas));
+
+        //at the beginning some nodes might have a different state
+        setupInitialState();
+
+    }
+
+    private void setupInitialState() {
+
         //top left cock is looking the other way
         getNode(COCK_TOP_LEFT_INDEX).setRotationY(180);
+
+        //popup images are invisible
+        getNode(YOU_WIN_IMAGE_INDEX).setOpacity(0);
+        getNode(YOU_LOOSE_IMAGE_INDEX).setOpacity(0);
+
+        //popups anchor is at the middle
+        getNode(YOU_WIN_IMAGE_INDEX).setAnchorPoint(0.5f, 0.5f);
+        getNode(YOU_LOOSE_IMAGE_INDEX).setAnchorPoint(0.5f, 0.5f);
+
+    }
+
+    private YANTexturedNode createYouWonImage(YANTextureAtlas hudAtlas) {
+        YANTexturedNode popupImage = new YANTexturedNode(hudAtlas.getTextureRegion("you_won.png"));
+        popupImage.setSortingLayer(HUD_SORTING_LAYER + 100);
+        return popupImage;
+    }
+
+    private YANTexturedNode createYouLooseImage(YANTextureAtlas hudAtlas) {
+        YANTexturedNode popupImage = new YANTexturedNode(hudAtlas.getTextureRegion("you_lose.png"));
+        popupImage.setSortingLayer(HUD_SORTING_LAYER + 100);
+        return popupImage;
     }
 
     private YANTexturedNode createTrumpImage(YANTextureAtlas hudAtlas) {
@@ -139,6 +180,13 @@ public class HudScreenFragment implements IHudScreenFragment {
         newWidth = sceneSize.getX() * 0.1f;
         newHeight = newWidth / aspectRatio;
         trumpImage.setSize(newWidth, newHeight);
+
+        //popups
+        aspectRatio = getNode(YOU_WIN_IMAGE_INDEX).getTextureRegion().getWidth() / getNode(YOU_WIN_IMAGE_INDEX).getTextureRegion().getHeight();
+        newWidth = sceneSize.getX() * 0.9f;
+        newHeight = newWidth / aspectRatio;
+        getNode(YOU_WIN_IMAGE_INDEX).setSize(newWidth, newHeight);
+        getNode(YOU_LOOSE_IMAGE_INDEX).setSize(newWidth, newHeight);
     }
 
     @Override
@@ -194,6 +242,11 @@ public class HudScreenFragment implements IHudScreenFragment {
         //trump image
         getNode(TRUMP_IMAGE_INDEX).setPosition((sceneSize.getX() - getNode(TRUMP_IMAGE_INDEX).getSize().getX()) / 2, sceneSize.getY() * 0.06f);
 
+        //setup popups
+        getNode(YOU_WIN_IMAGE_INDEX).setPosition(
+                ((sceneSize.getX() - getNode(YOU_WIN_IMAGE_INDEX).getSize().getX()) / 2) + getNode(YOU_WIN_IMAGE_INDEX).getSize().getX() / 2,
+                ((sceneSize.getY() - getNode(YOU_WIN_IMAGE_INDEX).getSize().getY()) / 2) + getNode(YOU_WIN_IMAGE_INDEX).getSize().getY() / 2);
+        getNode(YOU_LOOSE_IMAGE_INDEX).setPosition(getNode(YOU_WIN_IMAGE_INDEX).getPosition().getX(), getNode(YOU_WIN_IMAGE_INDEX).getPosition().getY());
     }
 
     @Override
@@ -254,4 +307,29 @@ public class HudScreenFragment implements IHudScreenFragment {
         trumpImage.setTextureRegion(mHudAtlas.getTextureRegion("trump_marker_" + suit.toLowerCase() + ".png"));
     }
 
+    @Override
+    public void showYouWonMessage(TweenManager tweenManager) {
+        makeNodeAppearWithAnimation(getNode(YOU_WIN_IMAGE_INDEX), tweenManager);
+    }
+
+    @Override
+    public void showYouLooseMessage(TweenManager tweenManager) {
+        makeNodeAppearWithAnimation(getNode(YOU_LOOSE_IMAGE_INDEX), tweenManager);
+    }
+
+    private void makeNodeAppearWithAnimation(YANTexturedNode node, TweenManager tweenManager) {
+        Timeline sequence = Timeline.createSequence()
+                .beginParallel()
+                .push(Tween.to(node, YANTweenNodeAccessor.SIZE_X, POPUP_ANIMATION_DURATION).target(node.getSize().getX()))
+                .push(Tween.to(node, YANTweenNodeAccessor.SIZE_Y, POPUP_ANIMATION_DURATION).target(node.getSize().getY()))
+                .push(Tween.to(node, YANTweenNodeAccessor.OPACITY, POPUP_ANIMATION_DURATION).target(1f))
+                .push(Tween.to(node, YANTweenNodeAccessor.ROTATION_Z_CW, POPUP_ANIMATION_DURATION).target(360));
+
+        //make the popup barley visible
+        node.setOpacity(0f);
+        node.setSize(0.1f, 0.1f);
+
+        //animate
+        sequence.start(tweenManager);
+    }
 }

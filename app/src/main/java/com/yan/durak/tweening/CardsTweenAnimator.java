@@ -102,4 +102,8 @@ public class CardsTweenAnimator {
     public void kill(YANTexturedNode node) {
         mTweenManager.killTarget(node);
     }
+
+    public TweenManager getTweenManager() {
+        return mTweenManager;
+    }
 }
