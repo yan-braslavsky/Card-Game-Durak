@@ -32,7 +32,9 @@ import com.yan.durak.screen_fragments.hud.IHudScreenFragment;
 import com.yan.durak.tweening.CardsTweenAnimator;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -68,6 +70,13 @@ public class PrototypeGameScreen extends BaseGameScreen {
     private int mThrowInCardsAllowed;
     private ArrayList<Card> mSelectedThrowInCards;
     private CardsTouchProcessorMultipleChoiceState mThrowInInputProcessorState;
+
+    /**
+     * We don't want to show all the cards in a stock pile.
+     * Instead we are showing only one, which is this node.
+     * Underneath this node there is a trump card.
+     */
+    private YANTexturedNode mMaskCard;
 
     public PrototypeGameScreen(YANGLRenderer renderer, IGameServerConnector gameServerConnector) {
         super(renderer);
@@ -135,6 +144,15 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
             @Override
             public void onCardMovesToFieldPile() {
+            }
+
+            @Override
+            public void onCardMovesFromStockPile() {
+                if (mCardsScreenFragment.getCardsInPileWithIndex(0).size() == 1) {
+                    //when only one card left in the stock pile (which is a trump card)
+                    //we are removing the mask
+                    removeNode(mMaskCard);
+                }
             }
         });
 
@@ -317,6 +335,9 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
         mHudNodesManager.setFinishButtonAttachedToScreen(false);
         mHudNodesManager.setTakeButtonAttachedToScreen(false);
+
+        //mask node
+        addNode(mMaskCard);
     }
 
 
@@ -363,6 +384,9 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
         mCardsScreenFragment.setNodesSizes(getSceneSize());
 
+        //set size of the mask card texture
+        mMaskCard.setSize(mCardsScreenFragment.getCardNodeWidth(), mCardsScreenFragment.getCardNodeHeight());
+
         //set size of a card for touch processor
         mCardsTouchProcessor.setOriginalCardSize(/*mCardWidth*/mCardsScreenFragment.getCardNodeWidth(), mCardsScreenFragment.getCardNodeHeight());
 
@@ -383,6 +407,9 @@ public class PrototypeGameScreen extends BaseGameScreen {
         super.onCreateNodes();
         mHudNodesManager.createNodes(mUiAtlas);
         mCardsScreenFragment.createNodes(mCardsAtlas);
+
+        //create a mask card texture
+        mMaskCard = new YANTexturedNode(mCardsAtlas.getTextureRegion("cards_back.png"));
 
         mHudNodesManager.setTakeButtonClickListener(new YANButtonNode.YanButtonNodeClickListener() {
             @Override
@@ -486,8 +513,29 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mCardsScreenFragment.setTrumpCard(new Card(trumpCardData.getRank(), trumpCardData.getSuit()));
         mCardsScreenFragment.layoutNodes(getSceneSize());
 
+        //we need to position a card that behaves as a mask for the stock pile
+        positionMaskCard(trumpCardData);
+
         //set the suit of the trump on the hud to be visible even when cards are gone
         mHudNodesManager.setTrumpSuit(trumpCardData.getSuit());
+
+    }
+
+    private void positionMaskCard(CardData trumpCardNode) {
+
+        Card trumpCard = new Card(trumpCardNode.getRank(), trumpCardNode.getSuit());
+
+        //position the mask at the same place with the stock pile cards
+        Collection<Card> cardsInStockPile = mCardsScreenFragment.getCardsInPileWithIndex(0);
+        Iterator<Card> iterator = cardsInStockPile.iterator();
+        Card randomCardInStockPile = iterator.next();
+        if (trumpCard.equals(randomCardInStockPile)) {
+            randomCardInStockPile = iterator.next();
+        }
+        CardNode randomCardNodeInStockPile = mCardsScreenFragment.getCardToNodesMap().get(randomCardInStockPile);
+        mMaskCard.setPosition(randomCardNodeInStockPile.getPosition().getX(), randomCardNodeInStockPile.getPosition().getY());
+        mMaskCard.setSize(randomCardNodeInStockPile.getSize().getX(), randomCardNodeInStockPile.getSize().getY());
+        mMaskCard.setRotationZ(randomCardNodeInStockPile.getRotationZ());
 
     }
 

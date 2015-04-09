@@ -314,6 +314,10 @@ public class CardsScreenFragment implements ICardsScreenFragment {
         //make cards that are coming from the stock pile fully opaque
         if (fromPile == mStockPileIndex) {
             cardNode.setOpacity(1f);
+
+            //notify listener
+            mCardMovementListener.onCardMovesFromStockPile();
+
         }
 
         if (fromPile == mBottomPlayerPileIndex || toPile == mBottomPlayerPileIndex || toPile > mTopLeftPlayerPileIndex || toPile == mDiscardPileIndex) {
@@ -452,6 +456,17 @@ public class CardsScreenFragment implements ICardsScreenFragment {
 
         //put the trump card at the bottom
         mCardNodes.get(mTrumpCard).setSortingLayer(-1);
+
+        //get reference to the trump card node
+        CardNode trumpCardNode = mCardNodes.get(mTrumpCard);
+
+        //we are hiding all the cards in the stack pile except of the trump
+        //to prevent stacking shadow of the images
+        for (CardNode cardNode : mCardNodes.values()) {
+            if (cardNode != trumpCardNode)
+                cardNode.setOpacity(0);
+        }
+
     }
 
     @Override

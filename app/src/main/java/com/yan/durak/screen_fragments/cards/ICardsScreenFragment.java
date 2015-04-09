@@ -38,6 +38,8 @@ public interface ICardsScreenFragment extends IScreenFragment {
         void onCardMovesToTopLeftPlayerPile();
 
         void onCardMovesToFieldPile();
+
+        void onCardMovesFromStockPile();
     }
 
     void setCardMovementListener(ICardMovementListener listener);
