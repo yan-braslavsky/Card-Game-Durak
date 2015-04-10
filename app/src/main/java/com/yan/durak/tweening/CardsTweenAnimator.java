@@ -15,8 +15,8 @@ import glengine.yan.glengine.tween.YANTweenNodeAccessor;
 public class CardsTweenAnimator {
     private TweenManager mTweenManager;
 
-    public CardsTweenAnimator() {
-        mTweenManager = new TweenManager();
+    public CardsTweenAnimator(TweenManager tweenManager) {
+        mTweenManager = tweenManager;
     }
 
     /**
@@ -75,10 +75,6 @@ public class CardsTweenAnimator {
                 .push(Tween.to(card, YANTweenNodeAccessor.POSITION_Y, duration).target(targetY))
                 .setCallback(animationEndCallback)
                 .start(mTweenManager);
-    }
-
-    public void update(float deltaTime) {
-        mTweenManager.update(deltaTime);
     }
 
     public void animateSize(YANTexturedNode card, float width, float height, float duration) {

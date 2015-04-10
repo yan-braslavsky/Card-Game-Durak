@@ -31,6 +31,11 @@ public class HudScreenFragment implements IHudScreenFragment {
     private static final float POPUP_ANIMATION_DURATION = 0.7f;
 
     /**
+     * Used to perform tween animations
+     */
+    private final TweenManager mTweenManager;
+
+    /**
      * All nodes that exist in the hud manager will be placed in this map
      */
     private Map<Integer, YANTexturedNode> mHudNodesMap;
@@ -40,7 +45,8 @@ public class HudScreenFragment implements IHudScreenFragment {
     private YANTextureAtlas mHudAtlas;
 
 
-    public HudScreenFragment() {
+    public HudScreenFragment(TweenManager tweenManager) {
+        mTweenManager = tweenManager;
         mHudNodesMap = new HashMap<>();
     }
 
@@ -308,16 +314,16 @@ public class HudScreenFragment implements IHudScreenFragment {
     }
 
     @Override
-    public void showYouWonMessage(TweenManager tweenManager) {
-        makeNodeAppearWithAnimation(getNode(YOU_WIN_IMAGE_INDEX), tweenManager);
+    public void showYouWonMessage() {
+        makeNodeAppearWithAnimation(getNode(YOU_WIN_IMAGE_INDEX));
     }
 
     @Override
-    public void showYouLooseMessage(TweenManager tweenManager) {
-        makeNodeAppearWithAnimation(getNode(YOU_LOOSE_IMAGE_INDEX), tweenManager);
+    public void showYouLooseMessage() {
+        makeNodeAppearWithAnimation(getNode(YOU_LOOSE_IMAGE_INDEX));
     }
 
-    private void makeNodeAppearWithAnimation(YANTexturedNode node, TweenManager tweenManager) {
+    private void makeNodeAppearWithAnimation(YANTexturedNode node) {
         Timeline sequence = Timeline.createSequence()
                 .beginParallel()
                 .push(Tween.to(node, YANTweenNodeAccessor.SIZE_X, POPUP_ANIMATION_DURATION).target(node.getSize().getX()))
@@ -330,6 +336,6 @@ public class HudScreenFragment implements IHudScreenFragment {
         node.setSize(0.1f, 0.1f);
 
         //animate
-        sequence.start(tweenManager);
+        sequence.start(mTweenManager);
     }
 }

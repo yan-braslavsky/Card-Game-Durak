@@ -20,9 +20,9 @@ public interface IHudScreenFragment extends IScreenFragment {
 
     void setTrumpSuit(String suit);
 
-    void showYouWonMessage(TweenManager tweenManager);
+    void showYouWonMessage();
 
-    void showYouLooseMessage(TweenManager tweenManager);
+    void showYouLooseMessage();
 
     public interface INodeAttachmentChangeListener {
         void onNodeVisibilityChanged(YANTexturedNode node, boolean isAttached);

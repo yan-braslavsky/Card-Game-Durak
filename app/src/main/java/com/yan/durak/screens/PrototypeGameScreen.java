@@ -38,6 +38,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.nodes.YANButtonNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.renderer.YANGLRenderer;
@@ -50,6 +51,7 @@ import glengine.yan.glengine.util.loggers.YANLogger;
 public class PrototypeGameScreen extends BaseGameScreen {
 
     public static final float CARD_SCALE_AMOUNT_OPPONENT = 0.6f;
+    private final TweenManager mSharedTweenManager;
 
     //Players hand related
     private CardsLayouter mPlayerCardsLayouter;
@@ -84,14 +86,17 @@ public class PrototypeGameScreen extends BaseGameScreen {
     public PrototypeGameScreen(YANGLRenderer renderer, IGameServerConnector gameServerConnector) {
         super(renderer);
 
+        mSharedTweenManager = new TweenManager();
         mCardsPendingRetaliationMap = new HashMap<>();
         mSelectedThrowInCards = new ArrayList<>();
         mThrowInPossibleCards = new ArrayList<>();
-        mHudNodesManager = new HudScreenFragment();
+        mHudNodesManager = new HudScreenFragment(mSharedTweenManager);
         mHudNodesManager.setNodeNodeAttachmentChangeListener(new IHudScreenFragment.INodeAttachmentChangeListener() {
             @Override
             public void onNodeVisibilityChanged(YANTexturedNode node, boolean isVisible) {
                 if (isVisible) {
+
+                    //TODO : let the button nodes be managed completely by a hud fragment
                     addNode(node);
                 } else {
                     removeNode(node);
@@ -127,7 +132,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
             }
         });
 
-        mCardsTweenAnimator = new CardsTweenAnimator();
+        mCardsTweenAnimator = new CardsTweenAnimator(mSharedTweenManager);
         mCardsScreenFragment = new CardsScreenFragment(mCardsTweenAnimator);
         mCardsScreenFragment.setCardMovementListener(new ICardsScreenFragment.ICardMovementListener() {
             @Override
@@ -273,10 +278,9 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
         boolean iLostTheGame = (mMyGameIndex == gameOverMessage.getMessageData().getLoosingPlayer().getPlayerIndexInGame());
         if (iLostTheGame) {
-            //TODO : make tween manager independant of cards animator
-            mHudNodesManager.showYouWonMessage(mCardsTweenAnimator.getTweenManager());
+            mHudNodesManager.showYouLooseMessage();
         } else {
-            mHudNodesManager.showYouLooseMessage(mCardsTweenAnimator.getTweenManager());
+            mHudNodesManager.showYouWonMessage();
         }
     }
 
@@ -452,7 +456,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
     public void onUpdate(float deltaTimeSeconds) {
         super.onUpdate(deltaTimeSeconds);
         mGameServerConnector.update(deltaTimeSeconds);
-        mCardsTweenAnimator.update(deltaTimeSeconds * 1);
+        mSharedTweenManager.update(deltaTimeSeconds * 1);
         mHudNodesManager.update(deltaTimeSeconds);
         mCardsScreenFragment.update(deltaTimeSeconds);
     }
@@ -502,10 +506,10 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
     private void handleGameSetupMessage(GameSetupProtocolMessage gameSetupProtocolMessage) {
 
-        mMyGameIndex = gameSetupProtocolMessage.getMessageData().getMyPileIndex().getPlayerIndexInGame();
+        mMyGameIndex = gameSetupProtocolMessage.getMessageData().getMyPlayerData().getPlayerIndexInGame();
 
         //depending on my player index we need to identify indexes of all players
-        int bottomPlayerPileIndex = gameSetupProtocolMessage.getMessageData().getMyPileIndex().getPlayerPileIndex();
+        int bottomPlayerPileIndex = gameSetupProtocolMessage.getMessageData().getMyPlayerData().getPlayerPileIndex();
         int topPlayerToTheRightPileIndex = (bottomPlayerPileIndex + 1);
         int topLeftPlayerToTheLeftPileIndex = (bottomPlayerPileIndex + 2);
 
