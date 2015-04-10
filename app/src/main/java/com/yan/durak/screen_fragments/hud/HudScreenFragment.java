@@ -5,8 +5,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.assets.atlas.YANTextureAtlas;
 import glengine.yan.glengine.nodes.YANButtonNode;
@@ -14,6 +16,7 @@ import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.nodes.YANTexturedScissorNode;
 import glengine.yan.glengine.tween.YANTweenNodeAccessor;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
+import glengine.yan.glengine.util.loggers.YANLogger;
 
 /**
  * Created by Yan-Home on 1/25/2015.
@@ -43,6 +46,14 @@ public class HudScreenFragment implements IHudScreenFragment {
 
     private INodeAttachmentChangeListener mNodeVisibilityChangeListener;
     private YANTextureAtlas mHudAtlas;
+    private TweenCallback showVButtonTweenCallback = new TweenCallback() {
+        @Override
+        public void onEvent(int type, BaseTween<?> baseTween) {
+            if (TweenCallback.COMPLETE == type) {
+                getNode(V_BUTTON_INDEX).setOpacity(1f);
+            }
+        }
+    };
 
 
     public HudScreenFragment(TweenManager tweenManager) {
@@ -78,9 +89,24 @@ public class HudScreenFragment implements IHudScreenFragment {
         putToNodeMap(YOU_WIN_IMAGE_INDEX, createYouWonImage(hudAtlas));
         putToNodeMap(YOU_LOOSE_IMAGE_INDEX, createYouLooseImage(hudAtlas));
 
+        //create v button for popup
+        putToNodeMap(V_BUTTON_INDEX, createVButton(hudAtlas));
+
         //at the beginning some nodes might have a different state
         setupInitialState();
 
+    }
+
+    private YANButtonNode createVButton(YANTextureAtlas hudAtlas) {
+        YANButtonNode node = new YANButtonNode(hudAtlas.getTextureRegion("v_btn.png"), hudAtlas.getTextureRegion("v_btn_clicked.png"));
+        node.setClickListener(new YANButtonNode.YanButtonNodeClickListener() {
+            @Override
+            public void onButtonClick() {
+                YANLogger.log("v button clicked");
+            }
+        });
+        node.setSortingLayer(HUD_SORTING_LAYER + 101);
+        return node;
     }
 
     private void setupInitialState() {
@@ -96,6 +122,8 @@ public class HudScreenFragment implements IHudScreenFragment {
         getNode(YOU_WIN_IMAGE_INDEX).setAnchorPoint(0.5f, 0.5f);
         getNode(YOU_LOOSE_IMAGE_INDEX).setAnchorPoint(0.5f, 0.5f);
 
+        //v button
+        getNode(V_BUTTON_INDEX).setOpacity(0);
     }
 
     private YANTexturedNode createYouWonImage(YANTextureAtlas hudAtlas) {
@@ -193,6 +221,12 @@ public class HudScreenFragment implements IHudScreenFragment {
         newHeight = newWidth / aspectRatio;
         getNode(YOU_WIN_IMAGE_INDEX).setSize(newWidth, newHeight);
         getNode(YOU_LOOSE_IMAGE_INDEX).setSize(newWidth, newHeight);
+
+        //v button
+        aspectRatio = getNode(V_BUTTON_INDEX).getTextureRegion().getWidth() / getNode(V_BUTTON_INDEX).getTextureRegion().getHeight();
+        newWidth = sceneSize.getX() * 0.2f;
+        newHeight = newWidth / aspectRatio;
+        getNode(V_BUTTON_INDEX).setSize(newWidth, newHeight);
     }
 
     @Override
@@ -249,10 +283,17 @@ public class HudScreenFragment implements IHudScreenFragment {
         getNode(TRUMP_IMAGE_INDEX).setPosition((sceneSize.getX() - getNode(TRUMP_IMAGE_INDEX).getSize().getX()) / 2, sceneSize.getY() * 0.06f);
 
         //setup popups
+        float popupAnchorXOffset = getNode(YOU_WIN_IMAGE_INDEX).getSize().getX() / 2;
+        float popupAnchorYOffset = getNode(YOU_WIN_IMAGE_INDEX).getSize().getY() / 2;
         getNode(YOU_WIN_IMAGE_INDEX).setPosition(
-                ((sceneSize.getX() - getNode(YOU_WIN_IMAGE_INDEX).getSize().getX()) / 2) + getNode(YOU_WIN_IMAGE_INDEX).getSize().getX() / 2,
-                ((sceneSize.getY() - getNode(YOU_WIN_IMAGE_INDEX).getSize().getY()) / 2) + getNode(YOU_WIN_IMAGE_INDEX).getSize().getY() / 2);
+                ((sceneSize.getX() - getNode(YOU_WIN_IMAGE_INDEX).getSize().getX()) / 2) + popupAnchorXOffset,
+                ((sceneSize.getY() - getNode(YOU_WIN_IMAGE_INDEX).getSize().getY()) / 2) + popupAnchorYOffset);
         getNode(YOU_LOOSE_IMAGE_INDEX).setPosition(getNode(YOU_WIN_IMAGE_INDEX).getPosition().getX(), getNode(YOU_WIN_IMAGE_INDEX).getPosition().getY());
+
+        //v button
+        getNode(V_BUTTON_INDEX).setPosition(
+                getNode(YOU_WIN_IMAGE_INDEX).getPosition().getX() - (getNode(V_BUTTON_INDEX).getSize().getX() / 2),
+                getNode(YOU_WIN_IMAGE_INDEX).getPosition().getY() - ((getNode(V_BUTTON_INDEX).getSize().getY()) * 1.25f) + popupAnchorYOffset);
     }
 
     @Override
@@ -315,21 +356,21 @@ public class HudScreenFragment implements IHudScreenFragment {
 
     @Override
     public void showYouWonMessage() {
-        makeNodeAppearWithAnimation(getNode(YOU_WIN_IMAGE_INDEX));
+        makeNodeAppearWithAnimation(getNode(YOU_WIN_IMAGE_INDEX), showVButtonTweenCallback);
     }
 
     @Override
     public void showYouLooseMessage() {
-        makeNodeAppearWithAnimation(getNode(YOU_LOOSE_IMAGE_INDEX));
+        makeNodeAppearWithAnimation(getNode(YOU_LOOSE_IMAGE_INDEX), showVButtonTweenCallback);
     }
 
-    private void makeNodeAppearWithAnimation(YANTexturedNode node) {
+    private void makeNodeAppearWithAnimation(YANTexturedNode node, TweenCallback cbk) {
         Timeline sequence = Timeline.createSequence()
                 .beginParallel()
                 .push(Tween.to(node, YANTweenNodeAccessor.SIZE_X, POPUP_ANIMATION_DURATION).target(node.getSize().getX()))
                 .push(Tween.to(node, YANTweenNodeAccessor.SIZE_Y, POPUP_ANIMATION_DURATION).target(node.getSize().getY()))
                 .push(Tween.to(node, YANTweenNodeAccessor.OPACITY, POPUP_ANIMATION_DURATION).target(1f))
-                .push(Tween.to(node, YANTweenNodeAccessor.ROTATION_Z_CW, POPUP_ANIMATION_DURATION).target(360));
+                .push(Tween.to(node, YANTweenNodeAccessor.ROTATION_Z_CW, POPUP_ANIMATION_DURATION).target(360)).setCallback(cbk).end();
 
         //make the popup barley visible
         node.setOpacity(0f);

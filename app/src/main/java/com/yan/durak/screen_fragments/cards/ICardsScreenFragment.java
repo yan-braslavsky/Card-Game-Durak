@@ -10,11 +10,16 @@ import java.util.Map;
 
 /**
  * Created by Yan-Home on 1/29/2015.
+ *
+ * @deprecated Use {@link com.yan.durak.screen_fragments.cards.CardsScreenFragment} directly
  */
+@Deprecated
 public interface ICardsScreenFragment extends IScreenFragment {
 
     int getBottomPlayerPileIndex();
+
     int getTopRightPlayerPileIndex();
+
     int getTopLeftPlayerPileIndex();
 
     /**
