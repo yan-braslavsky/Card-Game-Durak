@@ -8,7 +8,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import glengine.yan.glengine.nodes.YANButtonNode;
-import glengine.yan.glengine.nodes.YANTexturedNode;
 
 /**
  * Created by Yan-Home on 1/25/2015.
@@ -18,25 +17,23 @@ import glengine.yan.glengine.nodes.YANTexturedNode;
 @Deprecated
 public interface IHudScreenFragment extends IScreenFragment {
 
-    void setNodeNodeAttachmentChangeListener(INodeAttachmentChangeListener nodeVisibilityChangeListener);
-
     void setTrumpSuit(String suit);
 
     void showYouWonMessage();
 
     void showYouLooseMessage();
 
-    public interface INodeAttachmentChangeListener {
-        void onNodeVisibilityChanged(YANTexturedNode node, boolean isAttached);
-    }
+    void hideTakeButton();
+
+    void hideBitoButton();
 
     void setTakeButtonClickListener(YANButtonNode.YanButtonNodeClickListener listener);
 
     void setBitoButtonClickListener(YANButtonNode.YanButtonNodeClickListener listener);
 
-    void setFinishButtonAttachedToScreen(boolean isVisible);
+    void showBitoButton();
 
-    void setTakeButtonAttachedToScreen(boolean isVisible);
+    void showTakeButton();
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({

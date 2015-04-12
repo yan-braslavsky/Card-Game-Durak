@@ -44,7 +44,6 @@ public class HudScreenFragment implements IHudScreenFragment {
     private Map<Integer, YANTexturedNode> mHudNodesMap;
     private float mScissoringCockVisibleStartY;
 
-    private INodeAttachmentChangeListener mNodeVisibilityChangeListener;
     private YANTextureAtlas mHudAtlas;
     private TweenCallback showVButtonTweenCallback = new TweenCallback() {
         @Override
@@ -54,6 +53,10 @@ public class HudScreenFragment implements IHudScreenFragment {
             }
         }
     };
+
+    //Cached click listeners for action buttons
+    private YANButtonNode.YanButtonNodeClickListener mBitoBtnClickListener;
+    private YANButtonNode.YanButtonNodeClickListener mTakeButtonClickListener;
 
 
     public HudScreenFragment(TweenManager tweenManager) {
@@ -124,6 +127,10 @@ public class HudScreenFragment implements IHudScreenFragment {
 
         //v button
         getNode(V_BUTTON_INDEX).setOpacity(0);
+
+        //action buttons also have zero opacity
+        getNode(TAKE_BUTTON_INDEX).setOpacity(0);
+        getNode(BITO_BUTTON_INDEX).setOpacity(0);
     }
 
     private YANTexturedNode createYouWonImage(YANTextureAtlas hudAtlas) {
@@ -308,22 +315,46 @@ public class HudScreenFragment implements IHudScreenFragment {
 
     @Override
     public void setTakeButtonClickListener(YANButtonNode.YanButtonNodeClickListener listener) {
-        ((YANButtonNode) getNode(TAKE_BUTTON_INDEX)).setClickListener(listener);
+        mTakeButtonClickListener = listener;
     }
 
     @Override
     public void setBitoButtonClickListener(YANButtonNode.YanButtonNodeClickListener listener) {
-        ((YANButtonNode) getNode(BITO_BUTTON_INDEX)).setClickListener(listener);
+        mBitoBtnClickListener = listener;
     }
 
     @Override
-    public void setFinishButtonAttachedToScreen(boolean isVisible) {
-        mNodeVisibilityChangeListener.onNodeVisibilityChanged(getNode(BITO_BUTTON_INDEX), isVisible);
+    public void showBitoButton() {
+
+        //attach a click listener at the end of animation
+        YANButtonNode bitoBtn = getNode(BITO_BUTTON_INDEX);
+        bitoBtn.setSortingLayer(getNode(TAKE_BUTTON_INDEX).getSortingLayer() + 1);
+        bitoBtn.setOpacity(1f);
+        bitoBtn.setClickListener(mBitoBtnClickListener);
     }
 
     @Override
-    public void setTakeButtonAttachedToScreen(boolean isVisible) {
-        mNodeVisibilityChangeListener.onNodeVisibilityChanged(getNode(TAKE_BUTTON_INDEX), isVisible);
+    public void showTakeButton() {
+        YANButtonNode takeBtn = getNode(TAKE_BUTTON_INDEX);
+        takeBtn.setSortingLayer(getNode(BITO_BUTTON_INDEX).getSortingLayer() + 1);
+        takeBtn.setOpacity(1f);
+        takeBtn.setClickListener(mTakeButtonClickListener);
+    }
+
+    @Override
+    public void hideTakeButton() {
+        YANButtonNode takeBtn = getNode(TAKE_BUTTON_INDEX);
+        takeBtn.setSortingLayer(takeBtn.getSortingLayer() - 1);
+        takeBtn.setClickListener(null);
+        takeBtn.setOpacity(0);
+    }
+
+    @Override
+    public void hideBitoButton() {
+        YANButtonNode bitoBtn = getNode(BITO_BUTTON_INDEX);
+        bitoBtn.setSortingLayer(bitoBtn.getSortingLayer() - 1);
+        bitoBtn.setClickListener(null);
+        bitoBtn.setOpacity(0);
     }
 
     @Override
@@ -340,11 +371,6 @@ public class HudScreenFragment implements IHudScreenFragment {
 
         //start animating the cock down
         mScissoringCockVisibleStartY = 1;
-    }
-
-    @Override
-    public void setNodeNodeAttachmentChangeListener(INodeAttachmentChangeListener nodeVisibilityChangeListener) {
-        mNodeVisibilityChangeListener = nodeVisibilityChangeListener;
     }
 
     @Override

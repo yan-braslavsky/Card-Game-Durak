@@ -91,19 +91,6 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mSelectedThrowInCards = new ArrayList<>();
         mThrowInPossibleCards = new ArrayList<>();
         mHudNodesManager = new HudScreenFragment(mSharedTweenManager);
-        mHudNodesManager.setNodeNodeAttachmentChangeListener(new IHudScreenFragment.INodeAttachmentChangeListener() {
-            @Override
-            public void onNodeVisibilityChanged(YANTexturedNode node, boolean isVisible) {
-                if (isVisible) {
-
-                    //TODO : let the button nodes be managed completely by a hud fragment
-                    addNode(node);
-                } else {
-                    removeNode(node);
-                }
-            }
-        });
-
 
         //TODO : inject game server connector
         mGameServerConnector = gameServerConnector;
@@ -249,7 +236,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
                     }
 
                     mRequestedRetaliation = false;
-                    mHudNodesManager.setTakeButtonAttachedToScreen(false);
+                    mHudNodesManager.hideTakeButton();
 
                     //send all retaliated piles to server
                     List<List<Card>> list = new ArrayList<>();
@@ -288,7 +275,9 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mCardsTouchProcessor.setCardsTouchProcessorState(new CardsTouchProcessorDefaultState(mCardsTouchProcessor));
         mRequestThrowIn = false;
         mThrowInInputProcessorState = null;
-        mHudNodesManager.setFinishButtonAttachedToScreen(false);
+
+        mHudNodesManager.hideBitoButton();
+
         ResponseThrowInsMessage responseRetaliatePilesMessage = new ResponseThrowInsMessage(mSelectedThrowInCards);
         mGameServerConnector.sentMessageToServer(responseRetaliatePilesMessage);
     }
@@ -296,7 +285,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
     private void handleRequestThrowInsMessageMessage(RequestThrowInsMessage requestThrowInsMessage) {
         //we attaching finish button to screen
         //player can finish with his throw ins any time by pressing the button
-        mHudNodesManager.setFinishButtonAttachedToScreen(true);
+        mHudNodesManager.showBitoButton();
         mRequestThrowIn = true;
         mThrowInCardsAllowed = requestThrowInsMessage.getMessageData().getPossibleThrowInCards().size();
 
@@ -346,8 +335,8 @@ public class PrototypeGameScreen extends BaseGameScreen {
             addNode(hudNode);
         }
 
-        mHudNodesManager.setFinishButtonAttachedToScreen(false);
-        mHudNodesManager.setTakeButtonAttachedToScreen(false);
+        mHudNodesManager.hideBitoButton();
+        mHudNodesManager.hideTakeButton();
 
         //mask node
         addNode(mMaskCard);
@@ -437,7 +426,8 @@ public class PrototypeGameScreen extends BaseGameScreen {
                     ResponseRetaliatePilesMessage responseRetaliatePilesMessage = new ResponseRetaliatePilesMessage(new ArrayList<List<Card>>());
                     mGameServerConnector.sentMessageToServer(responseRetaliatePilesMessage);
 
-                    mHudNodesManager.setTakeButtonAttachedToScreen(false);
+                    //at the end we want the button to dissapear
+                    mHudNodesManager.hideTakeButton();
                 }
             }
         });
@@ -566,7 +556,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         }
 
         //in that case we want the hud to present us with option to take the card
-        mHudNodesManager.setTakeButtonAttachedToScreen(true);
+        mHudNodesManager.showTakeButton();
     }
 
     private void handleRequestCardForAttackMessage(RequestCardForAttackMessage requestCardForAttackMessage) {

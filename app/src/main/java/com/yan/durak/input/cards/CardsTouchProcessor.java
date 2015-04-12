@@ -73,6 +73,11 @@ public class CardsTouchProcessor {
             public boolean onTouchDrag(float normalizedX, float normalizedY) {
                 return mCardsTouchProcessorState.onTouchDrag(normalizedX, normalizedY);
             }
+
+            @Override
+            public int getSortingLayer() {
+                return 0;
+            }
         };
 
     }
