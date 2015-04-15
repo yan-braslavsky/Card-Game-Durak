@@ -36,7 +36,7 @@ public interface ICardsScreenFragment extends IScreenFragment {
     Map<Card, CardNode> getCardToNodesMap();
 
     public interface ICardMovementListener {
-        void onCardMovesToBottomPlayerPile();
+        void onCardMovesToOrFromBottomPlayerPile();
 
         void onCardMovesToTopRightPlayerPile();
 

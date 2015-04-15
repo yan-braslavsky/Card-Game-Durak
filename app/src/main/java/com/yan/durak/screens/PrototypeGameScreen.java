@@ -123,7 +123,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mCardsScreenFragment = new CardsScreenFragment(mCardsTweenAnimator);
         mCardsScreenFragment.setCardMovementListener(new ICardsScreenFragment.ICardMovementListener() {
             @Override
-            public void onCardMovesToBottomPlayerPile() {
+            public void onCardMovesToOrFromBottomPlayerPile() {
                 layoutBottomPlayerCards();
             }
 

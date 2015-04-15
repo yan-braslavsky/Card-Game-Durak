@@ -349,10 +349,18 @@ public class CardsScreenFragment implements ICardsScreenFragment {
             if (toPile == mBottomPlayerPileIndex) {
                 mBottomPlayerCardNodes.add(mCardNodes.get(movedCard));
             } else {
+
+                //FIXME : Here is a bug !
+                //When player retaliating with multiple cards  , than the first card that is confirmed to
+                //be moved from bottom player is being removed , but all the other piles that player retaliated with
+                //are still part of the player hand. And right after inside onCardMovesToOrFromBottomPlayerPile callback
+                //all cards in player hands are getting relayed out , that includes the cards that he retaliated with but are still
+                //didn't removed from his hand. So at the end we see one retaliation card stays at it's place , and the others jump back
+                //to player hand , then ump back to the field...
                 mBottomPlayerCardNodes.remove(mCardNodes.get(movedCard));
             }
 
-            mCardMovementListener.onCardMovesToBottomPlayerPile();
+            mCardMovementListener.onCardMovesToOrFromBottomPlayerPile();
         }
 
         //player 2
