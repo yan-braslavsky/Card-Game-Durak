@@ -24,6 +24,7 @@ import com.yan.durak.layouting.CardsLayouter;
 import com.yan.durak.layouting.impl.CardsLayouterSlotImpl;
 import com.yan.durak.layouting.impl.PlayerCardsLayouter;
 import com.yan.durak.layouting.threepoint.ThreePointFanLayouter;
+import com.yan.durak.msg_processor.MsgProcessor;
 import com.yan.durak.nodes.CardNode;
 import com.yan.durak.screen_fragments.cards.CardsScreenFragment;
 import com.yan.durak.screen_fragments.cards.ICardsScreenFragment;
@@ -72,6 +73,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
     private int mThrowInCardsAllowed;
     private ArrayList<Card> mSelectedThrowInCards;
     private CardsTouchProcessorMultipleChoiceState mThrowInInputProcessorState;
+    private MsgProcessor msgProcessor;
 
     /**
      * We don't want to show all the cards in a stock pile.
@@ -86,38 +88,19 @@ public class PrototypeGameScreen extends BaseGameScreen {
     public PrototypeGameScreen(YANGLRenderer renderer, IGameServerConnector gameServerConnector) {
         super(renderer);
 
+        msgProcessor = new MsgProcessor(this);
         mSharedTweenManager = new TweenManager();
         mCardsPendingRetaliationMap = new HashMap<>();
         mSelectedThrowInCards = new ArrayList<>();
         mThrowInPossibleCards = new ArrayList<>();
         mHudNodesManager = new HudScreenFragment(mSharedTweenManager);
 
-        //TODO : inject game server connector
+        //we received the connector that should be used
         mGameServerConnector = gameServerConnector;
-        mGameServerConnector.setListener(new IGameServerConnector.IGameServerCommunicatorListener() {
-            @Override
-            public void handleServerMessage(BaseProtocolMessage serverMessage) {
 
-                //TODO : this is not an efficient way to handle messages
-                if (serverMessage.getMessageName().equals(CardMovedProtocolMessage.MESSAGE_NAME)) {
-                    handleCardMoveMessage((CardMovedProtocolMessage) serverMessage);
-                } else if (serverMessage.getMessageName().equals(RequestCardForAttackMessage.MESSAGE_NAME)) {
-                    handleRequestCardForAttackMessage((RequestCardForAttackMessage) serverMessage);
-                } else if (serverMessage.getMessageName().equals(RequestRetaliatePilesMessage.MESSAGE_NAME)) {
-                    handleRequestRetaliatePilesMessage((RequestRetaliatePilesMessage) serverMessage);
-                } else if (serverMessage.getMessageName().equals(GameSetupProtocolMessage.MESSAGE_NAME)) {
-                    handleGameSetupMessage((GameSetupProtocolMessage) serverMessage);
-                } else if (serverMessage.getMessageName().equals(PlayerTakesActionMessage.MESSAGE_NAME)) {
-                    handlePlayerTakesActionMessage((PlayerTakesActionMessage) serverMessage);
-                } else if (serverMessage.getMessageName().equals(RetaliationInvalidProtocolMessage.MESSAGE_NAME)) {
-                    handleInvalidRetaliationMessage((RetaliationInvalidProtocolMessage) serverMessage);
-                } else if (serverMessage.getMessageName().equals(RequestThrowInsMessage.MESSAGE_NAME)) {
-                    handleRequestThrowInsMessageMessage((RequestThrowInsMessage) serverMessage);
-                } else if (serverMessage.getMessageName().equals(GameOverProtocolMessage.MESSAGE_NAME)) {
-                    handleGameOverMessage((GameOverProtocolMessage) serverMessage);
-                }
-            }
-        });
+        //msg processor is the listener for game server connector
+        mGameServerConnector.setListener(msgProcessor);
+
 
         mCardsTweenAnimator = new CardsTweenAnimator(mSharedTweenManager);
         mCardsScreenFragment = new CardsScreenFragment(mCardsTweenAnimator);
