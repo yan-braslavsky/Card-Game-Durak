@@ -10,6 +10,7 @@ import com.yan.durak.gamelogic.communication.protocol.messages.RequestCardForAtt
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestRetaliatePilesMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestThrowInsMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.RetaliationInvalidProtocolMessage;
+import com.yan.durak.msg_processor.states.MsgProcessorDefaultState;
 import com.yan.durak.msg_processor.states.MsgProcessorState;
 import com.yan.durak.screens.PrototypeGameScreen;
 
@@ -31,11 +32,12 @@ public class MsgProcessor implements IGameServerConnector.IGameServerCommunicato
     /**
      * Require a direct reference to prototype screen in order
      * to manipulate its nodes and fragments
-     *
-     * @param prototypeGameScreen
      */
     public MsgProcessor(PrototypeGameScreen prototypeGameScreen) {
         this.mPrototypeGameScreen = prototypeGameScreen;
+
+        //the very first state is a default state
+        setMsgProcessorState(new MsgProcessorDefaultState(this));
     }
 
     @Override

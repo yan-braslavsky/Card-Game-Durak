@@ -2,20 +2,10 @@ package com.yan.durak.screens;
 
 import com.yan.durak.communication.game_server.connector.IGameServerConnector;
 import com.yan.durak.gamelogic.cards.Card;
-import com.yan.durak.gamelogic.communication.protocol.BaseProtocolMessage;
 import com.yan.durak.gamelogic.communication.protocol.data.CardData;
-import com.yan.durak.gamelogic.communication.protocol.data.RetaliationSetData;
-import com.yan.durak.gamelogic.communication.protocol.messages.CardMovedProtocolMessage;
-import com.yan.durak.gamelogic.communication.protocol.messages.GameOverProtocolMessage;
-import com.yan.durak.gamelogic.communication.protocol.messages.GameSetupProtocolMessage;
-import com.yan.durak.gamelogic.communication.protocol.messages.PlayerTakesActionMessage;
-import com.yan.durak.gamelogic.communication.protocol.messages.RequestCardForAttackMessage;
-import com.yan.durak.gamelogic.communication.protocol.messages.RequestRetaliatePilesMessage;
-import com.yan.durak.gamelogic.communication.protocol.messages.RequestThrowInsMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.ResponseCardForAttackMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.ResponseRetaliatePilesMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.ResponseThrowInsMessage;
-import com.yan.durak.gamelogic.communication.protocol.messages.RetaliationInvalidProtocolMessage;
 import com.yan.durak.input.cards.CardsTouchProcessor;
 import com.yan.durak.input.cards.states.CardsTouchProcessorDefaultState;
 import com.yan.durak.input.cards.states.CardsTouchProcessorMultipleChoiceState;
@@ -63,7 +53,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
     private ThreePointFanLayouter mThreePointFanLayouterTopLeft;
     private CardsTweenAnimator mCardsTweenAnimator;
     private IGameServerConnector mGameServerConnector;
-    private IHudScreenFragment mHudNodesManager;
+    private IHudScreenFragment mHudNodesFragment;
     private ICardsScreenFragment mCardsScreenFragment;
     private boolean mCardForAttackRequested;
     private boolean mRequestedRetaliation;
@@ -93,7 +83,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mCardsPendingRetaliationMap = new HashMap<>();
         mSelectedThrowInCards = new ArrayList<>();
         mThrowInPossibleCards = new ArrayList<>();
-        mHudNodesManager = new HudScreenFragment(mSharedTweenManager);
+        mHudNodesFragment = new HudScreenFragment(mSharedTweenManager);
 
         //we received the connector that should be used
         mGameServerConnector = gameServerConnector;
@@ -104,6 +94,8 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
         mCardsTweenAnimator = new CardsTweenAnimator(mSharedTweenManager);
         mCardsScreenFragment = new CardsScreenFragment(mCardsTweenAnimator);
+
+        //TODO : listener should be removed . Instead on card move message should trigger the layouts
         mCardsScreenFragment.setCardMovementListener(new ICardsScreenFragment.ICardMovementListener() {
             @Override
             public void onCardMovesToOrFromBottomPlayerPile() {
@@ -142,8 +134,9 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mPlayerCardsLayouter = new PlayerCardsLayouter(mCardsScreenFragment.getTotalCardsAmount());
 
         //currently we are initializing with empty array , cards will be set every time player pile content changes
-        mCardsTouchProcessor = new CardsTouchProcessor(mCardsScreenFragment.getBottomPlayerCardNodes()/*mPlayerOneCardNodes*/, mCardsTweenAnimator);
+        mCardsTouchProcessor = new CardsTouchProcessor(mCardsScreenFragment.getBottomPlayerCardNodes(), mCardsTweenAnimator);
 
+        //TODO : this is very messy . This Listener should be extracted somewhere.
         //set listener to handle touches
         mCardsTouchProcessor.setCardsTouchProcessorListener(new CardsTouchProcessor.CardsTouchProcessorListener() {
             @Override
@@ -219,7 +212,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
                     }
 
                     mRequestedRetaliation = false;
-                    mHudNodesManager.hideTakeButton();
+                    mHudNodesFragment.hideTakeButton();
 
                     //send all retaliated piles to server
                     List<List<Card>> list = new ArrayList<>();
@@ -244,50 +237,15 @@ public class PrototypeGameScreen extends BaseGameScreen {
         });
     }
 
-    private void handleGameOverMessage(GameOverProtocolMessage gameOverMessage) {
-
-        boolean iLostTheGame = (mMyGameIndex == gameOverMessage.getMessageData().getLoosingPlayer().getPlayerIndexInGame());
-        if (iLostTheGame) {
-            mHudNodesManager.showYouLooseMessage();
-        } else {
-            mHudNodesManager.showYouWonMessage();
-        }
-    }
-
     private void sendThrowInResponse() {
         mCardsTouchProcessor.setCardsTouchProcessorState(new CardsTouchProcessorDefaultState(mCardsTouchProcessor));
         mRequestThrowIn = false;
         mThrowInInputProcessorState = null;
 
-        mHudNodesManager.hideBitoButton();
+        mHudNodesFragment.hideBitoButton();
 
         ResponseThrowInsMessage responseRetaliatePilesMessage = new ResponseThrowInsMessage(mSelectedThrowInCards);
         mGameServerConnector.sentMessageToServer(responseRetaliatePilesMessage);
-    }
-
-    private void handleRequestThrowInsMessageMessage(RequestThrowInsMessage requestThrowInsMessage) {
-        //we attaching finish button to screen
-        //player can finish with his throw ins any time by pressing the button
-        mHudNodesManager.showBitoButton();
-        mRequestThrowIn = true;
-        mThrowInCardsAllowed = requestThrowInsMessage.getMessageData().getPossibleThrowInCards().size();
-
-        //TODO : Make more efficient !
-        ArrayList<CardNode> availableCards = new ArrayList<>();
-        for (CardData cardData : requestThrowInsMessage.getMessageData().getPossibleThrowInCards()) {
-            for (CardNode playerCardNode : mCardsScreenFragment.getBottomPlayerCardNodes()) {
-                if (cardData.getRank().equals(playerCardNode.getCard().getRank()) && cardData.getSuit().equals(playerCardNode.getCard().getSuit())) {
-                    availableCards.add(playerCardNode);
-                }
-            }
-        }
-
-        mThrowInInputProcessorState = new CardsTouchProcessorMultipleChoiceState(mCardsTouchProcessor, availableCards);
-        mCardsTouchProcessor.setCardsTouchProcessorState(mThrowInInputProcessorState);
-
-        mSelectedThrowInCards.clear();
-        mThrowInPossibleCards.clear();
-        mThrowInPossibleCards.addAll(requestThrowInsMessage.getMessageData().getPossibleThrowInCards());
     }
 
 
@@ -314,12 +272,12 @@ public class PrototypeGameScreen extends BaseGameScreen {
             addNode(cardNode);
         }
 
-        for (YANTexturedNode hudNode : mHudNodesManager.getFragmentNodes()) {
+        for (YANTexturedNode hudNode : mHudNodesFragment.getFragmentNodes()) {
             addNode(hudNode);
         }
 
-        mHudNodesManager.hideBitoButton();
-        mHudNodesManager.hideTakeButton();
+        mHudNodesFragment.hideBitoButton();
+        mHudNodesFragment.hideTakeButton();
 
         //mask node
         addNode(mMaskCard);
@@ -330,7 +288,9 @@ public class PrototypeGameScreen extends BaseGameScreen {
     protected void onLayoutNodes() {
         super.onLayoutNodes();
 
-        mHudNodesManager.layoutNodes(getSceneSize());
+        mHudNodesFragment.layoutNodes(getSceneSize());
+
+        //TODO : avatars should also be removed to the hud fragment
 
         //layout avatars
         float offsetX = getSceneSize().getX() * 0.01f;
@@ -373,7 +333,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mMaskCard.setSize(mCardsScreenFragment.getCardNodeWidth(), mCardsScreenFragment.getCardNodeHeight());
 
         //set size of a card for touch processor
-        mCardsTouchProcessor.setOriginalCardSize(/*mCardWidth*/mCardsScreenFragment.getCardNodeWidth(), mCardsScreenFragment.getCardNodeHeight());
+        mCardsTouchProcessor.setOriginalCardSize(mCardsScreenFragment.getCardNodeWidth(), mCardsScreenFragment.getCardNodeHeight());
 
         //init the player cards layouter
         mPlayerCardsLayouter.init(mCardsScreenFragment.getCardNodeWidth()/*mCardWidth*/, mCardsScreenFragment.getCardNodeHeight(),
@@ -384,19 +344,19 @@ public class PrototypeGameScreen extends BaseGameScreen {
                 //base y position
                 getSceneSize().getY() - mFence.getSize().getY() / 2);
 
-        mHudNodesManager.setNodesSizes(getSceneSize());
+        mHudNodesFragment.setNodesSizes(getSceneSize());
     }
 
     @Override
     protected void onCreateNodes() {
         super.onCreateNodes();
-        mHudNodesManager.createNodes(mUiAtlas);
+        mHudNodesFragment.createNodes(mUiAtlas);
         mCardsScreenFragment.createNodes(mCardsAtlas);
 
         //create a mask card texture
         mMaskCard = new YANTexturedNode(mCardsAtlas.getTextureRegion("cards_back.png"));
 
-        mHudNodesManager.setTakeButtonClickListener(new YANButtonNode.YanButtonNodeClickListener() {
+        mHudNodesFragment.setTakeButtonClickListener(new YANButtonNode.YanButtonNodeClickListener() {
             @Override
             public void onButtonClick() {
 
@@ -410,12 +370,12 @@ public class PrototypeGameScreen extends BaseGameScreen {
                     mGameServerConnector.sentMessageToServer(responseRetaliatePilesMessage);
 
                     //at the end we want the button to dissapear
-                    mHudNodesManager.hideTakeButton();
+                    mHudNodesFragment.hideTakeButton();
                 }
             }
         });
 
-        mHudNodesManager.setBitoButtonClickListener(new YANButtonNode.YanButtonNodeClickListener() {
+        mHudNodesFragment.setBitoButtonClickListener(new YANButtonNode.YanButtonNodeClickListener() {
             @Override
             public void onButtonClick() {
                 if (mRequestThrowIn) {
@@ -430,86 +390,11 @@ public class PrototypeGameScreen extends BaseGameScreen {
         super.onUpdate(deltaTimeSeconds);
         mGameServerConnector.update(deltaTimeSeconds);
         mSharedTweenManager.update(deltaTimeSeconds * 1);
-        mHudNodesManager.update(deltaTimeSeconds);
+        mHudNodesFragment.update(deltaTimeSeconds);
         mCardsScreenFragment.update(deltaTimeSeconds);
     }
 
-
-    private void handleInvalidRetaliationMessage(RetaliationInvalidProtocolMessage retaliationInvalidProtocolMessage) {
-
-        //TODO : cache the value for efficiency
-        ArrayList<Card> cardsToRemoveTagFrom = new ArrayList<>();
-
-        //remove from map all invalid retaliations
-        for (RetaliationSetData retaliationSetData : retaliationInvalidProtocolMessage.getMessageData().getInvalidRetaliationsList()) {
-
-            Card coveredCard = new Card(retaliationSetData.getCoveredCardData().getRank(), retaliationSetData.getCoveredCardData().getSuit());
-            Card coveringCard = new Card(retaliationSetData.getCoveringCardData().getRank(), retaliationSetData.getCoveringCardData().getSuit());
-
-            mCardsPendingRetaliationMap.remove(coveredCard);
-
-            cardsToRemoveTagFrom.add(coveredCard);
-            cardsToRemoveTagFrom.add(coveringCard);
-        }
-
-        for (Card card : cardsToRemoveTagFrom) {
-            CardNode cardNode = mCardsScreenFragment.getCardToNodesMap().get(card);
-            cardNode.removeTag(CardNode.TAG_TEMPORALLY_COVERED);
-        }
-
-        layoutBottomPlayerCards();
-    }
-
-    private void handlePlayerTakesActionMessage(PlayerTakesActionMessage playerTakesActionMessage) {
-        int actionPlayerIndex = playerTakesActionMessage.getMessageData().getPlayerIndex();
-
-        //since we don't have reference to players indexes in the game
-        //we translating the player index to pile index
-        int actionPlayerPileIndex = (actionPlayerIndex + 2) % 5;
-        @IHudScreenFragment.HudNode int cockPosition = IHudScreenFragment.COCK_BOTTOM_RIGHT_INDEX;
-        if (actionPlayerPileIndex == mCardsScreenFragment.getBottomPlayerPileIndex()) {
-            cockPosition = IHudScreenFragment.COCK_BOTTOM_RIGHT_INDEX;
-        } else if (actionPlayerPileIndex == mCardsScreenFragment.getTopRightPlayerPileIndex()) {
-            cockPosition = IHudScreenFragment.COCK_TOP_RIGHT_INDEX;
-        } else if (actionPlayerPileIndex == mCardsScreenFragment.getTopLeftPlayerPileIndex()) {
-            cockPosition = IHudScreenFragment.COCK_TOP_LEFT_INDEX;
-        }
-        mHudNodesManager.resetCockAnimation(cockPosition);
-    }
-
-    private void handleGameSetupMessage(GameSetupProtocolMessage gameSetupProtocolMessage) {
-
-        mMyGameIndex = gameSetupProtocolMessage.getMessageData().getMyPlayerData().getPlayerIndexInGame();
-
-        //depending on my player index we need to identify indexes of all players
-        int bottomPlayerPileIndex = gameSetupProtocolMessage.getMessageData().getMyPlayerData().getPlayerPileIndex();
-        int topPlayerToTheRightPileIndex = (bottomPlayerPileIndex + 1);
-        int topLeftPlayerToTheLeftPileIndex = (bottomPlayerPileIndex + 2);
-
-        //correct other players positions
-        if ((topPlayerToTheRightPileIndex / 5) > 0)
-            topPlayerToTheRightPileIndex = (topPlayerToTheRightPileIndex % 5) + 2;
-
-        if ((topLeftPlayerToTheLeftPileIndex / 5) > 0)
-            topLeftPlayerToTheLeftPileIndex = (topLeftPlayerToTheLeftPileIndex % 5) + 2;
-
-        //TODO :load all pile indexes from server ?
-        mCardsScreenFragment.setPilesIndexes(0, 1, bottomPlayerPileIndex, topPlayerToTheRightPileIndex, topLeftPlayerToTheLeftPileIndex);
-
-        //extract trump card
-        CardData trumpCardData = gameSetupProtocolMessage.getMessageData().getTrumpCard();
-        mCardsScreenFragment.setTrumpCard(new Card(trumpCardData.getRank(), trumpCardData.getSuit()));
-        mCardsScreenFragment.layoutNodes(getSceneSize());
-
-        //we need to position a card that behaves as a mask for the stock pile
-        positionMaskCard(trumpCardData);
-
-        //set the suit of the trump on the hud to be visible even when cards are gone
-        mHudNodesManager.setTrumpSuit(trumpCardData.getSuit());
-
-    }
-
-    private void positionMaskCard(CardData trumpCardNode) {
+    public void positionMaskCard(CardData trumpCardNode) {
 
         Card trumpCard = new Card(trumpCardNode.getRank(), trumpCardNode.getSuit());
 
@@ -525,35 +410,6 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mMaskCard.setSize(randomCardNodeInStockPile.getSize().getX(), randomCardNodeInStockPile.getSize().getY());
         mMaskCard.setRotationZ(randomCardNodeInStockPile.getRotationZ());
 
-    }
-
-    private void handleRequestRetaliatePilesMessage(RequestRetaliatePilesMessage requestRetaliatePilesMessage) {
-        mRequestedRetaliation = true;
-
-        mCardsPendingRetaliationMap.clear();
-
-        for (List<CardData> cardDataList : requestRetaliatePilesMessage.getMessageData().getPilesBeforeRetaliation()) {
-            for (CardData cardData : cardDataList) {
-                mCardsPendingRetaliationMap.put(new Card(cardData.getRank(), cardData.getSuit()), null);
-            }
-        }
-
-        //in that case we want the hud to present us with option to take the card
-        mHudNodesManager.showTakeButton();
-    }
-
-    private void handleRequestCardForAttackMessage(RequestCardForAttackMessage requestCardForAttackMessage) {
-        mCardForAttackRequested = true;
-    }
-
-    private void handleCardMoveMessage(CardMovedProtocolMessage cardMovedMessage) {
-        //extract data
-        Card movedCard = new Card(cardMovedMessage.getMessageData().getMovedCard().getRank(), cardMovedMessage.getMessageData().getMovedCard().getSuit());
-        int fromPile = cardMovedMessage.getMessageData().getFromPileIndex();
-        int toPile = cardMovedMessage.getMessageData().getToPileIndex();
-
-        //execute the move
-        mCardsScreenFragment.moveCardFromPileToPile(movedCard, fromPile, toPile);
     }
 
     private void layoutTopLeftPlayerCards() {
@@ -597,7 +453,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         }
     }
 
-    private void layoutBottomPlayerCards() {
+    public void layoutBottomPlayerCards() {
         //update layouter to recalculate positions
         mPlayerCardsLayouter.setActiveSlotsAmount(mCardsScreenFragment.getBottomPlayerCardNodes().size());
 
@@ -612,5 +468,78 @@ public class PrototypeGameScreen extends BaseGameScreen {
             card.removeTag(CardNode.TAG_SHOULD_NOT_RESIZE);
             mCardsTweenAnimator.animateSize(card, mCardsScreenFragment.getCardNodeWidth(), mCardsScreenFragment.getCardNodeHeight(), 0.5f);
         }
+    }
+
+
+    public ICardsScreenFragment getCardsScreenFragment() {
+        return mCardsScreenFragment;
+    }
+
+    public boolean isRequestThrowIn() {
+        return mRequestThrowIn;
+    }
+
+    public void setRequestThrowIn(boolean mRequestThrowIn) {
+        this.mRequestThrowIn = mRequestThrowIn;
+    }
+
+    public boolean isRequestedRetaliation() {
+        return mRequestedRetaliation;
+    }
+
+    public void setRequestedRetaliation(boolean mRequestedRetaliation) {
+        this.mRequestedRetaliation = mRequestedRetaliation;
+    }
+
+    public boolean isCardForAttackRequested() {
+        return mCardForAttackRequested;
+    }
+
+    public void setCardForAttackRequested(boolean mCardForAttackRequested) {
+        this.mCardForAttackRequested = mCardForAttackRequested;
+    }
+
+    public HashMap<Card, Card> getCardsPendingRetaliationMap() {
+        return mCardsPendingRetaliationMap;
+    }
+
+    public IHudScreenFragment getHudNodesFragment() {
+        return mHudNodesFragment;
+    }
+
+    public int getMyGameIndex() {
+        return mMyGameIndex;
+    }
+
+    public void setMyGameIndex(int mMyGameIndex) {
+        this.mMyGameIndex = mMyGameIndex;
+    }
+
+    public int getThrowInCardsAllowed() {
+        return mThrowInCardsAllowed;
+    }
+
+    public void setThrowInCardsAllowed(int mThrowInCardsAllowed) {
+        this.mThrowInCardsAllowed = mThrowInCardsAllowed;
+    }
+
+    public CardsTouchProcessorMultipleChoiceState getThrowInInputProcessorState() {
+        return mThrowInInputProcessorState;
+    }
+
+    public void setThrowInInputProcessorState(CardsTouchProcessorMultipleChoiceState mThrowInInputProcessorState) {
+        this.mThrowInInputProcessorState = mThrowInInputProcessorState;
+    }
+
+    public CardsTouchProcessor getCardsTouchProcessor() {
+        return mCardsTouchProcessor;
+    }
+
+    public ArrayList<CardData> getThrowInPossibleCards() {
+        return mThrowInPossibleCards;
+    }
+
+    public ArrayList<Card> getSelectedThrowInCards() {
+        return mSelectedThrowInCards;
     }
 }

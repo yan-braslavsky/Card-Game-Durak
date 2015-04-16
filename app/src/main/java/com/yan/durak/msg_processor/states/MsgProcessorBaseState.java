@@ -15,4 +15,9 @@ public abstract class MsgProcessorBaseState implements MsgProcessorState {
     protected MsgProcessorBaseState(MsgProcessor mMsgProcessor) {
         this.mMsgProcessor = mMsgProcessor;
     }
+
+    @Override
+    public void applyState() {
+
+    }
 }
