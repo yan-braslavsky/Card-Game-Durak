@@ -17,9 +17,7 @@ import com.yan.durak.layouting.threepoint.ThreePointFanLayouter;
 import com.yan.durak.msg_processor.MsgProcessor;
 import com.yan.durak.nodes.CardNode;
 import com.yan.durak.screen_fragments.cards.CardsScreenFragment;
-import com.yan.durak.screen_fragments.cards.ICardsScreenFragment;
 import com.yan.durak.screen_fragments.hud.HudScreenFragment;
-import com.yan.durak.screen_fragments.hud.IHudScreenFragment;
 import com.yan.durak.tweening.CardsTweenAnimator;
 
 import java.util.ArrayList;
@@ -29,7 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.nodes.YANButtonNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.renderer.YANGLRenderer;
@@ -42,7 +39,7 @@ import glengine.yan.glengine.util.loggers.YANLogger;
 public class PrototypeGameScreen extends BaseGameScreen {
 
     public static final float CARD_SCALE_AMOUNT_OPPONENT = 0.6f;
-    private final TweenManager mSharedTweenManager;
+
 
     //Players hand related
     private CardsLayouter mPlayerCardsLayouter;
@@ -53,8 +50,8 @@ public class PrototypeGameScreen extends BaseGameScreen {
     private ThreePointFanLayouter mThreePointFanLayouterTopLeft;
     private CardsTweenAnimator mCardsTweenAnimator;
     private IGameServerConnector mGameServerConnector;
-    private IHudScreenFragment mHudNodesFragment;
-    private ICardsScreenFragment mCardsScreenFragment;
+    private HudScreenFragment mHudNodesFragment;
+    private CardsScreenFragment mCardsScreenFragment;
     private boolean mCardForAttackRequested;
     private boolean mRequestedRetaliation;
     private HashMap<Card, Card> mCardsPendingRetaliationMap;
@@ -65,6 +62,8 @@ public class PrototypeGameScreen extends BaseGameScreen {
     private CardsTouchProcessorMultipleChoiceState mThrowInInputProcessorState;
     private MsgProcessor msgProcessor;
 
+
+    //TODO : move to the HUD Screen
     /**
      * We don't want to show all the cards in a stock pile.
      * Instead we are showing only one, which is this node.
@@ -72,14 +71,19 @@ public class PrototypeGameScreen extends BaseGameScreen {
      */
     private YANTexturedNode mMaskCard;
 
+
+    //TODO : move to the game session object
     //cached index of current player in the game
     private int mMyGameIndex;
 
     public PrototypeGameScreen(YANGLRenderer renderer, IGameServerConnector gameServerConnector) {
         super(renderer);
 
+        //message processor will receive messages and react on them
         msgProcessor = new MsgProcessor(this);
-        mSharedTweenManager = new TweenManager();
+
+
+        //TODO : move to the state
         mCardsPendingRetaliationMap = new HashMap<>();
         mSelectedThrowInCards = new ArrayList<>();
         mThrowInPossibleCards = new ArrayList<>();
@@ -96,7 +100,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mCardsScreenFragment = new CardsScreenFragment(mCardsTweenAnimator);
 
         //TODO : listener should be removed . Instead on card move message should trigger the layouts
-        mCardsScreenFragment.setCardMovementListener(new ICardsScreenFragment.ICardMovementListener() {
+        mCardsScreenFragment.setCardMovementListener(new CardsScreenFragment.ICardMovementListener() {
             @Override
             public void onCardMovesToOrFromBottomPlayerPile() {
                 layoutBottomPlayerCards();
@@ -389,7 +393,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
     public void onUpdate(float deltaTimeSeconds) {
         super.onUpdate(deltaTimeSeconds);
         mGameServerConnector.update(deltaTimeSeconds);
-        mSharedTweenManager.update(deltaTimeSeconds * 1);
+
         mHudNodesFragment.update(deltaTimeSeconds);
         mCardsScreenFragment.update(deltaTimeSeconds);
     }
@@ -471,7 +475,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
     }
 
 
-    public ICardsScreenFragment getCardsScreenFragment() {
+    public CardsScreenFragment getCardsScreenFragment() {
         return mCardsScreenFragment;
     }
 
@@ -503,7 +507,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         return mCardsPendingRetaliationMap;
     }
 
-    public IHudScreenFragment getHudNodesFragment() {
+    public HudScreenFragment getHudNodesFragment() {
         return mHudNodesFragment;
     }
 

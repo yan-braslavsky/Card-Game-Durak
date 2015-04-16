@@ -1,5 +1,6 @@
 package com.yan.durak.screens;
 
+import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.assets.YANAssetManager;
 import glengine.yan.glengine.assets.atlas.YANTextureAtlas;
 import glengine.yan.glengine.nodes.YANTexturedNode;
@@ -15,13 +16,18 @@ public abstract class BaseGameScreen extends YANNodeScreen {
     private static final int BG_HEX_COLOR = 0x9F9E36;
     protected static final int HIGHEST_SORTING_LAYER = 50;
 
+    //TODO : Move to Hud Fragment
     protected YANTextureAtlas mUiAtlas;
     protected YANTexturedNode mFence;
     private YANTexturedNode mGlade;
-    protected YANTextureAtlas mCardsAtlas;
+    protected final YANTextureAtlas mCardsAtlas;
+    protected final TweenManager mSharedTweenManager;
 
     public BaseGameScreen(YANGLRenderer renderer) {
         super(renderer);
+
+        //tween manager is used for various tween animations
+        mSharedTweenManager = new TweenManager();
         mUiAtlas = YANAssetManager.getInstance().getLoadedAtlas("ui_atlas");
         mCardsAtlas = YANAssetManager.getInstance().getLoadedAtlas("cards_atlas");
     }
@@ -89,5 +95,13 @@ public abstract class BaseGameScreen extends YANNodeScreen {
         //for efficiency reasons we are deleting loaded texture into openGL
         YANAssetManager.getInstance().unloadTexture(mUiAtlas.getAtlasImageFilePath());
         YANAssetManager.getInstance().unloadTexture(mCardsAtlas.getAtlasImageFilePath());
+    }
+
+    @Override
+    public void onUpdate(float deltaTimeSeconds) {
+        super.onUpdate(deltaTimeSeconds);
+
+        //update shared tween manager
+        mSharedTweenManager.update(deltaTimeSeconds * 1);
     }
 }

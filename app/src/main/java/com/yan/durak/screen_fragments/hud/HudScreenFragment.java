@@ -1,6 +1,12 @@
 package com.yan.durak.screen_fragments.hud;
 
 
+import android.support.annotation.IntDef;
+
+import com.yan.durak.screen_fragments.IScreenFragment;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +27,42 @@ import glengine.yan.glengine.util.loggers.YANLogger;
 /**
  * Created by Yan-Home on 1/25/2015.
  */
-public class HudScreenFragment implements IHudScreenFragment {
+public class HudScreenFragment implements IScreenFragment {
+
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({
+            AVATAR_BOTTOM_RIGHT_INDEX,
+            AVATAR_TOP_RIGHT_INDEX,
+            AVATAR_TOP_LEFT_INDEX,
+            COCK_BOTTOM_RIGHT_INDEX,
+            COCK_TOP_RIGHT_INDEX,
+            COCK_TOP_LEFT_INDEX,
+            COCK_SCISSOR_INDEX,
+            BITO_BUTTON_INDEX,
+            TAKE_BUTTON_INDEX,
+            TRUMP_IMAGE_INDEX,
+            YOU_WIN_IMAGE_INDEX,
+            YOU_LOOSE_IMAGE_INDEX,
+            V_BUTTON_INDEX
+    })
+    public @interface HudNode {
+    }
+
+    public static final int AVATAR_BOTTOM_RIGHT_INDEX = 0;
+    public static final int AVATAR_TOP_RIGHT_INDEX = 1;
+    public static final int AVATAR_TOP_LEFT_INDEX = 2;
+    public static final int COCK_BOTTOM_RIGHT_INDEX = 3;
+    public static final int COCK_TOP_RIGHT_INDEX = 4;
+    public static final int COCK_TOP_LEFT_INDEX = 5;
+    public static final int COCK_SCISSOR_INDEX = 6;
+    public static final int BITO_BUTTON_INDEX = 7;
+    public static final int TAKE_BUTTON_INDEX = 8;
+    public static final int TRUMP_IMAGE_INDEX = 9;
+    public static final int YOU_WIN_IMAGE_INDEX = 10;
+    public static final int YOU_LOOSE_IMAGE_INDEX = 11;
+    public static final int V_BUTTON_INDEX = 12;
+
 
     /**
      * By default hud will be placed on hud sorting layer and above
@@ -313,17 +354,14 @@ public class HudScreenFragment implements IHudScreenFragment {
             mScissoringCockVisibleStartY = 0.0f;
     }
 
-    @Override
     public void setTakeButtonClickListener(YANButtonNode.YanButtonNodeClickListener listener) {
         mTakeButtonClickListener = listener;
     }
 
-    @Override
     public void setBitoButtonClickListener(YANButtonNode.YanButtonNodeClickListener listener) {
         mBitoBtnClickListener = listener;
     }
 
-    @Override
     public void showBitoButton() {
 
         //attach a click listener at the end of animation
@@ -333,7 +371,6 @@ public class HudScreenFragment implements IHudScreenFragment {
         bitoBtn.setClickListener(mBitoBtnClickListener);
     }
 
-    @Override
     public void showTakeButton() {
         YANButtonNode takeBtn = getNode(TAKE_BUTTON_INDEX);
         takeBtn.setSortingLayer(getNode(BITO_BUTTON_INDEX).getSortingLayer() + 1);
@@ -341,7 +378,6 @@ public class HudScreenFragment implements IHudScreenFragment {
         takeBtn.setClickListener(mTakeButtonClickListener);
     }
 
-    @Override
     public void hideTakeButton() {
         YANButtonNode takeBtn = getNode(TAKE_BUTTON_INDEX);
         takeBtn.setSortingLayer(takeBtn.getSortingLayer() - 1);
@@ -349,7 +385,6 @@ public class HudScreenFragment implements IHudScreenFragment {
         takeBtn.setOpacity(0);
     }
 
-    @Override
     public void hideBitoButton() {
         YANButtonNode bitoBtn = getNode(BITO_BUTTON_INDEX);
         bitoBtn.setSortingLayer(bitoBtn.getSortingLayer() - 1);
@@ -357,7 +392,6 @@ public class HudScreenFragment implements IHudScreenFragment {
         bitoBtn.setOpacity(0);
     }
 
-    @Override
     public void resetCockAnimation(@HudNode int index) {
 
         float rotationAngle = 0;
@@ -373,19 +407,16 @@ public class HudScreenFragment implements IHudScreenFragment {
         mScissoringCockVisibleStartY = 1;
     }
 
-    @Override
     public void setTrumpSuit(String suit) {
         //change texture region
         YANTexturedNode trumpImage = getNode(TRUMP_IMAGE_INDEX);
         trumpImage.setTextureRegion(mHudAtlas.getTextureRegion("trump_marker_" + suit.toLowerCase() + ".png"));
     }
 
-    @Override
     public void showYouWonMessage() {
         makeNodeAppearWithAnimation(getNode(YOU_WIN_IMAGE_INDEX), showVButtonTweenCallback);
     }
 
-    @Override
     public void showYouLooseMessage() {
         makeNodeAppearWithAnimation(getNode(YOU_LOOSE_IMAGE_INDEX), showVButtonTweenCallback);
     }

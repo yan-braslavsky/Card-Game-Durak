@@ -3,6 +3,7 @@ package com.yan.durak.screen_fragments.cards;
 import com.yan.durak.entities.cards.CardsHelper;
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.nodes.CardNode;
+import com.yan.durak.screen_fragments.IScreenFragment;
 import com.yan.durak.tweening.CardsTweenAnimator;
 
 import java.util.ArrayList;
@@ -19,7 +20,19 @@ import glengine.yan.glengine.util.loggers.YANLogger;
 /**
  * Created by Yan-Home on 1/29/2015.
  */
-public class CardsScreenFragment implements ICardsScreenFragment {
+public class CardsScreenFragment implements IScreenFragment {
+
+    public interface ICardMovementListener {
+        void onCardMovesToOrFromBottomPlayerPile();
+
+        void onCardMovesToTopRightPlayerPile();
+
+        void onCardMovesToTopLeftPlayerPile();
+
+        void onCardMovesToFieldPile();
+
+        void onCardMovesFromStockPile();
+    }
 
     private static final int CARDS_COUNT = 36;
 
@@ -215,22 +228,18 @@ public class CardsScreenFragment implements ICardsScreenFragment {
         cardTexturedNode.setSize(mCardWidth * sizeScale, mCardHeight * sizeScale);
     }
 
-    @Override
     public int getBottomPlayerPileIndex() {
         return mBottomPlayerPileIndex;
     }
 
-    @Override
     public int getTopRightPlayerPileIndex() {
         return mTopRightPlayerPileIndex;
     }
 
-    @Override
     public int getTopLeftPlayerPileIndex() {
         return mTopLeftPlayerPileIndex;
     }
 
-    @Override
     public CardNode findUnderlyingCard(CardNode cardNode) {
 
         //iterate all field piles
@@ -258,7 +267,6 @@ public class CardsScreenFragment implements ICardsScreenFragment {
         return null;
     }
 
-    @Override
     public void removeTagsFromCards() {
         for (CardNode cardNode : mCardNodes.values()) {
             cardNode.removeAllTags();
@@ -269,12 +277,10 @@ public class CardsScreenFragment implements ICardsScreenFragment {
         return cardNode.getBoundingRectangle().contains(card.getBoundingRectangle());
     }
 
-    @Override
     public void setCardMovementListener(ICardMovementListener listener) {
         mCardMovementListener = listener;
     }
 
-    @Override
     public void moveCardFromPileToPile(Card movedCard, int fromPile, int toPile) {
 
         //remove card entity from its current pile
@@ -405,37 +411,30 @@ public class CardsScreenFragment implements ICardsScreenFragment {
         return mCardNodes.values();
     }
 
-    @Override
     public float getCardNodeWidth() {
         return mCardWidth;
     }
 
-    @Override
     public float getCardNodeHeight() {
         return mCardHeight;
     }
 
-    @Override
     public int getTotalCardsAmount() {
         return CARDS_COUNT;
     }
 
-    @Override
     public ArrayList<CardNode> getBottomPlayerCardNodes() {
         return mBottomPlayerCardNodes;
     }
 
-    @Override
     public ArrayList<CardNode> getTopRightPlayerCardNodes() {
         return mTopRightPlayerCardNodes;
     }
 
-    @Override
     public ArrayList<CardNode> getTopLeftPlayerCardNodes() {
         return mTopLeftPlayerCardNodes;
     }
 
-    @Override
     public void setPilesIndexes(int stockPileIndex, int discardPileIndex, int bottomPlayerPileIndex, int topPlayerToTheRightPileIndex, int topLeftPlayerToTheLeftPileIndex) {
         this.mStockPileIndex = stockPileIndex;
         this.mDiscardPileIndex = discardPileIndex;
@@ -458,7 +457,6 @@ public class CardsScreenFragment implements ICardsScreenFragment {
         mPileIndexToCardListMap.put(topLeftPlayerToTheLeftPileIndex, new ArrayList<Card>(CARDS_COUNT));
     }
 
-    @Override
     public void setTrumpCard(Card card) {
         mTrumpCard = card;
 
@@ -477,12 +475,10 @@ public class CardsScreenFragment implements ICardsScreenFragment {
 
     }
 
-    @Override
     public Collection<Card> getCardsInPileWithIndex(int pileIndex) {
         return mPileIndexToCardListMap.get(pileIndex);
     }
 
-    @Override
     public Map<Card, CardNode> getCardToNodesMap() {
         return mCardNodes;
     }
