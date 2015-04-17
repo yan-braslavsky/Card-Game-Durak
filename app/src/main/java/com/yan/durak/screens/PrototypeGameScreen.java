@@ -88,7 +88,6 @@ public class PrototypeGameScreen extends BaseGameScreen {
         //msg processor is the listener for game server connector
         mGameServerConnector.setListener(msgProcessor);
 
-
         mCardsTweenAnimator = new CardsTweenAnimator(mSharedTweenManager);
         mCardsScreenFragment = new CardsScreenFragment(mCardsTweenAnimator);
 
