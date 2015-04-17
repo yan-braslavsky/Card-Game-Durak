@@ -127,7 +127,7 @@ public class HudScreenFragment implements IScreenFragment {
         putToNodeMap(GLADE_INDEX, createGladeImage(hudAtlas));
 
         //add image of fence
-        putToNodeMap(GLADE_INDEX, createFenceImage(hudAtlas));
+        putToNodeMap(FENCE_INDEX, createFenceImage(hudAtlas));
 
         //add image of the trump
         putToNodeMap(TRUMP_IMAGE_INDEX, createTrumpImage(hudAtlas));

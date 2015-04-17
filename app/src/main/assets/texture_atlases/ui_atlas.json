@@ -2,11 +2,19 @@
 
 {
 	"filename": "bito.png",
-	"frame": {"x":684,"y":1149,"w":171,"h":141},
+	"frame": {"x":684,"y":1388,"w":171,"h":141},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":171,"h":141},
 	"sourceSize": {"w":171,"h":141}
+},
+{
+	"filename": "cards_back.png",
+	"frame": {"x":684,"y":863,"w":183,"h":237},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":1,"w":183,"h":237},
+	"sourceSize": {"w":185,"h":239}
 },
 {
 	"filename": "fence.png",
@@ -34,7 +42,7 @@
 },
 {
 	"filename": "stump.png",
-	"frame": {"x":684,"y":1006,"w":171,"h":141},
+	"frame": {"x":684,"y":1245,"w":171,"h":141},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":171,"h":141},
@@ -42,7 +50,7 @@
 },
 {
 	"filename": "take.png",
-	"frame": {"x":684,"y":863,"w":171,"h":141},
+	"frame": {"x":684,"y":1102,"w":171,"h":141},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":171,"h":141},
@@ -82,7 +90,7 @@
 },
 {
 	"filename": "v_btn.png",
-	"frame": {"x":684,"y":1292,"w":136,"h":112},
+	"frame": {"x":684,"y":1531,"w":136,"h":112},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":136,"h":112},
@@ -90,7 +98,7 @@
 },
 {
 	"filename": "v_btn_clicked.png",
-	"frame": {"x":684,"y":1406,"w":125,"h":103},
+	"frame": {"x":684,"y":1645,"w":125,"h":103},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":125,"h":103},
@@ -125,8 +133,8 @@
 	"version": "1.0",
 	"image": "ui_atlas.png",
 	"format": "RGBA8888",
-	"size": {"w":857,"h":2019},
+	"size": {"w":869,"h":2019},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:ed00865693a7265d7f8d70d7ce6efb78$"
+	"smartupdate": "$TexturePacker:SmartUpdate:3adcc324e553e49d02f8d12c4e85030f$"
 }
 }
