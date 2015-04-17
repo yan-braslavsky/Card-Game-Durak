@@ -44,7 +44,16 @@ public class HudScreenFragment implements IScreenFragment {
             TRUMP_IMAGE_INDEX,
             YOU_WIN_IMAGE_INDEX,
             YOU_LOOSE_IMAGE_INDEX,
-            V_BUTTON_INDEX
+            V_BUTTON_INDEX,
+            FENCE_INDEX,
+            GLADE_INDEX,
+
+            /**
+             * We don't want to show all the cards in a stock pile.
+             * Instead we are showing only one, which is this node.
+             * Underneath this node there is a trump card.
+             */
+            MASK_CARD_INDEX
     })
     public @interface HudNode {
     }
@@ -62,6 +71,9 @@ public class HudScreenFragment implements IScreenFragment {
     public static final int YOU_WIN_IMAGE_INDEX = 10;
     public static final int YOU_LOOSE_IMAGE_INDEX = 11;
     public static final int V_BUTTON_INDEX = 12;
+    public static final int MASK_CARD_INDEX = 13;
+    public static final int FENCE_INDEX = 14;
+    public static final int GLADE_INDEX = 15;
 
 
     /**
@@ -111,6 +123,12 @@ public class HudScreenFragment implements IScreenFragment {
         //cache HUD atlas for later use
         mHudAtlas = hudAtlas;
 
+        //add image of glade
+        putToNodeMap(GLADE_INDEX, createGladeImage(hudAtlas));
+
+        //add image of fence
+        putToNodeMap(GLADE_INDEX, createFenceImage(hudAtlas));
+
         //add image of the trump
         putToNodeMap(TRUMP_IMAGE_INDEX, createTrumpImage(hudAtlas));
 
@@ -136,21 +154,13 @@ public class HudScreenFragment implements IScreenFragment {
         //create v button for popup
         putToNodeMap(V_BUTTON_INDEX, createVButton(hudAtlas));
 
+        //TODO : add back card image to the hud atlas
+        //create v button for popup
+        putToNodeMap(MASK_CARD_INDEX, createMaskCard(hudAtlas));
+
         //at the beginning some nodes might have a different state
         setupInitialState();
 
-    }
-
-    private YANButtonNode createVButton(YANTextureAtlas hudAtlas) {
-        YANButtonNode node = new YANButtonNode(hudAtlas.getTextureRegion("v_btn.png"), hudAtlas.getTextureRegion("v_btn_clicked.png"));
-        node.setClickListener(new YANButtonNode.YanButtonNodeClickListener() {
-            @Override
-            public void onButtonClick() {
-                YANLogger.log("v button clicked");
-            }
-        });
-        node.setSortingLayer(HUD_SORTING_LAYER + 101);
-        return node;
     }
 
     private void setupInitialState() {
@@ -174,6 +184,24 @@ public class HudScreenFragment implements IScreenFragment {
         getNode(BITO_BUTTON_INDEX).setOpacity(0);
     }
 
+    private YANButtonNode createVButton(YANTextureAtlas hudAtlas) {
+        YANButtonNode node = new YANButtonNode(hudAtlas.getTextureRegion("v_btn.png"), hudAtlas.getTextureRegion("v_btn_clicked.png"));
+        node.setClickListener(new YANButtonNode.YanButtonNodeClickListener() {
+            @Override
+            public void onButtonClick() {
+                YANLogger.log("v button clicked");
+            }
+        });
+        node.setSortingLayer(HUD_SORTING_LAYER + 101);
+        return node;
+    }
+
+    private YANTexturedNode createMaskCard(YANTextureAtlas hudAtlas) {
+        YANTexturedNode maskCard = new YANTexturedNode(hudAtlas.getTextureRegion("cards_back.png"));
+        maskCard.setSortingLayer(HUD_SORTING_LAYER);
+        return maskCard;
+    }
+
     private YANTexturedNode createYouWonImage(YANTextureAtlas hudAtlas) {
         YANTexturedNode popupImage = new YANTexturedNode(hudAtlas.getTextureRegion("you_won.png"));
         popupImage.setSortingLayer(HUD_SORTING_LAYER + 100);
@@ -184,6 +212,16 @@ public class HudScreenFragment implements IScreenFragment {
         YANTexturedNode popupImage = new YANTexturedNode(hudAtlas.getTextureRegion("you_lose.png"));
         popupImage.setSortingLayer(HUD_SORTING_LAYER + 100);
         return popupImage;
+    }
+
+    private YANTexturedNode createGladeImage(YANTextureAtlas hudAtlas) {
+        return new YANTexturedNode(hudAtlas.getTextureRegion("glade.png"));
+    }
+
+    private YANTexturedNode createFenceImage(YANTextureAtlas hudAtlas) {
+        YANTexturedNode image = new YANTexturedNode(hudAtlas.getTextureRegion("fence.png"));
+        image.setSortingLayer(HUD_SORTING_LAYER);
+        return image;
     }
 
     private YANTexturedNode createTrumpImage(YANTextureAtlas hudAtlas) {
@@ -275,6 +313,19 @@ public class HudScreenFragment implements IScreenFragment {
         newWidth = sceneSize.getX() * 0.2f;
         newHeight = newWidth / aspectRatio;
         getNode(V_BUTTON_INDEX).setSize(newWidth, newHeight);
+
+        //mask card
+        //initial size is not matter as it will be changed once game setup message will be received
+        getNode(MASK_CARD_INDEX).setSize(1, 1);
+
+        //fence
+        aspectRatio = getNode(FENCE_INDEX).getTextureRegion().getWidth() / getNode(FENCE_INDEX).getTextureRegion().getHeight();
+        getNode(FENCE_INDEX).setSize(sceneSize.getX(), sceneSize.getX() / aspectRatio);
+
+        //glade
+        aspectRatio = getNode(GLADE_INDEX).getTextureRegion().getWidth() / getNode(GLADE_INDEX).getTextureRegion().getHeight();
+        float gladeWidth = Math.min(sceneSize.getX(), sceneSize.getY()) * 0.9f;
+        getNode(GLADE_INDEX).setSize(gladeWidth, gladeWidth / aspectRatio);
     }
 
     @Override
@@ -342,6 +393,17 @@ public class HudScreenFragment implements IScreenFragment {
         getNode(V_BUTTON_INDEX).setPosition(
                 getNode(YOU_WIN_IMAGE_INDEX).getPosition().getX() - (getNode(V_BUTTON_INDEX).getSize().getX() / 2),
                 getNode(YOU_WIN_IMAGE_INDEX).getPosition().getY() - ((getNode(V_BUTTON_INDEX).getSize().getY()) * 1.25f) + popupAnchorYOffset);
+
+
+        //fence
+        float centerX = (sceneSize.getX() - getNode(FENCE_INDEX).getSize().getX()) / 2;
+        float centerY = (sceneSize.getY() - getNode(FENCE_INDEX).getSize().getY());
+        getNode(FENCE_INDEX).setPosition(centerX, centerY);
+
+        //glade
+        centerX = (sceneSize.getX() - getNode(GLADE_INDEX).getSize().getX()) / 2;
+        centerY = (sceneSize.getY() - getNode(GLADE_INDEX).getSize().getY()) / 2;
+        getNode(GLADE_INDEX).setPosition(centerX, centerY);
     }
 
     @Override
@@ -435,5 +497,15 @@ public class HudScreenFragment implements IScreenFragment {
 
         //animate
         sequence.start(mTweenManager);
+    }
+
+    public void setMaskCardTransform(float positionX, float positionY, float width, float height, float rotationZ) {
+        getNode(MASK_CARD_INDEX).setPosition(positionX, positionY);
+        getNode(MASK_CARD_INDEX).setSize(width, height);
+        getNode(MASK_CARD_INDEX).setRotationZ(rotationZ);
+    }
+
+    public void removeMaskCard() {
+        getFragmentNodes().remove(getNode(MASK_CARD_INDEX));
     }
 }

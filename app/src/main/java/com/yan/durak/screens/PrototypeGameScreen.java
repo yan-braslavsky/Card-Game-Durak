@@ -18,15 +18,15 @@ import com.yan.durak.msg_processor.MsgProcessor;
 import com.yan.durak.nodes.CardNode;
 import com.yan.durak.screen_fragments.cards.CardsScreenFragment;
 import com.yan.durak.screen_fragments.hud.HudScreenFragment;
+import com.yan.durak.session.GameSession;
 import com.yan.durak.tweening.CardsTweenAnimator;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.nodes.YANButtonNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.renderer.YANGLRenderer;
@@ -39,7 +39,6 @@ import glengine.yan.glengine.util.loggers.YANLogger;
 public class PrototypeGameScreen extends BaseGameScreen {
 
     public static final float CARD_SCALE_AMOUNT_OPPONENT = 0.6f;
-
 
     //Players hand related
     private CardsLayouter mPlayerCardsLayouter;
@@ -61,20 +60,9 @@ public class PrototypeGameScreen extends BaseGameScreen {
     private ArrayList<Card> mSelectedThrowInCards;
     private CardsTouchProcessorMultipleChoiceState mThrowInInputProcessorState;
     private MsgProcessor msgProcessor;
+    private GameSession mGameSession;
+    private final TweenManager mSharedTweenManager;
 
-
-    //TODO : move to the HUD Screen
-    /**
-     * We don't want to show all the cards in a stock pile.
-     * Instead we are showing only one, which is this node.
-     * Underneath this node there is a trump card.
-     */
-    private YANTexturedNode mMaskCard;
-
-
-    //TODO : move to the game session object
-    //cached index of current player in the game
-    private int mMyGameIndex;
 
     public PrototypeGameScreen(YANGLRenderer renderer, IGameServerConnector gameServerConnector) {
         super(renderer);
@@ -82,6 +70,11 @@ public class PrototypeGameScreen extends BaseGameScreen {
         //message processor will receive messages and react on them
         msgProcessor = new MsgProcessor(this);
 
+        //game session will store the game state and related info
+        mGameSession = new GameSession();
+
+        //tween manager is used for various tween animations
+        mSharedTweenManager = new TweenManager();
 
         //TODO : move to the state
         mCardsPendingRetaliationMap = new HashMap<>();
@@ -123,9 +116,10 @@ public class PrototypeGameScreen extends BaseGameScreen {
             @Override
             public void onCardMovesFromStockPile() {
                 if (mCardsScreenFragment.getCardsInPileWithIndex(0).size() == 1) {
+
                     //when only one card left in the stock pile (which is a trump card)
                     //we are removing the mask
-                    removeNode(mMaskCard);
+                    mHudNodesFragment.removeMaskCard();
                 }
             }
         });
@@ -149,6 +143,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
                 if (mCardForAttackRequested) {
                     mCardForAttackRequested = false;
 
+                    //TODO : Extract to some kind of message sender
                     ResponseCardForAttackMessage responseCardForAttackMessage = new ResponseCardForAttackMessage(cardNode.getCard());
                     mGameServerConnector.sentMessageToServer(responseCardForAttackMessage);
 
@@ -181,6 +176,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
                     //prevent card from being resized
                     cardNode.addTag(CardNode.TAG_SHOULD_NOT_RESIZE);
 
+                    //TODO : Extract to some kind of message sender
                     ResponseCardForAttackMessage responseCardForAttackMessage = new ResponseCardForAttackMessage(cardNode.getCard());
                     mGameServerConnector.sentMessageToServer(responseCardForAttackMessage);
 
@@ -227,6 +223,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
                         list.add(innerList);
                     }
 
+                    //TODO : Extract to some kind of message sender
                     ResponseRetaliatePilesMessage responseRetaliatePilesMessage = new ResponseRetaliatePilesMessage(list);
                     mGameServerConnector.sentMessageToServer(responseRetaliatePilesMessage);
 
@@ -248,6 +245,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
         mHudNodesFragment.hideBitoButton();
 
+        //TODO : Extract to some kind of message sender
         ResponseThrowInsMessage responseRetaliatePilesMessage = new ResponseThrowInsMessage(mSelectedThrowInCards);
         mGameServerConnector.sentMessageToServer(responseRetaliatePilesMessage);
     }
@@ -269,7 +267,6 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
     @Override
     protected void onAddNodesToScene() {
-        super.onAddNodesToScene();
 
         //add card nodes
         for (YANTexturedNode cardNode : mCardsScreenFragment.getFragmentNodes()) {
@@ -283,14 +280,11 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mHudNodesFragment.hideBitoButton();
         mHudNodesFragment.hideTakeButton();
 
-        //mask node
-        addNode(mMaskCard);
     }
 
 
     @Override
     protected void onLayoutNodes() {
-        super.onLayoutNodes();
 
         mHudNodesFragment.layoutNodes(getSceneSize());
 
@@ -329,36 +323,31 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
     @Override
     protected void onChangeNodesSize() {
-        super.onChangeNodesSize();
 
         mCardsScreenFragment.setNodesSizes(getSceneSize());
-
-        //set size of the mask card texture
-        mMaskCard.setSize(mCardsScreenFragment.getCardNodeWidth(), mCardsScreenFragment.getCardNodeHeight());
 
         //set size of a card for touch processor
         mCardsTouchProcessor.setOriginalCardSize(mCardsScreenFragment.getCardNodeWidth(), mCardsScreenFragment.getCardNodeHeight());
 
         //init the player cards layouter
-        mPlayerCardsLayouter.init(mCardsScreenFragment.getCardNodeWidth()/*mCardWidth*/, mCardsScreenFragment.getCardNodeHeight(),
+        mPlayerCardsLayouter.init(mCardsScreenFragment.getCardNodeWidth(), mCardsScreenFragment.getCardNodeHeight(),
                 //maximum available width
                 getSceneSize().getX(),
                 //base x position ( center )
                 getSceneSize().getX() / 2,
+
+                //TODO : Take the right values , not hard coded
                 //base y position
-                getSceneSize().getY() - mFence.getSize().getY() / 2);
+                getSceneSize().getY() - /*mFence.getSize().getY() / 2*/100);
 
         mHudNodesFragment.setNodesSizes(getSceneSize());
     }
 
     @Override
     protected void onCreateNodes() {
-        super.onCreateNodes();
+
         mHudNodesFragment.createNodes(mUiAtlas);
         mCardsScreenFragment.createNodes(mCardsAtlas);
-
-        //create a mask card texture
-        mMaskCard = new YANTexturedNode(mCardsAtlas.getTextureRegion("cards_back.png"));
 
         mHudNodesFragment.setTakeButtonClickListener(new YANButtonNode.YanButtonNodeClickListener() {
             @Override
@@ -370,10 +359,11 @@ public class PrototypeGameScreen extends BaseGameScreen {
                 if (mRequestedRetaliation) {
                     mRequestedRetaliation = false;
 
+                    //TODO : Extract to some kind of message sender
                     ResponseRetaliatePilesMessage responseRetaliatePilesMessage = new ResponseRetaliatePilesMessage(new ArrayList<List<Card>>());
                     mGameServerConnector.sentMessageToServer(responseRetaliatePilesMessage);
 
-                    //at the end we want the button to dissapear
+                    //at the end we want the button to disappear
                     mHudNodesFragment.hideTakeButton();
                 }
             }
@@ -392,28 +382,13 @@ public class PrototypeGameScreen extends BaseGameScreen {
     @Override
     public void onUpdate(float deltaTimeSeconds) {
         super.onUpdate(deltaTimeSeconds);
-        mGameServerConnector.update(deltaTimeSeconds);
 
+        //TODO: Create some updatable interface where all those
+        //can be put into
+        mSharedTweenManager.update(deltaTimeSeconds * 1);
+        mGameServerConnector.update(deltaTimeSeconds);
         mHudNodesFragment.update(deltaTimeSeconds);
         mCardsScreenFragment.update(deltaTimeSeconds);
-    }
-
-    public void positionMaskCard(CardData trumpCardNode) {
-
-        Card trumpCard = new Card(trumpCardNode.getRank(), trumpCardNode.getSuit());
-
-        //position the mask at the same place with the stock pile cards
-        Collection<Card> cardsInStockPile = mCardsScreenFragment.getCardsInPileWithIndex(0);
-        Iterator<Card> iterator = cardsInStockPile.iterator();
-        Card randomCardInStockPile = iterator.next();
-        if (trumpCard.equals(randomCardInStockPile)) {
-            randomCardInStockPile = iterator.next();
-        }
-        CardNode randomCardNodeInStockPile = mCardsScreenFragment.getCardToNodesMap().get(randomCardInStockPile);
-        mMaskCard.setPosition(randomCardNodeInStockPile.getPosition().getX(), randomCardNodeInStockPile.getPosition().getY());
-        mMaskCard.setSize(randomCardNodeInStockPile.getSize().getX(), randomCardNodeInStockPile.getSize().getY());
-        mMaskCard.setRotationZ(randomCardNodeInStockPile.getRotationZ());
-
     }
 
     private void layoutTopLeftPlayerCards() {
@@ -511,14 +486,6 @@ public class PrototypeGameScreen extends BaseGameScreen {
         return mHudNodesFragment;
     }
 
-    public int getMyGameIndex() {
-        return mMyGameIndex;
-    }
-
-    public void setMyGameIndex(int mMyGameIndex) {
-        this.mMyGameIndex = mMyGameIndex;
-    }
-
     public int getThrowInCardsAllowed() {
         return mThrowInCardsAllowed;
     }
@@ -545,5 +512,9 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
     public ArrayList<Card> getSelectedThrowInCards() {
         return mSelectedThrowInCards;
+    }
+
+    public GameSession getGameSession() {
+        return mGameSession;
     }
 }

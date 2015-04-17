@@ -14,9 +14,11 @@ import com.yan.durak.gamelogic.communication.protocol.messages.RetaliationInvali
 import com.yan.durak.input.cards.states.CardsTouchProcessorMultipleChoiceState;
 import com.yan.durak.msg_processor.MsgProcessor;
 import com.yan.durak.nodes.CardNode;
-import com.yan.durak.screen_fragments.hud.IHudScreenFragment;
+import com.yan.durak.screen_fragments.hud.HudScreenFragment;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -72,7 +74,7 @@ public class MsgProcessorDefaultState extends MsgProcessorBaseState {
 
         //FIXME : Do not store this info on the screen
         //rather make some kind of "player game profile" or a "game session" to store the info there
-        mMsgProcessor.getPrototypeGameScreen().setMyGameIndex(serverMessage.getMessageData().getMyPlayerData().getPlayerIndexInGame());
+        mMsgProcessor.getPrototypeGameScreen().getGameSession().setMyGameIndex(serverMessage.getMessageData().getMyPlayerData().getPlayerIndexInGame());
 
         //depending on my player index we need to identify indexes of all players
         int bottomPlayerPileIndex = serverMessage.getMessageData().getMyPlayerData().getPlayerPileIndex();
@@ -98,12 +100,32 @@ public class MsgProcessorDefaultState extends MsgProcessorBaseState {
         mMsgProcessor.getPrototypeGameScreen().getCardsScreenFragment().layoutNodes(mMsgProcessor.getPrototypeGameScreen().getRenderer().getSurfaceSize());
 
         //we need to position a card that behaves as a mask for the stock pile
-        mMsgProcessor.getPrototypeGameScreen().positionMaskCard(trumpCardData);
+        positionMaskCard(trumpCardData);
 
         //FIXME : Do not store this info on the fragment
         //Rather on some kind of "game session object"
         //set the suit of the trump on the hud to be visible even when cards are gone
         mMsgProcessor.getPrototypeGameScreen().getHudNodesFragment().setTrumpSuit(trumpCardData.getSuit());
+    }
+
+    public void positionMaskCard(CardData trumpCardNode) {
+
+        Card trumpCard = new Card(trumpCardNode.getRank(), trumpCardNode.getSuit());
+
+        //position the mask at the same place with the stock pile cards
+        Collection<Card> cardsInStockPile = mMsgProcessor.getPrototypeGameScreen().getCardsScreenFragment().getCardsInPileWithIndex(0);
+        Iterator<Card> iterator = cardsInStockPile.iterator();
+        Card randomCardInStockPile = iterator.next();
+        if (trumpCard.equals(randomCardInStockPile)) {
+            randomCardInStockPile = iterator.next();
+        }
+        CardNode randomCardNodeInStockPile = mMsgProcessor.getPrototypeGameScreen().getCardsScreenFragment().getCardToNodesMap().get(randomCardInStockPile);
+
+        //position the stock pile mask
+        mMsgProcessor.getPrototypeGameScreen().getHudNodesFragment().setMaskCardTransform(
+                randomCardNodeInStockPile.getPosition().getX(), randomCardNodeInStockPile.getPosition().getY(),
+                randomCardNodeInStockPile.getSize().getX(), randomCardNodeInStockPile.getSize().getY(),
+                randomCardNodeInStockPile.getRotationZ());
     }
 
     @Override
@@ -114,13 +136,13 @@ public class MsgProcessorDefaultState extends MsgProcessorBaseState {
         //since we don't have reference to players indexes in the game
         //we translating the player index to pile index
         int actionPlayerPileIndex = (actionPlayerIndex + 2) % 5;
-        @IHudScreenFragment.HudNode int cockPosition = IHudScreenFragment.COCK_BOTTOM_RIGHT_INDEX;
+        @HudScreenFragment.HudNode int cockPosition = HudScreenFragment.COCK_BOTTOM_RIGHT_INDEX;
         if (actionPlayerPileIndex == mMsgProcessor.getPrototypeGameScreen().getCardsScreenFragment().getBottomPlayerPileIndex()) {
-            cockPosition = IHudScreenFragment.COCK_BOTTOM_RIGHT_INDEX;
+            cockPosition = HudScreenFragment.COCK_BOTTOM_RIGHT_INDEX;
         } else if (actionPlayerPileIndex == mMsgProcessor.getPrototypeGameScreen().getCardsScreenFragment().getTopRightPlayerPileIndex()) {
-            cockPosition = IHudScreenFragment.COCK_TOP_RIGHT_INDEX;
+            cockPosition = HudScreenFragment.COCK_TOP_RIGHT_INDEX;
         } else if (actionPlayerPileIndex == mMsgProcessor.getPrototypeGameScreen().getCardsScreenFragment().getTopLeftPlayerPileIndex()) {
-            cockPosition = IHudScreenFragment.COCK_TOP_LEFT_INDEX;
+            cockPosition = HudScreenFragment.COCK_TOP_LEFT_INDEX;
         }
         mMsgProcessor.getPrototypeGameScreen().getHudNodesFragment().resetCockAnimation(cockPosition);
     }
@@ -188,7 +210,7 @@ public class MsgProcessorDefaultState extends MsgProcessorBaseState {
 
     @Override
     public void handleGameOverMessage(GameOverProtocolMessage serverMessage) {
-        boolean iLostTheGame = (mMsgProcessor.getPrototypeGameScreen().getMyGameIndex() == serverMessage.getMessageData().getLoosingPlayer().getPlayerIndexInGame());
+        boolean iLostTheGame = (mMsgProcessor.getPrototypeGameScreen().getGameSession().getMyGameIndex() == serverMessage.getMessageData().getLoosingPlayer().getPlayerIndexInGame());
         if (iLostTheGame) {
             mMsgProcessor.getPrototypeGameScreen().getHudNodesFragment().showYouLooseMessage();
         } else {
