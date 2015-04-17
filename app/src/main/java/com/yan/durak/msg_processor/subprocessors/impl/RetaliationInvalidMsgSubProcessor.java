@@ -30,7 +30,7 @@ public class RetaliationInvalidMsgSubProcessor extends BaseMsgSubProcessor<Retal
             Card coveringCard = new Card(retaliationSetData.getCoveringCardData().getRank(), retaliationSetData.getCoveringCardData().getSuit());
 
             //FIXME : Do not keep that info in the screen rather on the state
-            mMsgProcessor.getPrototypeGameScreen().getCardsPendingRetaliationMap().remove(coveredCard);
+            mMsgProcessor.getPrototypeGameScreen().getGameSession().getCardsPendingRetaliationMap().remove(coveredCard);
 
             cardsToRemoveTagFrom.add(coveredCard);
             cardsToRemoveTagFrom.add(coveringCard);

@@ -28,12 +28,12 @@ import java.util.Map;
  * Created by ybra on 16/04/15.
  * <p/>
  * PURPOSE:
- * Manipulates screen state and nodes according to server messages that it receives.
+ * Distribute received server messages across concrete handlers (subprocessors)
  */
 public class MsgProcessor implements IGameServerConnector.IGameServerCommunicatorListener {
 
     private final PrototypeGameScreen mPrototypeGameScreen;
-    private Map<Class<? extends BaseProtocolMessage>, MsgSubProcessor<? extends BaseProtocolMessage>> mProcessorsMap;
+    private Map<Class<? extends BaseProtocolMessage>, MsgSubProcessor> mProcessorsMap;
 
     /**
      * Require a direct reference to prototype screen in order
@@ -43,6 +43,7 @@ public class MsgProcessor implements IGameServerConnector.IGameServerCommunicato
         this.mPrototypeGameScreen = prototypeGameScreen;
         this.mProcessorsMap = new HashMap<>();
 
+        //map between messages and their processors
         fillProcessorsMap();
     }
 
@@ -75,8 +76,8 @@ public class MsgProcessor implements IGameServerConnector.IGameServerCommunicato
 
     @Override
     public void handleServerMessage(BaseProtocolMessage serverMessage) {
-        MsgSubProcessor processor = mProcessorsMap.get(serverMessage.getClass());
-        processor.processMessage(serverMessage);
+        //delegate the processing to concrete processor
+        mProcessorsMap.get(serverMessage.getClass()).processMessage(serverMessage);
     }
 
     public PrototypeGameScreen getPrototypeGameScreen() {

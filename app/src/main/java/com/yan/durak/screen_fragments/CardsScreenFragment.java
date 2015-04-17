@@ -1,9 +1,8 @@
-package com.yan.durak.screen_fragments.cards;
+package com.yan.durak.screen_fragments;
 
 import com.yan.durak.entities.cards.CardsHelper;
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.nodes.CardNode;
-import com.yan.durak.screen_fragments.IScreenFragment;
 import com.yan.durak.tweening.CardsTweenAnimator;
 
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ public class CardsScreenFragment implements IScreenFragment {
     private static final int CARDS_COUNT = 36;
 
     /**
-     * Used to calculate the dimentions of the cards.
+     * Used to calculate the dimensions of the cards.
      * Exact amount of cards should fit the width of the screen
      */
     private static final int MAX_CARDS_IN_LINE = 8;

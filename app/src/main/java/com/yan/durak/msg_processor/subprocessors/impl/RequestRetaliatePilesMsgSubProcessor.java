@@ -21,12 +21,12 @@ public class RequestRetaliatePilesMsgSubProcessor extends BaseMsgSubProcessor<Re
     public void processMessage(RequestRetaliatePilesMessage serverMessage) {
         //FIXME : Do not store this info on the screen
         //rather transition to other processor state
-        mMsgProcessor.getPrototypeGameScreen().setRequestedRetaliation(true);
-        mMsgProcessor.getPrototypeGameScreen().getCardsPendingRetaliationMap().clear();
+        mMsgProcessor.getPrototypeGameScreen().getGameSession().setRequestedRetaliation(true);
+        mMsgProcessor.getPrototypeGameScreen().getGameSession().getCardsPendingRetaliationMap().clear();
 
         for (List<CardData> cardDataList : serverMessage.getMessageData().getPilesBeforeRetaliation()) {
             for (CardData cardData : cardDataList) {
-                mMsgProcessor.getPrototypeGameScreen().getCardsPendingRetaliationMap().put(new Card(cardData.getRank(), cardData.getSuit()), null);
+                mMsgProcessor.getPrototypeGameScreen().getGameSession().getCardsPendingRetaliationMap().put(new Card(cardData.getRank(), cardData.getSuit()), null);
             }
         }
 

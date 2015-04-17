@@ -3,7 +3,7 @@ package com.yan.durak.msg_processor.subprocessors.impl;
 import com.yan.durak.gamelogic.communication.protocol.messages.PlayerTakesActionMessage;
 import com.yan.durak.msg_processor.MsgProcessor;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
-import com.yan.durak.screen_fragments.hud.HudScreenFragment;
+import com.yan.durak.screen_fragments.HudScreenFragment;
 
 /**
  * Created by ybra on 17/04/15.

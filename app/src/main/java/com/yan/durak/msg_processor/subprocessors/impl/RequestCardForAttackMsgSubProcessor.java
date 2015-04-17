@@ -18,6 +18,6 @@ public class RequestCardForAttackMsgSubProcessor extends BaseMsgSubProcessor<Req
 
         //FIXME : Do not store this info on the screen
         //rather transition to other processor state
-        mMsgProcessor.getPrototypeGameScreen().setCardForAttackRequested(true);
+        mMsgProcessor.getPrototypeGameScreen().getGameSession().setCardForAttackRequested(true);
     }
 }

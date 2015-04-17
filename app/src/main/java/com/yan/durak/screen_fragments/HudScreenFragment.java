@@ -1,4 +1,4 @@
-package com.yan.durak.screen_fragments.hud;
+package com.yan.durak.screen_fragments;
 
 
 import android.support.annotation.IntDef;

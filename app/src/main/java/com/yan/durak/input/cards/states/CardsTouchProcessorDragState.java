@@ -3,7 +3,7 @@ package com.yan.durak.input.cards.states;
 import com.yan.durak.input.cards.CardsTouchProcessor;
 import com.yan.durak.input.cards.CardsTouchProcessorState;
 import com.yan.durak.nodes.CardNode;
-import com.yan.durak.screen_fragments.cards.CardsScreenFragment;
+import com.yan.durak.screen_fragments.CardsScreenFragment;
 
 import glengine.yan.glengine.EngineWrapper;
 import glengine.yan.glengine.input.YANInputManager;

@@ -27,7 +27,7 @@ public class RequestThrowInsMsgSubProcessor extends BaseMsgSubProcessor<RequestT
         mMsgProcessor.getPrototypeGameScreen().getHudNodesFragment().showBitoButton();
 
         //FIXME : Do not keep that info in the screen rather on the state
-        mMsgProcessor.getPrototypeGameScreen().setRequestThrowIn(true);
+        mMsgProcessor.getPrototypeGameScreen().getGameSession().setRequestThrowIn(true);
         mMsgProcessor.getPrototypeGameScreen().setThrowInCardsAllowed(serverMessage.getMessageData().getPossibleThrowInCards().size());
 
         //TODO : Make more efficient !
@@ -45,8 +45,8 @@ public class RequestThrowInsMsgSubProcessor extends BaseMsgSubProcessor<RequestT
         mMsgProcessor.getPrototypeGameScreen().getCardsTouchProcessor().setCardsTouchProcessorState(mMsgProcessor.getPrototypeGameScreen().getThrowInInputProcessorState());
 
         //FIXME : Do not keep that info in the screen rather on the state
-        mMsgProcessor.getPrototypeGameScreen().getSelectedThrowInCards().clear();
-        mMsgProcessor.getPrototypeGameScreen().getThrowInPossibleCards().clear();
-        mMsgProcessor.getPrototypeGameScreen().getThrowInPossibleCards().addAll(serverMessage.getMessageData().getPossibleThrowInCards());
+        mMsgProcessor.getPrototypeGameScreen().getGameSession().getSelectedThrowInCards().clear();
+        mMsgProcessor.getPrototypeGameScreen().getGameSession().getThrowInPossibleCards().clear();
+        mMsgProcessor.getPrototypeGameScreen().getGameSession().getThrowInPossibleCards().addAll(serverMessage.getMessageData().getPossibleThrowInCards());
     }
 }
