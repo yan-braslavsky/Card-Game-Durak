@@ -255,6 +255,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
     @Override
     protected void onAddNodesToScene() {
+        super.onAddNodesToScene();
 
         //add card nodes
         for (YANTexturedNode cardNode : mCardsScreenFragment.getFragmentNodes()) {
@@ -273,6 +274,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
     @Override
     protected void onLayoutNodes() {
+        super.onLayoutNodes();
 
         mHudNodesFragment.layoutNodes(getSceneSize());
 
@@ -333,6 +335,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
     @Override
     protected void onCreateNodes() {
+        super.onCreateNodes();
 
         mHudNodesFragment.createNodes(mUiAtlas);
         mCardsScreenFragment.createNodes(mCardsAtlas);
