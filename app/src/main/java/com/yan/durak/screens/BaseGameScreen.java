@@ -57,7 +57,7 @@ public abstract class BaseGameScreen extends YANNodeScreen {
     @Override
     protected void onLayoutNodes() {
         //fps node
-        mFpsTextNode.setPosition(50, 50);
+        mFpsTextNode.setPosition(150, 50);
     }
 
     @Override
