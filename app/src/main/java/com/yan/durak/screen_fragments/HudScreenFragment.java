@@ -3,8 +3,6 @@ package com.yan.durak.screen_fragments;
 
 import android.support.annotation.IntDef;
 
-import com.yan.durak.screen_fragments.IScreenFragment;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Collection;
@@ -506,6 +504,6 @@ public class HudScreenFragment implements IScreenFragment {
     }
 
     public void removeMaskCard() {
-        getFragmentNodes().remove(getNode(MASK_CARD_INDEX));
+        getNode(MASK_CARD_INDEX).setOpacity(0f);
     }
 }

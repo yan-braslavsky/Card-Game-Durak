@@ -3,6 +3,7 @@ package com.yan.durak.msg_processor.subprocessors.impl;
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestCardForAttackMessage;
 import com.yan.durak.msg_processor.MsgProcessor;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
+import com.yan.durak.session.states.ActivePlayerState;
 
 /**
  * Created by ybra on 17/04/15.
@@ -18,6 +19,6 @@ public class RequestCardForAttackMsgSubProcessor extends BaseMsgSubProcessor<Req
 
         //FIXME : Do not store this info on the screen
         //rather transition to other processor state
-        mMsgProcessor.getPrototypeGameScreen().getGameSession().setCardForAttackRequested(true);
+        mMsgProcessor.getPrototypeGameScreen().getGameSession().setActivePlayerState(ActivePlayerState.REQUEST_CARD_FOR_ATTACK);
     }
 }

@@ -2,6 +2,7 @@ package com.yan.durak.session;
 
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.communication.protocol.data.CardData;
+import com.yan.durak.session.states.ActivePlayerState;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,40 +15,47 @@ import java.util.HashMap;
  */
 public class GameSession {
 
-    private int myGameIndex;
+    /**
+     * The index of the game on server for active player
+     */
+    private int activePlayerGameIndex;
 
-    private boolean mRequestThrowIn;
-    private boolean mCardForAttackRequested;
-    private boolean mRequestedRetaliation;
-
+    /**
+     * Cards that can be thrown in at this turn
+     */
     private ArrayList<CardData> mThrowInPossibleCards;
+
+    /**
+     * Cards that still should be retaliated
+     */
     private HashMap<Card, Card> mCardsPendingRetaliationMap;
+
+    /**
+     * Cards that active player selected to throw in
+     */
     private ArrayList<Card> mSelectedThrowInCards;
+
+    /**
+     * Active player can be in several states
+     */
+    private ActivePlayerState mActivePlayerState;
 
     public GameSession() {
         mCardsPendingRetaliationMap = new HashMap<>();
         mSelectedThrowInCards = new ArrayList<>();
         mThrowInPossibleCards = new ArrayList<>();
-        myGameIndex = -1;
-        mRequestThrowIn = false;
-        mCardForAttackRequested = false;
-        mRequestedRetaliation = false;
+        activePlayerGameIndex = -1;
+
+        //by default player is not active unless the state changes
+        mActivePlayerState = mActivePlayerState.OTHER_PLAYER_TURN;
     }
 
-    public int getMyGameIndex() {
-        return myGameIndex;
+    public int getActivePlayerGameIndex() {
+        return activePlayerGameIndex;
     }
 
-    public void setMyGameIndex(int myGameIndex) {
-        this.myGameIndex = myGameIndex;
-    }
-
-    public boolean isRequestThrowIn() {
-        return mRequestThrowIn;
-    }
-
-    public void setRequestThrowIn(boolean requestThrowIn) {
-        mRequestThrowIn = requestThrowIn;
+    public void setActivePlayerGameIndex(int activePlayerGameIndex) {
+        this.activePlayerGameIndex = activePlayerGameIndex;
     }
 
     public ArrayList<CardData> getThrowInPossibleCards() {
@@ -62,19 +70,11 @@ public class GameSession {
         return mSelectedThrowInCards;
     }
 
-    public boolean isCardForAttackRequested() {
-        return mCardForAttackRequested;
+    public ActivePlayerState getActivePlayerState() {
+        return mActivePlayerState;
     }
 
-    public void setCardForAttackRequested(boolean cardForAttackRequested) {
-        mCardForAttackRequested = cardForAttackRequested;
-    }
-
-    public boolean isRequestedRetaliation() {
-        return mRequestedRetaliation;
-    }
-
-    public void setRequestedRetaliation(boolean requestedRetaliation) {
-        mRequestedRetaliation = requestedRetaliation;
+    public void setActivePlayerState(ActivePlayerState activePlayerState) {
+        mActivePlayerState = activePlayerState;
     }
 }

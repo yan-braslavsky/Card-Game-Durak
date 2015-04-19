@@ -51,7 +51,7 @@ public class CardsScreenFragment implements IScreenFragment {
      * When card put on field they have a sligh rotation to the
      * left or to the right
      */
-    public static final int FIELD_CARDS_ROTATION_ANGLE = 11;
+    public static final int FIELD_CARDS_ROTATION_ANGLE = 13;
 
     /**
      * When cards are put on field they become smaller
@@ -306,11 +306,11 @@ public class CardsScreenFragment implements IScreenFragment {
         if (toPile > MAX_PLAYER_INDEX) {
             destRotation = (mPileIndexToCardListMap.get(toPile).size() > 1) ? FIELD_CARDS_ROTATION_ANGLE : -FIELD_CARDS_ROTATION_ANGLE;
 
+            //TODO : this value can be cached
             //make card smaller
             destintationWidth *= CARDS_ON_FIELD_SIZE_MULTIPLIER;
             destintationHeigth *= CARDS_ON_FIELD_SIZE_MULTIPLIER;
         }
-
 
         //make the animation
         mCardsTweenAnimator.animateCardToValues(cardNode, destX, destY, destRotation, null);
@@ -322,7 +322,6 @@ public class CardsScreenFragment implements IScreenFragment {
 
             //notify listener
             mCardMovementListener.onCardMovesFromStockPile();
-
         }
 
         if (fromPile == mBottomPlayerPileIndex || toPile == mBottomPlayerPileIndex || toPile > mTopLeftPlayerPileIndex || toPile == mDiscardPileIndex) {
@@ -334,16 +333,20 @@ public class CardsScreenFragment implements IScreenFragment {
             cardNode.useBackTextureRegion();
         }
 
-        if (toPile > mTopLeftPlayerPileIndex) {
-            //moving to field pile
+        //moving to field pile
+        if (toPile > MAX_PLAYER_INDEX) {
+
             //we need to adjust sorting layer
-            int sortingLayer = (mPileIndexToCardListMap.get(toPile).size() == 1) ? 1 : 2;
+            int sortingLayer = (!mPileIndexToCardListMap.get(toPile).isEmpty()) ? 1 : 2;
             cardNode.setSortingLayer(sortingLayer);
         }
 
-        if (fromPile > mTopLeftPlayerPileIndex) {
+        //moving from field pile
+        if (fromPile > MAX_PLAYER_INDEX) {
+
             //we need to adjust sorting layer
-            int sortingLayer = (mPileIndexToCardListMap.get(fromPile).size() > 0) ? 2 : 1;
+            //so the first pile that moves will be on top of the bottom card
+            int sortingLayer = (!mPileIndexToCardListMap.get(fromPile).isEmpty()) ? 2 : 1;
             cardNode.setSortingLayer(sortingLayer);
         }
 
@@ -365,6 +368,7 @@ public class CardsScreenFragment implements IScreenFragment {
                 mBottomPlayerCardNodes.remove(mCardNodes.get(movedCard));
             }
 
+            //that causes relayout of the bottom player cards
             mCardMovementListener.onCardMovesToOrFromBottomPlayerPile();
         }
 
@@ -377,7 +381,6 @@ public class CardsScreenFragment implements IScreenFragment {
             }
 
             mCardMovementListener.onCardMovesToTopRightPlayerPile();
-
         }
 
         //player 3
@@ -391,7 +394,6 @@ public class CardsScreenFragment implements IScreenFragment {
             mCardMovementListener.onCardMovesToTopLeftPlayerPile();
 
         } else {
-
             mCardMovementListener.onCardMovesToFieldPile();
 
             //set the sorting layer higher

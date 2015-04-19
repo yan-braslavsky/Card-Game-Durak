@@ -23,7 +23,7 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
     public void processMessage(GameSetupProtocolMessage serverMessage) {
         //FIXME : Do not store this info on the screen
         //rather make some kind of "player game profile" or a "game session" to store the info there
-        mMsgProcessor.getPrototypeGameScreen().getGameSession().setMyGameIndex(serverMessage.getMessageData().getMyPlayerData().getPlayerIndexInGame());
+        mMsgProcessor.getPrototypeGameScreen().getGameSession().setActivePlayerGameIndex(serverMessage.getMessageData().getMyPlayerData().getPlayerIndexInGame());
 
         //depending on my player index we need to identify indexes of all players
         int bottomPlayerPileIndex = serverMessage.getMessageData().getMyPlayerData().getPlayerPileIndex();
