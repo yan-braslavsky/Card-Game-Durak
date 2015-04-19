@@ -51,7 +51,7 @@ public class CardsScreenFragment implements IScreenFragment {
      * When card put on field they have a sligh rotation to the
      * left or to the right
      */
-    public static final int FIELD_CARDS_ROTATION_ANGLE = 13;
+    public static final float FIELD_CARDS_ROTATION_ANGLE = 13f;
 
     /**
      * When cards are put on field they become smaller
@@ -482,5 +482,15 @@ public class CardsScreenFragment implements IScreenFragment {
 
     public Map<Card, CardNode> getCardToNodesMap() {
         return mCardNodes;
+    }
+
+    public int getPileIndexForCard(Card card) {
+        for (int pileIndex = 0; pileIndex < CARDS_COUNT; pileIndex++) {
+            Collection<Card> cardsInPile = mPileIndexToCardListMap.get(pileIndex);
+
+            if(cardsInPile.contains(card))
+                return pileIndex;
+        }
+        return -1;
     }
 }

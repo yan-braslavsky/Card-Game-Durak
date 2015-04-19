@@ -169,13 +169,12 @@ public class PrototypeGameScreen extends BaseGameScreen {
                     ResponseCardForAttackMessage responseCardForAttackMessage = new ResponseCardForAttackMessage(cardNode.getCard());
                     mGameServerConnector.sentMessageToServer(responseCardForAttackMessage);
 
-                }
-                else if (getGameSession().getActivePlayerState() == ActivePlayerState.REQUEST_RETALIATION) {
+                } else if (getGameSession().getActivePlayerState() == ActivePlayerState.REQUEST_RETALIATION) {
 
                     //collision detection with card user tries to retaliate
                     CardNode underlyingCard = mCardsScreenFragment.findUnderlyingCard(cardNode);
 
-                    //user dragget the card to a wrong place
+                    //user dragged the card to a wrong place
                     if (underlyingCard == null) {
                         layoutBottomPlayerCards();
                         return;
@@ -188,11 +187,15 @@ public class PrototypeGameScreen extends BaseGameScreen {
                     getGameSession().getCardsPendingRetaliationMap().put(underlyingCard.getCard(), cardNode.getCard());
 
                     //move the cardNode on top of the underlying card
-                    mCardsTweenAnimator.animateCardToXY(cardNode, underlyingCard.getPosition().getX(), underlyingCard.getPosition().getY(), 0.5f);
+                    mCardsTweenAnimator.animateCardToValues(cardNode, underlyingCard.getPosition().getX(), underlyingCard.getPosition().getY(), CardsScreenFragment.FIELD_CARDS_ROTATION_ANGLE, null);
 
                     //we are tagging both cards as covered in order do not test collision with them later
                     underlyingCard.addTag(CardNode.TAG_TEMPORALLY_COVERED);
                     cardNode.addTag(CardNode.TAG_TEMPORALLY_COVERED);
+
+                    //FIXME : nothing gets animated after retaliation
+                    //now simulate move card from pile to pile
+//                    mCardsScreenFragment.moveCardFromPileToPile(cardNode.getCard(), mCardsScreenFragment.getBottomPlayerPileIndex(), mCardsScreenFragment.getPileIndexForCard(underlyingCard.getCard()));
 
                     //check if more retaliation cards left
                     for (Card card : getGameSession().getCardsPendingRetaliationMap().values()) {
