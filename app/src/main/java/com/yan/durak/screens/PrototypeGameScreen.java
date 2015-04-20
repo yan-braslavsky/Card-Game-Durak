@@ -3,10 +3,7 @@ package com.yan.durak.screens;
 import com.yan.durak.communication.game_server.connector.IGameServerConnector;
 import com.yan.durak.communication.sender.GameServerMessageSender;
 import com.yan.durak.gamelogic.cards.Card;
-import com.yan.durak.gamelogic.communication.protocol.messages.ResponseRetaliatePilesMessage;
-import com.yan.durak.gamelogic.communication.protocol.messages.ResponseThrowInsMessage;
 import com.yan.durak.input.cards.CardsTouchProcessor;
-import com.yan.durak.input.cards.states.CardsTouchProcessorDefaultState;
 import com.yan.durak.input.cards.states.CardsTouchProcessorMultipleChoiceState;
 import com.yan.durak.managers.CardNodesManager;
 import com.yan.durak.managers.PileLayouterManager;
@@ -112,9 +109,8 @@ public class PrototypeGameScreen extends BaseGameScreen {
 //                if (getGameSession().getActivePlayerState() == ActivePlayerState.REQUEST_CARD_FOR_ATTACK) {
 //                    getGameSession().setActivePlayerState(ActivePlayerState.OTHER_PLAYER_TURN);
 //
-//                    //TODO : Extract to some kind of message sender
-//                    ResponseCardForAttackMessage responseCardForAttackMessage = new ResponseCardForAttackMessage(cardNode.getCard());
-//                    mGameServerConnector.sentMessageToServer(responseCardForAttackMessage);
+
+//                    mMessageSender.sendCardForAttackResponse(cardNode.getCard());
 //
 //                } else if (getGameSession().getActivePlayerState() == ActivePlayerState.REQUEST_THROW_IN) {
 //
@@ -146,9 +142,8 @@ public class PrototypeGameScreen extends BaseGameScreen {
 //                    //prevent card from being resized
 //                    cardNode.addTag(CardNode.TAG_SHOULD_NOT_RESIZE);
 //
-//                    //TODO : Extract to some kind of message sender
-//                    ResponseCardForAttackMessage responseCardForAttackMessage = new ResponseCardForAttackMessage(cardNode.getCard());
-//                    mGameServerConnector.sentMessageToServer(responseCardForAttackMessage);
+
+//                    mMessageSender.sendCardForAttackResponse(cardNode.getCard());
 //
 //                } else if (getGameSession().getActivePlayerState() == ActivePlayerState.REQUEST_RETALIATION) {
 //
@@ -197,9 +192,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
 //                        list.add(innerList);
 //                    }
 //
-//                    //TODO : Extract to some kind of message sender
-//                    ResponseRetaliatePilesMessage responseRetaliatePilesMessage = new ResponseRetaliatePilesMessage(list);
-//                    mGameServerConnector.sentMessageToServer(responseRetaliatePilesMessage);
+//                    mMessageSender.sendResponseRetaliatePiles(list);
 //
 //                    //now we should clear all the tags
 //                    mCardsScreenFragment.removeTagsFromCards();
@@ -212,17 +205,15 @@ public class PrototypeGameScreen extends BaseGameScreen {
         });
     }
 
-    private void sendThrowInResponse() {
-        mCardsTouchProcessor.setCardsTouchProcessorState(new CardsTouchProcessorDefaultState(mCardsTouchProcessor));
-        getGameSession().setActivePlayerState(ActivePlayerState.OTHER_PLAYER_TURN);
-        mThrowInInputProcessorState = null;
-
-        mHudNodesFragment.hideBitoButton();
-
-        //TODO : Extract to some kind of message sender
-        ResponseThrowInsMessage responseRetaliatePilesMessage = new ResponseThrowInsMessage(getGameSession().getSelectedThrowInCards());
-        mGameServerConnector.sentMessageToServer(responseRetaliatePilesMessage);
-    }
+//    private void sendThrowInResponse() {
+//        mCardsTouchProcessor.setCardsTouchProcessorState(new CardsTouchProcessorDefaultState(mCardsTouchProcessor));
+//        getGameSession().setActivePlayerState(ActivePlayerState.OTHER_PLAYER_TURN);
+//        mThrowInInputProcessorState = null;
+//
+//        mHudNodesFragment.hideBitoButton();
+//
+//        mMessageSender.sendThrowInResponse(getGameSession().getSelectedThrowInCards());
+//    }
 
 
     @Override
@@ -309,9 +300,8 @@ public class PrototypeGameScreen extends BaseGameScreen {
                 if (getGameSession().getActivePlayerState() == ActivePlayerState.REQUEST_RETALIATION) {
                     getGameSession().setActivePlayerState(ActivePlayerState.OTHER_PLAYER_TURN);
 
-                    //TODO : Extract to some kind of message sender
-                    ResponseRetaliatePilesMessage responseRetaliatePilesMessage = new ResponseRetaliatePilesMessage(new ArrayList<List<Card>>());
-                    mGameServerConnector.sentMessageToServer(responseRetaliatePilesMessage);
+                    //TODO : optimize
+                    mMessageSender.sendResponseRetaliatePiles(new ArrayList<List<Card>>());
 
                     //at the end we want the button to disappear
                     mHudNodesFragment.hideTakeButton();
