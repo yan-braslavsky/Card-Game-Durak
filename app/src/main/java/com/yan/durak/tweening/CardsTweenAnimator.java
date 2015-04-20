@@ -11,7 +11,10 @@ import glengine.yan.glengine.tween.YANTweenNodeAccessor;
 
 /**
  * Created by Yan-Home on 11/21/2014.
+ *
+ * @deprecated use the tween manager directly
  */
+@Deprecated
 public class CardsTweenAnimator {
     private TweenManager mTweenManager;
 

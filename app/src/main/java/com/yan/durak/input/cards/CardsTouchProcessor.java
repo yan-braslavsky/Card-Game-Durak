@@ -28,20 +28,20 @@ public class CardsTouchProcessor {
     private static final int MAX_CARDS_TO_PROCESS = 6;
     private final YANInputManager.TouchListener mTouchListener;
     private List<CardNode> mCardNodesArray;
-    private final CardsTweenAnimator mCardsTweenAnimator;
+//    private final CardsTweenAnimator mCardsTweenAnimator;
     private YANReadOnlyVector2 mOriginalCardSize;
     private CardsTouchProcessorState mCardsTouchProcessorState;
     private List<CardNode> mTouchedCards;
     private Comparator<YANTexturedNode> mComparator;
     private CardsTouchProcessorListener mCardsTouchProcessorListener;
 
-    public CardsTouchProcessor(final ArrayList<CardNode> cardNodesArray, CardsTweenAnimator cardsTweenAnimator) {
+    public CardsTouchProcessor(/*final ArrayList<CardNode> cardNodesArray, CardsTweenAnimator cardsTweenAnimator*/) {
 
         //cache reference to tween animator
-        mCardsTweenAnimator = cardsTweenAnimator;
+//        mCardsTweenAnimator = cardsTweenAnimator;
 
-        //cache the reference to array of cards in hand
-        mCardNodesArray = cardNodesArray;
+//        //cache the reference to array of cards in hand
+//        mCardNodesArray = cardNodesArray;
 
         //starting from a default state
         setCardsTouchProcessorState(new CardsTouchProcessorDefaultState(this));
@@ -131,9 +131,13 @@ public class CardsTouchProcessor {
         return mCardNodesArray;
     }
 
-    public CardsTweenAnimator getCardsTweenAnimator() {
-        return mCardsTweenAnimator;
+    public void setmCardNodesArray(List<CardNode> mCardNodesArray) {
+        this.mCardNodesArray = mCardNodesArray;
     }
+
+//    public CardsTweenAnimator getCardsTweenAnimator() {
+//        return mCardsTweenAnimator;
+//    }
 
     public YANReadOnlyVector2 getOriginalCardSize() {
         return mOriginalCardSize;

@@ -1,9 +1,8 @@
 package com.yan.durak.screen_fragments;
 
-import com.yan.durak.gamelogic.cards.CardsHelper;
 import com.yan.durak.gamelogic.cards.Card;
+import com.yan.durak.gamelogic.cards.CardsHelper;
 import com.yan.durak.nodes.CardNode;
-import com.yan.durak.tweening.CardsTweenAnimator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,22 +17,25 @@ import glengine.yan.glengine.util.loggers.YANLogger;
 
 /**
  * Created by Yan-Home on 1/29/2015.
+ * <p/>
+ * PURPOSE :
+ * Manage card nodes
  */
 public class CardsScreenFragment implements IScreenFragment {
 
-    public interface ICardMovementListener {
-        void onCardMovesToOrFromBottomPlayerPile();
+//    public interface ICardMovementListener {
+//        void onCardMovesToOrFromBottomPlayerPile();
+//
+//        void onCardMovesToTopRightPlayerPile();
+//
+//        void onCardMovesToTopLeftPlayerPile();
+//
+//        void onCardMovesToFieldPile();
+//
+//        void onCardMovesFromStockPile();
+//    }
 
-        void onCardMovesToTopRightPlayerPile();
-
-        void onCardMovesToTopLeftPlayerPile();
-
-        void onCardMovesToFieldPile();
-
-        void onCardMovesFromStockPile();
-    }
-
-    private static final int CARDS_COUNT = 36;
+    public static final int TOTAL_CARDS_COUNT = 36;
 
     /**
      * Used to calculate the dimensions of the cards.
@@ -60,16 +62,16 @@ public class CardsScreenFragment implements IScreenFragment {
      */
     public static final float CARDS_ON_FIELD_SIZE_MULTIPLIER = 0.8f;
 
-    //pile indexes that will be loaded from the game server
-    private int mStockPileIndex;
-    private int mDiscardPileIndex;
-    private int mBottomPlayerPileIndex;
-    private int mTopRightPlayerPileIndex;
-    private int mTopLeftPlayerPileIndex;
+//    //pile indexes that will be loaded from the game server
+//    private int mStockPileIndex;
+//    private int mDiscardPileIndex;
+//    private int mBottomPlayerPileIndex;
+//    private int mTopRightPlayerPileIndex;
+//    private int mTopLeftPlayerPileIndex;
 
-    private int mTopCardOnFieldSortingLayer = 50;
+//    private int mTopCardOnFieldSortingLayer = 50;
 
-    private CardsTweenAnimator mCardsTweenAnimator;
+//    private CardsTweenAnimator mCardsTweenAnimator;
 
     /**
      * Mapping between pile index and array of cards in it
@@ -86,31 +88,31 @@ public class CardsScreenFragment implements IScreenFragment {
      */
     private Map<Card, CardNode> mCardNodes;
 
-    //cached player texture nodes of cards
-    private ArrayList<CardNode> mBottomPlayerCardNodes;
-    private ArrayList<CardNode> mTopRightPlayerCardNodes;
-    private ArrayList<CardNode> mTopLeftPlayerCardNodes;
+//    //cached player texture nodes of cards
+//    private ArrayList<CardNode> mBottomPlayerCardNodes;
+//    private ArrayList<CardNode> mTopRightPlayerCardNodes;
+//    private ArrayList<CardNode> mTopLeftPlayerCardNodes;
 
     private YANTexturedNode mBackOfCardNode;
 
     //cached card dimensions
     private float mCardWidth;
     private float mCardHeight;
-    private Card mTrumpCard;
-    private ICardMovementListener mCardMovementListener;
+//    private Card mTrumpCard;
+//    private ICardMovementListener mCardMovementListener;
 
 
-    public CardsScreenFragment(CardsTweenAnimator cardsTweenAnimator) {
+    public CardsScreenFragment(/*CardsTweenAnimator cardsTweenAnimator*/) {
 
-        mCardsTweenAnimator = cardsTweenAnimator;
-        mCardNodes = new HashMap<>(CARDS_COUNT);
-        mPileIndexToCardListMap = new HashMap<>(CARDS_COUNT / 2);
-        mPileIndexToPositionMap = new HashMap<>(CARDS_COUNT / 2);
+//        mCardsTweenAnimator = cardsTweenAnimator;
+        mCardNodes = new HashMap<>(TOTAL_CARDS_COUNT);
+//        mPileIndexToCardListMap = new HashMap<>(TOTAL_CARDS_COUNT / 2);
+//        mPileIndexToPositionMap = new HashMap<>(TOTAL_CARDS_COUNT / 2);
 
-        //allocate temp array of texture cards
-        mBottomPlayerCardNodes = new ArrayList<>(CARDS_COUNT);
-        mTopRightPlayerCardNodes = new ArrayList<>(CARDS_COUNT);
-        mTopLeftPlayerCardNodes = new ArrayList<>(CARDS_COUNT);
+//        //allocate temp array of texture cards
+//        mBottomPlayerCardNodes = new ArrayList<>(TOTAL_CARDS_COUNT);
+//        mTopRightPlayerCardNodes = new ArrayList<>(TOTAL_CARDS_COUNT);
+//        mTopLeftPlayerCardNodes = new ArrayList<>(TOTAL_CARDS_COUNT);
     }
 
     @Override
@@ -145,104 +147,109 @@ public class CardsScreenFragment implements IScreenFragment {
 
     @Override
     public void layoutNodes(YANReadOnlyVector2 sceneSize) {
-        //stock pile layout parameters
-        float stockPileXPosition = (sceneSize.getX() - mCardWidth) / 2;
-        float stockPileYPosition = 0;
-        float stockPileScaleSize = 0.7f;
 
-        //init "field piles" ( can be no more than 2 cards)
-        for (int i = (mTopLeftPlayerPileIndex + 1); i < CARDS_COUNT / 2; i++) {
-            mPileIndexToCardListMap.put(i, new ArrayList<Card>(2));
-        }
+        //TODO : there will be no default layouting of cards
+        //TODO : because all the layouting of cards managed by layouters
+
+//        //stock pile layout parameters
+//        float stockPileXPosition = (sceneSize.getX() - mCardWidth) / 2;
+//        float stockPileYPosition = 0;
+//        float stockPileScaleSize = 0.7f;
+
+//        //init "field piles" ( can be no more than 2 cards)
+//        for (int i = (mTopLeftPlayerPileIndex + 1); i < TOTAL_CARDS_COUNT / 2; i++) {
+//            mPileIndexToCardListMap.put(i, new ArrayList<Card>(2));
+//        }
 
         //stock pile
-        layoutPile(mStockPileIndex, stockPileXPosition, stockPileYPosition, 100, stockPileScaleSize);
+//        layoutPile(mStockPileIndex, stockPileXPosition, stockPileYPosition, 100, stockPileScaleSize);
 
-        CardNode trumpCardNode = mCardNodes.get(mTrumpCard);
+//        CardNode trumpCardNode = mCardNodes.get(mTrumpCard);
+//
+//        //layout trump card separately
+//        layoutCard(stockPileXPosition, stockPileYPosition + mCardHeight / 4, 5, stockPileScaleSize, trumpCardNode);
+//        trumpCardNode.setSortingLayer(0);
+//        trumpCardNode.useFrontTextureRegion();
 
-        //layout trump card separately
-        layoutCard(stockPileXPosition, stockPileYPosition + mCardHeight / 4, 5, stockPileScaleSize, trumpCardNode);
-        trumpCardNode.setSortingLayer(0);
-        trumpCardNode.useFrontTextureRegion();
+//        //discard pile (off the screen)
+//        layoutPile(mDiscardPileIndex, -sceneSize.getX(), sceneSize.getY() / 2, 90, 1f);
+//
+//        //player one pile (bottom middle)
+//        layoutPile(mBottomPlayerPileIndex, (sceneSize.getX() - mCardWidth) / 2, sceneSize.getY() - mCardHeight, 90, 1f);
+//
+//        //player two pile (top right)
+//        layoutPile(mTopRightPlayerPileIndex, (sceneSize.getX() - mCardWidth), 0, 90, 1f);
+//
+//        //player three pile (top left)
+//        layoutPile(mTopLeftPlayerPileIndex, 0, 0, 90, 1f);
 
-        //discard pile (off the screen)
-        layoutPile(mDiscardPileIndex, -sceneSize.getX(), sceneSize.getY() / 2, 90, 1f);
-
-        //player one pile (bottom middle)
-        layoutPile(mBottomPlayerPileIndex, (sceneSize.getX() - mCardWidth) / 2, sceneSize.getY() - mCardHeight, 90, 1f);
-
-        //player two pile (top right)
-        layoutPile(mTopRightPlayerPileIndex, (sceneSize.getX() - mCardWidth), 0, 90, 1f);
-
-        //player three pile (top left)
-        layoutPile(mTopLeftPlayerPileIndex, 0, 0, 90, 1f);
-
-        float cardWidthOnField = mCardWidth * CARDS_ON_FIELD_SIZE_MULTIPLIER;
-        float cardHeightOnField = mCardHeight * CARDS_ON_FIELD_SIZE_MULTIPLIER;
-
-        float leftBorderX = cardWidthOnField * 0.2f;
-        float rightBorderX = sceneSize.getX() - (cardWidthOnField * 0.8f);
-        float topBorderY = sceneSize.getY() * 0.3f;
-        float bottomBorderY = sceneSize.getY() * 0.5f;
-
-        float xAdvance = cardWidthOnField * 1.2f;
-        float yAdvance = cardHeightOnField * 1.2f;
-
-        float currentX = leftBorderX;
-        float currentY = topBorderY;
-
-        //init "field piles" positions
-        //field piles starting from index 5 always in game with 3 players
-        for (int i = (MAX_PLAYER_INDEX + 1); i < CARDS_COUNT / 2; i++) {
-            float x = currentX;
-            float y = currentY;
-            mPileIndexToPositionMap.put(i, new YANVector2(x, y));
-            currentX += xAdvance;
-            if (currentX > rightBorderX) {
-                currentX = leftBorderX;
-                currentY += yAdvance;
-
-                //just return to the initial position
-                if (bottomBorderY > bottomBorderY) {
-                    currentY = topBorderY;
-                }
-            }
-        }
+//        float cardWidthOnField = mCardWidth * CARDS_ON_FIELD_SIZE_MULTIPLIER;
+//        float cardHeightOnField = mCardHeight * CARDS_ON_FIELD_SIZE_MULTIPLIER;
+//
+//        float leftBorderX = cardWidthOnField * 0.2f;
+//        float rightBorderX = sceneSize.getX() - (cardWidthOnField * 0.8f);
+//        float topBorderY = sceneSize.getY() * 0.3f;
+//        float bottomBorderY = sceneSize.getY() * 0.5f;
+//
+//        float xAdvance = cardWidthOnField * 1.2f;
+//        float yAdvance = cardHeightOnField * 1.2f;
+//
+//        float currentX = leftBorderX;
+//        float currentY = topBorderY;
+//
+//        //init "field piles" positions
+//        //field piles starting from index 5 always in game with 3 players
+//        for (int i = (MAX_PLAYER_INDEX + 1); i < TOTAL_CARDS_COUNT / 2; i++) {
+//            float x = currentX;
+//            float y = currentY;
+//            mPileIndexToPositionMap.put(i, new YANVector2(x, y));
+//            currentX += xAdvance;
+//            if (currentX > rightBorderX) {
+//                currentX = leftBorderX;
+//                currentY += yAdvance;
+//
+//                //just return to the initial position
+//                if (bottomBorderY > bottomBorderY) {
+//                    currentY = topBorderY;
+//                }
+//            }
+//        }
     }
 
-    private void layoutPile(int pileIndex, float x, float y, int rotationZ, float sizeScale) {
-        Collection<Card> cardsInStockPile = mPileIndexToCardListMap.get(pileIndex);
-        for (Card card : cardsInStockPile) {
-            CardNode cardTexturedNode = mCardNodes.get(card);
-            layoutCard(x, y, rotationZ, sizeScale, cardTexturedNode);
-        }
+//    private void layoutPile(int pileIndex, float x, float y, int rotationZ, float sizeScale) {
+//        Collection<Card> cardsInStockPile = mPileIndexToCardListMap.get(pileIndex);
+//        for (Card card : cardsInStockPile) {
+//            CardNode cardTexturedNode = mCardNodes.get(card);
+//            layoutCard(x, y, rotationZ, sizeScale, cardTexturedNode);
+//        }
+//
+//        //init pile position
+//        mPileIndexToPositionMap.put(pileIndex, new YANVector2(x, y));
+//    }
 
-        //init pile position
-        mPileIndexToPositionMap.put(pileIndex, new YANVector2(x, y));
-    }
+//    private void layoutCard(float x, float y, int rotationZ, float sizeScale, CardNode cardTexturedNode) {
+//        cardTexturedNode.setPosition(x, y);
+//        cardTexturedNode.setRotationZ(rotationZ);
+//        cardTexturedNode.setSize(mCardWidth * sizeScale, mCardHeight * sizeScale);
+//    }
 
-    private void layoutCard(float x, float y, int rotationZ, float sizeScale, CardNode cardTexturedNode) {
-        cardTexturedNode.setPosition(x, y);
-        cardTexturedNode.setRotationZ(rotationZ);
-        cardTexturedNode.setSize(mCardWidth * sizeScale, mCardHeight * sizeScale);
-    }
+//    public int getBottomPlayerPileIndex() {
+//        return mBottomPlayerPileIndex;
+//    }
+//
+//    public int getTopRightPlayerPileIndex() {
+//        return mTopRightPlayerPileIndex;
+//    }
+//
+//    public int getTopLeftPlayerPileIndex() {
+//        return mTopLeftPlayerPileIndex;
+//    }
 
-    public int getBottomPlayerPileIndex() {
-        return mBottomPlayerPileIndex;
-    }
-
-    public int getTopRightPlayerPileIndex() {
-        return mTopRightPlayerPileIndex;
-    }
-
-    public int getTopLeftPlayerPileIndex() {
-        return mTopLeftPlayerPileIndex;
-    }
-
+    //TODO : Extract to some kind of collision helper
     public CardNode findUnderlyingCard(CardNode cardNode) {
 
         //iterate all field piles
-        for (int i = (mTopLeftPlayerPileIndex + 1); i < CARDS_COUNT / 2; i++) {
+        for (int i = (MAX_PLAYER_INDEX + 1); i < TOTAL_CARDS_COUNT / 2; i++) {
             Collection<Card> cards = mPileIndexToCardListMap.get(i);
 
             //we don't want to choose piles that are already covered
@@ -276,134 +283,134 @@ public class CardsScreenFragment implements IScreenFragment {
         return cardNode.getBoundingRectangle().contains(card.getBoundingRectangle());
     }
 
-    public void setCardMovementListener(ICardMovementListener listener) {
-        mCardMovementListener = listener;
-    }
+//    public void setCardMovementListener(ICardMovementListener listener) {
+//        mCardMovementListener = listener;
+//    }
 
-    public void moveCardFromPileToPile(Card movedCard, int fromPile, int toPile) {
-
-        if(mPileIndexToCardListMap.get(fromPile) == null)
-            return;
-
-        //remove card entity from its current pile
-        mPileIndexToCardListMap.get(fromPile).remove(movedCard);
-
-        //add card entity to its new pile
-        mPileIndexToCardListMap.get(toPile).add(movedCard);
-
-        //find node
-        CardNode cardNode = mCardNodes.get(movedCard);
-
-        //find destination position
-        float destX = mPileIndexToPositionMap.get(toPile).getX();
-        float destY = mPileIndexToPositionMap.get(toPile).getY();
-
-
-        //if it is the first card in field pile , than it should be rotated slightly to the left
-        //if it is a second card in field pile it should be rotated slightly to the right
-        //if it is not a field pile , rotation is zero
-
-        float destintationWidth = mCardWidth;
-        float destintationHeigth = mCardHeight;
-        float destRotation = 0;
-        if (toPile > MAX_PLAYER_INDEX) {
-            destRotation = (mPileIndexToCardListMap.get(toPile).size() > 1) ? FIELD_CARDS_ROTATION_ANGLE : -FIELD_CARDS_ROTATION_ANGLE;
-
-            //TODO : this value can be cached
-            //make card smaller
-            destintationWidth *= CARDS_ON_FIELD_SIZE_MULTIPLIER;
-            destintationHeigth *= CARDS_ON_FIELD_SIZE_MULTIPLIER;
-        }
-
-        //make the animation
-        mCardsTweenAnimator.animateCardToValues(cardNode, destX, destY, destRotation, null);
-        mCardsTweenAnimator.animateSize(cardNode, destintationWidth, destintationHeigth, 0.5f);
-
-        //make cards that are coming from the stock pile fully opaque
-        if (fromPile == mStockPileIndex) {
-            cardNode.setOpacity(1f);
-
-            //notify listener
-            mCardMovementListener.onCardMovesFromStockPile();
-        }
-
-        if (fromPile == mBottomPlayerPileIndex || toPile == mBottomPlayerPileIndex || toPile > mTopLeftPlayerPileIndex || toPile == mDiscardPileIndex) {
-
-            //show the card
-            cardNode.useFrontTextureRegion();
-        } else {
-            //hide the card
-            cardNode.useBackTextureRegion();
-        }
-
-        //moving to field pile
-        if (toPile > MAX_PLAYER_INDEX) {
-
-            //we need to adjust sorting layer
-            int sortingLayer = (!mPileIndexToCardListMap.get(toPile).isEmpty()) ? 1 : 2;
-            cardNode.setSortingLayer(sortingLayer);
-        }
-
-        //moving from field pile
-        if (fromPile > MAX_PLAYER_INDEX) {
-
-            //we need to adjust sorting layer
-            //so the first pile that moves will be on top of the bottom card
-            int sortingLayer = (!mPileIndexToCardListMap.get(fromPile).isEmpty()) ? 2 : 1;
-            cardNode.setSortingLayer(sortingLayer);
-        }
-
-
-        //check if card goes to or from player 1 pile
-        if (toPile == mBottomPlayerPileIndex || fromPile == mBottomPlayerPileIndex) {
-
-            if (toPile == mBottomPlayerPileIndex) {
-                mBottomPlayerCardNodes.add(mCardNodes.get(movedCard));
-            } else {
-
-                //FIXME : Here is a bug !
-                //When player retaliating with multiple cards  , than the first card that is confirmed to
-                //be moved from bottom player is being removed , but all the other piles that player retaliated with
-                //are still part of the player hand. And right after inside onCardMovesToOrFromBottomPlayerPile callback
-                //all cards in player hands are getting relayed out , that includes the cards that he retaliated with but are still
-                //didn't removed from his hand. So at the end we see one retaliation card stays at it's place , and the others jump back
-                //to player hand , then ump back to the field...
-                mBottomPlayerCardNodes.remove(mCardNodes.get(movedCard));
-            }
-
-            //that causes relayout of the bottom player cards
-            mCardMovementListener.onCardMovesToOrFromBottomPlayerPile();
-        }
-
-        //player 2
-        else if (toPile == mTopRightPlayerPileIndex || fromPile == mTopRightPlayerPileIndex) {
-            if (toPile == mTopRightPlayerPileIndex) {
-                mTopRightPlayerCardNodes.add(mCardNodes.get(movedCard));
-            } else {
-                mTopRightPlayerCardNodes.remove(mCardNodes.get(movedCard));
-            }
-
-            mCardMovementListener.onCardMovesToTopRightPlayerPile();
-        }
-
-        //player 3
-        else if (toPile == mTopLeftPlayerPileIndex || fromPile == mTopLeftPlayerPileIndex) {
-            if (toPile == mTopLeftPlayerPileIndex) {
-                mTopLeftPlayerCardNodes.add(mCardNodes.get(movedCard));
-            } else {
-                mTopLeftPlayerCardNodes.remove(mCardNodes.get(movedCard));
-            }
-
-            mCardMovementListener.onCardMovesToTopLeftPlayerPile();
-
-        } else {
-            mCardMovementListener.onCardMovesToFieldPile();
-
-            //set the sorting layer higher
-            mTopCardOnFieldSortingLayer++;
-            mCardNodes.get(movedCard).setSortingLayer(mTopCardOnFieldSortingLayer);
-        }
-    }
+//    public void moveCardFromPileToPile(Card movedCard, int fromPile, int toPile) {
+//
+//        if (mPileIndexToCardListMap.get(fromPile) == null)
+//            return;
+//
+//        //remove card entity from its current pile
+//        mPileIndexToCardListMap.get(fromPile).remove(movedCard);
+//
+//        //add card entity to its new pile
+//        mPileIndexToCardListMap.get(toPile).add(movedCard);
+//
+//        //find node
+//        CardNode cardNode = mCardNodes.get(movedCard);
+//
+//        //find destination position
+//        float destX = mPileIndexToPositionMap.get(toPile).getX();
+//        float destY = mPileIndexToPositionMap.get(toPile).getY();
+//
+//
+//        //if it is the first card in field pile , than it should be rotated slightly to the left
+//        //if it is a second card in field pile it should be rotated slightly to the right
+//        //if it is not a field pile , rotation is zero
+//
+//        float destintationWidth = mCardWidth;
+//        float destintationHeigth = mCardHeight;
+//        float destRotation = 0;
+//        if (toPile > MAX_PLAYER_INDEX) {
+//            destRotation = (mPileIndexToCardListMap.get(toPile).size() > 1) ? FIELD_CARDS_ROTATION_ANGLE : -FIELD_CARDS_ROTATION_ANGLE;
+//
+//            //TODO : this value can be cached
+//            //make card smaller
+//            destintationWidth *= CARDS_ON_FIELD_SIZE_MULTIPLIER;
+//            destintationHeigth *= CARDS_ON_FIELD_SIZE_MULTIPLIER;
+//        }
+//
+//        //make the animation
+//        mCardsTweenAnimator.animateCardToValues(cardNode, destX, destY, destRotation, null);
+//        mCardsTweenAnimator.animateSize(cardNode, destintationWidth, destintationHeigth, 0.5f);
+//
+//        //make cards that are coming from the stock pile fully opaque
+//        if (fromPile == mStockPileIndex) {
+//            cardNode.setOpacity(1f);
+//
+//            //notify listener
+//            mCardMovementListener.onCardMovesFromStockPile();
+//        }
+//
+//        if (fromPile == mBottomPlayerPileIndex || toPile == mBottomPlayerPileIndex || toPile > mTopLeftPlayerPileIndex || toPile == mDiscardPileIndex) {
+//
+//            //show the card
+//            cardNode.useFrontTextureRegion();
+//        } else {
+//            //hide the card
+//            cardNode.useBackTextureRegion();
+//        }
+//
+//        //moving to field pile
+//        if (toPile > MAX_PLAYER_INDEX) {
+//
+//            //we need to adjust sorting layer
+//            int sortingLayer = (!mPileIndexToCardListMap.get(toPile).isEmpty()) ? 1 : 2;
+//            cardNode.setSortingLayer(sortingLayer);
+//        }
+//
+//        //moving from field pile
+//        if (fromPile > MAX_PLAYER_INDEX) {
+//
+//            //we need to adjust sorting layer
+//            //so the first pile that moves will be on top of the bottom card
+//            int sortingLayer = (!mPileIndexToCardListMap.get(fromPile).isEmpty()) ? 2 : 1;
+//            cardNode.setSortingLayer(sortingLayer);
+//        }
+//
+//
+//        //check if card goes to or from player 1 pile
+//        if (toPile == mBottomPlayerPileIndex || fromPile == mBottomPlayerPileIndex) {
+//
+//            if (toPile == mBottomPlayerPileIndex) {
+//                mBottomPlayerCardNodes.add(mCardNodes.get(movedCard));
+//            } else {
+//
+//                //FIXME : Here is a bug !
+//                //When player retaliating with multiple cards  , than the first card that is confirmed to
+//                //be moved from bottom player is being removed , but all the other piles that player retaliated with
+//                //are still part of the player hand. And right after inside onCardMovesToOrFromBottomPlayerPile callback
+//                //all cards in player hands are getting relayed out , that includes the cards that he retaliated with but are still
+//                //didn't removed from his hand. So at the end we see one retaliation card stays at it's place , and the others jump back
+//                //to player hand , then ump back to the field...
+//                mBottomPlayerCardNodes.remove(mCardNodes.get(movedCard));
+//            }
+//
+//            //that causes relayout of the bottom player cards
+//            mCardMovementListener.onCardMovesToOrFromBottomPlayerPile();
+//        }
+//
+//        //player 2
+//        else if (toPile == mTopRightPlayerPileIndex || fromPile == mTopRightPlayerPileIndex) {
+//            if (toPile == mTopRightPlayerPileIndex) {
+//                mTopRightPlayerCardNodes.add(mCardNodes.get(movedCard));
+//            } else {
+//                mTopRightPlayerCardNodes.remove(mCardNodes.get(movedCard));
+//            }
+//
+//            mCardMovementListener.onCardMovesToTopRightPlayerPile();
+//        }
+//
+//        //player 3
+//        else if (toPile == mTopLeftPlayerPileIndex || fromPile == mTopLeftPlayerPileIndex) {
+//            if (toPile == mTopLeftPlayerPileIndex) {
+//                mTopLeftPlayerCardNodes.add(mCardNodes.get(movedCard));
+//            } else {
+//                mTopLeftPlayerCardNodes.remove(mCardNodes.get(movedCard));
+//            }
+//
+//            mCardMovementListener.onCardMovesToTopLeftPlayerPile();
+//
+//        } else {
+//            mCardMovementListener.onCardMovesToFieldPile();
+//
+//            //set the sorting layer higher
+//            mTopCardOnFieldSortingLayer++;
+//            mCardNodes.get(movedCard).setSortingLayer(mTopCardOnFieldSortingLayer);
+//        }
+//    }
 
     @Override
     public void update(float deltaTimeSeconds) {
@@ -423,77 +430,74 @@ public class CardsScreenFragment implements IScreenFragment {
         return mCardHeight;
     }
 
-    public int getTotalCardsAmount() {
-        return CARDS_COUNT;
-    }
 
-    public ArrayList<CardNode> getBottomPlayerCardNodes() {
-        return mBottomPlayerCardNodes;
-    }
+//    public ArrayList<CardNode> getBottomPlayerCardNodes() {
+//        return mBottomPlayerCardNodes;
+//    }
+//
+//    public ArrayList<CardNode> getTopRightPlayerCardNodes() {
+//        return mTopRightPlayerCardNodes;
+//    }
+//
+//    public ArrayList<CardNode> getTopLeftPlayerCardNodes() {
+//        return mTopLeftPlayerCardNodes;
+//    }
 
-    public ArrayList<CardNode> getTopRightPlayerCardNodes() {
-        return mTopRightPlayerCardNodes;
-    }
+//    public void setPilesIndexes(int stockPileIndex, int discardPileIndex, int bottomPlayerPileIndex, int topPlayerToTheRightPileIndex, int topLeftPlayerToTheLeftPileIndex) {
+//        this.mStockPileIndex = stockPileIndex;
+//        this.mDiscardPileIndex = discardPileIndex;
+//        this.mBottomPlayerPileIndex = bottomPlayerPileIndex;
+//        this.mTopRightPlayerPileIndex = topPlayerToTheRightPileIndex;
+//        this.mTopLeftPlayerPileIndex = topLeftPlayerToTheLeftPileIndex;
+//
+//        //clear the map
+//        mPileIndexToCardListMap.clear();
+//
+//
+//        ArrayList<Card> cardsCopy = new ArrayList<>(mCardNodes.keySet());
+//
+//        //allocate card arrays for each pile index
+//        //put everything in the stock pile
+//        mPileIndexToCardListMap.put(stockPileIndex, cardsCopy);
+//        mPileIndexToCardListMap.put(discardPileIndex, new ArrayList<Card>(TOTAL_CARDS_COUNT));
+//        mPileIndexToCardListMap.put(bottomPlayerPileIndex, new ArrayList<Card>(TOTAL_CARDS_COUNT));
+//        mPileIndexToCardListMap.put(topPlayerToTheRightPileIndex, new ArrayList<Card>(TOTAL_CARDS_COUNT));
+//        mPileIndexToCardListMap.put(topLeftPlayerToTheLeftPileIndex, new ArrayList<Card>(TOTAL_CARDS_COUNT));
+//    }
 
-    public ArrayList<CardNode> getTopLeftPlayerCardNodes() {
-        return mTopLeftPlayerCardNodes;
-    }
+//    public void setTrumpCard(Card card) {
+//        mTrumpCard = card;
+//
+//        //put the trump card at the bottom
+//        mCardNodes.get(mTrumpCard).setSortingLayer(-1);
+//
+//        //get reference to the trump card node
+//        CardNode trumpCardNode = mCardNodes.get(mTrumpCard);
+//
+//        //we are hiding all the cards in the stack pile except of the trump
+//        //to prevent stacking shadow of the images
+//        for (CardNode cardNode : mCardNodes.values()) {
+//            if (cardNode != trumpCardNode)
+//                cardNode.setOpacity(0);
+//        }
+//
+//    }
 
-    public void setPilesIndexes(int stockPileIndex, int discardPileIndex, int bottomPlayerPileIndex, int topPlayerToTheRightPileIndex, int topLeftPlayerToTheLeftPileIndex) {
-        this.mStockPileIndex = stockPileIndex;
-        this.mDiscardPileIndex = discardPileIndex;
-        this.mBottomPlayerPileIndex = bottomPlayerPileIndex;
-        this.mTopRightPlayerPileIndex = topPlayerToTheRightPileIndex;
-        this.mTopLeftPlayerPileIndex = topLeftPlayerToTheLeftPileIndex;
+//    public Collection<Card> getCardsInPileWithIndex(int pileIndex) {
+//        return mPileIndexToCardListMap.get(pileIndex);
+//    }
+//
+//    public Map<Card, CardNode> getCardToNodesMap() {
+//        return mCardNodes;
+//    }
 
-        //clear the map
-        mPileIndexToCardListMap.clear();
-
-
-        ArrayList<Card> cardsCopy = new ArrayList<>(mCardNodes.keySet());
-
-        //allocate card arrays for each pile index
-        //put everything in the stock pile
-        mPileIndexToCardListMap.put(stockPileIndex, cardsCopy);
-        mPileIndexToCardListMap.put(discardPileIndex, new ArrayList<Card>(CARDS_COUNT));
-        mPileIndexToCardListMap.put(bottomPlayerPileIndex, new ArrayList<Card>(CARDS_COUNT));
-        mPileIndexToCardListMap.put(topPlayerToTheRightPileIndex, new ArrayList<Card>(CARDS_COUNT));
-        mPileIndexToCardListMap.put(topLeftPlayerToTheLeftPileIndex, new ArrayList<Card>(CARDS_COUNT));
-    }
-
-    public void setTrumpCard(Card card) {
-        mTrumpCard = card;
-
-        //put the trump card at the bottom
-        mCardNodes.get(mTrumpCard).setSortingLayer(-1);
-
-        //get reference to the trump card node
-        CardNode trumpCardNode = mCardNodes.get(mTrumpCard);
-
-        //we are hiding all the cards in the stack pile except of the trump
-        //to prevent stacking shadow of the images
-        for (CardNode cardNode : mCardNodes.values()) {
-            if (cardNode != trumpCardNode)
-                cardNode.setOpacity(0);
-        }
-
-    }
-
-    public Collection<Card> getCardsInPileWithIndex(int pileIndex) {
-        return mPileIndexToCardListMap.get(pileIndex);
-    }
-
-    public Map<Card, CardNode> getCardToNodesMap() {
-        return mCardNodes;
-    }
-
-    public int getPileIndexForCard(Card card) {
-        for (int pileIndex = 0; pileIndex < CARDS_COUNT; pileIndex++) {
-            Collection<Card> cardsInPile = mPileIndexToCardListMap.get(pileIndex);
-
-            if(cardsInPile.contains(card))
-                return pileIndex;
-        }
-        return -1;
-    }
+//    public int getPileIndexForCard(Card card) {
+//        for (int pileIndex = 0; pileIndex < TOTAL_CARDS_COUNT; pileIndex++) {
+//            Collection<Card> cardsInPile = mPileIndexToCardListMap.get(pileIndex);
+//
+//            if (cardsInPile.contains(card))
+//                return pileIndex;
+//        }
+//        return -1;
+//    }
 }

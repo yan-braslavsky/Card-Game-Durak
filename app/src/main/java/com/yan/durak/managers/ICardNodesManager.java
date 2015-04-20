@@ -11,4 +11,6 @@ import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
 public interface ICardNodesManager {
 
     CardNode getCardNodeForCard(Card card);
+
+    int getTotalCardsAmount();
 }

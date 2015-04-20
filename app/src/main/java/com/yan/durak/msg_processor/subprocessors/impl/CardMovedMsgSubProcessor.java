@@ -7,7 +7,7 @@ import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
 import com.yan.durak.managers.ICardNodesManager;
 import com.yan.durak.models.IPile;
 import com.yan.durak.layouting.pile.IPileLayouter;
-import com.yan.durak.managers.IPileLayouterManager;
+import com.yan.durak.managers.PileLayouterManager;
 import com.yan.durak.managers.IPileManager;
 
 /**
@@ -18,10 +18,10 @@ public class CardMovedMsgSubProcessor extends BaseMsgSubProcessor<CardMovedProto
 
     private IPileManager mPileManager;
     private ICardNodesManager mCardNodesManager;
-    private IPileLayouterManager mPileLayouterManager;
+    private PileLayouterManager mPileLayouterManager;
 
 
-    public CardMovedMsgSubProcessor(MsgProcessor mMsgProcessor, IPileManager mPileManager, ICardNodesManager mCardNodesManager, IPileLayouterManager mPileLayouterManager) {
+    public CardMovedMsgSubProcessor(MsgProcessor mMsgProcessor, IPileManager mPileManager, ICardNodesManager mCardNodesManager, PileLayouterManager mPileLayouterManager) {
         super(mMsgProcessor);
         this.mPileManager = mPileManager;
         this.mCardNodesManager = mCardNodesManager;
@@ -62,8 +62,8 @@ public class CardMovedMsgSubProcessor extends BaseMsgSubProcessor<CardMovedProto
         toPileLayouter.layout();
 
 
-        //TODO : Stock pile layouter will make sure to remove mask if there is 1 card left
-        //TODO : Every pile layouter will make sure to change size of the card
+
+
         //TODO : Every pile will have it's own layouter
 
     }
