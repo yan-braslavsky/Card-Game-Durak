@@ -282,6 +282,9 @@ public class CardsScreenFragment implements IScreenFragment {
 
     public void moveCardFromPileToPile(Card movedCard, int fromPile, int toPile) {
 
+        if(mPileIndexToCardListMap.get(fromPile) == null)
+            return;
+
         //remove card entity from its current pile
         mPileIndexToCardListMap.get(fromPile).remove(movedCard);
 

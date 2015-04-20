@@ -195,7 +195,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
                     //FIXME : nothing gets animated after retaliation
                     //now simulate move card from pile to pile
-//                    mCardsScreenFragment.moveCardFromPileToPile(cardNode.getCard(), mCardsScreenFragment.getBottomPlayerPileIndex(), mCardsScreenFragment.getPileIndexForCard(underlyingCard.getCard()));
+                    mCardsScreenFragment.moveCardFromPileToPile(cardNode.getCard(), mCardsScreenFragment.getBottomPlayerPileIndex(), mCardsScreenFragment.getPileIndexForCard(underlyingCard.getCard()));
 
                     //check if more retaliation cards left
                     for (Card card : getGameSession().getCardsPendingRetaliationMap().values()) {
