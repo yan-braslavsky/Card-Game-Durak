@@ -1,6 +1,6 @@
-package com.yan.durak.tmp;
+package com.yan.durak.managers;
 
-import com.yan.durak.gamelogic.cards.Card;
+import com.yan.durak.models.IPile;
 
 /**
  * Created by ybra on 20/04/15.

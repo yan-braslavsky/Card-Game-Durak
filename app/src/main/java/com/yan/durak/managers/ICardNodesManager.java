@@ -1,4 +1,4 @@
-package com.yan.durak.tmp;
+package com.yan.durak.managers;
 
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.nodes.CardNode;

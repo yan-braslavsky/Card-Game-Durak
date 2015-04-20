@@ -1,4 +1,4 @@
-package com.yan.durak.tmp;
+package com.yan.durak.models;
 
 import com.yan.durak.gamelogic.cards.Card;
 
@@ -8,8 +8,7 @@ import com.yan.durak.gamelogic.cards.Card;
 public interface IPile {
 
     Card getCardByRankAndSuit(String rank, String suit);
-
     void addCard(Card card);
-
     void removeCard(Card movedCard);
+    int getPileIndex();
 }

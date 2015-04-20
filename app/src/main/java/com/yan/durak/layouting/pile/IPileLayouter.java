@@ -1,4 +1,4 @@
-package com.yan.durak.tmp;
+package com.yan.durak.layouting.pile;
 
 /**
  * Created by ybra on 20/04/15.
