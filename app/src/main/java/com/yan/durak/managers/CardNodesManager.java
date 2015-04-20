@@ -12,15 +12,15 @@ public class CardNodesManager {
         throw new UnsupportedOperationException();
     }
 
-    int getTotalCardsAmount() {
+    public int getTotalCardsAmount() {
         throw new UnsupportedOperationException();
     }
 
-    float getCardNodeWidth() {
+    public float getCardNodeWidth() {
         throw new UnsupportedOperationException();
     }
 
-    float getCardNodeHeight() {
+    public float getCardNodeHeight() {
         throw new UnsupportedOperationException();
     }
 }

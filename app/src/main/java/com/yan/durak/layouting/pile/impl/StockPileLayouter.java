@@ -2,6 +2,7 @@ package com.yan.durak.layouting.pile.impl;
 
 import com.yan.durak.layouting.pile.BasePileLayouter;
 import com.yan.durak.managers.CardNodesManager;
+import com.yan.durak.models.IPile;
 
 import aurelienribon.tweenengine.TweenManager;
 
@@ -11,8 +12,8 @@ import aurelienribon.tweenengine.TweenManager;
 public class StockPileLayouter extends BasePileLayouter {
 
 
-    public StockPileLayouter(CardNodesManager mCardNodesManager, TweenManager mTweenManager) {
-        super(mCardNodesManager, mTweenManager);
+    public StockPileLayouter(final CardNodesManager mCardNodesManager, final TweenManager mTweenManager, final IPile boundPile) {
+        super(mCardNodesManager, mTweenManager, boundPile);
     }
 
     @Override

@@ -2,9 +2,7 @@ package com.yan.durak.screens;
 
 import com.yan.durak.communication.game_server.connector.IGameServerConnector;
 import com.yan.durak.communication.sender.GameServerMessageSender;
-import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.input.cards.CardsTouchProcessor;
-import com.yan.durak.input.cards.states.CardsTouchProcessorMultipleChoiceState;
 import com.yan.durak.managers.CardNodesManager;
 import com.yan.durak.managers.PileLayouterManager;
 import com.yan.durak.managers.PileManager;
@@ -13,10 +11,6 @@ import com.yan.durak.nodes.CardNode;
 import com.yan.durak.screen_fragments.CardsScreenFragment;
 import com.yan.durak.screen_fragments.HudScreenFragment;
 import com.yan.durak.session.GameSession;
-import com.yan.durak.session.states.ActivePlayerState;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.nodes.YANButtonNode;
@@ -29,35 +23,35 @@ import glengine.yan.glengine.renderer.YANGLRenderer;
 public class PrototypeGameScreen extends BaseGameScreen {
 
     //Player hand touch processor
-    private CardsTouchProcessor mCardsTouchProcessor;
+    private final CardsTouchProcessor mCardsTouchProcessor;
 
     //communication
-    private IGameServerConnector mGameServerConnector;
-    private GameServerMessageSender mMessageSender;
+    private final IGameServerConnector mGameServerConnector;
+    private final GameServerMessageSender mMessageSender;
 
     //fragments
-    private HudScreenFragment mHudNodesFragment;
-    private CardsScreenFragment mCardsScreenFragment;
+    private final HudScreenFragment mHudNodesFragment;
+    private final CardsScreenFragment mCardsScreenFragment;
 
     //game state
-    private GameSession mGameSession;
+    private final GameSession mGameSession;
 
     //updatables
     private final TweenManager mSharedTweenManager;
 
     //managers
-    PileLayouterManager mPileLayouterManager;
+    private final PileLayouterManager mPileLayouterManager;
 
     //pile manager
-    PileManager mPileManager;
+    private final PileManager mPileManager;
 
     //card nodes manager
-    CardNodesManager mCardNodesManager;
+    private final CardNodesManager mCardNodesManager;
 
 
-    //TODO: Replace this with some kind of cool layouter
-    @Deprecated
-    private CardsTouchProcessorMultipleChoiceState mThrowInInputProcessorState;
+//    //TODO: Replace this with some kind of cool layouter
+//    @Deprecated
+//    private CardsTouchProcessorMultipleChoiceState mThrowInInputProcessorState;
 
 
     public PrototypeGameScreen(YANGLRenderer renderer, IGameServerConnector gameServerConnector) {
@@ -93,7 +87,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mCardNodesManager = new CardNodesManager();
 
         //layouters manager
-        mPileLayouterManager = new PileLayouterManager(mCardNodesManager, mSharedTweenManager);
+        mPileLayouterManager = new PileLayouterManager(mCardNodesManager, mSharedTweenManager, pileManager);
 
 
         //TODO : set the nodes each time there is a change rather then give it by reference
@@ -259,7 +253,6 @@ public class PrototypeGameScreen extends BaseGameScreen {
         //we also need to initialize the pile manager
         mPileLayouterManager.init(getSceneSize().getX(), getSceneSize().getY());
 
-
     }
 
 
@@ -296,25 +289,27 @@ public class PrototypeGameScreen extends BaseGameScreen {
             @Override
             public void onButtonClick() {
 
-                //remove the flags
-                if (getGameSession().getActivePlayerState() == ActivePlayerState.REQUEST_RETALIATION) {
-                    getGameSession().setActivePlayerState(ActivePlayerState.OTHER_PLAYER_TURN);
-
-                    //TODO : optimize
-                    mMessageSender.sendResponseRetaliatePiles(new ArrayList<List<Card>>());
-
-                    //at the end we want the button to disappear
-                    mHudNodesFragment.hideTakeButton();
-                }
+                //TODO : set listener
+//                //remove the flags
+//                if (getGameSession().getActivePlayerState() == ActivePlayerState.REQUEST_RETALIATION) {
+//                    getGameSession().setActivePlayerState(ActivePlayerState.OTHER_PLAYER_TURN);
+//
+//                    //TODO : optimize
+//                    mMessageSender.sendResponseRetaliatePiles(new ArrayList<List<Card>>());
+//
+//                    //at the end we want the button to disappear
+//                    mHudNodesFragment.hideTakeButton();
+//                }
             }
         });
 
         mHudNodesFragment.setBitoButtonClickListener(new YANButtonNode.YanButtonNodeClickListener() {
             @Override
             public void onButtonClick() {
-                if (getGameSession().getActivePlayerState() == ActivePlayerState.REQUEST_THROW_IN) {
-                    sendThrowInResponse();
-                }
+                //TODO : set listener
+//                if (getGameSession().getActivePlayerState() == ActivePlayerState.REQUEST_THROW_IN) {
+//                    sendThrowInResponse();
+//                }
             }
         });
     }
@@ -397,17 +392,17 @@ public class PrototypeGameScreen extends BaseGameScreen {
         return mHudNodesFragment;
     }
 
-    public void setThrowInCardsAllowed(int mThrowInCardsAllowed) {
-        this.mThrowInCardsAllowed = mThrowInCardsAllowed;
-    }
+//    public void setThrowInCardsAllowed(int mThrowInCardsAllowed) {
+//        this.mThrowInCardsAllowed = mThrowInCardsAllowed;
+//    }
+//
+//    public CardsTouchProcessorMultipleChoiceState getThrowInInputProcessorState() {
+//        return mThrowInInputProcessorState;
+//    }
 
-    public CardsTouchProcessorMultipleChoiceState getThrowInInputProcessorState() {
-        return mThrowInInputProcessorState;
-    }
-
-    public void setThrowInInputProcessorState(CardsTouchProcessorMultipleChoiceState mThrowInInputProcessorState) {
-        this.mThrowInInputProcessorState = mThrowInInputProcessorState;
-    }
+//    public void setThrowInInputProcessorState(CardsTouchProcessorMultipleChoiceState mThrowInInputProcessorState) {
+//        this.mThrowInInputProcessorState = mThrowInInputProcessorState;
+//    }
 
     public CardsTouchProcessor getCardsTouchProcessor() {
         return mCardsTouchProcessor;

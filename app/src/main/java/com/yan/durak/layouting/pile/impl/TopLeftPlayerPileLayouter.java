@@ -3,6 +3,7 @@ package com.yan.durak.layouting.pile.impl;
 import com.yan.durak.layouting.pile.BasePileLayouter;
 import com.yan.durak.layouting.threepoint.ThreePointFanLayouter;
 import com.yan.durak.managers.CardNodesManager;
+import com.yan.durak.models.IPile;
 
 import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.util.geometry.YANVector2;
@@ -14,8 +15,8 @@ public class TopLeftPlayerPileLayouter extends BasePileLayouter {
 
     private ThreePointFanLayouter mThreePointFanLayouterTopLeft;
 
-    public TopLeftPlayerPileLayouter(CardNodesManager mCardNodesManager, TweenManager mTweenManager) {
-        super(mCardNodesManager, mTweenManager);
+    public TopLeftPlayerPileLayouter(final CardNodesManager mCardNodesManager, final TweenManager mTweenManager, final IPile boundPile) {
+        super(mCardNodesManager, mTweenManager, boundPile);
 
         mThreePointFanLayouterTopLeft = new ThreePointFanLayouter(2);
     }
@@ -25,6 +26,7 @@ public class TopLeftPlayerPileLayouter extends BasePileLayouter {
         //TODO : Every pile layouter will make sure to change size of the card
     }
 
+    @Override
     public void init(float sceneWidth, float sceneHeight) {
 
         //offset from the beginning of the screen left

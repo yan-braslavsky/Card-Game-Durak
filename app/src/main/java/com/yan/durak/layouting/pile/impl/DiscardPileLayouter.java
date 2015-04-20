@@ -9,14 +9,15 @@ import aurelienribon.tweenengine.TweenManager;
 /**
  * Created by ybra on 20/04/15.
  */
-public class FieldPileLayouter extends BasePileLayouter {
+public class DiscardPileLayouter extends BasePileLayouter {
 
-    public FieldPileLayouter(final CardNodesManager mCardNodesManager,final  TweenManager mTweenManager,final IPile boundPile) {
+
+    public DiscardPileLayouter(final CardNodesManager mCardNodesManager,final  TweenManager mTweenManager,final  IPile boundPile) {
         super(mCardNodesManager, mTweenManager,boundPile);
     }
 
     @Override
     public void layout() {
-        //TODO : Every pile layouter will make sure to change size of the card
+        //TODO : implement
     }
 }

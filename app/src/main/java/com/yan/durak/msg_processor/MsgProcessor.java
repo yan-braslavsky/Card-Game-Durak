@@ -59,7 +59,7 @@ public class MsgProcessor implements IGameServerConnector.IGameServerCommunicato
         mProcessorsMap.put(RequestRetaliatePilesMessage.class, new RequestRetaliatePilesMsgSubProcessor(this));
 
         //Game Setup
-        mProcessorsMap.put(GameSetupProtocolMessage.class, new GameSetupMsgSubProcessor(this));
+        mProcessorsMap.put(GameSetupProtocolMessage.class, new GameSetupMsgSubProcessor(this, gameSession, hudScreenFragment, pileLayouterManager));
 
         //Player Action
         mProcessorsMap.put(PlayerTakesActionMessage.class, new PlayerTakesActionMsgSubProcessor(this));

@@ -15,7 +15,7 @@ public class GameOverMsgSubProcessor extends BaseMsgSubProcessor<GameOverProtoco
 
     @Override
     public void processMessage(GameOverProtocolMessage serverMessage) {
-        boolean iLostTheGame = (mMsgProcessor.getPrototypeGameScreen().getGameSession().getActivePlayerGameIndex() == serverMessage.getMessageData().getLoosingPlayer().getPlayerIndexInGame());
+        boolean iLostTheGame = (mMsgProcessor.getPrototypeGameScreen().getGameSession().getBottomPlayerGameIndex() == serverMessage.getMessageData().getLoosingPlayer().getPlayerIndexInGame());
         if (iLostTheGame) {
             mMsgProcessor.getPrototypeGameScreen().getHudNodesFragment().showYouLooseMessage();
         } else {

@@ -18,7 +18,7 @@ public class GameSession {
     /**
      * The index of the game on server for active player
      */
-    private int activePlayerGameIndex;
+    private int bottomPlayerGameIndex;
 
     /**
      * Cards that can be thrown in at this turn
@@ -39,23 +39,27 @@ public class GameSession {
      * Active player can be in several states
      */
     private ActivePlayerState mActivePlayerState;
+    private int mTopLeftPlayerPileIndex;
+    private int mTopRightPlayerPileIndex;
+    private int mBottomPlayerPileIndex;
+    private Card mTrumpCard;
 
     public GameSession() {
         mCardsPendingRetaliationMap = new HashMap<>();
         mSelectedThrowInCards = new ArrayList<>();
         mThrowInPossibleCards = new ArrayList<>();
-        activePlayerGameIndex = -1;
+        bottomPlayerGameIndex = -1;
 
         //by default player is not active unless the state changes
         mActivePlayerState = mActivePlayerState.OTHER_PLAYER_TURN;
     }
 
-    public int getActivePlayerGameIndex() {
-        return activePlayerGameIndex;
+    public int getBottomPlayerGameIndex() {
+        return bottomPlayerGameIndex;
     }
 
-    public void setActivePlayerGameIndex(int activePlayerGameIndex) {
-        this.activePlayerGameIndex = activePlayerGameIndex;
+    public void setBottomPlayerGameIndex(int activePlayerGameIndex) {
+        this.bottomPlayerGameIndex = activePlayerGameIndex;
     }
 
     public ArrayList<CardData> getThrowInPossibleCards() {
@@ -77,4 +81,43 @@ public class GameSession {
     public void setActivePlayerState(ActivePlayerState activePlayerState) {
         mActivePlayerState = activePlayerState;
     }
+
+
+    public void setTopLeftPlayerPileIndex(int topLeftPlayerPileIndex) {
+        mTopLeftPlayerPileIndex = topLeftPlayerPileIndex;
+    }
+
+    public int getTopLeftPlayerPileIndex() {
+        return mTopLeftPlayerPileIndex;
+    }
+
+    public void setTopRightPlayerPileIndex(int topRightPlayerPileIndex) {
+        mTopRightPlayerPileIndex = topRightPlayerPileIndex;
+    }
+
+    public int getTopRightPlayerPileIndex() {
+        return mTopRightPlayerPileIndex;
+    }
+
+    public void setBottomPlayerPileIndex(int bottomPlayerPileIndex) {
+        mBottomPlayerPileIndex = bottomPlayerPileIndex;
+    }
+
+    public int getBottomPlayerPileIndex() {
+        return mBottomPlayerPileIndex;
+    }
+
+    public void setTrumpCard(Card trumpCard) {
+        mTrumpCard = trumpCard;
+    }
+
+    public Card getTrumpCard() {
+        return mTrumpCard;
+    }
+
+    public int getStockPileIndex() {
+        return 0;
+    }
+
+
 }

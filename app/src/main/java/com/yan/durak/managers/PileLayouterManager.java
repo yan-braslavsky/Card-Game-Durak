@@ -2,6 +2,7 @@ package com.yan.durak.managers;
 
 import com.yan.durak.layouting.pile.IPileLayouter;
 import com.yan.durak.layouting.pile.impl.BottomPlayerPileLayouter;
+import com.yan.durak.layouting.pile.impl.DiscardPileLayouter;
 import com.yan.durak.layouting.pile.impl.FieldPileLayouter;
 import com.yan.durak.layouting.pile.impl.StockPileLayouter;
 import com.yan.durak.layouting.pile.impl.TopLeftPlayerPileLayouter;
@@ -18,65 +19,67 @@ import aurelienribon.tweenengine.TweenManager;
  */
 public class PileLayouterManager {
 
-    //TODO : that is debatable , there could be more piles on field
-    public static final int MAX_PILES_ON_FIELD = 8;
+    //managers
+    final PileManager mPileManager;
 
+    //layouters
+    final BottomPlayerPileLayouter mBottomPlayerPileLayouter;
+    final TopLeftPlayerPileLayouter mTopLeftPlayerPileLayouter;
+    final TopRightPlayerPileLayouter mTopRightPlayerPileLayouter;
+    final StockPileLayouter mStockPileLayouter;
+    final DiscardPileLayouter mDiscardPileLayouter;
+    final List<FieldPileLayouter> mFieldPileLayouterList;
 
-    BottomPlayerPileLayouter mBottomPlayerPileLayouter;
-    TopLeftPlayerPileLayouter mTopLeftPlayerPileLayouter;
-    TopRightPlayerPileLayouter mTopRightPlayerPileLayouter;
-    StockPileLayouter mStockPileLayouter;
-    List<FieldPileLayouter> mFieldPileLayouterList;
+    public PileLayouterManager(CardNodesManager cardNodesManager, TweenManager tweenManager, PileManager pileManager) {
 
-    public PileLayouterManager(CardNodesManager cardNodesManager, TweenManager tweenManager) {
-
-        //TODO : assign a pile to each layouter
+        this.mPileManager = pileManager;
 
         //init bottom player layouter
-        mBottomPlayerPileLayouter = new BottomPlayerPileLayouter(cardNodesManager, tweenManager);
+        mBottomPlayerPileLayouter = new BottomPlayerPileLayouter(cardNodesManager, tweenManager, mPileManager.getBottomPlayerPile());
 
         //init top left player layouter
-        mTopLeftPlayerPileLayouter = new TopLeftPlayerPileLayouter(cardNodesManager, tweenManager);
+        mTopLeftPlayerPileLayouter = new TopLeftPlayerPileLayouter(cardNodesManager, tweenManager, mPileManager.getTopLeftPlayerPile());
 
         //init top right player layouter
-        mTopRightPlayerPileLayouter = new TopRightPlayerPileLayouter(cardNodesManager, tweenManager);
+        mTopRightPlayerPileLayouter = new TopRightPlayerPileLayouter(cardNodesManager, tweenManager, mPileManager.getTopRightPlayerPile());
 
         //init stock pile layouter
-        mStockPileLayouter = new StockPileLayouter(cardNodesManager, tweenManager);
+        mStockPileLayouter = new StockPileLayouter(cardNodesManager, tweenManager, mPileManager.getStockPile());
+
+        //init discard pile layouter
+        mDiscardPileLayouter = new DiscardPileLayouter(cardNodesManager, tweenManager, mPileManager.getDiscardPile());
+
+        //init field piles list
+        mFieldPileLayouterList = new ArrayList<>(PileManager.MAX_PILES_ON_FIELD);
 
         //init list of field layouters
-        initFieldLayoutersList(cardNodesManager, tweenManager);
-
-    }
-
-    private void initFieldLayoutersList(CardNodesManager cardNodesManager, TweenManager tweenManager) {
-        mFieldPileLayouterList = new ArrayList<>();
-
-
-        for (int i = 0; i < MAX_PILES_ON_FIELD; i++) {
-            mFieldPileLayouterList.add(new FieldPileLayouter(cardNodesManager, tweenManager));
+        for (int pileIndex = PileManager.FIRST_FIELD_PILE_INDEX; pileIndex < PileManager.MAX_PILE_INDEX; pileIndex++) {
+            mFieldPileLayouterList.add(new FieldPileLayouter(cardNodesManager, tweenManager, mPileManager.getPileWithIndex(pileIndex)));
         }
     }
+
 
     /**
      * Initializes positions and all needed values for layouting
      */
     public void init(float sceneWidth, float sceneHeight) {
 
-        //init layouters
+        //init layouters for players
         mBottomPlayerPileLayouter.init(sceneWidth, sceneHeight);
         mTopLeftPlayerPileLayouter.init(sceneWidth, sceneHeight);
         mTopRightPlayerPileLayouter.init(sceneWidth, sceneHeight);
 
-        //TODO : init positions of field layouters
+        //init stock and discard layouters
+        mStockPileLayouter.init(sceneWidth, sceneHeight);
+        mDiscardPileLayouter.init(sceneWidth, sceneHeight);
+
+        //init field piles layouters
+        for (FieldPileLayouter pileLayouter : mFieldPileLayouterList) {
+            pileLayouter.init(sceneWidth, sceneHeight);
+        }
     }
 
-    public void assignPileModels(PileManager pileManager) {
-        //TODO : assign a pile to each layouter
-    }
-
-
-    IPileLayouter getPileLayouterForPile(IPile pile) {
+    public IPileLayouter getPileLayouterForPile(IPile pile) {
         //TODO Implement
         throw new UnsupportedOperationException();
     }
