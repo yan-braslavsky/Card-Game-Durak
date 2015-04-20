@@ -1,7 +1,7 @@
 package com.yan.durak.layouting.pile.impl;
 
 import com.yan.durak.layouting.pile.BasePileLayouter;
-import com.yan.durak.managers.ICardNodesManager;
+import com.yan.durak.managers.CardNodesManager;
 
 import aurelienribon.tweenengine.TweenManager;
 
@@ -10,7 +10,7 @@ import aurelienribon.tweenengine.TweenManager;
  */
 public class FieldPileLayouter extends BasePileLayouter {
 
-    public FieldPileLayouter(ICardNodesManager mCardNodesManager, TweenManager mTweenManager) {
+    public FieldPileLayouter(CardNodesManager mCardNodesManager, TweenManager mTweenManager) {
         super(mCardNodesManager, mTweenManager);
     }
 

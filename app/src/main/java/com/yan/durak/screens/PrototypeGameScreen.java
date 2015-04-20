@@ -8,7 +8,9 @@ import com.yan.durak.gamelogic.communication.protocol.messages.ResponseThrowInsM
 import com.yan.durak.input.cards.CardsTouchProcessor;
 import com.yan.durak.input.cards.states.CardsTouchProcessorDefaultState;
 import com.yan.durak.input.cards.states.CardsTouchProcessorMultipleChoiceState;
+import com.yan.durak.managers.CardNodesManager;
 import com.yan.durak.managers.PileLayouterManager;
+import com.yan.durak.managers.PileManager;
 import com.yan.durak.msg_processor.MsgProcessor;
 import com.yan.durak.nodes.CardNode;
 import com.yan.durak.screen_fragments.CardsScreenFragment;
@@ -29,14 +31,11 @@ import glengine.yan.glengine.renderer.YANGLRenderer;
  */
 public class PrototypeGameScreen extends BaseGameScreen {
 
-//    public static final float CARD_SCALE_AMOUNT_OPPONENT = 0.6f;
-
     //Player hand touch processor
     private CardsTouchProcessor mCardsTouchProcessor;
 
     //communication
     private IGameServerConnector mGameServerConnector;
-    //    private MsgProcessor msgProcessor;
     private GameServerMessageSender mMessageSender;
 
     //fragments
@@ -49,20 +48,15 @@ public class PrototypeGameScreen extends BaseGameScreen {
     //updatables
     private final TweenManager mSharedTweenManager;
 
-    //layouters
+    //managers
     PileLayouterManager mPileLayouterManager;
 
-//    //concrete layouters
-//    private ThreePointFanLayouter mThreePointFanLayouterTopRightPlayer;
-//    private ThreePointFanLayouter mThreePointFanLayouterTopLeft;
-//    private CardsLayouter mPlayerCardsLayouter;
+    //pile manager
+    PileManager mPileManager;
 
+    //card nodes manager
+    CardNodesManager mCardNodesManager;
 
-    //TODO : remove those
-    @Deprecated
-    private int mThrowInCardsAllowed;
-//    @Deprecated
-//    private CardsTweenAnimator mCardsTweenAnimator;
 
     //TODO: Replace this with some kind of cool layouter
     @Deprecated
@@ -95,16 +89,15 @@ public class PrototypeGameScreen extends BaseGameScreen {
         //fragment that manages all card nodes
         mCardsScreenFragment = new CardsScreenFragment();
 
+        //pile manager
+        mPileManager = new PileManager();
 
-        mPileLayouterManager = new PileLayouterManager();
+        //card nodes manager
+        mCardNodesManager = new CardNodesManager();
 
+        //layouters manager
+        mPileLayouterManager = new PileLayouterManager(mCardNodesManager, mSharedTweenManager);
 
-//        //init 3 points layouter to create a fan of opponents hands
-//        mThreePointFanLayouterTopRightPlayer = new ThreePointFanLayouter(2);
-//        mThreePointFanLayouterTopLeft = new ThreePointFanLayouter(2);
-//
-//        //init player cards layouter
-//        mPlayerCardsLayouter = new PlayerCardsLayouter(CardsScreenFragment.TOTAL_CARDS_COUNT);
 
         //TODO : set the nodes each time there is a change rather then give it by reference
         //currently we are initializing with empty array , cards will be set every time player pile content changes
@@ -276,34 +269,6 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mPileLayouterManager.init(getSceneSize().getX(), getSceneSize().getY());
 
 
-//        //layout avatars
-//        float offsetX = getSceneSize().getX() * 0.01f;
-//        float topOffset = getSceneSize().getY() * 0.07f;
-//
-//        float aspectRatio = mUiAtlas.getTextureRegion("stump.png").getWidth() / mUiAtlas.getTextureRegion("stump.png").getHeight();
-//        float avatarWidth = getSceneSize().getX() * 0.2f;
-//        float avatarHeight = avatarWidth / aspectRatio;
-//        YANVector2 avatarSize = new YANVector2(avatarWidth, avatarHeight);
-//
-//        //setup 3 points for player at right top
-//        float fanDistance = getSceneSize().getX() * 0.05f;
-//
-//        YANVector2 pos = new YANVector2(getSceneSize().getX() - offsetX, topOffset);
-//        YANVector2 origin = new YANVector2(pos.getX() - avatarSize.getX(), pos.getY());
-//        YANVector2 leftBasis = new YANVector2(origin.getX(), origin.getY() + fanDistance);
-//        YANVector2 rightBasis = new YANVector2(origin.getX() - fanDistance, origin.getY());
-//        mThreePointFanLayouterTopRightPlayer.setThreePoints(origin, leftBasis, rightBasis);
-//
-//        pos.setXY(offsetX, topOffset);
-//
-//        //setup 3 points for player at left top
-//        origin = new YANVector2(pos.getX() * 4, pos.getY());
-//        leftBasis = new YANVector2(origin.getX() + fanDistance, origin.getY());
-//        rightBasis = new YANVector2(origin.getX(), origin.getY() + fanDistance);
-//        mThreePointFanLayouterTopLeft.setThreePoints(origin, leftBasis, rightBasis);
-//
-//        //swap direction
-//        mThreePointFanLayouterTopLeft.setDirection(ThreePointFanLayouter.LayoutDirection.RTL);
     }
 
 

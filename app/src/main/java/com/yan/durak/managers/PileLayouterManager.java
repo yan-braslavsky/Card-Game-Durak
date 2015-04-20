@@ -18,9 +18,9 @@ import aurelienribon.tweenengine.TweenManager;
  */
 public class PileLayouterManager {
 
-
     //TODO : that is debatable , there could be more piles on field
-    public static final int MAX_PILES_ON_FIELD = 6;
+    public static final int MAX_PILES_ON_FIELD = 8;
+
 
     BottomPlayerPileLayouter mBottomPlayerPileLayouter;
     TopLeftPlayerPileLayouter mTopLeftPlayerPileLayouter;
@@ -28,7 +28,9 @@ public class PileLayouterManager {
     StockPileLayouter mStockPileLayouter;
     List<FieldPileLayouter> mFieldPileLayouterList;
 
-    public PileLayouterManager(ICardNodesManager cardNodesManager, TweenManager tweenManager) {
+    public PileLayouterManager(CardNodesManager cardNodesManager, TweenManager tweenManager) {
+
+        //TODO : assign a pile to each layouter
 
         //init bottom player layouter
         mBottomPlayerPileLayouter = new BottomPlayerPileLayouter(cardNodesManager, tweenManager);
@@ -47,8 +49,9 @@ public class PileLayouterManager {
 
     }
 
-    private void initFieldLayoutersList(ICardNodesManager cardNodesManager, TweenManager tweenManager) {
+    private void initFieldLayoutersList(CardNodesManager cardNodesManager, TweenManager tweenManager) {
         mFieldPileLayouterList = new ArrayList<>();
+
 
         for (int i = 0; i < MAX_PILES_ON_FIELD; i++) {
             mFieldPileLayouterList.add(new FieldPileLayouter(cardNodesManager, tweenManager));
@@ -60,19 +63,18 @@ public class PileLayouterManager {
      */
     public void init(float sceneWidth, float sceneHeight) {
 
-        //init the player cards layouter
-        mPlayerCardsLayouter.init(mCardsScreenFragment.getCardNodeWidth(), mCardsScreenFragment.getCardNodeHeight(),
-                //maximum available width
-                getSceneSize().getX(),
-                //base x position ( center )
-                getSceneSize().getX() / 2,
-
-                //TODO : Take the right values , not hard coded
-                //base y position
-                getSceneSize().getY() - /*mFence.getSize().getY() / 2*/100);
+        //init layouters
+        mBottomPlayerPileLayouter.init(sceneWidth, sceneHeight);
+        mTopLeftPlayerPileLayouter.init(sceneWidth, sceneHeight);
+        mTopRightPlayerPileLayouter.init(sceneWidth, sceneHeight);
 
         //TODO : init positions of field layouters
     }
+
+    public void assignPileModels(PileManager pileManager) {
+        //TODO : assign a pile to each layouter
+    }
+
 
     IPileLayouter getPileLayouterForPile(IPile pile) {
         //TODO Implement

@@ -4,11 +4,11 @@ import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.communication.protocol.messages.CardMovedProtocolMessage;
 import com.yan.durak.msg_processor.MsgProcessor;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
-import com.yan.durak.managers.ICardNodesManager;
+import com.yan.durak.managers.CardNodesManager;
 import com.yan.durak.models.IPile;
 import com.yan.durak.layouting.pile.IPileLayouter;
 import com.yan.durak.managers.PileLayouterManager;
-import com.yan.durak.managers.IPileManager;
+import com.yan.durak.managers.PileManager;
 
 /**
  * Created by ybra on 17/04/15.
@@ -16,12 +16,12 @@ import com.yan.durak.managers.IPileManager;
 public class CardMovedMsgSubProcessor extends BaseMsgSubProcessor<CardMovedProtocolMessage> {
 
 
-    private IPileManager mPileManager;
-    private ICardNodesManager mCardNodesManager;
+    private PileManager mPileManager;
+    private CardNodesManager mCardNodesManager;
     private PileLayouterManager mPileLayouterManager;
 
 
-    public CardMovedMsgSubProcessor(MsgProcessor mMsgProcessor, IPileManager mPileManager, ICardNodesManager mCardNodesManager, PileLayouterManager mPileLayouterManager) {
+    public CardMovedMsgSubProcessor(MsgProcessor mMsgProcessor, PileManager mPileManager, CardNodesManager mCardNodesManager, PileLayouterManager mPileLayouterManager) {
         super(mMsgProcessor);
         this.mPileManager = mPileManager;
         this.mCardNodesManager = mCardNodesManager;
