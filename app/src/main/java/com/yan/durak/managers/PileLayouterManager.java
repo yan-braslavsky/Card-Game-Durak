@@ -7,7 +7,7 @@ import com.yan.durak.layouting.pile.impl.FieldPileLayouter;
 import com.yan.durak.layouting.pile.impl.StockPileLayouter;
 import com.yan.durak.layouting.pile.impl.TopLeftPlayerPileLayouter;
 import com.yan.durak.layouting.pile.impl.TopRightPlayerPileLayouter;
-import com.yan.durak.models.IPile;
+import com.yan.durak.models.PileModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,12 +50,13 @@ public class PileLayouterManager {
         mDiscardPileLayouter = new DiscardPileLayouter(cardNodesManager, tweenManager, mPileManager.getDiscardPile());
 
         //init field piles list
-        mFieldPileLayouterList = new ArrayList<>(PileManager.MAX_PILES_ON_FIELD);
+        mFieldPileLayouterList = new ArrayList<>(mPileManager.getmFieldPiles().size());
 
         //init list of field layouters
-        for (int pileIndex = PileManager.FIRST_FIELD_PILE_INDEX; pileIndex < PileManager.MAX_PILE_INDEX; pileIndex++) {
-            mFieldPileLayouterList.add(new FieldPileLayouter(cardNodesManager, tweenManager, mPileManager.getPileWithIndex(pileIndex)));
+        for (PileModel pileModel : mPileManager.getmFieldPiles()) {
+            mFieldPileLayouterList.add(new FieldPileLayouter(cardNodesManager, tweenManager, pileModel));
         }
+
     }
 
 
@@ -79,7 +80,7 @@ public class PileLayouterManager {
         }
     }
 
-    public IPileLayouter getPileLayouterForPile(IPile pile) {
+    public IPileLayouter getPileLayouterForPile(PileModel pile) {
         //TODO Implement
         throw new UnsupportedOperationException();
     }

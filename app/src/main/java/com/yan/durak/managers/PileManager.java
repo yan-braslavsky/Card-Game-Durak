@@ -1,6 +1,13 @@
 package com.yan.durak.managers;
 
-import com.yan.durak.models.IPile;
+import com.yan.durak.gamelogic.cards.Card;
+import com.yan.durak.gamelogic.cards.CardsHelper;
+import com.yan.durak.models.PileModel;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ybra on 20/04/15.
@@ -8,44 +15,102 @@ import com.yan.durak.models.IPile;
 public class PileManager {
 
     //TODO : that is debatable , there could be more piles on field
-    public static final int MAX_PILES_ON_FIELD = 8;
-    public static final int FIRST_FIELD_PILE_INDEX = 4;
-    public static final int MAX_PILE_INDEX = FIRST_FIELD_PILE_INDEX + MAX_PILES_ON_FIELD;
+    private static final int MAX_PILES_ON_FIELD = 8;
+    private static final int FIRST_FIELD_PILE_INDEX = 5;
+    private static final int TOTAL_PILES_AMOUNT = FIRST_FIELD_PILE_INDEX + MAX_PILES_ON_FIELD;
 
-    private IPile mBottomPlayerPile;
-    private IPile mTopLeftPlayerPile;
-    private IPile mTopRightPlayerPile;
-    private IPile mStockPile;
-    private IPile mDiscardPile;
+    private static final int STOCK_PILE_INDEX = 0;
+    private static final int DISCARD_PILE_INDEX = 1;
+    private static final int LOWEST_PLAYER_PILE_INDEX = 2;
+
+    //all cards
+    private final List<Card> mCards;
+
+    //All piles
+    private final PileModel mBottomPlayerPile;
+    private final PileModel mTopLeftPlayerPile;
+    private final PileModel mTopRightPlayerPile;
+    private final PileModel mStockPile;
+    private final PileModel mDiscardPile;
+    private final List<PileModel> mFieldPiles;
+
+    //mapping between pile index and actual pile
+    private final Map<Integer, PileModel> mIndexToPileMap;
+
 
     public PileManager() {
 
-        //TODO : init piles
+        this.mCards = CardsHelper.create36Deck();
+        this.mBottomPlayerPile = new PileModel();
+        this.mTopLeftPlayerPile = new PileModel();
+        this.mTopRightPlayerPile = new PileModel();
+        this.mStockPile = new PileModel();
+        this.mDiscardPile = new PileModel();
+        this.mIndexToPileMap = new HashMap<>(TOTAL_PILES_AMOUNT);
+        this.mFieldPiles = new ArrayList<>(MAX_PILES_ON_FIELD);
+
+        init();
     }
 
-    public IPile getPileWithIndex(int pileIndex) {
+    private void init() {
+
+        //initially all piles are placed in the stock pile
+        for (Card card : mCards) {
+            mStockPile.addCard(card);
+        }
+
+        //initially we assuming that bottom player has lowest pile index , but it can change after game setup message is received
+        this.mIndexToPileMap.put(STOCK_PILE_INDEX, mStockPile);
+        this.mIndexToPileMap.put(DISCARD_PILE_INDEX, mDiscardPile);
+        this.mIndexToPileMap.put(LOWEST_PLAYER_PILE_INDEX, mBottomPlayerPile);
+        this.mIndexToPileMap.put(LOWEST_PLAYER_PILE_INDEX + 1, mTopRightPlayerPile);
+        this.mIndexToPileMap.put(LOWEST_PLAYER_PILE_INDEX + 2, mTopLeftPlayerPile);
+
+        //init field piles
+        for (int pileIndex = PileManager.FIRST_FIELD_PILE_INDEX; pileIndex < TOTAL_PILES_AMOUNT; pileIndex++) {
+            PileModel fieldPile = new PileModel();
+            this.mFieldPiles.add(fieldPile);
+            this.mIndexToPileMap.put(pileIndex, fieldPile);
+        }
+    }
+
+    public void setPlayersPilesIndexes(int bottomPlayerPileIndex, int topRightPlayerPileIndex, int topLeftPlayerPileIndex) {
+        this.mIndexToPileMap.put(bottomPlayerPileIndex, mBottomPlayerPile);
+        this.mIndexToPileMap.put(topRightPlayerPileIndex + 1, mTopRightPlayerPile);
+        this.mIndexToPileMap.put(topLeftPlayerPileIndex + 2, mTopLeftPlayerPile);
+    }
+
+    public PileModel getPileWithIndex(int pileIndex) {
         throw new UnsupportedOperationException();
     }
 
 
-    public IPile getBottomPlayerPile() {
+    public PileModel getBottomPlayerPile() {
         return mBottomPlayerPile;
     }
 
-    public IPile getTopLeftPlayerPile() {
+    public PileModel getTopLeftPlayerPile() {
         return mTopLeftPlayerPile;
     }
 
-    public IPile getTopRightPlayerPile() {
+    public PileModel getTopRightPlayerPile() {
         return mTopRightPlayerPile;
     }
 
 
-    public IPile getStockPile() {
+    public PileModel getStockPile() {
         return mStockPile;
     }
 
-    public IPile getDiscardPile() {
+    public PileModel getDiscardPile() {
         return mDiscardPile;
+    }
+
+    public List<PileModel> getmFieldPiles() {
+        return mFieldPiles;
+    }
+
+    public List<Card> getAllCards() {
+        return mCards;
     }
 }

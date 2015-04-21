@@ -50,28 +50,28 @@ public class MsgProcessor implements IGameServerConnector.IGameServerCommunicato
     private void fillProcessorsMap() {
 
         //Card Moved
-        mProcessorsMap.put(CardMovedProtocolMessage.class, new CardMovedMsgSubProcessor(this));
-
-        //Request Attack
-        mProcessorsMap.put(RequestCardForAttackMessage.class, new RequestCardForAttackMsgSubProcessor(this));
-
-        //Request Retaliation
-        mProcessorsMap.put(RequestRetaliatePilesMessage.class, new RequestRetaliatePilesMsgSubProcessor(this));
+        mProcessorsMap.put(CardMovedProtocolMessage.class, new CardMovedMsgSubProcessor(getPrototypeGameScreen().getPileManager(), getPrototypeGameScreen().getPileLayouterManager()));
 
         //Game Setup
-        mProcessorsMap.put(GameSetupProtocolMessage.class, new GameSetupMsgSubProcessor(this, gameSession, hudScreenFragment, pileLayouterManager));
+        mProcessorsMap.put(GameSetupProtocolMessage.class, new GameSetupMsgSubProcessor(getPrototypeGameScreen().getGameInfo(), getPrototypeGameScreen().getPileLayouterManager(), getPrototypeGameScreen().getPileManager()));
+
+        //Request Attack
+        mProcessorsMap.put(RequestCardForAttackMessage.class, new RequestCardForAttackMsgSubProcessor());
+
+        //Request Retaliation
+        mProcessorsMap.put(RequestRetaliatePilesMessage.class, new RequestRetaliatePilesMsgSubProcessor());
 
         //Player Action
-        mProcessorsMap.put(PlayerTakesActionMessage.class, new PlayerTakesActionMsgSubProcessor(this));
+        mProcessorsMap.put(PlayerTakesActionMessage.class, new PlayerTakesActionMsgSubProcessor());
 
         //Retaliation Invalid
-        mProcessorsMap.put(RetaliationInvalidProtocolMessage.class, new RetaliationInvalidMsgSubProcessor(this));
+        mProcessorsMap.put(RetaliationInvalidProtocolMessage.class, new RetaliationInvalidMsgSubProcessor());
 
         //Request Throw In
-        mProcessorsMap.put(RequestThrowInsMessage.class, new RequestThrowInsMsgSubProcessor(this));
+        mProcessorsMap.put(RequestThrowInsMessage.class, new RequestThrowInsMsgSubProcessor());
 
         //Game Over
-        mProcessorsMap.put(GameOverProtocolMessage.class, new GameOverMsgSubProcessor(this));
+        mProcessorsMap.put(GameOverProtocolMessage.class, new GameOverMsgSubProcessor());
     }
 
     @Override

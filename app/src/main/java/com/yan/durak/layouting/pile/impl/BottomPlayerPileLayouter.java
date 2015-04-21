@@ -3,7 +3,7 @@ package com.yan.durak.layouting.pile.impl;
 import com.yan.durak.layouting.impl.PlayerCardsLayouter;
 import com.yan.durak.layouting.pile.BasePileLayouter;
 import com.yan.durak.managers.CardNodesManager;
-import com.yan.durak.models.IPile;
+import com.yan.durak.models.PileModel;
 
 import aurelienribon.tweenengine.TweenManager;
 
@@ -15,7 +15,7 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
 
     private final PlayerCardsLayouter mPlayerCardsLayouter;
 
-    public BottomPlayerPileLayouter(final CardNodesManager mCardNodesManager, final TweenManager mTweenManager, final IPile boundPile) {
+    public BottomPlayerPileLayouter(final CardNodesManager mCardNodesManager, final TweenManager mTweenManager, final PileModel boundPile) {
         super(mCardNodesManager, mTweenManager, boundPile);
 
         //init player cards layouter

@@ -3,11 +3,9 @@ package com.yan.durak.msg_processor.subprocessors.impl;
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.communication.protocol.messages.CardMovedProtocolMessage;
 import com.yan.durak.layouting.pile.IPileLayouter;
-import com.yan.durak.managers.CardNodesManager;
 import com.yan.durak.managers.PileLayouterManager;
 import com.yan.durak.managers.PileManager;
-import com.yan.durak.models.IPile;
-import com.yan.durak.msg_processor.MsgProcessor;
+import com.yan.durak.models.PileModel;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
 
 /**
@@ -16,14 +14,12 @@ import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
 public class CardMovedMsgSubProcessor extends BaseMsgSubProcessor<CardMovedProtocolMessage> {
 
     private final PileManager mPileManager;
-    private final CardNodesManager mCardNodesManager;
     private final PileLayouterManager mPileLayouterManager;
 
-    public CardMovedMsgSubProcessor(final MsgProcessor mMsgProcessor, final PileManager mPileManager, final CardNodesManager mCardNodesManager, final PileLayouterManager mPileLayouterManager) {
-        super(mMsgProcessor);
+    public CardMovedMsgSubProcessor(final PileManager mPileManager, final PileLayouterManager mPileLayouterManager) {
+        super();
 
         this.mPileManager = mPileManager;
-        this.mCardNodesManager = mCardNodesManager;
         this.mPileLayouterManager = mPileLayouterManager;
     }
 
@@ -35,7 +31,7 @@ public class CardMovedMsgSubProcessor extends BaseMsgSubProcessor<CardMovedProto
         final int toPileIndex = serverMessage.getMessageData().getToPileIndex();
 
         //Pile is a local representation of what is going on on the server
-        final IPile fromPile = mPileManager.getPileWithIndex(fromPileIndex);
+        final PileModel fromPile = mPileManager.getPileWithIndex(fromPileIndex);
 
         //get the card that is about to be moved
         final Card movedCard = fromPile.getCardByRankAndSuit(serverMessage.getMessageData().getMovedCard().getRank(), serverMessage.getMessageData().getMovedCard().getSuit());
@@ -46,7 +42,7 @@ public class CardMovedMsgSubProcessor extends BaseMsgSubProcessor<CardMovedProto
         }
 
         //Pile is a local representation of what is going on on the server
-        final IPile toPile = mPileManager.getPileWithIndex(toPileIndex);
+        final PileModel toPile = mPileManager.getPileWithIndex(toPileIndex);
 
         //remove the card from the pile and place into the other
         fromPile.removeCard(movedCard);

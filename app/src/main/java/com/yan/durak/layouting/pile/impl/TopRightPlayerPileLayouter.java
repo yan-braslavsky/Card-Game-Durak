@@ -3,7 +3,7 @@ package com.yan.durak.layouting.pile.impl;
 import com.yan.durak.layouting.pile.BasePileLayouter;
 import com.yan.durak.layouting.threepoint.ThreePointFanLayouter;
 import com.yan.durak.managers.CardNodesManager;
-import com.yan.durak.models.IPile;
+import com.yan.durak.models.PileModel;
 
 import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.util.geometry.YANVector2;
@@ -15,7 +15,7 @@ public class TopRightPlayerPileLayouter extends BasePileLayouter {
 
     private ThreePointFanLayouter mThreePointFanLayouterTopRightPlayer;
 
-    public TopRightPlayerPileLayouter(final CardNodesManager mCardNodesManager, final TweenManager mTweenManager, final IPile boundPile) {
+    public TopRightPlayerPileLayouter(final CardNodesManager mCardNodesManager, final TweenManager mTweenManager, final PileModel boundPile) {
         super(mCardNodesManager, mTweenManager, boundPile);
 
         //init 3 points layouter to create a fan of opponents hands

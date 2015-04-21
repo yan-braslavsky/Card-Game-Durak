@@ -8,8 +8,8 @@ import com.yan.durak.msg_processor.MsgProcessor;
  */
 public abstract class BaseMsgSubProcessor<T extends BaseProtocolMessage> implements MsgSubProcessor<T> {
 
-    protected MsgProcessor mMsgProcessor;
-    protected BaseMsgSubProcessor(MsgProcessor mMsgProcessor) {
-        this.mMsgProcessor = mMsgProcessor;
+//    protected MsgProcessor mMsgProcessor;
+    protected BaseMsgSubProcessor() {
+//        this.mMsgProcessor = mMsgProcessor;
     }
 }

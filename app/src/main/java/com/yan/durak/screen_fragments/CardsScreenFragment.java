@@ -1,12 +1,14 @@
 package com.yan.durak.screen_fragments;
 
 import com.yan.durak.gamelogic.cards.Card;
-import com.yan.durak.gamelogic.cards.CardsHelper;
+
+import com.yan.durak.managers.PileManager;
 import com.yan.durak.nodes.CardNode;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import glengine.yan.glengine.assets.atlas.YANTextureAtlas;
@@ -98,14 +100,16 @@ public class CardsScreenFragment implements IScreenFragment {
     //cached card dimensions
     private float mCardWidth;
     private float mCardHeight;
+    private PileManager mPileManger;
 //    private Card mTrumpCard;
 //    private ICardMovementListener mCardMovementListener;
 
 
-    public CardsScreenFragment(/*CardsTweenAnimator cardsTweenAnimator*/) {
+    public CardsScreenFragment(/*CardsTweenAnimator cardsTweenAnimator*/PileManager pilesManager) {
 
 //        mCardsTweenAnimator = cardsTweenAnimator;
         mCardNodes = new HashMap<>(TOTAL_CARDS_COUNT);
+        mPileManger = pilesManager;
 //        mPileIndexToCardListMap = new HashMap<>(TOTAL_CARDS_COUNT / 2);
 //        mPileIndexToPositionMap = new HashMap<>(TOTAL_CARDS_COUNT / 2);
 
@@ -118,7 +122,7 @@ public class CardsScreenFragment implements IScreenFragment {
     @Override
     public void createNodes(YANTextureAtlas cardAtlas) {
         mBackOfCardNode = new YANTexturedNode(cardAtlas.getTextureRegion("cards_back.png"));
-        ArrayList<Card> cardEntities = CardsHelper.create36Deck();
+        List<Card> cardEntities = mPileManger.getAllCards();
 
         for (Card card : cardEntities) {
             String name = "cards_" + card.getSuit() + "_" + card.getRank() + ".png";

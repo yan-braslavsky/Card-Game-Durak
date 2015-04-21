@@ -13,7 +13,7 @@ import java.util.HashMap;
  * PURPOSE :
  * Holds an information regarding current game state.
  */
-public class GameSession {
+public class GameInfo {
 
     /**
      * The index of the game on server for active player
@@ -44,7 +44,7 @@ public class GameSession {
     private int mBottomPlayerPileIndex;
     private Card mTrumpCard;
 
-    public GameSession() {
+    public GameInfo() {
         mCardsPendingRetaliationMap = new HashMap<>();
         mSelectedThrowInCards = new ArrayList<>();
         mThrowInPossibleCards = new ArrayList<>();

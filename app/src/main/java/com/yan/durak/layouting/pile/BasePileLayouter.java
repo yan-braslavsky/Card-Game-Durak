@@ -1,7 +1,7 @@
 package com.yan.durak.layouting.pile;
 
 import com.yan.durak.managers.CardNodesManager;
-import com.yan.durak.models.IPile;
+import com.yan.durak.models.PileModel;
 
 import aurelienribon.tweenengine.TweenManager;
 
@@ -12,9 +12,9 @@ public abstract class BasePileLayouter implements IPileLayouter {
 
     final protected CardNodesManager mCardNodesManager;
     final protected TweenManager mTweenManager;
-    final protected IPile mBoundpile;
+    final protected PileModel mBoundpile;
 
-    protected BasePileLayouter(final CardNodesManager mCardNodesManager, final TweenManager mTweenManager, final IPile boundPile) {
+    protected BasePileLayouter(final CardNodesManager mCardNodesManager, final TweenManager mTweenManager, final PileModel boundPile) {
         this.mCardNodesManager = mCardNodesManager;
         this.mTweenManager = mTweenManager;
         this.mBoundpile = boundPile;

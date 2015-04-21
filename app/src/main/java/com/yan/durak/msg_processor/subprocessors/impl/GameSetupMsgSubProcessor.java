@@ -6,24 +6,23 @@ import com.yan.durak.gamelogic.communication.protocol.messages.GameSetupProtocol
 import com.yan.durak.layouting.pile.IPileLayouter;
 import com.yan.durak.managers.PileLayouterManager;
 import com.yan.durak.managers.PileManager;
-import com.yan.durak.models.IPile;
-import com.yan.durak.msg_processor.MsgProcessor;
+import com.yan.durak.models.PileModel;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
-import com.yan.durak.session.GameSession;
+import com.yan.durak.session.GameInfo;
 
 /**
  * Created by ybra on 17/04/15.
  */
 public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProtocolMessage> {
 
-    private final GameSession mGameSession;
+    private final GameInfo mGameInfo;
     private final PileLayouterManager mPileLayouterManager;
     private final PileManager mPileManager;
 
-    public GameSetupMsgSubProcessor(final MsgProcessor mMsgProcessor, final GameSession gameSession, final PileLayouterManager pileLayouterManager, PileManager pileManager) {
-        super(mMsgProcessor);
+    public GameSetupMsgSubProcessor(final GameInfo gameInfo, final PileLayouterManager pileLayouterManager, PileManager pileManager) {
+        super();
 
-        this.mGameSession = gameSession;
+        this.mGameInfo = gameInfo;
         this.mPileLayouterManager = pileLayouterManager;
         this.mPileManager = pileManager;
     }
@@ -32,7 +31,7 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
     public void processMessage(GameSetupProtocolMessage serverMessage) {
 
         //store current player index on the game session
-        mGameSession.setBottomPlayerGameIndex(serverMessage.getMessageData().getMyPlayerData().getPlayerIndexInGame());
+        mGameInfo.setBottomPlayerGameIndex(serverMessage.getMessageData().getMyPlayerData().getPlayerIndexInGame());
 
         //depending on my player index we need to identify indexes of all players
         int bottomPlayerPileIndex = serverMessage.getMessageData().getMyPlayerData().getPlayerPileIndex();
@@ -48,16 +47,16 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
             topLeftPlayerPileIndex = (topLeftPlayerPileIndex % 5) + 2;
 
         //store pile indexes of all players
-        mGameSession.setBottomPlayerPileIndex(bottomPlayerPileIndex);
-        mGameSession.setTopLeftPlayerPileIndex(topLeftPlayerPileIndex);
-        mGameSession.setTopRightPlayerPileIndex(topRightPlayerPileIndex);
+        mGameInfo.setBottomPlayerPileIndex(bottomPlayerPileIndex);
+        mGameInfo.setTopLeftPlayerPileIndex(topLeftPlayerPileIndex);
+        mGameInfo.setTopRightPlayerPileIndex(topRightPlayerPileIndex);
 
         //extract trump card and save it in game session
         CardData trumpCardData = serverMessage.getMessageData().getTrumpCard();
-        mGameSession.setTrumpCard(new Card(trumpCardData.getRank(), trumpCardData.getSuit()));
+        mGameInfo.setTrumpCard(new Card(trumpCardData.getRank(), trumpCardData.getSuit()));
 
         //since all the piles are currently in the stock pile , we should lay out it
-        IPile stockPile = mPileManager.getPileWithIndex(mGameSession.getStockPileIndex());
+        PileModel stockPile = mPileManager.getPileWithIndex(mGameInfo.getStockPileIndex());
         IPileLayouter stockPileLayouter = mPileLayouterManager.getPileLayouterForPile(stockPile);
         stockPileLayouter.layout();
     }
