@@ -240,7 +240,7 @@ public class HudScreenFragment implements IScreenFragment {
         mHudNodesMap.put(nodeIndex, node);
     }
 
-    private <T extends YANTexturedNode> T getNode(@HudNode int nodeIndex) {
+    public <T extends YANTexturedNode> T getNode(@HudNode int nodeIndex) {
         return (T) mHudNodesMap.get(nodeIndex);
     }
 

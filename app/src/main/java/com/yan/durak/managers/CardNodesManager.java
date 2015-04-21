@@ -46,11 +46,11 @@ public class CardNodesManager {
         return mCardToCardNodesMap.get(card);
     }
 
-    public float getCardNodeWidth() {
+    public float getCardNodeOriginalWidth() {
         return mOriginalCardWidth;
     }
 
-    public float getCardNodeHeight() {
+    public float getCardNodeOriginalHeight() {
         return mOriginalCardHeight;
     }
 

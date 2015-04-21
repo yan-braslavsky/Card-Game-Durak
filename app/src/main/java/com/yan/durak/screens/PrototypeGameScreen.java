@@ -166,10 +166,10 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mCardNodesManager.setNodesSizes(getSceneSize());
 
         //set size of a card for touch processor
-        mCardsTouchProcessor.setOriginalCardSize(mCardNodesManager.getCardNodeWidth(), mCardNodesManager.getCardNodeHeight());
+        mCardsTouchProcessor.setOriginalCardSize(mCardNodesManager.getCardNodeOriginalWidth(), mCardNodesManager.getCardNodeOriginalHeight());
 
 //        //init the player cards layouter
-//        mPlayerCardsLayouter.init(mCardsScreenFragment.getCardNodeWidth(), mCardsScreenFragment.getCardNodeHeight(),
+//        mPlayerCardsLayouter.init(mCardsScreenFragment.getCardNodeOriginalWidth(), mCardsScreenFragment.getCardNodeOriginalHeight(),
 //                //maximum available width
 //                getSceneSize().getX(),
 //                //base x position ( center )
@@ -233,7 +233,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
 //            node.setSortingLayer(slot.getSortingLayer());
 //            //make the animation
 //            mCardsTweenAnimator.animateCardToValues(node, slot.getPosition().getX(), slot.getPosition().getY(), slot.getRotation(), null);
-//            mCardsTweenAnimator.animateSize(node, mCardsScreenFragment.getCardNodeWidth() * CARD_SCALE_AMOUNT_OPPONENT, mCardsScreenFragment.getCardNodeHeight() * CARD_SCALE_AMOUNT_OPPONENT, 0.5f);
+//            mCardsTweenAnimator.animateSize(node, mCardsScreenFragment.getCardNodeOriginalWidth() * CARD_SCALE_AMOUNT_OPPONENT, mCardsScreenFragment.getCardNodeOriginalHeight() * CARD_SCALE_AMOUNT_OPPONENT, 0.5f);
 //        }
 //    }
 
@@ -253,7 +253,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
 //            node.setSortingLayer(slot.getSortingLayer());
 //            //make the animation
 //            mCardsTweenAnimator.animateCardToValues(node, slot.getPosition().getX(), slot.getPosition().getY(), slot.getRotation(), null);
-//            mCardsTweenAnimator.animateSize(node, mCardsScreenFragment.getCardNodeWidth() * CARD_SCALE_AMOUNT_OPPONENT, mCardsScreenFragment.getCardNodeHeight() * CARD_SCALE_AMOUNT_OPPONENT, 0.5f);
+//            mCardsTweenAnimator.animateSize(node, mCardsScreenFragment.getCardNodeOriginalWidth() * CARD_SCALE_AMOUNT_OPPONENT, mCardsScreenFragment.getCardNodeOriginalHeight() * CARD_SCALE_AMOUNT_OPPONENT, 0.5f);
 //        }
 //    }
 
@@ -270,7 +270,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
 //
 //            //animate card size back to normal
 //            card.removeTag(CardNode.TAG_SHOULD_NOT_RESIZE);
-//            mCardsTweenAnimator.animateSize(card, mCardsScreenFragment.getCardNodeWidth(), mCardsScreenFragment.getCardNodeHeight(), 0.5f);
+//            mCardsTweenAnimator.animateSize(card, mCardsScreenFragment.getCardNodeOriginalWidth(), mCardsScreenFragment.getCardNodeOriginalHeight(), 0.5f);
 //        }
 //    }
 

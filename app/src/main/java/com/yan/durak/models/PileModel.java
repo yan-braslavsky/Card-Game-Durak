@@ -2,6 +2,8 @@ package com.yan.durak.models;
 
 import com.yan.durak.gamelogic.cards.Card;
 
+import java.util.List;
+
 /**
  * Created by ybra on 20/04/15.
  */
@@ -27,4 +29,12 @@ public class PileModel {
     public int getPileIndex() {
         throw new UnsupportedOperationException("Not implemented");
     }
+    public List<Card> getCardsInPile() {
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    public boolean isCardInPile(Card trumpCard) {
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
 }

@@ -14,9 +14,9 @@ public abstract class BasePileLayouter implements IPileLayouter {
     final protected TweenManager mTweenManager;
     final protected PileModel mBoundpile;
 
-    protected BasePileLayouter(final CardNodesManager mCardNodesManager, final TweenManager mTweenManager, final PileModel boundPile) {
-        this.mCardNodesManager = mCardNodesManager;
-        this.mTweenManager = mTweenManager;
+    protected BasePileLayouter(final CardNodesManager cardNodesManager, final TweenManager tweenManager, final PileModel boundPile) {
+        this.mCardNodesManager = cardNodesManager;
+        this.mTweenManager = tweenManager;
         this.mBoundpile = boundPile;
     }
 

@@ -30,7 +30,7 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
     public void init(float sceneWidth, float sceneHeight) {
 
         //init the player cards layouter
-        mPlayerCardsLayouter.init(mCardNodesManager.getCardNodeWidth(), mCardNodesManager.getCardNodeHeight(),
+        mPlayerCardsLayouter.init(mCardNodesManager.getCardNodeOriginalWidth(), mCardNodesManager.getCardNodeOriginalHeight(),
                 //maximum available width
                 sceneWidth,
                 //base x position ( center )
