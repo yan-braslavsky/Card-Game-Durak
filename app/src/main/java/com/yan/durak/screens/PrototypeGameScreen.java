@@ -74,7 +74,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mPileManager = new PileManager();
 
         //card nodes manager
-        mCardNodesManager = new CardNodesManager();
+        mCardNodesManager = new CardNodesManager(mPileManager);
 
         //layouters manager
         mPileLayouterManager = new PileLayouterManager(mCardNodesManager, mSharedTweenManager, mPileManager);
@@ -273,8 +273,6 @@ public class PrototypeGameScreen extends BaseGameScreen {
 //            mCardsTweenAnimator.animateSize(card, mCardsScreenFragment.getCardNodeWidth(), mCardsScreenFragment.getCardNodeHeight(), 0.5f);
 //        }
 //    }
-
-
 
 
     public HudScreenFragment getHudNodesFragment() {

@@ -16,6 +16,11 @@ public class FieldPileLayouter extends BasePileLayouter {
     }
 
     @Override
+    public void init(float sceneWidth, float sceneHeight) {
+        //TODO : implement
+    }
+
+    @Override
     public void layout() {
         //TODO : Every pile layouter will make sure to change size of the card
     }

@@ -17,6 +17,11 @@ public class DiscardPileLayouter extends BasePileLayouter {
     }
 
     @Override
+    public void init(float sceneWidth, float sceneHeight) {
+        //TODO : implement
+    }
+
+    @Override
     public void layout() {
         //TODO : implement
     }

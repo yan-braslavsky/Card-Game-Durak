@@ -18,8 +18,8 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
     public BottomPlayerPileLayouter(final CardNodesManager mCardNodesManager, final TweenManager mTweenManager, final PileModel boundPile) {
         super(mCardNodesManager, mTweenManager, boundPile);
 
-        //init player cards layouter
-        mPlayerCardsLayouter = new PlayerCardsLayouter(mCardNodesManager.getTotalCardsAmount());
+        //init player cards layouter , assuming the entire deck can be in his hands
+        mPlayerCardsLayouter = new PlayerCardsLayouter(mCardNodesManager.getAllCardNodes().size());
     }
 
 

@@ -83,29 +83,29 @@ public class GameInfo {
     }
 
 
-    public void setTopLeftPlayerPileIndex(int topLeftPlayerPileIndex) {
-        mTopLeftPlayerPileIndex = topLeftPlayerPileIndex;
-    }
-
-    public int getTopLeftPlayerPileIndex() {
-        return mTopLeftPlayerPileIndex;
-    }
-
-    public void setTopRightPlayerPileIndex(int topRightPlayerPileIndex) {
-        mTopRightPlayerPileIndex = topRightPlayerPileIndex;
-    }
-
-    public int getTopRightPlayerPileIndex() {
-        return mTopRightPlayerPileIndex;
-    }
-
-    public void setBottomPlayerPileIndex(int bottomPlayerPileIndex) {
-        mBottomPlayerPileIndex = bottomPlayerPileIndex;
-    }
-
-    public int getBottomPlayerPileIndex() {
-        return mBottomPlayerPileIndex;
-    }
+//    public void setTopLeftPlayerPileIndex(int topLeftPlayerPileIndex) {
+//        mTopLeftPlayerPileIndex = topLeftPlayerPileIndex;
+//    }
+//
+//    public int getTopLeftPlayerPileIndex() {
+//        return mTopLeftPlayerPileIndex;
+//    }
+//
+//    public void setTopRightPlayerPileIndex(int topRightPlayerPileIndex) {
+//        mTopRightPlayerPileIndex = topRightPlayerPileIndex;
+//    }
+//
+//    public int getTopRightPlayerPileIndex() {
+//        return mTopRightPlayerPileIndex;
+//    }
+//
+//    public void setBottomPlayerPileIndex(int bottomPlayerPileIndex) {
+//        mBottomPlayerPileIndex = bottomPlayerPileIndex;
+//    }
+//
+//    public int getBottomPlayerPileIndex() {
+//        return mBottomPlayerPileIndex;
+//    }
 
     public void setTrumpCard(Card trumpCard) {
         mTrumpCard = trumpCard;
@@ -115,9 +115,9 @@ public class GameInfo {
         return mTrumpCard;
     }
 
-    public int getStockPileIndex() {
-        return 0;
-    }
+//    public int getStockPileIndex() {
+//        return 0;
+//    }
 
 
 }

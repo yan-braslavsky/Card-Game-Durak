@@ -23,6 +23,7 @@ import glengine.yan.glengine.util.loggers.YANLogger;
  * PURPOSE :
  * Manage card nodes
  */
+@Deprecated
 public class CardsScreenFragment implements IScreenFragment {
 
 //    public interface ICardMovementListener {

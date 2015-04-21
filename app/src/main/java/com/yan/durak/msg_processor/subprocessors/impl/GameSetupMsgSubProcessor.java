@@ -47,16 +47,14 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
             topLeftPlayerPileIndex = (topLeftPlayerPileIndex % 5) + 2;
 
         //store pile indexes of all players
-        mGameInfo.setBottomPlayerPileIndex(bottomPlayerPileIndex);
-        mGameInfo.setTopLeftPlayerPileIndex(topLeftPlayerPileIndex);
-        mGameInfo.setTopRightPlayerPileIndex(topRightPlayerPileIndex);
+        mPileManager.setPlayersPilesIndexes(bottomPlayerPileIndex, topRightPlayerPileIndex, topLeftPlayerPileIndex);
 
         //extract trump card and save it in game session
         CardData trumpCardData = serverMessage.getMessageData().getTrumpCard();
         mGameInfo.setTrumpCard(new Card(trumpCardData.getRank(), trumpCardData.getSuit()));
 
         //since all the piles are currently in the stock pile , we should lay out it
-        PileModel stockPile = mPileManager.getPileWithIndex(mGameInfo.getStockPileIndex());
+        PileModel stockPile = mPileManager.getStockPile();
         IPileLayouter stockPileLayouter = mPileLayouterManager.getPileLayouterForPile(stockPile);
         stockPileLayouter.layout();
     }

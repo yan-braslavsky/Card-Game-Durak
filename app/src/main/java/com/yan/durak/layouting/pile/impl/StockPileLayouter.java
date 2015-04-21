@@ -17,6 +17,11 @@ public class StockPileLayouter extends BasePileLayouter {
     }
 
     @Override
+    public void init(float sceneWidth, float sceneHeight) {
+        //TODO
+    }
+
+    @Override
     public void layout() {
         //TODO : Stock pile layouter will make sure to remove mask if there is 1 card left
     }
