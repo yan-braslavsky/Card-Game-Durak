@@ -38,12 +38,15 @@ public class CardsTouchProcessorMultipleChoiceState extends CardsTouchProcessorS
         for (CardNode cardNode : mCardsTouchProcessor.getCardNodesArray()) {
             if (mSelectedCards.contains(cardNode))
                 continue;
-            mCardsTouchProcessor.getCardsTweenAnimator().animateCardToAlpha(cardNode, 0.1f, FADE_OUT_DURATION);
+
+            //TODO : Fix
+//            mCardsTouchProcessor.getCardsTweenAnimator().animateCardToAlpha(cardNode, 0.1f, FADE_OUT_DURATION);
         }
     }
 
     public void markCardAsChoosen(CardNode cardNode) {
-        mCardsTouchProcessor.getCardsTweenAnimator().animateCardToAlpha(cardNode, 0.1f, FADE_OUT_DURATION);
+        //TODO : Fix
+//        mCardsTouchProcessor.getCardsTweenAnimator().animateCardToAlpha(cardNode, 0.1f, FADE_OUT_DURATION);
         mSelectedCards.remove(cardNode);
     }
 

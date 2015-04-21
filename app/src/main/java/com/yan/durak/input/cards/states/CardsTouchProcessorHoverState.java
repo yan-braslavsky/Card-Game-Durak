@@ -96,13 +96,15 @@ public class CardsTouchProcessorHoverState extends CardsTouchProcessorState {
 //        mCardsTouchProcessor.getCardsTweenAnimator().animateCardToY(hoveredCard, hoveredCard.getPosition().getY() - yOffset, HOVERED_ALPHA_ANIMATION_DURATION, null);
         mPoppedUpCard = mHoveredCard;
 
-        //hide other cards that are not hovered
-        for (final YANTexturedNode card : mCardsTouchProcessor.getCardNodesArray()) {
-            if (card == mHoveredCard) {
-                mCardsTouchProcessor.getCardsTweenAnimator().animateCardToAlpha(card, 1f, HOVERED_ALPHA_ANIMATION_DURATION);
-            } else {
-                mCardsTouchProcessor.getCardsTweenAnimator().animateCardToAlpha(card, NOT_HOVERED_CARDS_OPACITY, NOT_HOVERED_ALPHA_ANIMATION_DURATION);
-            }
-        }
+        //TODO : Fix
+
+//        //hide other cards that are not hovered
+//        for (final YANTexturedNode card : mCardsTouchProcessor.getCardNodesArray()) {
+//            if (card == mHoveredCard) {
+//                mCardsTouchProcessor.getCardsTweenAnimator().animateCardToAlpha(card, 1f, HOVERED_ALPHA_ANIMATION_DURATION);
+//            } else {
+//                mCardsTouchProcessor.getCardsTweenAnimator().animateCardToAlpha(card, NOT_HOVERED_CARDS_OPACITY, NOT_HOVERED_ALPHA_ANIMATION_DURATION);
+//            }
+//        }
     }
 }

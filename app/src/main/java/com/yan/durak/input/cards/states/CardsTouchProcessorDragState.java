@@ -30,7 +30,9 @@ public class CardsTouchProcessorDragState extends CardsTouchProcessorState {
         float destintationHeigth = mDraggedCard.getSize().getY();
         destintationWidth *= CardsScreenFragment.CARDS_ON_FIELD_SIZE_MULTIPLIER;
         destintationHeigth *= CardsScreenFragment.CARDS_ON_FIELD_SIZE_MULTIPLIER;
-        mCardsTouchProcessor.getCardsTweenAnimator().animateSize(mDraggedCard, destintationWidth, destintationHeigth, 0.5f);
+
+        //TODO : Fix
+//        mCardsTouchProcessor.getCardsTweenAnimator().animateSize(mDraggedCard, destintationWidth, destintationHeigth, 0.5f);
     }
 
     @Override

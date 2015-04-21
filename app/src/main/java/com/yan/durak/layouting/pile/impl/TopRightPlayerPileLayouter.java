@@ -35,8 +35,7 @@ public class TopRightPlayerPileLayouter extends BasePileLayouter {
         float topOffset = sceneHeight * 0.07f;
 
         //TODO : calculate the position relativley without the avatar
-
-        float aspectRatio = mUiAtlas.getTextureRegion("stump.png").getWidth() / mUiAtlas.getTextureRegion("stump.png").getHeight();
+        float aspectRatio = 171f / 141f;// mUiAtlas.getTextureRegion("stump.png").getWidth() / mUiAtlas.getTextureRegion("stump.png").getHeight();
         float avatarWidth = sceneWidth * 0.2f;
         float avatarHeight = avatarWidth / aspectRatio;
         YANVector2 avatarSize = new YANVector2(avatarWidth, avatarHeight);

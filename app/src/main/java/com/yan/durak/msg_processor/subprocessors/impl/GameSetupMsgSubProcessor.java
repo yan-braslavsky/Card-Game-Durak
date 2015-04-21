@@ -58,25 +58,4 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
         IPileLayouter stockPileLayouter = mPileLayouterManager.getPileLayouterForPile(stockPile);
         stockPileLayouter.layout();
     }
-
-
-//    public void positionMaskCard(CardData trumpCardNode) {
-//
-//        Card trumpCard = new Card(trumpCardNode.getRank(), trumpCardNode.getSuit());
-//
-//        //position the mask at the same place with the stock pile cards
-//        Collection<Card> cardsInStockPile = mMsgProcessor.getPrototypeGameScreen().getCardsScreenFragment().getCardsInPileWithIndex(0);
-//        Iterator<Card> iterator = cardsInStockPile.iterator();
-//        Card randomCardInStockPile = iterator.next();
-//        if (trumpCard.equals(randomCardInStockPile)) {
-//            randomCardInStockPile = iterator.next();
-//        }
-//        CardNode randomCardNodeInStockPile = mMsgProcessor.getPrototypeGameScreen().getCardsScreenFragment().getCardToNodesMap().get(randomCardInStockPile);
-//
-//        //position the stock pile mask
-//        mMsgProcessor.getPrototypeGameScreen().getHudNodesFragment().setMaskCardTransform(
-//                randomCardNodeInStockPile.getPosition().getX(), randomCardNodeInStockPile.getPosition().getY(),
-//                randomCardNodeInStockPile.getSize().getX(), randomCardNodeInStockPile.getSize().getY(),
-//                randomCardNodeInStockPile.getRotationZ());
-//    }
 }

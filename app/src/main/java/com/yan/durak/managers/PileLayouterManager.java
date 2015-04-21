@@ -8,6 +8,8 @@ import com.yan.durak.layouting.pile.impl.StockPileLayouter;
 import com.yan.durak.layouting.pile.impl.TopLeftPlayerPileLayouter;
 import com.yan.durak.layouting.pile.impl.TopRightPlayerPileLayouter;
 import com.yan.durak.models.PileModel;
+import com.yan.durak.screen_fragments.HudScreenFragment;
+import com.yan.durak.session.GameInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +32,14 @@ public class PileLayouterManager {
     final DiscardPileLayouter mDiscardPileLayouter;
     final List<FieldPileLayouter> mFieldPileLayouterList;
 
-    public PileLayouterManager(CardNodesManager cardNodesManager, TweenManager tweenManager, PileManager pileManager) {
+
+    public PileLayouterManager(CardNodesManager cardNodesManager, TweenManager tweenManager, PileManager pileManager, GameInfo gameInfo, HudScreenFragment hudScreenFragment) {
 
         this.mPileManager = pileManager;
 
+
         //init bottom player layouter
-        mBottomPlayerPileLayouter = new BottomPlayerPileLayouter(cardNodesManager, tweenManager, mPileManager.getBottomPlayerPile());
+        mBottomPlayerPileLayouter = new BottomPlayerPileLayouter(mPileManager, cardNodesManager, tweenManager, mPileManager.getBottomPlayerPile());
 
         //init top left player layouter
         mTopLeftPlayerPileLayouter = new TopLeftPlayerPileLayouter(cardNodesManager, tweenManager, mPileManager.getTopLeftPlayerPile());
@@ -44,7 +48,7 @@ public class PileLayouterManager {
         mTopRightPlayerPileLayouter = new TopRightPlayerPileLayouter(cardNodesManager, tweenManager, mPileManager.getTopRightPlayerPile());
 
         //init stock pile layouter
-        mStockPileLayouter = new StockPileLayouter(cardNodesManager, tweenManager, mPileManager.getStockPile());
+        mStockPileLayouter = new StockPileLayouter(gameInfo, hudScreenFragment, cardNodesManager, tweenManager, mPileManager.getStockPile());
 
         //init discard pile layouter
         mDiscardPileLayouter = new DiscardPileLayouter(cardNodesManager, tweenManager, mPileManager.getDiscardPile());

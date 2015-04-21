@@ -29,7 +29,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
     private final GameServerMessageSender mMessageSender;
 
     //fragments
-    private final HudScreenFragment mHudNodesFragment;
+    private final HudScreenFragment mHudScreenFragment;
 
     //game state
     private final GameInfo mGameInfo;
@@ -53,14 +53,6 @@ public class PrototypeGameScreen extends BaseGameScreen {
         //we received the connector that should be used
         mGameServerConnector = gameServerConnector;
 
-        //TODO : replace "this" by managers that are really required by the processor
-        //message processor will receive messages and react on them
-        //msg processor is the listener for game server connector
-        mGameServerConnector.setListener(new MsgProcessor(this));
-
-        //used to send concrete messages to server
-        mMessageSender = new GameServerMessageSender(mGameServerConnector);
-
         //game session will store the game state and related info
         mGameInfo = new GameInfo();
 
@@ -68,7 +60,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mSharedTweenManager = new TweenManager();
 
         //fragment that manages all the HUD nodes
-        mHudNodesFragment = new HudScreenFragment(mSharedTweenManager);
+        mHudScreenFragment = new HudScreenFragment(mSharedTweenManager);
 
         //pile manager
         mPileManager = new PileManager();
@@ -77,7 +69,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mCardNodesManager = new CardNodesManager(mPileManager);
 
         //layouters manager
-        mPileLayouterManager = new PileLayouterManager(mCardNodesManager, mSharedTweenManager, mPileManager);
+        mPileLayouterManager = new PileLayouterManager(mCardNodesManager, mSharedTweenManager, mPileManager, mGameInfo, mHudScreenFragment);
 
 
         //TODO : set the nodes each time there is a change rather then give it by reference
@@ -97,6 +89,14 @@ public class PrototypeGameScreen extends BaseGameScreen {
                 //TODO : implement
             }
         });
+
+        //TODO : replace "this" by managers that are really required by the processor
+        //message processor will receive messages and react on them
+        //msg processor is the listener for game server connector
+        mGameServerConnector.setListener(new MsgProcessor(this));
+
+        //used to send concrete messages to server
+        mMessageSender = new GameServerMessageSender(mGameServerConnector);
     }
 
     public TweenManager getSharedTweenManager() {
@@ -138,12 +138,12 @@ public class PrototypeGameScreen extends BaseGameScreen {
             addNode(cardNode);
         }
 
-        for (YANTexturedNode hudNode : mHudNodesFragment.getFragmentNodes()) {
+        for (YANTexturedNode hudNode : mHudScreenFragment.getFragmentNodes()) {
             addNode(hudNode);
         }
 
-        mHudNodesFragment.hideBitoButton();
-        mHudNodesFragment.hideTakeButton();
+        mHudScreenFragment.hideBitoButton();
+        mHudScreenFragment.hideTakeButton();
 
     }
 
@@ -152,7 +152,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
     protected void onLayoutNodes() {
         super.onLayoutNodes();
 
-        mHudNodesFragment.layoutNodes(getSceneSize());
+        mHudScreenFragment.layoutNodes(getSceneSize());
 
         //we also need to initialize the pile manager
         mPileLayouterManager.init(getSceneSize().getX(), getSceneSize().getY());
@@ -179,24 +179,24 @@ public class PrototypeGameScreen extends BaseGameScreen {
 //                //base y position
 //                getSceneSize().getY() - /*mFence.getSize().getY() / 2*/100);
 
-        mHudNodesFragment.setNodesSizes(getSceneSize());
+        mHudScreenFragment.setNodesSizes(getSceneSize());
     }
 
     @Override
     protected void onCreateNodes() {
         super.onCreateNodes();
 
-        mHudNodesFragment.createNodes(mUiAtlas);
+        mHudScreenFragment.createNodes(mUiAtlas);
         mCardNodesManager.createNodes(mCardsAtlas);
 
-        mHudNodesFragment.setTakeButtonClickListener(new YANButtonNode.YanButtonNodeClickListener() {
+        mHudScreenFragment.setTakeButtonClickListener(new YANButtonNode.YanButtonNodeClickListener() {
             @Override
             public void onButtonClick() {
                 //TODO : set listener
             }
         });
 
-        mHudNodesFragment.setBitoButtonClickListener(new YANButtonNode.YanButtonNodeClickListener() {
+        mHudScreenFragment.setBitoButtonClickListener(new YANButtonNode.YanButtonNodeClickListener() {
             @Override
             public void onButtonClick() {
                 //TODO : set listener
@@ -212,7 +212,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         //can be put into
         mSharedTweenManager.update(deltaTimeSeconds * 1);
         mGameServerConnector.update(deltaTimeSeconds);
-        mHudNodesFragment.update(deltaTimeSeconds);
+        mHudScreenFragment.update(deltaTimeSeconds);
 //        mCardsScreenFragment.update(deltaTimeSeconds);
     }
 
@@ -276,7 +276,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
 
     public HudScreenFragment getHudNodesFragment() {
-        return mHudNodesFragment;
+        return mHudScreenFragment;
     }
 
     public CardsTouchProcessor getCardsTouchProcessor() {

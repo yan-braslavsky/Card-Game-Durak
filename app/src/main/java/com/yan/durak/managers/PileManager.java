@@ -41,11 +41,11 @@ public class PileManager {
     public PileManager() {
 
         this.mCards = CardsHelper.create36Deck();
-        this.mBottomPlayerPile = new PileModel();
-        this.mTopLeftPlayerPile = new PileModel();
-        this.mTopRightPlayerPile = new PileModel();
-        this.mStockPile = new PileModel();
-        this.mDiscardPile = new PileModel();
+        this.mBottomPlayerPile = new PileModel(LOWEST_PLAYER_PILE_INDEX);
+        this.mTopLeftPlayerPile = new PileModel(LOWEST_PLAYER_PILE_INDEX + 1);
+        this.mTopRightPlayerPile = new PileModel(LOWEST_PLAYER_PILE_INDEX + 2);
+        this.mStockPile = new PileModel(STOCK_PILE_INDEX);
+        this.mDiscardPile = new PileModel(DISCARD_PILE_INDEX);
         this.mIndexToPileMap = new HashMap<>(TOTAL_PILES_AMOUNT);
         this.mFieldPiles = new ArrayList<>(MAX_PILES_ON_FIELD);
 
@@ -68,13 +68,20 @@ public class PileManager {
 
         //init field piles
         for (int pileIndex = PileManager.FIRST_FIELD_PILE_INDEX; pileIndex < TOTAL_PILES_AMOUNT; pileIndex++) {
-            PileModel fieldPile = new PileModel();
+            PileModel fieldPile = new PileModel(pileIndex);
             this.mFieldPiles.add(fieldPile);
             this.mIndexToPileMap.put(pileIndex, fieldPile);
         }
     }
 
     public void setPlayersPilesIndexes(int bottomPlayerPileIndex, int topRightPlayerPileIndex, int topLeftPlayerPileIndex) {
+
+        //update pile indexes
+        mBottomPlayerPile.setPileIndex(bottomPlayerPileIndex);
+        mTopRightPlayerPile.setPileIndex(topRightPlayerPileIndex);
+        mTopLeftPlayerPile.setPileIndex(topLeftPlayerPileIndex);
+
+        //update mapping
         this.mIndexToPileMap.put(bottomPlayerPileIndex, mBottomPlayerPile);
         this.mIndexToPileMap.put(topRightPlayerPileIndex + 1, mTopRightPlayerPile);
         this.mIndexToPileMap.put(topLeftPlayerPileIndex + 2, mTopLeftPlayerPile);

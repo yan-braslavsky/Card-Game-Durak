@@ -36,8 +36,9 @@ public class CardsTouchProcessorSelectedState extends CardsTouchProcessorState {
     @Override
     public void applyState() {
 
+        //TODO : Fix
         //fix in case card is faded out
-        mCardsTouchProcessor.getCardsTweenAnimator().animateCardToAlpha(mSelectedCard, 1f, 0.1f);
+//        mCardsTouchProcessor.getCardsTweenAnimator().animateCardToAlpha(mSelectedCard, 1f, 0.1f);
 
         //cache original values
         mOriginalYPosition = mSelectedCard.getPosition().getY();

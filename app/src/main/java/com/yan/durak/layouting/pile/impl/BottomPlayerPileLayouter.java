@@ -3,6 +3,7 @@ package com.yan.durak.layouting.pile.impl;
 import com.yan.durak.layouting.impl.PlayerCardsLayouter;
 import com.yan.durak.layouting.pile.BasePileLayouter;
 import com.yan.durak.managers.CardNodesManager;
+import com.yan.durak.managers.PileManager;
 import com.yan.durak.models.PileModel;
 
 import aurelienribon.tweenengine.TweenManager;
@@ -15,11 +16,11 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
 
     private final PlayerCardsLayouter mPlayerCardsLayouter;
 
-    public BottomPlayerPileLayouter(final CardNodesManager mCardNodesManager, final TweenManager mTweenManager, final PileModel boundPile) {
-        super(mCardNodesManager, mTweenManager, boundPile);
+    public BottomPlayerPileLayouter(final PileManager pileManager , final CardNodesManager cardNodesManager, final TweenManager tweenManager, final PileModel boundPile) {
+        super(cardNodesManager, tweenManager, boundPile);
 
         //init player cards layouter , assuming the entire deck can be in his hands
-        mPlayerCardsLayouter = new PlayerCardsLayouter(mCardNodesManager.getAllCardNodes().size());
+        mPlayerCardsLayouter = new PlayerCardsLayouter(pileManager.getAllCards().size());
     }
 
 
