@@ -87,8 +87,13 @@ public class PileManager {
         this.mIndexToPileMap.put(topLeftPlayerPileIndex + 2, mTopLeftPlayerPile);
     }
 
+    /**
+     * Returns a pile according to requested pile index
+     *
+     * @return pile or null if pile is not found
+     */
     public PileModel getPileWithIndex(int pileIndex) {
-        throw new UnsupportedOperationException();
+        return mIndexToPileMap.get(pileIndex);
     }
 
 

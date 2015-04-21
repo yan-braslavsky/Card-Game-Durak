@@ -22,4 +22,8 @@ public abstract class BasePileLayouter implements IPileLayouter {
 
 
     public abstract void init(float sceneWidth, float sceneHeight);
+
+    public PileModel getBoundpile() {
+        return mBoundpile;
+    }
 }

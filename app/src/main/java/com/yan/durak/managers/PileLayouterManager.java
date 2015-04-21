@@ -12,7 +12,9 @@ import com.yan.durak.screen_fragments.HudScreenFragment;
 import com.yan.durak.session.GameInfo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import aurelienribon.tweenengine.TweenManager;
 
@@ -32,35 +34,56 @@ public class PileLayouterManager {
     final DiscardPileLayouter mDiscardPileLayouter;
     final List<FieldPileLayouter> mFieldPileLayouterList;
 
+    //map
+    final Map<PileModel, IPileLayouter> mPileToLayouterMap;
 
     public PileLayouterManager(CardNodesManager cardNodesManager, TweenManager tweenManager, PileManager pileManager, GameInfo gameInfo, HudScreenFragment hudScreenFragment) {
 
         this.mPileManager = pileManager;
 
+        this.mPileToLayouterMap = new HashMap<>();
 
         //init bottom player layouter
-        mBottomPlayerPileLayouter = new BottomPlayerPileLayouter(mPileManager, cardNodesManager, tweenManager, mPileManager.getBottomPlayerPile());
+        this.mBottomPlayerPileLayouter = new BottomPlayerPileLayouter(mPileManager, cardNodesManager, tweenManager, mPileManager.getBottomPlayerPile());
 
         //init top left player layouter
-        mTopLeftPlayerPileLayouter = new TopLeftPlayerPileLayouter(cardNodesManager, tweenManager, mPileManager.getTopLeftPlayerPile());
+        this.mTopLeftPlayerPileLayouter = new TopLeftPlayerPileLayouter(cardNodesManager, tweenManager, mPileManager.getTopLeftPlayerPile());
 
         //init top right player layouter
-        mTopRightPlayerPileLayouter = new TopRightPlayerPileLayouter(cardNodesManager, tweenManager, mPileManager.getTopRightPlayerPile());
+        this.mTopRightPlayerPileLayouter = new TopRightPlayerPileLayouter(cardNodesManager, tweenManager, mPileManager.getTopRightPlayerPile());
 
         //init stock pile layouter
-        mStockPileLayouter = new StockPileLayouter(gameInfo, hudScreenFragment, cardNodesManager, tweenManager, mPileManager.getStockPile());
+        this.mStockPileLayouter = new StockPileLayouter(gameInfo, hudScreenFragment, cardNodesManager, tweenManager, mPileManager.getStockPile());
 
         //init discard pile layouter
-        mDiscardPileLayouter = new DiscardPileLayouter(cardNodesManager, tweenManager, mPileManager.getDiscardPile());
+        this.mDiscardPileLayouter = new DiscardPileLayouter(cardNodesManager, tweenManager, mPileManager.getDiscardPile());
 
         //init field piles list
-        mFieldPileLayouterList = new ArrayList<>(mPileManager.getmFieldPiles().size());
+        this.mFieldPileLayouterList = new ArrayList<>(mPileManager.getmFieldPiles().size());
 
         //init list of field layouters
         for (PileModel pileModel : mPileManager.getmFieldPiles()) {
-            mFieldPileLayouterList.add(new FieldPileLayouter(cardNodesManager, tweenManager, pileModel));
+            this.mFieldPileLayouterList.add(new FieldPileLayouter(cardNodesManager, tweenManager, pileModel));
         }
 
+        initMap();
+    }
+
+    private void initMap() {
+
+        //map stock and discard piles
+        mPileToLayouterMap.put(mDiscardPileLayouter.getBoundpile(), mDiscardPileLayouter);
+        mPileToLayouterMap.put(mStockPileLayouter.getBoundpile(), mStockPileLayouter);
+
+        //map players piles
+        mPileToLayouterMap.put(mBottomPlayerPileLayouter.getBoundpile(), mBottomPlayerPileLayouter);
+        mPileToLayouterMap.put(mTopRightPlayerPileLayouter.getBoundpile(), mTopRightPlayerPileLayouter);
+        mPileToLayouterMap.put(mTopLeftPlayerPileLayouter.getBoundpile(), mTopLeftPlayerPileLayouter);
+
+        //mpa field piles
+        for (FieldPileLayouter fieldPileLayouter : mFieldPileLayouterList) {
+            mPileToLayouterMap.put(fieldPileLayouter.getBoundpile(), fieldPileLayouter);
+        }
     }
 
 
@@ -84,8 +107,12 @@ public class PileLayouterManager {
         }
     }
 
+    /**
+     * Returns a layouter corresponding to provided pile
+     *
+     * @return layouter or null if layouter is not found
+     */
     public IPileLayouter getPileLayouterForPile(PileModel pile) {
-        //TODO Implement
-        throw new UnsupportedOperationException();
+        return mPileToLayouterMap.get(pile);
     }
 }

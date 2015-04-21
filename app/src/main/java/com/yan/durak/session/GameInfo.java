@@ -115,6 +115,8 @@ public class GameInfo {
         return mTrumpCard;
     }
 
+
+
 //    public int getStockPileIndex() {
 //        return 0;
 //    }

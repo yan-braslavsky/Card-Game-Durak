@@ -20,10 +20,14 @@ public class StockPileLayouter extends BasePileLayouter {
      * The scale difference from card original size
      */
     private static final float STOCK_PILE_SIZE_SCALE = 0.7f;
-    private static final float STOCK_PILE_CARDS_ROTATION = 100;
-    public static final float TRUMP_CARD_ROTATION = 5f;
+    private static final float STOCK_PILE_CARDS_ROTATION = 95;
+    public static final float TRUMP_CARD_ROTATION = 190f;
+    public static final float TRUMP_CARD_TOP_OFFSET = 0.055f;
     private final HudScreenFragment mHudScreenFragment;
     private final GameInfo mGameInfo;
+
+    //cached positions
+    private float mTrumpCardPositionY;
 
 
     public StockPileLayouter(final GameInfo gameInfo, final HudScreenFragment hudScreenFragment, final CardNodesManager cardNodesManager, final TweenManager tweenManager, final PileModel boundPile) {
@@ -40,6 +44,9 @@ public class StockPileLayouter extends BasePileLayouter {
         float stockPilePositionX = (sceneWidth - mCardNodesManager.getCardNodeOriginalWidth()) / 2;
         float stockPilePositionY = 0;
 
+        //cache trump card offset
+        mTrumpCardPositionY = sceneHeight * TRUMP_CARD_TOP_OFFSET;
+
         for (Card card : mBoundpile.getCardsInPile()) {
             //get card node representing this pile and layout it
             layoutCardInPile(stockPilePositionX, stockPilePositionY, mCardNodesManager.getCardNodeForCard(card));
@@ -50,6 +57,7 @@ public class StockPileLayouter extends BasePileLayouter {
         layoutCardInPile(stockPilePositionX, stockPilePositionY, maskCardNode);
 
         //only difference is that mask is visible and above other card nodes
+        maskCardNode.setPosition(stockPilePositionX, stockPilePositionY);
         maskCardNode.setSortingLayer(2);
         maskCardNode.setOpacity(1f);
     }
@@ -78,6 +86,7 @@ public class StockPileLayouter extends BasePileLayouter {
 
         //layout the trump card
         CardNode trumpCardNode = mCardNodesManager.getCardNodeForCard(mGameInfo.getTrumpCard());
+        trumpCardNode.setPosition(trumpCardNode.getPosition().getX(), mTrumpCardPositionY);
         trumpCardNode.setOpacity(1f);
         trumpCardNode.setSortingLayer(0);
         trumpCardNode.useFrontTextureRegion();
