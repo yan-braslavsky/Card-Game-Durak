@@ -10,6 +10,8 @@ import aurelienribon.tweenengine.TweenManager;
  */
 public abstract class BasePileLayouter implements IPileLayouter {
 
+    protected final float CARD_MOVEMENT_ANIMATION_DURATION = 0.5f;
+
     final protected CardNodesManager mCardNodesManager;
     final protected TweenManager mTweenManager;
     final protected PileModel mBoundpile;
