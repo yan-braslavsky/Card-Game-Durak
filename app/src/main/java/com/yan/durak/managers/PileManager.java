@@ -42,8 +42,8 @@ public class PileManager {
 
         this.mCards = CardsHelper.create36Deck();
         this.mBottomPlayerPile = new PileModel(LOWEST_PLAYER_PILE_INDEX);
-        this.mTopLeftPlayerPile = new PileModel(LOWEST_PLAYER_PILE_INDEX + 1);
-        this.mTopRightPlayerPile = new PileModel(LOWEST_PLAYER_PILE_INDEX + 2);
+        this.mTopRightPlayerPile = new PileModel(LOWEST_PLAYER_PILE_INDEX + 1);
+        this.mTopLeftPlayerPile = new PileModel(LOWEST_PLAYER_PILE_INDEX + 2);
         this.mStockPile = new PileModel(STOCK_PILE_INDEX);
         this.mDiscardPile = new PileModel(DISCARD_PILE_INDEX);
         this.mIndexToPileMap = new HashMap<>(TOTAL_PILES_AMOUNT);
@@ -83,8 +83,8 @@ public class PileManager {
 
         //update mapping
         this.mIndexToPileMap.put(bottomPlayerPileIndex, mBottomPlayerPile);
-        this.mIndexToPileMap.put(topRightPlayerPileIndex + 1, mTopRightPlayerPile);
-        this.mIndexToPileMap.put(topLeftPlayerPileIndex + 2, mTopLeftPlayerPile);
+        this.mIndexToPileMap.put(topRightPlayerPileIndex, mTopRightPlayerPile);
+        this.mIndexToPileMap.put(topLeftPlayerPileIndex, mTopLeftPlayerPile);
     }
 
     /**
