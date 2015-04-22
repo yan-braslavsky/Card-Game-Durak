@@ -15,9 +15,10 @@ public class PileModel {
     private final Collection<Card> mUnmodifiableCardsCollection;
     private int mPileIndex;
 
-    public PileModel(int PileIndex) {
+    public PileModel(int pileIndex) {
         this.mCardsInPile = new HashSet<>();
         this.mUnmodifiableCardsCollection = Collections.unmodifiableCollection(mCardsInPile);
+        this.mPileIndex = pileIndex;
     }
 
     /**

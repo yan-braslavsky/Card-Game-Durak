@@ -14,11 +14,10 @@ import java.util.Map;
  */
 public class PileManager {
 
+    public static final int FIRST_FIELD_PILE_INDEX = 5;
     //TODO : that is debatable , there could be more piles on field
     private static final int MAX_PILES_ON_FIELD = 8;
-    private static final int FIRST_FIELD_PILE_INDEX = 5;
     private static final int TOTAL_PILES_AMOUNT = FIRST_FIELD_PILE_INDEX + MAX_PILES_ON_FIELD;
-
     private static final int STOCK_PILE_INDEX = 0;
     private static final int DISCARD_PILE_INDEX = 1;
     private static final int LOWEST_PLAYER_PILE_INDEX = 2;
@@ -118,7 +117,7 @@ public class PileManager {
         return mDiscardPile;
     }
 
-    public List<PileModel> getmFieldPiles() {
+    public List<PileModel> getFieldPiles() {
         return mFieldPiles;
     }
 

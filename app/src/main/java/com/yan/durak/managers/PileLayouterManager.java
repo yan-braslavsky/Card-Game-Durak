@@ -59,10 +59,10 @@ public class PileLayouterManager {
         this.mDiscardPileLayouter = new DiscardPileLayouter(cardNodesManager, tweenManager, mPileManager.getDiscardPile());
 
         //init field piles list
-        this.mFieldPileLayouterList = new ArrayList<>(mPileManager.getmFieldPiles().size());
+        this.mFieldPileLayouterList = new ArrayList<>(mPileManager.getFieldPiles().size());
 
         //init list of field layouters
-        for (PileModel pileModel : mPileManager.getmFieldPiles()) {
+        for (PileModel pileModel : mPileManager.getFieldPiles()) {
             this.mFieldPileLayouterList.add(new FieldPileLayouter(cardNodesManager, tweenManager, pileModel));
         }
 
