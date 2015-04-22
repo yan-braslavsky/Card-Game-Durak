@@ -9,10 +9,7 @@ import com.yan.durak.managers.PileManager;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
 
-import aurelienribon.tweenengine.Timeline;
-import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
-import glengine.yan.glengine.tween.YANTweenNodeAccessor;
 
 /**
  * Created by ybra on 20/04/15.
@@ -55,10 +52,11 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
         mPlayerCardsLayouter.setActiveSlotsAmount(cardsInPileAmount);
 
         CardsLayoutSlot slot;
+        CardNode cardNode;
         int slotPosition = 0;
 
         for (Card card : mBoundpile.getCardsInPile()) {
-            CardNode cardNode = mCardNodesManager.getCardNodeForCard(card);
+            cardNode = mCardNodesManager.getCardNodeForCard(card);
             slot = mPlayerCardsLayouter.getSlotAtPosition(slotPosition);
 
             //important to update sorting layer
@@ -73,19 +71,5 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
 
             slotPosition++;
         }
-
-
-    }
-
-    private void animateCardNode(CardNode cardNode, float endPositionX, float endPositionY, float endRotationZ, float endWidth, float endHeight, float endAlpha) {
-        Timeline.createSequence()
-                .beginParallel()
-                .push(Tween.to(cardNode, YANTweenNodeAccessor.OPACITY, CARD_MOVEMENT_ANIMATION_DURATION).target(endAlpha))
-                .push(Tween.to(cardNode, YANTweenNodeAccessor.ROTATION_Z_CW, CARD_MOVEMENT_ANIMATION_DURATION).target(endRotationZ))
-                .push(Tween.to(cardNode, YANTweenNodeAccessor.POSITION_X, CARD_MOVEMENT_ANIMATION_DURATION).target(endPositionX))
-                .push(Tween.to(cardNode, YANTweenNodeAccessor.POSITION_Y, CARD_MOVEMENT_ANIMATION_DURATION).target(endPositionY))
-                .push(Tween.to(cardNode, YANTweenNodeAccessor.SIZE_X, CARD_MOVEMENT_ANIMATION_DURATION).target(endWidth))
-                .push(Tween.to(cardNode, YANTweenNodeAccessor.SIZE_Y, CARD_MOVEMENT_ANIMATION_DURATION).target(endHeight))
-                .start(mTweenManager);
     }
 }

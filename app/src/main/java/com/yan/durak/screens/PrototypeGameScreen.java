@@ -118,14 +118,14 @@ public class PrototypeGameScreen extends BaseGameScreen {
     @Override
     public void onSetActive() {
         super.onSetActive();
-        mCardsTouchProcessor.register();
+//        mCardsTouchProcessor.register();
         mGameServerConnector.connect();
     }
 
     @Override
     public void onSetNotActive() {
         super.onSetNotActive();
-        mCardsTouchProcessor.unRegister();
+//        mCardsTouchProcessor.unRegister();
         mGameServerConnector.disconnect();
     }
 
@@ -164,21 +164,8 @@ public class PrototypeGameScreen extends BaseGameScreen {
     protected void onChangeNodesSize() {
 
         mCardNodesManager.setNodesSizes(getSceneSize());
-
         //set size of a card for touch processor
         mCardsTouchProcessor.setOriginalCardSize(mCardNodesManager.getCardNodeOriginalWidth(), mCardNodesManager.getCardNodeOriginalHeight());
-
-//        //init the player cards layouter
-//        mPlayerCardsLayouter.init(mCardsScreenFragment.getCardNodeOriginalWidth(), mCardsScreenFragment.getCardNodeOriginalHeight(),
-//                //maximum available width
-//                getSceneSize().getX(),
-//                //base x position ( center )
-//                getSceneSize().getX() / 2,
-//
-//                //TODO : Take the right values , not hard coded
-//                //base y position
-//                getSceneSize().getY() - /*mFence.getSize().getY() / 2*/100);
-
         mHudScreenFragment.setNodesSizes(getSceneSize());
     }
 
@@ -213,67 +200,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mSharedTweenManager.update(deltaTimeSeconds * 1);
         mGameServerConnector.update(deltaTimeSeconds);
         mHudScreenFragment.update(deltaTimeSeconds);
-//        mCardsScreenFragment.update(deltaTimeSeconds);
     }
-
-//    private void layoutTopLeftPlayerCards() {
-//
-//        List<CardsLayouterSlotImpl> slots = new ArrayList<>(mCardsScreenFragment.getTopLeftPlayerCardNodes().size());
-//        for (int i = 0; i < mCardsScreenFragment.getTopLeftPlayerCardNodes().size(); i++) {
-//            slots.add(new CardsLayouterSlotImpl());
-//        }
-//
-//        //layout the slots
-//        mThreePointFanLayouterTopLeft.layoutRowOfSlots(slots);
-//
-//        //make the layouting
-//        for (int i = 0; i < slots.size(); i++) {
-//            CardsLayouterSlotImpl slot = slots.get(i);
-//            YANTexturedNode node = mCardsScreenFragment.getTopLeftPlayerCardNodes().get(i);
-//            node.setSortingLayer(slot.getSortingLayer());
-//            //make the animation
-//            mCardsTweenAnimator.animateCardToValues(node, slot.getPosition().getX(), slot.getPosition().getY(), slot.getRotation(), null);
-//            mCardsTweenAnimator.animateSize(node, mCardsScreenFragment.getCardNodeOriginalWidth() * CARD_SCALE_AMOUNT_OPPONENT, mCardsScreenFragment.getCardNodeOriginalHeight() * CARD_SCALE_AMOUNT_OPPONENT, 0.5f);
-//        }
-//    }
-
-//    private void layoutTopRightPlayerCards() {
-//        List<CardsLayouterSlotImpl> slots = new ArrayList<>(mCardsScreenFragment.getTopRightPlayerCardNodes().size());
-//        for (int i = 0; i < mCardsScreenFragment.getTopRightPlayerCardNodes().size(); i++) {
-//            slots.add(new CardsLayouterSlotImpl());
-//        }
-//
-//        //layout the slots
-//        mThreePointFanLayouterTopRightPlayer.layoutRowOfSlots(slots);
-//
-//        //make the layouting
-//        for (int i = 0; i < slots.size(); i++) {
-//            CardsLayouterSlotImpl slot = slots.get(i);
-//            YANTexturedNode node = mCardsScreenFragment.getTopRightPlayerCardNodes().get(i);
-//            node.setSortingLayer(slot.getSortingLayer());
-//            //make the animation
-//            mCardsTweenAnimator.animateCardToValues(node, slot.getPosition().getX(), slot.getPosition().getY(), slot.getRotation(), null);
-//            mCardsTweenAnimator.animateSize(node, mCardsScreenFragment.getCardNodeOriginalWidth() * CARD_SCALE_AMOUNT_OPPONENT, mCardsScreenFragment.getCardNodeOriginalHeight() * CARD_SCALE_AMOUNT_OPPONENT, 0.5f);
-//        }
-//    }
-
-//    public void layoutBottomPlayerCards() {
-//        //update layouter to recalculate positions
-//        mPlayerCardsLayouter.setActiveSlotsAmount(mCardsScreenFragment.getBottomPlayerCardNodes().size());
-//
-//        //each index in nodes array corresponds to slot index
-//        for (int i = 0; i < mCardsScreenFragment.getBottomPlayerCardNodes().size(); i++) {
-//            CardNode card = mCardsScreenFragment.getBottomPlayerCardNodes().get(i);
-//            CardsLayoutSlot slot = mPlayerCardsLayouter.getSlotAtPosition(i);
-//            card.setSortingLayer(slot.getSortingLayer());
-//            mCardsTweenAnimator.animateCardToSlot(card, slot);
-//
-//            //animate card size back to normal
-//            card.removeTag(CardNode.TAG_SHOULD_NOT_RESIZE);
-//            mCardsTweenAnimator.animateSize(card, mCardsScreenFragment.getCardNodeOriginalWidth(), mCardsScreenFragment.getCardNodeOriginalHeight(), 0.5f);
-//        }
-//    }
-
 
     public HudScreenFragment getHudNodesFragment() {
         return mHudScreenFragment;
