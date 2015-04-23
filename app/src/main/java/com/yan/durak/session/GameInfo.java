@@ -6,6 +6,7 @@ import com.yan.durak.session.states.ActivePlayerState;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by ybra on 17/04/15.
@@ -14,6 +15,10 @@ import java.util.HashMap;
  * Holds an information regarding current game state.
  */
 public class GameInfo {
+
+    public enum Player {
+        BOTTOM_PLAYER, TOP_RIGHT_PLAYER, TOP_LEFT_PLAYER;
+    }
 
     /**
      * The index of the game on server for active player
@@ -35,13 +40,13 @@ public class GameInfo {
      */
     private ArrayList<Card> mSelectedThrowInCards;
 
+    private final Map<Integer, Player> mIndexToPlayerMap;
+
     /**
      * Active player can be in several states
      */
     private ActivePlayerState mActivePlayerState;
-    private int mTopLeftPlayerPileIndex;
-    private int mTopRightPlayerPileIndex;
-    private int mBottomPlayerPileIndex;
+
     private Card mTrumpCard;
 
     public GameInfo() {
@@ -52,60 +57,9 @@ public class GameInfo {
 
         //by default player is not active unless the state changes
         mActivePlayerState = mActivePlayerState.OTHER_PLAYER_TURN;
+        mIndexToPlayerMap = new HashMap<>();
     }
 
-    public int getBottomPlayerGameIndex() {
-        return bottomPlayerGameIndex;
-    }
-
-    public void setBottomPlayerGameIndex(int activePlayerGameIndex) {
-        this.bottomPlayerGameIndex = activePlayerGameIndex;
-    }
-
-    public ArrayList<CardData> getThrowInPossibleCards() {
-        return mThrowInPossibleCards;
-    }
-
-    public HashMap<Card, Card> getCardsPendingRetaliationMap() {
-        return mCardsPendingRetaliationMap;
-    }
-
-    public ArrayList<Card> getSelectedThrowInCards() {
-        return mSelectedThrowInCards;
-    }
-
-    public ActivePlayerState getActivePlayerState() {
-        return mActivePlayerState;
-    }
-
-    public void setActivePlayerState(ActivePlayerState activePlayerState) {
-        mActivePlayerState = activePlayerState;
-    }
-
-
-//    public void setTopLeftPlayerPileIndex(int topLeftPlayerPileIndex) {
-//        mTopLeftPlayerPileIndex = topLeftPlayerPileIndex;
-//    }
-//
-//    public int getTopLeftPlayerPileIndex() {
-//        return mTopLeftPlayerPileIndex;
-//    }
-//
-//    public void setTopRightPlayerPileIndex(int topRightPlayerPileIndex) {
-//        mTopRightPlayerPileIndex = topRightPlayerPileIndex;
-//    }
-//
-//    public int getTopRightPlayerPileIndex() {
-//        return mTopRightPlayerPileIndex;
-//    }
-//
-//    public void setBottomPlayerPileIndex(int bottomPlayerPileIndex) {
-//        mBottomPlayerPileIndex = bottomPlayerPileIndex;
-//    }
-//
-//    public int getBottomPlayerPileIndex() {
-//        return mBottomPlayerPileIndex;
-//    }
 
     public void setTrumpCard(Card trumpCard) {
         mTrumpCard = trumpCard;
@@ -115,11 +69,15 @@ public class GameInfo {
         return mTrumpCard;
     }
 
+    public void setPlayerIndexes(int bottomPlayerIndex, int topRightPlayerIndex, int topLeftPlayerIndex) {
+        mIndexToPlayerMap.put(bottomPlayerIndex, Player.BOTTOM_PLAYER);
+        mIndexToPlayerMap.put(topRightPlayerIndex, Player.TOP_RIGHT_PLAYER);
+        mIndexToPlayerMap.put(topLeftPlayerIndex, Player.TOP_LEFT_PLAYER);
+    }
 
-
-//    public int getStockPileIndex() {
-//        return 0;
-//    }
+    public Player getPlayerForIndex(int playerIndex) {
+        return mIndexToPlayerMap.get(playerIndex);
+    }
 
 
 }

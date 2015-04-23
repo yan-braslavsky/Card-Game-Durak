@@ -454,6 +454,8 @@ public class HudScreenFragment implements IScreenFragment {
 
     public void resetCockAnimation(@HudNode int index) {
 
+        //TODO : make cooler animation
+
         float rotationAngle = 0;
         YANReadOnlyVector2 newCockPosition = getNode(index).getPosition();
         getNode(COCK_SCISSOR_INDEX).setPosition(newCockPosition.getX(), newCockPosition.getY());

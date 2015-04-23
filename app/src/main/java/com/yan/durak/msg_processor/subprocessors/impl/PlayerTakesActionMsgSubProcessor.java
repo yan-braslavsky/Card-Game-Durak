@@ -3,31 +3,44 @@ package com.yan.durak.msg_processor.subprocessors.impl;
 import com.yan.durak.gamelogic.communication.protocol.messages.PlayerTakesActionMessage;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
 import com.yan.durak.screen_fragments.HudScreenFragment;
+import com.yan.durak.session.GameInfo;
 
 /**
  * Created by ybra on 17/04/15.
  */
 public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<PlayerTakesActionMessage> {
 
-    public PlayerTakesActionMsgSubProcessor() {
+    private final GameInfo nGameInfo;
+    private final HudScreenFragment mHudScreenFragment;
+
+    public PlayerTakesActionMsgSubProcessor(final GameInfo gameInfo, final HudScreenFragment hudScreenFragment) {
         super();
+
+        this.nGameInfo = gameInfo;
+        this.mHudScreenFragment = hudScreenFragment;
     }
 
     @Override
     public void processMessage(PlayerTakesActionMessage serverMessage) {
-//        int actionPlayerIndex = serverMessage.getMessageData().getPlayerIndex();
-//
-//        //since we don't have reference to players indexes in the game
-//        //we translating the player index to pile index
-//        int actionPlayerPileIndex = (actionPlayerIndex + 2) % 5;
-//        @HudScreenFragment.HudNode int cockPosition = HudScreenFragment.COCK_BOTTOM_RIGHT_INDEX;
-//        if (actionPlayerPileIndex == mMsgProcessor.getPrototypeGameScreen().getCardsScreenFragment().getBottomPlayerPileIndex()) {
-//            cockPosition = HudScreenFragment.COCK_BOTTOM_RIGHT_INDEX;
-//        } else if (actionPlayerPileIndex == mMsgProcessor.getPrototypeGameScreen().getCardsScreenFragment().getTopRightPlayerPileIndex()) {
-//            cockPosition = HudScreenFragment.COCK_TOP_RIGHT_INDEX;
-//        } else if (actionPlayerPileIndex == mMsgProcessor.getPrototypeGameScreen().getCardsScreenFragment().getTopLeftPlayerPileIndex()) {
-//            cockPosition = HudScreenFragment.COCK_TOP_LEFT_INDEX;
-//        }
-//        mMsgProcessor.getPrototypeGameScreen().getHudNodesFragment().resetCockAnimation(cockPosition);
+        int actionPlayerIndex = serverMessage.getMessageData().getPlayerIndex();
+
+        @HudScreenFragment.HudNode int cockNodeIndex = retrieveCockPosition(actionPlayerIndex);
+        mHudScreenFragment.resetCockAnimation(cockNodeIndex);
+
+    }
+
+    private
+    @HudScreenFragment.HudNode
+    int retrieveCockPosition(int actionPlayerIndex) {
+        switch (nGameInfo.getPlayerForIndex(actionPlayerIndex)) {
+            case BOTTOM_PLAYER:
+                return HudScreenFragment.COCK_BOTTOM_RIGHT_INDEX;
+            case TOP_RIGHT_PLAYER:
+                return HudScreenFragment.COCK_TOP_RIGHT_INDEX;
+            case TOP_LEFT_PLAYER:
+                return HudScreenFragment.COCK_TOP_LEFT_INDEX;
+            default:
+                throw new RuntimeException("player not found for index : " + actionPlayerIndex);
+        }
     }
 }

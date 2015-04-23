@@ -30,9 +30,16 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
     @Override
     public void processMessage(GameSetupProtocolMessage serverMessage) {
 
-        //store current player index on the game session
-        mGameInfo.setBottomPlayerGameIndex(serverMessage.getMessageData().getMyPlayerData().getPlayerIndexInGame());
+        extractPilesData(serverMessage);
+        extractGameInfoData(serverMessage);
 
+        //since all the piles are currently in the stock pile , we should lay out it
+        PileModel stockPile = mPileManager.getStockPile();
+        IPileLayouter stockPileLayouter = mPileLayouterManager.getPileLayouterForPile(stockPile);
+        stockPileLayouter.layout();
+    }
+
+    private void extractPilesData(GameSetupProtocolMessage serverMessage) {
         //depending on my player index we need to identify indexes of all players
         int bottomPlayerPileIndex = serverMessage.getMessageData().getMyPlayerData().getPlayerPileIndex();
         int topRightPlayerPileIndex = (bottomPlayerPileIndex + 1);
@@ -48,14 +55,25 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
 
         //store pile indexes of all players
         mPileManager.setPlayersPilesIndexes(bottomPlayerPileIndex, topRightPlayerPileIndex, topLeftPlayerPileIndex);
+    }
+
+    private void extractGameInfoData(GameSetupProtocolMessage serverMessage) {
+
+        int bottomPlayerIndex = serverMessage.getMessageData().getMyPlayerData().getPlayerIndexInGame();
+        int topRightPlayerIndex = bottomPlayerIndex + 1;
+        int topLeftPlayerIndex = bottomPlayerIndex + 2;
+
+        //correct other players positions
+        if ((topRightPlayerIndex / 3) > 0)
+            topRightPlayerIndex = (topRightPlayerIndex % 3) + 2;
+
+        if ((topLeftPlayerIndex / 3) > 0)
+            topLeftPlayerIndex = (topLeftPlayerIndex % 3) + 2;
+
+        mGameInfo.setPlayerIndexes(bottomPlayerIndex, topRightPlayerIndex, topLeftPlayerIndex);
 
         //extract trump card and save it in game session
         CardData trumpCardData = serverMessage.getMessageData().getTrumpCard();
         mGameInfo.setTrumpCard(new Card(trumpCardData.getRank(), trumpCardData.getSuit()));
-
-        //since all the piles are currently in the stock pile , we should lay out it
-        PileModel stockPile = mPileManager.getStockPile();
-        IPileLayouter stockPileLayouter = mPileLayouterManager.getPileLayouterForPile(stockPile);
-        stockPileLayouter.layout();
     }
 }
