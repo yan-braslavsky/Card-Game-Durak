@@ -74,6 +74,8 @@ public class FieldPileLayouter extends BasePileLayouter {
 
             //adjust rotation
             float rotationZ = (index == 0) ? (-FIELD_CARDS_ROTATION_ANGLE) : FIELD_CARDS_ROTATION_ANGLE;
+            int sortingLayer = (index == 0) ? 1 : 2;
+            cardNode.setSortingLayer(sortingLayer);
 
             //animate card to its place with new transform values
             animateCardNode(cardNode, mPilePositionOnField.getX(), mPilePositionOnField.getY(),

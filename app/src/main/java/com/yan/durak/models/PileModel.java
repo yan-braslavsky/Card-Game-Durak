@@ -2,6 +2,7 @@ package com.yan.durak.models;
 
 import com.yan.durak.gamelogic.cards.Card;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -16,7 +17,7 @@ public class PileModel {
     private int mPileIndex;
 
     public PileModel(int pileIndex) {
-        this.mCardsInPile = new HashSet<>();
+        this.mCardsInPile = new ArrayList<>();
         this.mUnmodifiableCardsCollection = Collections.unmodifiableCollection(mCardsInPile);
         this.mPileIndex = pileIndex;
     }
