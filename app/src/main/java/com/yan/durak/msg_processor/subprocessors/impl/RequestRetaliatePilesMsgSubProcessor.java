@@ -4,10 +4,12 @@ import com.yan.durak.communication.sender.GameServerMessageSender;
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestRetaliatePilesMessage;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
-import com.yan.durak.gamelogic.communication.protocol.data.CardData;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import glengine.yan.glengine.tasks.YANDelayedTask;
+import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
 /**
  * Created by ybra on 17/04/15.
@@ -16,6 +18,21 @@ public class RequestRetaliatePilesMsgSubProcessor extends BaseMsgSubProcessor<Re
 
     private final GameServerMessageSender mMessageSender;
     private final List<List<Card>> mRetaliationList;
+
+    private YANDelayedTask mTask;
+    private final YANDelayedTask.YANDelayedTaskListener mDelayedTaskListener = new YANDelayedTask.YANDelayedTaskListener() {
+
+        @Override
+        public void onComplete() {
+
+            //return task to the pool
+            YANObjectPool.getInstance().offer(mTask);
+            mTask = null;
+
+            //TODO : for now just take all (send empty array)
+            mMessageSender.sendResponseRetaliatePiles(mRetaliationList);
+        }
+    };
 
     public RequestRetaliatePilesMsgSubProcessor(final GameServerMessageSender messageSender) {
         super();
@@ -27,8 +44,10 @@ public class RequestRetaliatePilesMsgSubProcessor extends BaseMsgSubProcessor<Re
     @Override
     public void processMessage(RequestRetaliatePilesMessage serverMessage) {
 
-        //TODO : for now just take all (send empty array)
-        mMessageSender.sendResponseRetaliatePiles(mRetaliationList);
+        mTask = YANObjectPool.getInstance().obtain(YANDelayedTask.class);
+        mTask.setDurationSeconds(2);
+        mTask.setDelayedTaskListener(mDelayedTaskListener);
+        mTask.start();
 
 
 //        //rather transition to other processor state

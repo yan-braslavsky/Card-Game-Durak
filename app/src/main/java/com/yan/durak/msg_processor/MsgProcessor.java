@@ -53,16 +53,19 @@ public class MsgProcessor implements IGameServerConnector.IGameServerCommunicato
         mProcessorsMap.put(CardMovedProtocolMessage.class, new CardMovedMsgSubProcessor(getPrototypeGameScreen().getPileManager(), getPrototypeGameScreen().getPileLayouterManager()));
 
         //Game Setup
-        mProcessorsMap.put(GameSetupProtocolMessage.class, new GameSetupMsgSubProcessor(getPrototypeGameScreen().getGameInfo(), getPrototypeGameScreen().getPileLayouterManager(), getPrototypeGameScreen().getPileManager()));
+        mProcessorsMap.put(GameSetupProtocolMessage.class, new GameSetupMsgSubProcessor(getPrototypeGameScreen().getHudNodesFragment(), getPrototypeGameScreen().getGameInfo(),
+                getPrototypeGameScreen().getPileLayouterManager(), getPrototypeGameScreen().getPileManager()));
 
         //Request Attack
-        mProcessorsMap.put(RequestCardForAttackMessage.class, new RequestCardForAttackMsgSubProcessor(getPrototypeGameScreen().getPileManager(), getPrototypeGameScreen().getMessageSender()));
+        mProcessorsMap.put(RequestCardForAttackMessage.class, new RequestCardForAttackMsgSubProcessor(getPrototypeGameScreen().getPileManager(),
+                getPrototypeGameScreen().getMessageSender()));
 
         //Request Retaliation
         mProcessorsMap.put(RequestRetaliatePilesMessage.class, new RequestRetaliatePilesMsgSubProcessor(getPrototypeGameScreen().getMessageSender()));
 
         //Player Action
-        mProcessorsMap.put(PlayerTakesActionMessage.class, new PlayerTakesActionMsgSubProcessor(getPrototypeGameScreen().getGameInfo(), getPrototypeGameScreen().getHudNodesFragment()));
+        mProcessorsMap.put(PlayerTakesActionMessage.class, new PlayerTakesActionMsgSubProcessor(getPrototypeGameScreen().getPileManager(),
+                getPrototypeGameScreen().getPileLayouterManager(), getPrototypeGameScreen().getGameInfo(), getPrototypeGameScreen().getHudNodesFragment()));
 
         //Retaliation Invalid
         mProcessorsMap.put(RetaliationInvalidProtocolMessage.class, new RetaliationInvalidMsgSubProcessor());

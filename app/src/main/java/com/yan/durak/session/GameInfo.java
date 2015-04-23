@@ -76,6 +76,14 @@ public class GameInfo {
         mIndexToPlayerMap.put(topLeftPlayerIndex, Player.TOP_LEFT_PLAYER);
     }
 
+    public ActivePlayerState getmActivePlayerState() {
+        return mActivePlayerState;
+    }
+
+    public void setmActivePlayerState(ActivePlayerState mActivePlayerState) {
+        this.mActivePlayerState = mActivePlayerState;
+    }
+
     public Player getPlayerForIndex(int playerIndex) {
         return mIndexToPlayerMap.get(playerIndex);
     }

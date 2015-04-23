@@ -12,6 +12,11 @@ import java.util.List;
  */
 public class PlayerCardsLayouter implements CardsLayouter {
 
+
+    public enum YDistanceBetweenRows {
+        DEFAULT, COMPACT, EXPANDED;
+    }
+
     public static final int BASE_SORTING_LAYER = 5;
     private int mActiveSlotsAmount;
     private ArrayList<CardsLayouterSlotImpl> mSlots;
@@ -26,6 +31,8 @@ public class PlayerCardsLayouter implements CardsLayouter {
     private float mMaxAvailableWidth;
     private float mBaseXPosition;
     private float mBaseYPosition;
+    private float mYDeltaBetweenRows;
+    private float mYPosition;
 
 
     private List<List<CardsLayouterSlotImpl>> mLinesOfSlots;
@@ -50,25 +57,39 @@ public class PlayerCardsLayouter implements CardsLayouter {
         recalculateSlotsData();
     }
 
+    public void adjustYDistanceBetweenRows(YDistanceBetweenRows distance) {
+        switch (distance) {
+            case DEFAULT:
+                mYDeltaBetweenRows = mCardHeight / 4;
+                mYPosition = mBaseYPosition;
+                return;
+            case COMPACT:
+                mYDeltaBetweenRows = mCardHeight / 8;
+                mYPosition = mBaseYPosition * 1.15f;
+                return;
+            case EXPANDED:
+                mYDeltaBetweenRows = mCardHeight / 2;
+                mYPosition = mBaseYPosition;
+                return;
+        }
+    }
+
     @Override
-    public void init(float cardWidth, float cardHeight, float maxAvailableWidth,  float baseXPosition, float baseYPosition) {
+    public void init(float cardWidth, float cardHeight, float maxAvailableWidth, float baseXPosition, float baseYPosition) {
         mCardWidth = cardWidth;
         mCardHeight = cardHeight;
         mMaxAvailableWidth = maxAvailableWidth;
         mBaseXPosition = baseXPosition;
         mBaseYPosition = baseYPosition;
+        mYDeltaBetweenRows = mCardHeight / 4;
     }
 
     private void recalculateSlotsData() {
 
         mLinesOfSlots.clear();
 
-        //for now we will only implement line layout
-        float yPosition = mBaseYPosition;
-
         //the step will change according to logic
         int step = calculateStep();
-        float yDeltaBetweenRows = mCardHeight / 4;
         int i = 0;
         CardsLayoutStrategy strategy;
         while (i < mActiveSlotsAmount) {
@@ -83,14 +104,14 @@ public class PlayerCardsLayouter implements CardsLayouter {
             else
                 strategy = mFanStrategy;
 
-            strategy.init(mBaseXPosition, yPosition, mMaxAvailableWidth, mCardWidth, mCardHeight);
+            strategy.init(mBaseXPosition, mYPosition, mMaxAvailableWidth, mCardWidth, mCardHeight);
             List<CardsLayouterSlotImpl> subList = mSlots.subList(start, end);
             strategy.layoutRowOfSlots(subList);
 
             //add subList to list of lines of slots
             mLinesOfSlots.add(subList);
 
-            yPosition -= yDeltaBetweenRows;
+            mYPosition -= mYDeltaBetweenRows;
             i += step;
         }
 

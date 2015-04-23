@@ -8,6 +8,7 @@ import com.yan.durak.managers.CardNodesManager;
 import com.yan.durak.managers.PileManager;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
+import com.yan.durak.session.GameInfo;
 
 import aurelienribon.tweenengine.TweenManager;
 
@@ -18,12 +19,14 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
 
 
     private final PlayerCardsLayouter mPlayerCardsLayouter;
+    private final GameInfo mGameInfo;
 
-    public BottomPlayerPileLayouter(final PileManager pileManager, final CardNodesManager cardNodesManager, final TweenManager tweenManager, final PileModel boundPile) {
+    public BottomPlayerPileLayouter(final GameInfo gameInfo, final PileManager pileManager, final CardNodesManager cardNodesManager, final TweenManager tweenManager, final PileModel boundPile) {
         super(cardNodesManager, tweenManager, boundPile);
 
         //init player cards layouter , assuming the entire deck can be in his hands
         mPlayerCardsLayouter = new PlayerCardsLayouter(pileManager.getAllCards().size());
+        mGameInfo = gameInfo;
     }
 
 
@@ -46,6 +49,17 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
 
     @Override
     public void layout() {
+
+        //TODO:  this is in user testing
+        switch (mGameInfo.getmActivePlayerState()) {
+            case REQUEST_CARD_FOR_ATTACK:
+            case REQUEST_RETALIATION:
+            case REQUEST_THROW_IN:
+                mPlayerCardsLayouter.adjustYDistanceBetweenRows(PlayerCardsLayouter.YDistanceBetweenRows.EXPANDED);
+                break;
+            default:
+                mPlayerCardsLayouter.adjustYDistanceBetweenRows(PlayerCardsLayouter.YDistanceBetweenRows.COMPACT);
+        }
 
         //update layouter to recalculate positions
         int cardsInPileAmount = getBoundpile().getCardsInPile().size();

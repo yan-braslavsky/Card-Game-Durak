@@ -9,6 +9,9 @@ import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
 
 import java.util.Iterator;
 
+import glengine.yan.glengine.tasks.YANDelayedTask;
+import glengine.yan.glengine.util.object_pool.YANObjectPool;
+
 /**
  * Created by ybra on 17/04/15.
  */
@@ -16,6 +19,29 @@ public class RequestCardForAttackMsgSubProcessor extends BaseMsgSubProcessor<Req
 
     private final PileManager mPileManager;
     private final GameServerMessageSender mMessageSender;
+
+    private YANDelayedTask mTask;
+    private final YANDelayedTask.YANDelayedTaskListener mDelayedTaskListener = new YANDelayedTask.YANDelayedTaskListener() {
+
+        @Override
+        public void onComplete() {
+            PileModel bottomPlayerPile = mPileManager.getBottomPlayerPile();
+            if (bottomPlayerPile.getCardsInPile().isEmpty())
+                return;
+
+            //TODO : this is just a mock move
+            Iterator<Card> iterator = bottomPlayerPile.getCardsInPile().iterator();
+            Card cardForAttack = iterator.next();
+
+            //return task to the pool
+            YANObjectPool.getInstance().offer(mTask);
+            mTask = null;
+
+            //we can just send the response
+            mMessageSender.sendCardForAttackResponse(cardForAttack);
+        }
+    };
+
 
     public RequestCardForAttackMsgSubProcessor(final PileManager pileManager, final GameServerMessageSender messageSender) {
         super();
@@ -26,15 +52,20 @@ public class RequestCardForAttackMsgSubProcessor extends BaseMsgSubProcessor<Req
     @Override
     public void processMessage(RequestCardForAttackMessage serverMessage) {
 
-        PileModel bottomPlayerPile = mPileManager.getBottomPlayerPile();
-        if (bottomPlayerPile.getCardsInPile().isEmpty())
-            return;
+        mTask = YANObjectPool.getInstance().obtain(YANDelayedTask.class);
+        mTask.setDurationSeconds(2);
+        mTask.setDelayedTaskListener(mDelayedTaskListener);
+        mTask.start();
 
-        //TODO : this is just a mock move
-        Iterator<Card> iterator = bottomPlayerPile.getCardsInPile().iterator();
-        Card cardForAttack = iterator.next();
-
-        //we can just send the response
-        mMessageSender.sendCardForAttackResponse(cardForAttack);
+//        PileModel bottomPlayerPile = mPileManager.getBottomPlayerPile();
+//        if (bottomPlayerPile.getCardsInPile().isEmpty())
+//            return;
+//
+//        //TODO : this is just a mock move
+//        Iterator<Card> iterator = bottomPlayerPile.getCardsInPile().iterator();
+//        Card cardForAttack = iterator.next();
+//
+//        //we can just send the response
+//        mMessageSender.sendCardForAttackResponse(cardForAttack);
     }
 }

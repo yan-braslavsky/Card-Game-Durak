@@ -37,14 +37,14 @@ public class PileLayouterManager {
     //map
     final Map<PileModel, IPileLayouter> mPileToLayouterMap;
 
-    public PileLayouterManager(CardNodesManager cardNodesManager, TweenManager tweenManager, PileManager pileManager, GameInfo gameInfo, HudScreenFragment hudScreenFragment) {
+    public PileLayouterManager(final CardNodesManager cardNodesManager, final TweenManager tweenManager, final PileManager pileManager, final GameInfo gameInfo, final HudScreenFragment hudScreenFragment) {
 
         this.mPileManager = pileManager;
 
         this.mPileToLayouterMap = new HashMap<>();
 
         //init bottom player layouter
-        this.mBottomPlayerPileLayouter = new BottomPlayerPileLayouter(mPileManager, cardNodesManager, tweenManager, mPileManager.getBottomPlayerPile());
+        this.mBottomPlayerPileLayouter = new BottomPlayerPileLayouter(gameInfo, mPileManager, cardNodesManager, tweenManager, mPileManager.getBottomPlayerPile());
 
         //init top left player layouter
         this.mTopLeftPlayerPileLayouter = new TopLeftPlayerPileLayouter(cardNodesManager, tweenManager, mPileManager.getTopLeftPlayerPile());
