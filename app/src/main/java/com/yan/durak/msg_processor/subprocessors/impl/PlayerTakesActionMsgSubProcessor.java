@@ -5,6 +5,8 @@ import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
 import com.yan.durak.screen_fragments.HudScreenFragment;
 import com.yan.durak.session.GameInfo;
 
+import glengine.yan.glengine.util.loggers.YANLogger;
+
 /**
  * Created by ybra on 17/04/15.
  */
@@ -23,7 +25,6 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
     @Override
     public void processMessage(PlayerTakesActionMessage serverMessage) {
         int actionPlayerIndex = serverMessage.getMessageData().getPlayerIndex();
-
         @HudScreenFragment.HudNode int cockNodeIndex = retrieveCockPosition(actionPlayerIndex);
         mHudScreenFragment.resetCockAnimation(cockNodeIndex);
     }

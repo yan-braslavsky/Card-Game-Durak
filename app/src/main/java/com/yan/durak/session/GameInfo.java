@@ -16,6 +16,7 @@ import java.util.Map;
  */
 public class GameInfo {
 
+
     public enum Player {
         BOTTOM_PLAYER, TOP_RIGHT_PLAYER, TOP_LEFT_PLAYER;
     }
@@ -79,5 +80,14 @@ public class GameInfo {
         return mIndexToPlayerMap.get(playerIndex);
     }
 
+    public int getPlayerIndex(Player player) {
+
+        for (Map.Entry<Integer, Player> entry : mIndexToPlayerMap.entrySet()) {
+            if (player == entry.getValue())
+                return entry.getKey();
+        }
+
+        return -1;
+    }
 
 }
