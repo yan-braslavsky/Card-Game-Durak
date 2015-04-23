@@ -32,6 +32,8 @@ public class ThreePointFanLayouter implements ThreePointLayouter {
     private LayoutDirection mDirection;
 
 
+
+
     public ThreePointFanLayouter(int smallestSortingLayer) {
         mSmallestSortingLayer = smallestSortingLayer;
         mDirection = LayoutDirection.LTR;
@@ -138,6 +140,8 @@ public class ThreePointFanLayouter implements ThreePointLayouter {
     }
 
     private void initNormalizedPoints() {
+
+        //TODO : not efficient to allocate new vectors each time
         mNormalizedOriginPoint = new YANVector2(0, 0);
         mNormalizedLeftBasis = new YANVector2(1, 1);
         mNormalizedRightBasis = new YANVector2(-1, 1);
@@ -153,7 +157,7 @@ public class ThreePointFanLayouter implements ThreePointLayouter {
 
         //we are are rotating left basis counter clockwise half the fan angle
         //to reach the centered highest point
-        YANVector2 startingPosition = new YANVector2((mDirection == LayoutDirection.LTR) ? mNormalizedLeftBasis : mNormalizedRightBasis);
+        YANVector2 startingPositionVector = (mDirection == LayoutDirection.LTR) ? mNormalizedLeftBasis : mNormalizedRightBasis;
 
         int angleStepDivider = slots.size() - 1;
         int rotationStepDivider = slots.size();
@@ -178,7 +182,7 @@ public class ThreePointFanLayouter implements ThreePointLayouter {
             CardsLayouterSlotImpl slot = slots.get(i);
 
             //set slot to initial position and rotation
-            slot.setPosition(startingPosition.getX(), startingPosition.getY());
+            slot.setPosition(startingPositionVector.getX(), startingPositionVector.getY());
             slot.setRotation(rotationStep * (i + 1));
             slot.setSortingLayer(mSmallestSortingLayer + i);
 

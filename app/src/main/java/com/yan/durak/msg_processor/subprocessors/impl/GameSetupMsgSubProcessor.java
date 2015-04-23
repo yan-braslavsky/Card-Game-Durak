@@ -8,6 +8,7 @@ import com.yan.durak.managers.PileLayouterManager;
 import com.yan.durak.managers.PileManager;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
+import com.yan.durak.screen_fragments.HudScreenFragment;
 import com.yan.durak.session.GameInfo;
 
 /**
@@ -18,13 +19,15 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
     private final GameInfo mGameInfo;
     private final PileLayouterManager mPileLayouterManager;
     private final PileManager mPileManager;
+    private final HudScreenFragment mHudScreenFragment;
 
-    public GameSetupMsgSubProcessor(final GameInfo gameInfo, final PileLayouterManager pileLayouterManager, PileManager pileManager) {
+    public GameSetupMsgSubProcessor(final HudScreenFragment hudScreenFragment, final GameInfo gameInfo, final PileLayouterManager pileLayouterManager, PileManager pileManager) {
         super();
 
         this.mGameInfo = gameInfo;
         this.mPileLayouterManager = pileLayouterManager;
         this.mPileManager = pileManager;
+        this.mHudScreenFragment = hudScreenFragment;
     }
 
     @Override
@@ -75,5 +78,8 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
         //extract trump card and save it in game session
         CardData trumpCardData = serverMessage.getMessageData().getTrumpCard();
         mGameInfo.setTrumpCard(new Card(trumpCardData.getRank(), trumpCardData.getSuit()));
+
+        //we need set trump suit to be visible when stock pile gets empty
+        mHudScreenFragment.setTrumpSuit(trumpCardData.getSuit());
     }
 }

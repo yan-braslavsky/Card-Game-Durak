@@ -71,7 +71,7 @@ public class MsgProcessor implements IGameServerConnector.IGameServerCommunicato
         mProcessorsMap.put(RequestThrowInsMessage.class, new RequestThrowInsMsgSubProcessor(getPrototypeGameScreen().getMessageSender()));
 
         //Game Over
-        mProcessorsMap.put(GameOverProtocolMessage.class, new GameOverMsgSubProcessor());
+        mProcessorsMap.put(GameOverProtocolMessage.class, new GameOverMsgSubProcessor(getPrototypeGameScreen().getHudNodesFragment(), getPrototypeGameScreen().getGameInfo()));
     }
 
     @Override
