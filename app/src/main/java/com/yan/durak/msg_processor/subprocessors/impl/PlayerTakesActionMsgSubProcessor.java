@@ -33,6 +33,9 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
 
         updateActivePlayerState(serverMessage.getMessageData());
 
+        //update cock only on attack
+        if(PlayerTakesActionMessage.PlayerAction.valueOf(serverMessage.getMessageData().getAction()) != PlayerTakesActionMessage.PlayerAction.ATTACK)
+            return;
 
         @HudScreenFragment.HudNode int cockNodeIndex = retrieveCockPosition(actionPlayerIndex);
         mHudScreenFragment.resetCockAnimation(cockNodeIndex);
