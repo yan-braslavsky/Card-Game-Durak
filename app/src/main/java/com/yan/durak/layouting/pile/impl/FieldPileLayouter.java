@@ -23,11 +23,9 @@ public class FieldPileLayouter extends BasePileLayouter {
      */
     private static final float FIELD_CARDS_ROTATION_ANGLE = 13f;
 
-    private static final float FIELD_PILE_SIZE_SCALE = 0.5f;
+    private static final float FIELD_PILE_SIZE_SCALE = 0.7f;
 
-    //TODO:  not a good decision , rethink !
     private static final int MAX_PILES_IN_LINE = 4;
-    private static final int MAX_PILES_IN_HEIGHT = 3;
 
     private float mCardWidhtForPile;
     private float mCardHeightForPile;
@@ -53,7 +51,7 @@ public class FieldPileLayouter extends BasePileLayouter {
         int pileOrderOnField = mBoundpile.getPileIndex() - PileManager.FIRST_FIELD_PILE_INDEX;
 
         int pileIndexX = pileOrderOnField % (MAX_PILES_IN_LINE - 1);
-        int pileIndexY = pileOrderOnField / (MAX_PILES_IN_HEIGHT - 1);
+        int pileIndexY = pileOrderOnField / (MAX_PILES_IN_LINE - 1);
 
         float currentX = leftBorderX + (xAdvance * pileIndexX);
         float currentY = topBorderY + (yAdvance * pileIndexY);
