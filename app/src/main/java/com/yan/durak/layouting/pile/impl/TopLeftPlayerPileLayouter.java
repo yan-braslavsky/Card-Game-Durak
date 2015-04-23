@@ -13,6 +13,7 @@ import java.util.List;
 
 import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.util.geometry.YANVector2;
+import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
 /**
  * Created by ybra on 20/04/15.
@@ -54,14 +55,22 @@ public class TopLeftPlayerPileLayouter extends BasePileLayouter {
 
         this.mCardWidhtForPile = mCardNodesManager.getCardNodeOriginalWidth() * OPPONENT_PILE_SIZE_SCALE;
         this.mCardHeightForPile = mCardNodesManager.getCardNodeOriginalHeight() * OPPONENT_PILE_SIZE_SCALE;
+
+        //preallocate slots
+        YANObjectPool.getInstance().preallocate(CardsLayouterSlotImpl.class, 10);
     }
 
     @Override
     public void layout() {
+
+        //offer to pool everything that was in list
+        for (CardsLayouterSlotImpl cardsLayouterSlot : mSlotsList) {
+            YANObjectPool.getInstance().offer(cardsLayouterSlot);
+        }
+
         mSlotsList.clear();
         for (Card card : mBoundpile.getCardsInPile()) {
-            //TODO : must have optimisation , no allocation should be that often
-            mSlotsList.add(new CardsLayouterSlotImpl());
+            mSlotsList.add(YANObjectPool.getInstance().obtain(CardsLayouterSlotImpl.class));
         }
 
         //layout the slots

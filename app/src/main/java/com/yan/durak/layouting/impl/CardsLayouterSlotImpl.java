@@ -3,15 +3,19 @@ package com.yan.durak.layouting.impl;
 import com.yan.durak.layouting.CardsLayoutSlot;
 
 import glengine.yan.glengine.util.geometry.YANVector2;
+import glengine.yan.glengine.util.object_pool.YANIPoolableObject;
 
 /**
  * Created by Yan-Home on 11/8/2014.
  */
-public class CardsLayouterSlotImpl implements CardsLayoutSlot {
+public class CardsLayouterSlotImpl implements CardsLayoutSlot, YANIPoolableObject {
 
     private YANVector2 mPosition;
     private float mRotation;
     private int mSortingLayer;
+
+    //used internally for reordering after positioning
+    private int mSortingIndex;
 
     public int getSortingIndex() {
         return mSortingIndex;
@@ -20,9 +24,6 @@ public class CardsLayouterSlotImpl implements CardsLayoutSlot {
     public void setSortingIndex(int sortingIndex) {
         mSortingIndex = sortingIndex;
     }
-
-    //used internaly for reordering after positioning
-    private int mSortingIndex;
 
     public CardsLayouterSlotImpl() {
         mPosition = new YANVector2();
@@ -54,5 +55,13 @@ public class CardsLayouterSlotImpl implements CardsLayoutSlot {
 
     public void setSortingLayer(int sortingLayer) {
         mSortingLayer = sortingLayer;
+    }
+
+    @Override
+    public void resetState() {
+        mPosition.setXY(0, 0);
+        mRotation = 0;
+        mSortingLayer = 0;
+        mSortingIndex = 0;
     }
 }
