@@ -1,20 +1,36 @@
 package com.yan.durak.msg_processor.subprocessors.impl;
 
+import com.yan.durak.communication.sender.GameServerMessageSender;
+import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestRetaliatePilesMessage;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
+import com.yan.durak.gamelogic.communication.protocol.data.CardData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ybra on 17/04/15.
  */
 public class RequestRetaliatePilesMsgSubProcessor extends BaseMsgSubProcessor<RequestRetaliatePilesMessage> {
 
-    public RequestRetaliatePilesMsgSubProcessor() {
+    private final GameServerMessageSender mMessageSender;
+    private final List<List<Card>> mRetaliationList;
+
+    public RequestRetaliatePilesMsgSubProcessor(final GameServerMessageSender messageSender) {
         super();
+
+        this.mMessageSender = messageSender;
+        this.mRetaliationList = new ArrayList<>();
     }
 
     @Override
     public void processMessage(RequestRetaliatePilesMessage serverMessage) {
-//        //FIXME : Do not store this info on the screen
+
+        //TODO : for now just take all (send empty array)
+        mMessageSender.sendResponseRetaliatePiles(mRetaliationList);
+
+
 //        //rather transition to other processor state
 //        mMsgProcessor.getPrototypeGameScreen().getGameSession().setActivePlayerState(ActivePlayerState.REQUEST_RETALIATION);
 //

@@ -39,7 +39,7 @@ public class GameServerMessageSender {
      *
      * @param retaliatedPilesList list of piles after retaliation.
      */
-    public void sendResponseRetaliatePiles(ArrayList<List<Card>> retaliatedPilesList) {
+    public void sendResponseRetaliatePiles(List<List<Card>> retaliatedPilesList) {
         sendMessage(new ResponseRetaliatePilesMessage(retaliatedPilesList));
     }
 

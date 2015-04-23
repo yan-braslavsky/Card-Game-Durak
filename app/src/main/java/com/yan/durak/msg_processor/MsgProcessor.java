@@ -56,10 +56,10 @@ public class MsgProcessor implements IGameServerConnector.IGameServerCommunicato
         mProcessorsMap.put(GameSetupProtocolMessage.class, new GameSetupMsgSubProcessor(getPrototypeGameScreen().getGameInfo(), getPrototypeGameScreen().getPileLayouterManager(), getPrototypeGameScreen().getPileManager()));
 
         //Request Attack
-        mProcessorsMap.put(RequestCardForAttackMessage.class, new RequestCardForAttackMsgSubProcessor(getPrototypeGameScreen().getPileManager(),getPrototypeGameScreen().getMessageSender()));
+        mProcessorsMap.put(RequestCardForAttackMessage.class, new RequestCardForAttackMsgSubProcessor(getPrototypeGameScreen().getPileManager(), getPrototypeGameScreen().getMessageSender()));
 
         //Request Retaliation
-        mProcessorsMap.put(RequestRetaliatePilesMessage.class, new RequestRetaliatePilesMsgSubProcessor());
+        mProcessorsMap.put(RequestRetaliatePilesMessage.class, new RequestRetaliatePilesMsgSubProcessor(getPrototypeGameScreen().getMessageSender()));
 
         //Player Action
         mProcessorsMap.put(PlayerTakesActionMessage.class, new PlayerTakesActionMsgSubProcessor(getPrototypeGameScreen().getGameInfo(), getPrototypeGameScreen().getHudNodesFragment()));
@@ -83,7 +83,6 @@ public class MsgProcessor implements IGameServerConnector.IGameServerCommunicato
     public PrototypeGameScreen getPrototypeGameScreen() {
         return mPrototypeGameScreen;
     }
-
 
 
 }
