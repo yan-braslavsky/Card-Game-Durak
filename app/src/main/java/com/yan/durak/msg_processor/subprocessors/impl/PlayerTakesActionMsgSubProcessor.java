@@ -26,7 +26,6 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
 
         @HudScreenFragment.HudNode int cockNodeIndex = retrieveCockPosition(actionPlayerIndex);
         mHudScreenFragment.resetCockAnimation(cockNodeIndex);
-
     }
 
     private

@@ -90,13 +90,13 @@ public class PrototypeGameScreen extends BaseGameScreen {
             }
         });
 
+        //used to send concrete messages to server
+        mMessageSender = new GameServerMessageSender(mGameServerConnector);
+
         //TODO : replace "this" by managers that are really required by the processor
         //message processor will receive messages and react on them
         //msg processor is the listener for game server connector
         mGameServerConnector.setListener(new MsgProcessor(this));
-
-        //used to send concrete messages to server
-        mMessageSender = new GameServerMessageSender(mGameServerConnector);
     }
 
     public TweenManager getSharedTweenManager() {
@@ -215,4 +215,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
     }
 
 
+    public GameServerMessageSender getMessageSender() {
+        return mMessageSender;
+    }
 }
