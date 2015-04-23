@@ -1,29 +1,36 @@
 package com.yan.durak.msg_processor.subprocessors.impl;
 
-import com.yan.durak.gamelogic.communication.protocol.data.CardData;
+import com.yan.durak.communication.sender.GameServerMessageSender;
+import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestThrowInsMessage;
-import com.yan.durak.input.cards.states.CardsTouchProcessorMultipleChoiceState;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
-import com.yan.durak.nodes.CardNode;
-import com.yan.durak.session.states.ActivePlayerState;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ybra on 17/04/15.
  */
 public class RequestThrowInsMsgSubProcessor extends BaseMsgSubProcessor<RequestThrowInsMessage> {
 
-    private ArrayList<CardNode> mAvailableCards;
 
-    public RequestThrowInsMsgSubProcessor() {
+    private final GameServerMessageSender mMessageSender;
+    private final List<Card> mThrowInCardList;
+
+    public RequestThrowInsMsgSubProcessor(final GameServerMessageSender messageSender) {
         super();
 
-        mAvailableCards = new ArrayList<>();
+        this.mMessageSender = messageSender;
+        this.mThrowInCardList = new ArrayList<>();
     }
 
     @Override
     public void processMessage(RequestThrowInsMessage serverMessage) {
+
+        //TODO : for now just return empty array
+        mMessageSender.sendThrowInResponse(mThrowInCardList);
+
+
 //        //FIXME : That entire method requires rewriting
 //
 //        //we attaching finish button to screen
