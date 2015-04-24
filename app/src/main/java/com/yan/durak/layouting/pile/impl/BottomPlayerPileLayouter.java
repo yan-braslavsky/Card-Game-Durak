@@ -43,7 +43,7 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
                 //base x position ( center )
                 sceneWidth / 2,
                 //base y position
-                sceneHeight * 0.9f);
+                sceneHeight * 0.93f);
     }
 
 
@@ -53,12 +53,16 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
         //TODO:  this is in user testing
         switch (mGameInfo.getmActivePlayerState()) {
             case REQUEST_CARD_FOR_ATTACK:
-            case REQUEST_RETALIATION:
-            case REQUEST_THROW_IN:
-                mPlayerCardsLayouter.adjustYDistanceBetweenRows(PlayerCardsLayouter.YDistanceBetweenRows.EXPANDED);
+//            case REQUEST_RETALIATION:
+//            case REQUEST_THROW_IN:
+                mPlayerCardsLayouter.adjustExpansionLevel(PlayerCardsLayouter.ExpansionLevelPreset.EXPANDED);
+                break;
+            case PLAYER_DRAGGING_CARD:
+                //TODO : this is a bad coupling
+                mPlayerCardsLayouter.adjustExpansionLevel(mGameInfo.getDraggingCardExpansionLevel());
                 break;
             default:
-                mPlayerCardsLayouter.adjustYDistanceBetweenRows(PlayerCardsLayouter.YDistanceBetweenRows.COMPACT);
+                mPlayerCardsLayouter.adjustExpansionLevel(PlayerCardsLayouter.ExpansionLevelPreset.COMPACT);
         }
 
         //update layouter to recalculate positions

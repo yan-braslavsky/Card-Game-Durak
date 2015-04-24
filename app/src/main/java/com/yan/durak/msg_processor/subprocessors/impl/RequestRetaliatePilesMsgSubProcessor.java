@@ -44,10 +44,10 @@ public class RequestRetaliatePilesMsgSubProcessor extends BaseMsgSubProcessor<Re
     @Override
     public void processMessage(RequestRetaliatePilesMessage serverMessage) {
 
-//        mTask = YANObjectPool.getInstance().obtain(YANDelayedTask.class);
-//        mTask.setDurationSeconds(2);
-//        mTask.setDelayedTaskListener(mDelayedTaskListener);
-//        mTask.start();
+        mTask = YANObjectPool.getInstance().obtain(YANDelayedTask.class);
+        mTask.setDurationSeconds(0.1f);
+        mTask.setDelayedTaskListener(mDelayedTaskListener);
+        mTask.start();
 
     }
 }

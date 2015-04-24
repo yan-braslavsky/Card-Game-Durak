@@ -10,11 +10,13 @@ import com.yan.durak.msg_processor.MsgProcessor;
 import com.yan.durak.nodes.CardNode;
 import com.yan.durak.screen_fragments.HudScreenFragment;
 import com.yan.durak.session.GameInfo;
+import com.yan.durak.session.states.ActivePlayerState;
 
 import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.nodes.YANButtonNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.renderer.YANGLRenderer;
+import glengine.yan.glengine.util.loggers.YANLogger;
 
 /**
  * Created by Yan-Home on 10/3/2014.
@@ -83,11 +85,37 @@ public class PrototypeGameScreen extends BaseGameScreen {
             @Override
             public void onDraggedCardReleased(CardNode cardNode) {
                 //TODO : implement
+                mGameInfo.setDraggingCardExpansionLevel(1f);
+
+                //add card back
+                mPileManager.getBottomPlayerPile().addCard(cardNode.getCard());
+
+//                //layout
+//                mPileLayouterManager.getPileLayouterForPile(mPileManager.getBottomPlayerPile()).layout();
+                //we can just send the response
+                mMessageSender.sendCardForAttackResponse(cardNode.getCard());
             }
 
             @Override
-            public void onCardDragProgress(CardNode card) {
+            public void onCardDragProgress(CardNode cardNode) {
                 //TODO : implement
+                float screenMiddleY = getSceneSize().getY() / 2f;
+                float lowestYPosition = getSceneSize().getY() * 0.9f;
+                float delta = lowestYPosition - screenMiddleY;
+
+                mGameInfo.setmActivePlayerState(ActivePlayerState.PLAYER_DRAGGING_CARD);
+
+                float dragExpansionLevel = (((cardNode.getPosition().getY() - screenMiddleY) / delta));
+
+                dragExpansionLevel = clamp(dragExpansionLevel, 0f, 1f);
+
+                mGameInfo.setDraggingCardExpansionLevel(dragExpansionLevel);
+
+                //remove card from player pile
+                mPileManager.getBottomPlayerPile().removeCard(cardNode.getCard());
+
+                //layout
+                mPileLayouterManager.getPileLayouterForPile(mPileManager.getBottomPlayerPile()).layout();
             }
         }, mCardNodesManager, mPileManager.getBottomPlayerPile());
 
@@ -99,6 +127,11 @@ public class PrototypeGameScreen extends BaseGameScreen {
         //message processor will receive messages and react on them
         //msg processor is the listener for game server connector
         mGameServerConnector.setListener(new MsgProcessor(this));
+    }
+
+    //TODO : move to utils
+    public static float clamp(float val, float min, float max) {
+        return Math.max(min, Math.min(max, val));
     }
 
     public TweenManager getSharedTweenManager() {

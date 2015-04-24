@@ -4,6 +4,7 @@ import com.yan.durak.layouting.CardsLayoutSlot;
 import com.yan.durak.layouting.CardsLayoutStrategy;
 import com.yan.durak.layouting.CardsLayouter;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
 public class PlayerCardsLayouter implements CardsLayouter {
 
 
-    public enum YDistanceBetweenRows {
+    public enum ExpansionLevelPreset {
         DEFAULT, COMPACT, EXPANDED;
     }
 
@@ -33,6 +34,7 @@ public class PlayerCardsLayouter implements CardsLayouter {
     private float mBaseYPosition;
     private float mYDeltaBetweenRows;
     private float mYPosition;
+    private float mDefaultYDeltaBetweenRows;
 
 
     private List<List<CardsLayouterSlotImpl>> mLinesOfSlots;
@@ -57,19 +59,44 @@ public class PlayerCardsLayouter implements CardsLayouter {
         recalculateSlotsData();
     }
 
-    public void adjustYDistanceBetweenRows(YDistanceBetweenRows distance) {
-        switch (distance) {
+    /**
+     * Sets the expansion level of the pile.
+     * The higher the level , the more expanded the pile is.
+     *
+     * @param level must be in range between 0 to 1
+     */
+    public void adjustExpansionLevel(float level) {
+        if (level < 0 || level > 1f)
+            throw new InvalidParameterException("Level must be between 0 and 1");
+
+
+        //TODO : can be cached , no need to calculate every time
+        float maxYDeltaBetweenRows = mCardHeight / 2f;
+        float maxYPosition = mBaseYPosition;
+
+        float minYDeltaBetweenRows = mCardHeight / 8f;
+        float minYPosition = mBaseYPosition * 1.15f;
+
+        float deltaYDeltaBetweenRows = maxYDeltaBetweenRows - minYDeltaBetweenRows;
+        float deltaYPosition = maxYPosition - minYPosition;
+
+        mYPosition = minYPosition + (deltaYPosition * level);
+        mYDeltaBetweenRows = minYDeltaBetweenRows + (deltaYDeltaBetweenRows * level);
+    }
+
+    /**
+     * Sets the expansion level of the pile according to predefined Preset.
+     */
+    public void adjustExpansionLevel(ExpansionLevelPreset levelPreset) {
+        switch (levelPreset) {
             case DEFAULT:
-                mYDeltaBetweenRows = mCardHeight / 4;
-                mYPosition = mBaseYPosition;
+                adjustExpansionLevel(0.6f);
                 return;
             case COMPACT:
-                mYDeltaBetweenRows = mCardHeight / 8;
-                mYPosition = mBaseYPosition * 1.15f;
+                adjustExpansionLevel(0);
                 return;
             case EXPANDED:
-                mYDeltaBetweenRows = mCardHeight / 2;
-                mYPosition = mBaseYPosition;
+                adjustExpansionLevel(1f);
                 return;
         }
     }
@@ -81,7 +108,8 @@ public class PlayerCardsLayouter implements CardsLayouter {
         mMaxAvailableWidth = maxAvailableWidth;
         mBaseXPosition = baseXPosition;
         mBaseYPosition = baseYPosition;
-        mYDeltaBetweenRows = mCardHeight / 4;
+        mDefaultYDeltaBetweenRows = mCardHeight / 4;
+        mYDeltaBetweenRows = mDefaultYDeltaBetweenRows;
     }
 
     private void recalculateSlotsData() {

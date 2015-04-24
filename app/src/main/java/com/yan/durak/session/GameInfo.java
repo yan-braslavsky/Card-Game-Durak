@@ -17,6 +17,11 @@ import java.util.Map;
 public class GameInfo {
 
 
+    /**
+     * Used to save expansion level of player cards during dragging
+     */
+    private float mDraggingCardExpansionLevel;
+
     public enum Player {
         BOTTOM_PLAYER, TOP_RIGHT_PLAYER, TOP_LEFT_PLAYER;
     }
@@ -98,4 +103,11 @@ public class GameInfo {
         return -1;
     }
 
+    public float getDraggingCardExpansionLevel() {
+        return mDraggingCardExpansionLevel;
+    }
+
+    public void setDraggingCardExpansionLevel(float draggingCardExpansionLevel) {
+        this.mDraggingCardExpansionLevel = draggingCardExpansionLevel;
+    }
 }

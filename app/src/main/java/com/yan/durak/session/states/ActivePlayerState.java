@@ -26,5 +26,10 @@ public enum ActivePlayerState {
      * When player must start an attack
      * on opponent with any card.
      */
-    REQUEST_CARD_FOR_ATTACK;
+    REQUEST_CARD_FOR_ATTACK,
+
+    /**
+     * Player currently dragging a card
+     */
+    PLAYER_DRAGGING_CARD;
 }
