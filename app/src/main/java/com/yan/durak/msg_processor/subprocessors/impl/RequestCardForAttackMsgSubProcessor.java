@@ -52,20 +52,10 @@ public class RequestCardForAttackMsgSubProcessor extends BaseMsgSubProcessor<Req
     @Override
     public void processMessage(RequestCardForAttackMessage serverMessage) {
 
-        mTask = YANObjectPool.getInstance().obtain(YANDelayedTask.class);
-        mTask.setDurationSeconds(2);
-        mTask.setDelayedTaskListener(mDelayedTaskListener);
-        mTask.start();
+//        mTask = YANObjectPool.getInstance().obtain(YANDelayedTask.class);
+//        mTask.setDurationSeconds(2);
+//        mTask.setDelayedTaskListener(mDelayedTaskListener);
+//        mTask.start();
 
-//        PileModel bottomPlayerPile = mPileManager.getBottomPlayerPile();
-//        if (bottomPlayerPile.getCardsInPile().isEmpty())
-//            return;
-//
-//        //TODO : this is just a mock move
-//        Iterator<Card> iterator = bottomPlayerPile.getCardsInPile().iterator();
-//        Card cardForAttack = iterator.next();
-//
-//        //we can just send the response
-//        mMessageSender.sendCardForAttackResponse(cardForAttack);
     }
 }

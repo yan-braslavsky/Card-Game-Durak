@@ -1,6 +1,7 @@
 package com.yan.durak.msg_processor.subprocessors.impl;
 
 import com.yan.durak.gamelogic.communication.protocol.messages.PlayerTakesActionMessage;
+import com.yan.durak.input.cards.CardsTouchProcessor;
 import com.yan.durak.managers.PileLayouterManager;
 import com.yan.durak.managers.PileManager;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
@@ -17,14 +18,17 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
     private final HudScreenFragment mHudScreenFragment;
     private final PileLayouterManager mPileLayouterManager;
     private final PileManager mPileManager;
+    private final CardsTouchProcessor mCardsTouchProcessor;
 
-    public PlayerTakesActionMsgSubProcessor(final PileManager pileManager, final PileLayouterManager pileLayouterManager, final GameInfo gameInfo, final HudScreenFragment hudScreenFragment) {
+    public PlayerTakesActionMsgSubProcessor(final PileManager pileManager, final PileLayouterManager pileLayouterManager,
+                                            final GameInfo gameInfo, final HudScreenFragment hudScreenFragment, final CardsTouchProcessor cardsTouchProcessor) {
         super();
 
         this.mGameInfo = gameInfo;
         this.mHudScreenFragment = hudScreenFragment;
         this.mPileLayouterManager = pileLayouterManager;
         this.mPileManager = pileManager;
+        this.mCardsTouchProcessor = cardsTouchProcessor;
     }
 
     @Override
@@ -34,7 +38,7 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
         updateActivePlayerState(serverMessage.getMessageData());
 
         //update cock only on attack
-        if(PlayerTakesActionMessage.PlayerAction.valueOf(serverMessage.getMessageData().getAction()) != PlayerTakesActionMessage.PlayerAction.ATTACK)
+        if (PlayerTakesActionMessage.PlayerAction.valueOf(serverMessage.getMessageData().getAction()) != PlayerTakesActionMessage.PlayerAction.ATTACK)
             return;
 
         @HudScreenFragment.HudNode int cockNodeIndex = retrieveCockPosition(actionPlayerIndex);
@@ -57,8 +61,14 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
                 throw new RuntimeException("not recognized player action " + action);
             }
 
+            //enable user input possibility
+            mCardsTouchProcessor.register();
+
         } else {
             mGameInfo.setmActivePlayerState(ActivePlayerState.OTHER_PLAYER_TURN);
+
+            //disable user input possibility
+            mCardsTouchProcessor.unRegister();
         }
 
         //in any case we need to re lay out the player pile :

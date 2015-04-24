@@ -74,11 +74,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
         //TODO : set the nodes each time there is a change rather then give it by reference
         //currently we are initializing with empty array , cards will be set every time player pile content changes
-        mCardsTouchProcessor = new CardsTouchProcessor(/*mCardsScreenFragment.getBottomPlayerCardNodes(), mCardsTweenAnimator*/);
-
-        //TODO : this is very messy . This Listener should be extracted somewhere.
-        //set listener to handle touches
-        mCardsTouchProcessor.setCardsTouchProcessorListener(new CardsTouchProcessor.CardsTouchProcessorListener() {
+        mCardsTouchProcessor = new CardsTouchProcessor(new CardsTouchProcessor.CardsTouchProcessorListener() {
             @Override
             public void onSelectedCardTap(CardNode cardNode) {
                 //TODO : implement
@@ -88,7 +84,13 @@ public class PrototypeGameScreen extends BaseGameScreen {
             public void onDraggedCardReleased(CardNode cardNode) {
                 //TODO : implement
             }
-        });
+
+            @Override
+            public void onCardDragProgress(CardNode card) {
+                //TODO : implement
+            }
+        }, mCardNodesManager, mPileManager.getBottomPlayerPile());
+
 
         //used to send concrete messages to server
         mMessageSender = new GameServerMessageSender(mGameServerConnector);
@@ -118,14 +120,13 @@ public class PrototypeGameScreen extends BaseGameScreen {
     @Override
     public void onSetActive() {
         super.onSetActive();
-//        mCardsTouchProcessor.register();
         mGameServerConnector.connect();
     }
 
     @Override
     public void onSetNotActive() {
         super.onSetNotActive();
-//        mCardsTouchProcessor.unRegister();
+        mCardsTouchProcessor.unRegister();
         mGameServerConnector.disconnect();
     }
 
@@ -165,7 +166,6 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
         mCardNodesManager.setNodesSizes(getSceneSize());
         //set size of a card for touch processor
-        mCardsTouchProcessor.setOriginalCardSize(mCardNodesManager.getCardNodeOriginalWidth(), mCardNodesManager.getCardNodeOriginalHeight());
         mHudScreenFragment.setNodesSizes(getSceneSize());
     }
 
@@ -206,16 +206,15 @@ public class PrototypeGameScreen extends BaseGameScreen {
         return mHudScreenFragment;
     }
 
-    public CardsTouchProcessor getCardsTouchProcessor() {
-        return mCardsTouchProcessor;
-    }
-
     public GameInfo getGameInfo() {
         return mGameInfo;
     }
 
-
     public GameServerMessageSender getMessageSender() {
         return mMessageSender;
+    }
+
+    public CardsTouchProcessor getCardsTouchProcessor() {
+        return mCardsTouchProcessor;
     }
 }

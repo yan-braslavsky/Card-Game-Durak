@@ -1,61 +1,57 @@
 package com.yan.durak.input.cards;
 
-import com.yan.durak.input.cards.states.CardsTouchProcessorDefaultState;
+import com.yan.durak.managers.CardNodesManager;
+import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
-import com.yan.durak.tweening.CardsTweenAnimator;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 import glengine.yan.glengine.input.YANInputManager;
-import glengine.yan.glengine.nodes.YANTexturedNode;
-import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
-import glengine.yan.glengine.util.geometry.YANVector2;
 
 /**
  * Created by Yan-Home on 11/21/2014.
+ * <p/>
+ * PURPOSE :
+ * Responsible for user touch interaction with the cards.
  */
 public class CardsTouchProcessor {
 
+    private final CardNodesManager mCardNodesManager;
+    private final PileModel mPlayerPile;
+
     public interface CardsTouchProcessorListener {
+
+        /**
+         * Called when card was tapped
+         */
         void onSelectedCardTap(CardNode card);
+
+        /**
+         * Called when dragged card was released
+         *
+         * @param card
+         */
         void onDraggedCardReleased(CardNode card);
+
+        /**
+         * Called multiple times every time dragged card is changing position
+         *
+         * @param card
+         */
+        void onCardDragProgress(CardNode card);
     }
 
-    //I assume there gonna be maximum of cards underneath a touch point
-    private static final int MAX_CARDS_TO_PROCESS = 6;
     private final YANInputManager.TouchListener mTouchListener;
-    private List<CardNode> mCardNodesArray;
-//    private final CardsTweenAnimator mCardsTweenAnimator;
-    private YANReadOnlyVector2 mOriginalCardSize;
     private CardsTouchProcessorState mCardsTouchProcessorState;
-    private List<CardNode> mTouchedCards;
-    private Comparator<YANTexturedNode> mComparator;
     private CardsTouchProcessorListener mCardsTouchProcessorListener;
 
-    public CardsTouchProcessor(/*final ArrayList<CardNode> cardNodesArray, CardsTweenAnimator cardsTweenAnimator*/) {
+    public CardsTouchProcessor(CardsTouchProcessorListener cardsTouchProcessorListener,final CardNodesManager cardNodesManager, final PileModel playerPile) {
 
-        //cache reference to tween animator
-//        mCardsTweenAnimator = cardsTweenAnimator;
+        mCardsTouchProcessorListener = cardsTouchProcessorListener;
+        mCardNodesManager = cardNodesManager;
+        mPlayerPile = playerPile;
 
-//        //cache the reference to array of cards in hand
-//        mCardNodesArray = cardNodesArray;
-
+        //TODO: Pool the states
         //starting from a default state
         setCardsTouchProcessorState(new CardsTouchProcessorDefaultState(this));
-
-        //array of cards under touch point
-        mTouchedCards = new ArrayList<>(MAX_CARDS_TO_PROCESS);
-
-        //comparator of cards by sorting layer
-        mComparator = new Comparator<YANTexturedNode>() {
-            @Override
-            public int compare(YANTexturedNode lhs, YANTexturedNode rhs) {
-                return lhs.getSortingLayer() - rhs.getSortingLayer();
-            }
-        };
 
         //touch listener that is added to input processor
         mTouchListener = new YANInputManager.TouchListener() {
@@ -76,6 +72,7 @@ public class CardsTouchProcessor {
 
             @Override
             public int getSortingLayer() {
+                //It does not matter what we returning here , since we managing touch processing ourselves
                 return 0;
             }
         };
@@ -97,61 +94,21 @@ public class CardsTouchProcessor {
         YANInputManager.getInstance().removeEventListener(mTouchListener);
     }
 
-    /**
-     * Goes over all cards underneath the touch point and puts them into array
-     * Returns the touched card or null if there no card was touched
-     */
-    public CardNode findTouchedCard(YANVector2 touchToWorldPoint) {
-        mTouchedCards.clear();
 
-        //see if one of the cards was touched
-        for (int i = mCardNodesArray.size() - 1; i >= 0; i--) {
-            CardNode card = mCardNodesArray.get(i);
-            if (card.getBoundingRectangle().contains(touchToWorldPoint)) {
-                mTouchedCards.add(card);
-            }
-        }
-
-        if (mTouchedCards.isEmpty())
-            return null;
-
-        //sort touched cards by layer
-        Collections.sort(mTouchedCards, mComparator);
-        //the latest card is the one that was touched
-        return mTouchedCards.get(mTouchedCards.size() - 1);
-
-    }
-
-    public void setCardsTouchProcessorState(CardsTouchProcessorState cardsTouchProcessorState) {
+    protected void setCardsTouchProcessorState(CardsTouchProcessorState cardsTouchProcessorState) {
         mCardsTouchProcessorState = cardsTouchProcessorState;
         mCardsTouchProcessorState.applyState();
     }
 
-    public List<CardNode> getCardNodesArray() {
-        return mCardNodesArray;
-    }
-
-    public void setmCardNodesArray(List<CardNode> mCardNodesArray) {
-        this.mCardNodesArray = mCardNodesArray;
-    }
-
-//    public CardsTweenAnimator getCardsTweenAnimator() {
-//        return mCardsTweenAnimator;
-//    }
-
-    public YANReadOnlyVector2 getOriginalCardSize() {
-        return mOriginalCardSize;
-    }
-
-    public void setOriginalCardSize(float cardWidth, float cardHeight) {
-        mOriginalCardSize = new YANVector2(cardWidth, cardHeight);
-    }
-
-    public CardsTouchProcessorListener getCardsTouchProcessorListener() {
+    protected CardsTouchProcessorListener getCardsTouchProcessorListener() {
         return mCardsTouchProcessorListener;
     }
 
-    public void setCardsTouchProcessorListener(CardsTouchProcessorListener cardsTouchProcessorListener) {
-        mCardsTouchProcessorListener = cardsTouchProcessorListener;
+    protected PileModel getPlayerPile() {
+        return mPlayerPile;
+    }
+
+    protected CardNodesManager getCardNodesManager() {
+        return mCardNodesManager;
     }
 }

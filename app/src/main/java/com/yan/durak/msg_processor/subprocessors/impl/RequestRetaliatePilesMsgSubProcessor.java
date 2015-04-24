@@ -44,24 +44,10 @@ public class RequestRetaliatePilesMsgSubProcessor extends BaseMsgSubProcessor<Re
     @Override
     public void processMessage(RequestRetaliatePilesMessage serverMessage) {
 
-        mTask = YANObjectPool.getInstance().obtain(YANDelayedTask.class);
-        mTask.setDurationSeconds(2);
-        mTask.setDelayedTaskListener(mDelayedTaskListener);
-        mTask.start();
+//        mTask = YANObjectPool.getInstance().obtain(YANDelayedTask.class);
+//        mTask.setDurationSeconds(2);
+//        mTask.setDelayedTaskListener(mDelayedTaskListener);
+//        mTask.start();
 
-
-//        //rather transition to other processor state
-//        mMsgProcessor.getPrototypeGameScreen().getGameSession().setActivePlayerState(ActivePlayerState.REQUEST_RETALIATION);
-//
-//        mMsgProcessor.getPrototypeGameScreen().getGameSession().getCardsPendingRetaliationMap().clear();
-//
-//        for (List<CardData> cardDataList : serverMessage.getMessageData().getPilesBeforeRetaliation()) {
-//            for (CardData cardData : cardDataList) {
-//                mMsgProcessor.getPrototypeGameScreen().getGameSession().getCardsPendingRetaliationMap().put(new Card(cardData.getRank(), cardData.getSuit()), null);
-//            }
-//        }
-//
-//        //in that case we want the hud to present us with option to take the card
-//        mMsgProcessor.getPrototypeGameScreen().getHudNodesFragment().showTakeButton();
     }
 }
