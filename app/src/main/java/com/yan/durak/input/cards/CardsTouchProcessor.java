@@ -5,6 +5,7 @@ import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
 
 import glengine.yan.glengine.input.YANInputManager;
+import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
 /**
  * Created by Yan-Home on 11/21/2014.
@@ -43,15 +44,16 @@ public class CardsTouchProcessor {
     private CardsTouchProcessorState mCardsTouchProcessorState;
     private CardsTouchProcessorListener mCardsTouchProcessorListener;
 
-    public CardsTouchProcessor(CardsTouchProcessorListener cardsTouchProcessorListener,final CardNodesManager cardNodesManager, final PileModel playerPile) {
+    public CardsTouchProcessor(CardsTouchProcessorListener cardsTouchProcessorListener, final CardNodesManager cardNodesManager, final PileModel playerPile) {
 
         mCardsTouchProcessorListener = cardsTouchProcessorListener;
         mCardNodesManager = cardNodesManager;
         mPlayerPile = playerPile;
 
-        //TODO: Pool the states
         //starting from a default state
-        setCardsTouchProcessorState(new CardsTouchProcessorDefaultState(this));
+        CardsTouchProcessorDefaultState defaultState = YANObjectPool.getInstance().obtain(CardsTouchProcessorDefaultState.class);
+        defaultState.setCardsTouchProcessor(this);
+        setCardsTouchProcessorState(defaultState);
 
         //touch listener that is added to input processor
         mTouchListener = new YANInputManager.TouchListener() {
@@ -96,6 +98,8 @@ public class CardsTouchProcessor {
 
 
     protected void setCardsTouchProcessorState(CardsTouchProcessorState cardsTouchProcessorState) {
+        //release previous state to pool
+        YANObjectPool.getInstance().offer(cardsTouchProcessorState);
         mCardsTouchProcessorState = cardsTouchProcessorState;
         mCardsTouchProcessorState.applyState();
     }

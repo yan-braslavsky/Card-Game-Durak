@@ -11,19 +11,25 @@ import glengine.yan.glengine.EngineWrapper;
 import glengine.yan.glengine.input.YANInputManager;
 import glengine.yan.glengine.nodes.YANBaseNode;
 import glengine.yan.glengine.util.geometry.YANVector2;
+import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
 
 /**
  * Created by Yan-Home on 11/21/2014.
  */
-class CardsTouchProcessorDefaultState extends CardsTouchProcessorState {
+public class CardsTouchProcessorDefaultState extends CardsTouchProcessorState {
 
     private final Collection<YANBaseNode> mPlayerCardNodes;
 
-    protected CardsTouchProcessorDefaultState(final CardsTouchProcessor cardsTouchProcessor) {
-        super(cardsTouchProcessor);
-
+    public CardsTouchProcessorDefaultState() {
+        super();
         this.mPlayerCardNodes = new ArrayList<>();
+    }
+
+    @Override
+    public void resetState() {
+        super.resetState();
+        mPlayerCardNodes.clear();
     }
 
     @Override
@@ -59,14 +65,15 @@ class CardsTouchProcessorDefaultState extends CardsTouchProcessorState {
         if (touchedCard == null)
             return false;
 
-        //TODO : pool the state
         //move to drag state
-        CardsTouchProcessorDragState dragState = new CardsTouchProcessorDragState(mCardsTouchProcessor);
+        CardsTouchProcessorDragState dragState = YANObjectPool.getInstance().obtain(CardsTouchProcessorDragState.class);
+        dragState.setCardsTouchProcessor(mCardsTouchProcessor);
         dragState.setDraggedCard(touchedCard);
         dragState.setTouchPositionOffset(touchToWorldPoint.getX() - touchedCard.getPosition().getX(), touchToWorldPoint.getY() - touchedCard.getPosition().getY());
         mCardsTouchProcessor.setCardsTouchProcessorState(dragState);
         return true;
 
     }
+
 
 }

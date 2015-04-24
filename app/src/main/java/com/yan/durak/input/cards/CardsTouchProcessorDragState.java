@@ -5,20 +5,27 @@ import com.yan.durak.nodes.CardNode;
 import glengine.yan.glengine.EngineWrapper;
 import glengine.yan.glengine.input.YANInputManager;
 import glengine.yan.glengine.util.geometry.YANVector2;
+import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
 
 /**
  * Created by Yan-Home on 11/21/2014.
  */
-class CardsTouchProcessorDragState extends CardsTouchProcessorState {
+public class CardsTouchProcessorDragState extends CardsTouchProcessorState {
 
     private CardNode mDraggedCard;
     private YANVector2 mTouchPositionOffset;
 
-    protected CardsTouchProcessorDragState(CardsTouchProcessor cardsTouchProcessor) {
-        super(cardsTouchProcessor);
+    public CardsTouchProcessorDragState() {
+        super();
         mTouchPositionOffset = new YANVector2();
+    }
+
+    @Override
+    public void resetState() {
+        super.resetState();
         mDraggedCard = null;
+        mTouchPositionOffset.setXY(0, 0);
     }
 
     @Override
@@ -35,8 +42,8 @@ class CardsTouchProcessorDragState extends CardsTouchProcessorState {
             mCardsTouchProcessor.getCardsTouchProcessorListener().onDraggedCardReleased(mDraggedCard);
         }
 
-        //TODO : Pool the state
-        CardsTouchProcessorDefaultState defaultState = new CardsTouchProcessorDefaultState(mCardsTouchProcessor);
+        CardsTouchProcessorDefaultState defaultState = YANObjectPool.getInstance().obtain(CardsTouchProcessorDefaultState.class);
+        defaultState.setCardsTouchProcessor(mCardsTouchProcessor);
         mCardsTouchProcessor.setCardsTouchProcessorState(defaultState);
         return true;
     }
@@ -76,4 +83,6 @@ class CardsTouchProcessorDragState extends CardsTouchProcessorState {
         mTouchPositionOffset.setX(xOffset);
         mTouchPositionOffset.setY(yOffset);
     }
+
+
 }
