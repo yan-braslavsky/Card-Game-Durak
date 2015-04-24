@@ -16,7 +16,6 @@ import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.nodes.YANButtonNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.renderer.YANGLRenderer;
-import glengine.yan.glengine.util.loggers.YANLogger;
 
 /**
  * Created by Yan-Home on 10/3/2014.
@@ -77,6 +76,9 @@ public class PrototypeGameScreen extends BaseGameScreen {
         //TODO : set the nodes each time there is a change rather then give it by reference
         //currently we are initializing with empty array , cards will be set every time player pile content changes
         mCardsTouchProcessor = new CardsTouchProcessor(new CardsTouchProcessor.CardsTouchProcessorListener() {
+
+            private float _previousExpansionLevel = 1f;
+
             @Override
             public void onSelectedCardTap(CardNode cardNode) {
                 //TODO : implement
@@ -84,23 +86,32 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
             @Override
             public void onDraggedCardReleased(CardNode cardNode) {
-                //TODO : implement
-                mGameInfo.setDraggingCardExpansionLevel(1f);
 
                 //add card back
                 mPileManager.getBottomPlayerPile().addCard(cardNode.getCard());
 
-//                //layout
-//                mPileLayouterManager.getPileLayouterForPile(mPileManager.getBottomPlayerPile()).layout();
-                //we can just send the response
-                mMessageSender.sendCardForAttackResponse(cardNode.getCard());
+                //if player intended to trhow on the field we will send a message
+                if (cardNode.getPosition().getY() < (getSceneSize().getY() * 0.6f)) {
+                    //TODO : implement
+                    mGameInfo.setDraggingCardExpansionLevel(1f);
+
+                    //disable the hand of the player
+                    mGameInfo.setmActivePlayerState(ActivePlayerState.OTHER_PLAYER_TURN);
+
+                    //we can just send the response
+                    mMessageSender.sendCardForAttackResponse(cardNode.getCard());
+                } else {
+                    //layout
+                    mPileLayouterManager.getPileLayouterForPile(mPileManager.getBottomPlayerPile()).layout();
+                }
             }
 
             @Override
             public void onCardDragProgress(CardNode cardNode) {
+
                 //TODO : implement
                 float screenMiddleY = getSceneSize().getY() / 2f;
-                float lowestYPosition = getSceneSize().getY() * 0.9f;
+                float lowestYPosition = getSceneSize().getY() * 0.8f;
                 float delta = lowestYPosition - screenMiddleY;
 
                 mGameInfo.setmActivePlayerState(ActivePlayerState.PLAYER_DRAGGING_CARD);
@@ -114,8 +125,13 @@ public class PrototypeGameScreen extends BaseGameScreen {
                 //remove card from player pile
                 mPileManager.getBottomPlayerPile().removeCard(cardNode.getCard());
 
-                //layout
-                mPileLayouterManager.getPileLayouterForPile(mPileManager.getBottomPlayerPile()).layout();
+                //To optimize layout only if major change occurred
+                if (Math.abs(_previousExpansionLevel - dragExpansionLevel) > 0.05f) {
+                    _previousExpansionLevel = dragExpansionLevel;
+
+                    //layout
+                    mPileLayouterManager.getPileLayouterForPile(mPileManager.getBottomPlayerPile()).layout();
+                }
             }
         }, mCardNodesManager, mPileManager.getBottomPlayerPile());
 
