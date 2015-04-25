@@ -6,8 +6,8 @@ import com.yan.durak.gamelogic.communication.protocol.BaseProtocolMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.ResponseCardForAttackMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.ResponseRetaliatePilesMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.ResponseThrowInsMessage;
+import com.yan.durak.service.IService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,7 +16,7 @@ import java.util.List;
  * PURPOSE :
  * Responsible for sending messages to game server
  */
-public class GameServerMessageSender {
+public class GameServerMessageSender implements IService {
 
     private IGameServerConnector mConnector;
 

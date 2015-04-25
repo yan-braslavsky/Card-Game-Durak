@@ -2,8 +2,8 @@ package com.yan.durak.msg_processor.subprocessors.impl;
 
 import com.yan.durak.gamelogic.communication.protocol.messages.PlayerTakesActionMessage;
 import com.yan.durak.input.cards.CardsTouchProcessor;
-import com.yan.durak.managers.PileLayouterManager;
-import com.yan.durak.managers.PileManager;
+import com.yan.durak.service.services.LayouterManagerService;
+import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
 import com.yan.durak.screen_fragments.HudScreenFragment;
 import com.yan.durak.session.GameInfo;
@@ -16,11 +16,11 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
 
     private final GameInfo mGameInfo;
     private final HudScreenFragment mHudScreenFragment;
-    private final PileLayouterManager mPileLayouterManager;
-    private final PileManager mPileManager;
+    private final LayouterManagerService mPileLayouterManager;
+    private final PileManagerService mPileManager;
     private final CardsTouchProcessor mCardsTouchProcessor;
 
-    public PlayerTakesActionMsgSubProcessor(final PileManager pileManager, final PileLayouterManager pileLayouterManager,
+    public PlayerTakesActionMsgSubProcessor(final PileManagerService pileManager, final LayouterManagerService pileLayouterManager,
                                             final GameInfo gameInfo, final HudScreenFragment hudScreenFragment, final CardsTouchProcessor cardsTouchProcessor) {
         super();
 

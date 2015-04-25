@@ -2,7 +2,7 @@ package com.yan.durak.layouting.pile.impl;
 
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.layouting.pile.BasePileLayouter;
-import com.yan.durak.managers.CardNodesManager;
+import com.yan.durak.service.services.CardNodesManagerService;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
 
@@ -17,7 +17,7 @@ public class DiscardPileLayouter extends BasePileLayouter {
 
     private YANReadOnlyVector2 mPilePositionOnField;
 
-    public DiscardPileLayouter(final CardNodesManager mCardNodesManager, final TweenManager mTweenManager, final PileModel boundPile) {
+    public DiscardPileLayouter(final CardNodesManagerService mCardNodesManager, final TweenManager mTweenManager, final PileModel boundPile) {
         super(mCardNodesManager, mTweenManager, boundPile);
     }
 

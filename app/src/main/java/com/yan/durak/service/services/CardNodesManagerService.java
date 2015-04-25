@@ -1,6 +1,8 @@
-package com.yan.durak.managers;
+package com.yan.durak.service.services;
 
 import com.yan.durak.gamelogic.cards.Card;
+import com.yan.durak.service.IService;
+import com.yan.durak.service.ServiceLocator;
 import com.yan.durak.nodes.CardNode;
 
 import java.util.Collection;
@@ -15,7 +17,7 @@ import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
 /**
  * Created by ybra on 20/04/15.
  */
-public class CardNodesManager {
+public class CardNodesManagerService implements IService {
 
     /**
      * Used to calculate the dimensions of the cards.
@@ -24,14 +26,15 @@ public class CardNodesManager {
     private static final int MAX_CARDS_IN_LINE = 8;
 
     private final Map<Card, CardNode> mCardToCardNodesMap;
-    private final PileManager mPileManger;
+    private final PileManagerService mPileManger;
 
     //used to return all the nodes
     private Collection<CardNode> mImmutableCardNodes;
     private float mOriginalCardWidth;
     private float mOriginalCardHeight;
 
-    public CardNodesManager(PileManager pileManager) {
+    public CardNodesManagerService() {
+        PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
         this.mCardToCardNodesMap = new HashMap<>(pileManager.getAllCards().size());
         this.mPileManger = pileManager;
     }

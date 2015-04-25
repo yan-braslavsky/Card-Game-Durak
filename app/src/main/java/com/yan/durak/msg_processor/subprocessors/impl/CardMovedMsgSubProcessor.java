@@ -3,8 +3,8 @@ package com.yan.durak.msg_processor.subprocessors.impl;
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.communication.protocol.messages.CardMovedProtocolMessage;
 import com.yan.durak.layouting.pile.IPileLayouter;
-import com.yan.durak.managers.PileLayouterManager;
-import com.yan.durak.managers.PileManager;
+import com.yan.durak.service.services.LayouterManagerService;
+import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
 
@@ -13,10 +13,10 @@ import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
  */
 public class CardMovedMsgSubProcessor extends BaseMsgSubProcessor<CardMovedProtocolMessage> {
 
-    private final PileManager mPileManager;
-    private final PileLayouterManager mPileLayouterManager;
+    private final PileManagerService mPileManager;
+    private final LayouterManagerService mPileLayouterManager;
 
-    public CardMovedMsgSubProcessor(final PileManager mPileManager, final PileLayouterManager mPileLayouterManager) {
+    public CardMovedMsgSubProcessor(final PileManagerService mPileManager, final LayouterManagerService mPileLayouterManager) {
         super();
 
         this.mPileManager = mPileManager;

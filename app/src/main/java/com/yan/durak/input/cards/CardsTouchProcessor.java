@@ -1,8 +1,9 @@
 package com.yan.durak.input.cards;
 
-import com.yan.durak.managers.CardNodesManager;
+import com.yan.durak.service.services.CardNodesManagerService;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
+import com.yan.durak.service.ServiceLocator;
 
 import glengine.yan.glengine.input.YANInputManager;
 import glengine.yan.glengine.util.object_pool.YANObjectPool;
@@ -15,7 +16,7 @@ import glengine.yan.glengine.util.object_pool.YANObjectPool;
  */
 public class CardsTouchProcessor {
 
-    private final CardNodesManager mCardNodesManager;
+    private final CardNodesManagerService mCardNodesManager;
     private final PileModel mPlayerPile;
 
     public interface CardsTouchProcessorListener {
@@ -44,10 +45,10 @@ public class CardsTouchProcessor {
     private CardsTouchProcessorState mCardsTouchProcessorState;
     private CardsTouchProcessorListener mCardsTouchProcessorListener;
 
-    public CardsTouchProcessor(CardsTouchProcessorListener cardsTouchProcessorListener, final CardNodesManager cardNodesManager, final PileModel playerPile) {
+    public CardsTouchProcessor(final CardsTouchProcessorListener cardsTouchProcessorListener, final PileModel playerPile) {
 
         mCardsTouchProcessorListener = cardsTouchProcessorListener;
-        mCardNodesManager = cardNodesManager;
+        mCardNodesManager = ServiceLocator.locateService(CardNodesManagerService.class);
         mPlayerPile = playerPile;
 
         //starting from a default state
@@ -112,7 +113,7 @@ public class CardsTouchProcessor {
         return mPlayerPile;
     }
 
-    protected CardNodesManager getCardNodesManager() {
+    protected CardNodesManagerService getCardNodesManager() {
         return mCardNodesManager;
     }
 }

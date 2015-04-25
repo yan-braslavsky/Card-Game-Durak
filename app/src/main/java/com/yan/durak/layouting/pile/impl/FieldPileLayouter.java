@@ -2,8 +2,8 @@ package com.yan.durak.layouting.pile.impl;
 
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.layouting.pile.BasePileLayouter;
-import com.yan.durak.managers.CardNodesManager;
-import com.yan.durak.managers.PileManager;
+import com.yan.durak.service.services.CardNodesManagerService;
+import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
 
@@ -31,7 +31,7 @@ public class FieldPileLayouter extends BasePileLayouter {
     private float mCardHeightForPile;
     private YANReadOnlyVector2 mPilePositionOnField;
 
-    public FieldPileLayouter(final CardNodesManager mCardNodesManager, final TweenManager mTweenManager, final PileModel boundPile) {
+    public FieldPileLayouter(final CardNodesManagerService mCardNodesManager, final TweenManager mTweenManager, final PileModel boundPile) {
         super(mCardNodesManager, mTweenManager, boundPile);
 
     }
@@ -48,7 +48,7 @@ public class FieldPileLayouter extends BasePileLayouter {
         float yAdvance = mCardHeightForPile * 1.2f;
 
         //offset pile index to 0 - max_piles range
-        int pileOrderOnField = mBoundpile.getPileIndex() - PileManager.FIRST_FIELD_PILE_INDEX;
+        int pileOrderOnField = mBoundpile.getPileIndex() - PileManagerService.FIRST_FIELD_PILE_INDEX;
 
         int pileIndexX = pileOrderOnField % (MAX_PILES_IN_LINE - 1);
         int pileIndexY = pileOrderOnField / (MAX_PILES_IN_LINE - 1);

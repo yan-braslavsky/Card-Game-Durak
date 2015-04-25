@@ -3,14 +3,15 @@ package com.yan.durak.screens;
 import com.yan.durak.communication.game_server.connector.IGameServerConnector;
 import com.yan.durak.communication.sender.GameServerMessageSender;
 import com.yan.durak.input.cards.CardsTouchProcessor;
-import com.yan.durak.managers.CardNodesManager;
-import com.yan.durak.managers.PileLayouterManager;
-import com.yan.durak.managers.PileManager;
+import com.yan.durak.input.listener.PlayerCardsTouchProcessorListener;
 import com.yan.durak.msg_processor.MsgProcessor;
-import com.yan.durak.nodes.CardNode;
 import com.yan.durak.screen_fragments.HudScreenFragment;
+import com.yan.durak.service.ServiceLocator;
+import com.yan.durak.service.services.CardNodesManagerService;
+import com.yan.durak.service.services.LayouterManagerService;
+import com.yan.durak.service.services.PileManagerService;
+import com.yan.durak.service.services.SceneSizeProviderService;
 import com.yan.durak.session.GameInfo;
-import com.yan.durak.session.states.ActivePlayerState;
 
 import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.nodes.YANButtonNode;
@@ -27,25 +28,25 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
     //communication
     private final IGameServerConnector mGameServerConnector;
-    private final GameServerMessageSender mMessageSender;
+//    private final GameServerMessageSender mMessageSender;
 
     //fragments
     private final HudScreenFragment mHudScreenFragment;
 
-    //game state
-    private final GameInfo mGameInfo;
+//    //game state
+//    private final GameInfo mGameInfo;
 
     //updatables
     private final TweenManager mSharedTweenManager;
 
-    //managers
-    private final PileLayouterManager mPileLayouterManager;
-
-    //pile manager
-    private final PileManager mPileManager;
-
-    //card nodes manager
-    private final CardNodesManager mCardNodesManager;
+//    //managers
+//    private final PileLayouterManager mPileLayouterManager;
+//
+//    //pile manager
+//    private final PileManager mPileManager;
+//
+//    //card nodes manager
+//    private final CardNodesManager mCardNodesManager;
 
 
     public PrototypeGameScreen(YANGLRenderer renderer, IGameServerConnector gameServerConnector) {
@@ -55,7 +56,9 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mGameServerConnector = gameServerConnector;
 
         //game session will store the game state and related info
-        mGameInfo = new GameInfo();
+//        mGameInfo = new GameInfo();
+
+        ServiceLocator.addService(new GameInfo());
 
         //tween manager is used for various tween animations
         mSharedTweenManager = new TweenManager();
@@ -64,80 +67,31 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mHudScreenFragment = new HudScreenFragment(mSharedTweenManager);
 
         //pile manager
-        mPileManager = new PileManager();
+//        mPileManager = new PileManager();
+
+        ServiceLocator.addService(new PileManagerService());
 
         //card nodes manager
-        mCardNodesManager = new CardNodesManager(mPileManager);
+//        mCardNodesManager = new CardNodesManager();
+
+        ServiceLocator.addService(new CardNodesManagerService());
 
         //layouters manager
-        mPileLayouterManager = new PileLayouterManager(mCardNodesManager, mSharedTweenManager, mPileManager, mGameInfo, mHudScreenFragment);
+//        mPileLayouterManager = new PileLayouterManager(mCardNodesManager, mSharedTweenManager, mPileManager, mGameInfo, mHudScreenFragment);
+
+        ServiceLocator.addService(new LayouterManagerService(mSharedTweenManager, mHudScreenFragment));
 
 
         //TODO : set the nodes each time there is a change rather then give it by reference
         //currently we are initializing with empty array , cards will be set every time player pile content changes
-        mCardsTouchProcessor = new CardsTouchProcessor(new CardsTouchProcessor.CardsTouchProcessorListener() {
-
-            private float _previousExpansionLevel = 1f;
-
-            @Override
-            public void onSelectedCardTap(CardNode cardNode) {
-                //TODO : implement
-            }
-
-            @Override
-            public void onDraggedCardReleased(CardNode cardNode) {
-
-                //add card back
-                mPileManager.getBottomPlayerPile().addCard(cardNode.getCard());
-
-                //if player intended to trhow on the field we will send a message
-                if (cardNode.getPosition().getY() < (getSceneSize().getY() * 0.6f)) {
-                    //TODO : implement
-                    mGameInfo.setDraggingCardExpansionLevel(1f);
-
-                    //disable the hand of the player
-                    mGameInfo.setmActivePlayerState(ActivePlayerState.OTHER_PLAYER_TURN);
-
-                    //we can just send the response
-                    mMessageSender.sendCardForAttackResponse(cardNode.getCard());
-                } else {
-                    //layout
-                    mPileLayouterManager.getPileLayouterForPile(mPileManager.getBottomPlayerPile()).layout();
-                }
-            }
-
-            @Override
-            public void onCardDragProgress(CardNode cardNode) {
-
-                //TODO : implement
-                float screenMiddleY = getSceneSize().getY() / 2f;
-                float lowestYPosition = getSceneSize().getY() * 0.8f;
-                float delta = lowestYPosition - screenMiddleY;
-
-                mGameInfo.setmActivePlayerState(ActivePlayerState.PLAYER_DRAGGING_CARD);
-
-                float dragExpansionLevel = (((cardNode.getPosition().getY() - screenMiddleY) / delta));
-
-                dragExpansionLevel = clamp(dragExpansionLevel, 0f, 1f);
-
-                mGameInfo.setDraggingCardExpansionLevel(dragExpansionLevel);
-
-                //remove card from player pile
-                mPileManager.getBottomPlayerPile().removeCard(cardNode.getCard());
-
-                //To optimize layout only if major change occurred
-                if (Math.abs(_previousExpansionLevel - dragExpansionLevel) > 0.05f) {
-                    _previousExpansionLevel = dragExpansionLevel;
-
-                    //layout
-                    mPileLayouterManager.getPileLayouterForPile(mPileManager.getBottomPlayerPile()).layout();
-                }
-            }
-        }, mCardNodesManager, mPileManager.getBottomPlayerPile());
+        mCardsTouchProcessor = new CardsTouchProcessor(new PlayerCardsTouchProcessorListener(), ServiceLocator.locateService(PileManagerService.class).getBottomPlayerPile());
 
 
         //used to send concrete messages to server
-        mMessageSender = new GameServerMessageSender(mGameServerConnector);
+//        mMessageSender = new GameServerMessageSender(mGameServerConnector);
+        ServiceLocator.addService(new GameServerMessageSender(mGameServerConnector));
+
+        ServiceLocator.addService(new SceneSizeProviderService());
 
         //TODO : replace "this" by managers that are really required by the processor
         //message processor will receive messages and react on them
@@ -145,26 +99,23 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mGameServerConnector.setListener(new MsgProcessor(this));
     }
 
-    //TODO : move to utils
-    public static float clamp(float val, float min, float max) {
-        return Math.max(min, Math.min(max, val));
-    }
 
     public TweenManager getSharedTweenManager() {
         return mSharedTweenManager;
     }
 
-    public PileLayouterManager getPileLayouterManager() {
-        return mPileLayouterManager;
-    }
+//    public PileLayouterManager getPileLayouterManager() {
+//
+//        return mPileLayouterManager;
+//    }
 
-    public PileManager getPileManager() {
-        return mPileManager;
-    }
+//    public PileManager getPileManager() {
+//        return mPileManager;
+//    }
 
-    public CardNodesManager getCardNodesManager() {
-        return mCardNodesManager;
-    }
+//    public CardNodesManager getCardNodesManager() {
+//        return mCardNodesManager;
+//    }
 
     @Override
     public void onSetActive() {
@@ -184,7 +135,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         super.onAddNodesToScene();
 
         //add card nodes
-        for (YANTexturedNode cardNode : mCardNodesManager.getAllCardNodes()) {
+        for (YANTexturedNode cardNode : ServiceLocator.locateService(CardNodesManagerService.class).getAllCardNodes()) {
             addNode(cardNode);
         }
 
@@ -201,19 +152,16 @@ public class PrototypeGameScreen extends BaseGameScreen {
     @Override
     protected void onLayoutNodes() {
         super.onLayoutNodes();
-
         mHudScreenFragment.layoutNodes(getSceneSize());
-
         //we also need to initialize the pile manager
-        mPileLayouterManager.init(getSceneSize().getX(), getSceneSize().getY());
-
+        ServiceLocator.locateService(LayouterManagerService.class).init(getSceneSize().getX(), getSceneSize().getY());
     }
 
 
     @Override
     protected void onChangeNodesSize() {
-
-        mCardNodesManager.setNodesSizes(getSceneSize());
+        ServiceLocator.locateService(SceneSizeProviderService.class).setSceneSize(getSceneSize().getX(), getSceneSize().getY());
+        ServiceLocator.locateService(CardNodesManagerService.class).setNodesSizes(getSceneSize());
         //set size of a card for touch processor
         mHudScreenFragment.setNodesSizes(getSceneSize());
     }
@@ -223,7 +171,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         super.onCreateNodes();
 
         mHudScreenFragment.createNodes(mUiAtlas);
-        mCardNodesManager.createNodes(mCardsAtlas);
+        ServiceLocator.locateService(CardNodesManagerService.class).createNodes(mCardsAtlas);
 
         mHudScreenFragment.setTakeButtonClickListener(new YANButtonNode.YanButtonNodeClickListener() {
             @Override
@@ -255,13 +203,14 @@ public class PrototypeGameScreen extends BaseGameScreen {
         return mHudScreenFragment;
     }
 
-    public GameInfo getGameInfo() {
-        return mGameInfo;
-    }
+//    public GameInfo getGameInfo() {
+//
+//        return mGameInfo;
+//    }
 
-    public GameServerMessageSender getMessageSender() {
-        return mMessageSender;
-    }
+//    public GameServerMessageSender getMessageSender() {
+//        return mMessageSender;
+//    }
 
     public CardsTouchProcessor getCardsTouchProcessor() {
         return mCardsTouchProcessor;

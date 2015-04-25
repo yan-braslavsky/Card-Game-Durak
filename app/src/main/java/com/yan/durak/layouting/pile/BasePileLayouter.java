@@ -1,6 +1,6 @@
 package com.yan.durak.layouting.pile;
 
-import com.yan.durak.managers.CardNodesManager;
+import com.yan.durak.service.services.CardNodesManagerService;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
 
@@ -17,11 +17,11 @@ public abstract class BasePileLayouter implements IPileLayouter {
     protected static final float CARD_MOVEMENT_ANIMATION_DURATION = 0.5f;
     protected static final float OPPONENT_PILE_SIZE_SCALE = 0.6f;
 
-    final protected CardNodesManager mCardNodesManager;
+    final protected CardNodesManagerService mCardNodesManager;
     final protected TweenManager mTweenManager;
     final protected PileModel mBoundpile;
 
-    protected BasePileLayouter(final CardNodesManager cardNodesManager, final TweenManager tweenManager, final PileModel boundPile) {
+    protected BasePileLayouter(final CardNodesManagerService cardNodesManager, final TweenManager tweenManager, final PileModel boundPile) {
         this.mCardNodesManager = cardNodesManager;
         this.mTweenManager = tweenManager;
         this.mBoundpile = boundPile;

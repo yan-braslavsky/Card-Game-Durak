@@ -4,8 +4,8 @@ import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.layouting.CardsLayoutSlot;
 import com.yan.durak.layouting.impl.PlayerCardsLayouter;
 import com.yan.durak.layouting.pile.BasePileLayouter;
-import com.yan.durak.managers.CardNodesManager;
-import com.yan.durak.managers.PileManager;
+import com.yan.durak.service.services.CardNodesManagerService;
+import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
 import com.yan.durak.session.GameInfo;
@@ -21,7 +21,7 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
     private final PlayerCardsLayouter mPlayerCardsLayouter;
     private final GameInfo mGameInfo;
 
-    public BottomPlayerPileLayouter(final GameInfo gameInfo, final PileManager pileManager, final CardNodesManager cardNodesManager, final TweenManager tweenManager, final PileModel boundPile) {
+    public BottomPlayerPileLayouter(final GameInfo gameInfo, final PileManagerService pileManager, final CardNodesManagerService cardNodesManager, final TweenManager tweenManager, final PileModel boundPile) {
         super(cardNodesManager, tweenManager, boundPile);
 
         //init player cards layouter , assuming the entire deck can be in his hands

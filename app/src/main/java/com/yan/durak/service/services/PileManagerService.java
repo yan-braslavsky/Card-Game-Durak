@@ -1,7 +1,8 @@
-package com.yan.durak.managers;
+package com.yan.durak.service.services;
 
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.cards.CardsHelper;
+import com.yan.durak.service.IService;
 import com.yan.durak.models.PileModel;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.Map;
 /**
  * Created by ybra on 20/04/15.
  */
-public class PileManager {
+public class PileManagerService implements IService {
 
     public static final int FIRST_FIELD_PILE_INDEX = 5;
     //TODO : that is debatable , there could be more piles on field
@@ -37,7 +38,7 @@ public class PileManager {
     private final Map<Integer, PileModel> mIndexToPileMap;
 
 
-    public PileManager() {
+    public PileManagerService() {
 
         this.mCards = CardsHelper.create36Deck();
         this.mBottomPlayerPile = new PileModel(LOWEST_PLAYER_PILE_INDEX);
@@ -66,7 +67,7 @@ public class PileManager {
         this.mIndexToPileMap.put(LOWEST_PLAYER_PILE_INDEX + 2, mTopLeftPlayerPile);
 
         //init field piles
-        for (int pileIndex = PileManager.FIRST_FIELD_PILE_INDEX; pileIndex < TOTAL_PILES_AMOUNT; pileIndex++) {
+        for (int pileIndex = PileManagerService.FIRST_FIELD_PILE_INDEX; pileIndex < TOTAL_PILES_AMOUNT; pileIndex++) {
             PileModel fieldPile = new PileModel(pileIndex);
             this.mFieldPiles.add(fieldPile);
             this.mIndexToPileMap.put(pileIndex, fieldPile);

@@ -1,4 +1,4 @@
-package com.yan.durak.managers;
+package com.yan.durak.service.services;
 
 import com.yan.durak.layouting.pile.IPileLayouter;
 import com.yan.durak.layouting.pile.impl.BottomPlayerPileLayouter;
@@ -7,6 +7,8 @@ import com.yan.durak.layouting.pile.impl.FieldPileLayouter;
 import com.yan.durak.layouting.pile.impl.StockPileLayouter;
 import com.yan.durak.layouting.pile.impl.TopLeftPlayerPileLayouter;
 import com.yan.durak.layouting.pile.impl.TopRightPlayerPileLayouter;
+import com.yan.durak.service.IService;
+import com.yan.durak.service.ServiceLocator;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.screen_fragments.HudScreenFragment;
 import com.yan.durak.session.GameInfo;
@@ -21,10 +23,7 @@ import aurelienribon.tweenengine.TweenManager;
 /**
  * Created by ybra on 20/04/15.
  */
-public class PileLayouterManager {
-
-    //managers
-    final PileManager mPileManager;
+public class LayouterManagerService implements IService {
 
     //layouters
     final BottomPlayerPileLayouter mBottomPlayerPileLayouter;
@@ -37,32 +36,34 @@ public class PileLayouterManager {
     //map
     final Map<PileModel, IPileLayouter> mPileToLayouterMap;
 
-    public PileLayouterManager(final CardNodesManager cardNodesManager, final TweenManager tweenManager, final PileManager pileManager, final GameInfo gameInfo, final HudScreenFragment hudScreenFragment) {
+    public LayouterManagerService(final TweenManager tweenManager, final HudScreenFragment hudScreenFragment) {
 
-        this.mPileManager = pileManager;
+        GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
+        CardNodesManagerService cardNodesManager = ServiceLocator.locateService(CardNodesManagerService.class);
+        PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
 
         this.mPileToLayouterMap = new HashMap<>();
 
         //init bottom player layouter
-        this.mBottomPlayerPileLayouter = new BottomPlayerPileLayouter(gameInfo, mPileManager, cardNodesManager, tweenManager, mPileManager.getBottomPlayerPile());
+        this.mBottomPlayerPileLayouter = new BottomPlayerPileLayouter(gameInfo, pileManager, cardNodesManager, tweenManager, pileManager.getBottomPlayerPile());
 
         //init top left player layouter
-        this.mTopLeftPlayerPileLayouter = new TopLeftPlayerPileLayouter(cardNodesManager, tweenManager, mPileManager.getTopLeftPlayerPile());
+        this.mTopLeftPlayerPileLayouter = new TopLeftPlayerPileLayouter(cardNodesManager, tweenManager, pileManager.getTopLeftPlayerPile());
 
         //init top right player layouter
-        this.mTopRightPlayerPileLayouter = new TopRightPlayerPileLayouter(cardNodesManager, tweenManager, mPileManager.getTopRightPlayerPile());
+        this.mTopRightPlayerPileLayouter = new TopRightPlayerPileLayouter(cardNodesManager, tweenManager, pileManager.getTopRightPlayerPile());
 
         //init stock pile layouter
-        this.mStockPileLayouter = new StockPileLayouter(gameInfo, hudScreenFragment, cardNodesManager, tweenManager, mPileManager.getStockPile());
+        this.mStockPileLayouter = new StockPileLayouter(gameInfo, hudScreenFragment, cardNodesManager, tweenManager, pileManager.getStockPile());
 
         //init discard pile layouter
-        this.mDiscardPileLayouter = new DiscardPileLayouter(cardNodesManager, tweenManager, mPileManager.getDiscardPile());
+        this.mDiscardPileLayouter = new DiscardPileLayouter(cardNodesManager, tweenManager, pileManager.getDiscardPile());
 
         //init field piles list
-        this.mFieldPileLayouterList = new ArrayList<>(mPileManager.getFieldPiles().size());
+        this.mFieldPileLayouterList = new ArrayList<>(pileManager.getFieldPiles().size());
 
         //init list of field layouters
-        for (PileModel pileModel : mPileManager.getFieldPiles()) {
+        for (PileModel pileModel : pileManager.getFieldPiles()) {
             this.mFieldPileLayouterList.add(new FieldPileLayouter(cardNodesManager, tweenManager, pileModel));
         }
 
