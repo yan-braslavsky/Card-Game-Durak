@@ -8,7 +8,10 @@ import com.yan.durak.service.services.LayouterManagerService;
 import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.service.services.SceneSizeProviderService;
 import com.yan.durak.session.GameInfo;
-import com.yan.durak.session.states.ActivePlayerState;
+import com.yan.durak.session.states.BaseDraggableState;
+import com.yan.durak.session.states.impl.OtherPlayerTurnState;
+
+import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
 /**
  * Created by Yan-Home on 4/25/2015.
@@ -35,11 +38,19 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
 
         //if player intended to trhow on the field we will send a message
         if (cardNode.getPosition().getY() < (sceneHeight * 0.6f)) {
-            //TODO : implement
-            gameInfo.setDraggingCardExpansionLevel(1f);
+
+            BaseDraggableState draggableState;
+            if (gameInfo.getActivePlayerState() instanceof BaseDraggableState) {
+                draggableState = (BaseDraggableState) gameInfo.getActivePlayerState();
+            } else {
+                throw new IllegalStateException("The state is not allowing dragging " + gameInfo.getActivePlayerState().getStateDefinition());
+            }
+
+            draggableState.setDraggedCardDistanceFromPileField(1f);
+            draggableState.setDragging(false);
 
             //disable the hand of the player
-            gameInfo.setmActivePlayerState(ActivePlayerState.OTHER_PLAYER_TURN);
+            gameInfo.setActivePlayerState(YANObjectPool.getInstance().obtain(OtherPlayerTurnState.class));
 
             //we can just send the response
             messageSender.sendCardForAttackResponse(cardNode.getCard());
@@ -56,6 +67,14 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
         GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
         LayouterManagerService pileLayouterManager = ServiceLocator.locateService(LayouterManagerService.class);
 
+        BaseDraggableState draggableState;
+        if (gameInfo.getActivePlayerState() instanceof BaseDraggableState) {
+            draggableState = (BaseDraggableState) gameInfo.getActivePlayerState();
+        } else {
+            throw new IllegalStateException("The state is not allowing dragging " + gameInfo.getActivePlayerState().getStateDefinition());
+        }
+
+        draggableState.setDragging(true);
         float sceneHeight = ServiceLocator.locateService(SceneSizeProviderService.class).getSceneHeight();
 
         //TODO : implement
@@ -63,13 +82,11 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
         float lowestYPosition = sceneHeight * 0.8f;
         float delta = lowestYPosition - screenMiddleY;
 
-        gameInfo.setmActivePlayerState(ActivePlayerState.PLAYER_DRAGGING_CARD);
-
         float dragExpansionLevel = (((cardNode.getPosition().getY() - screenMiddleY) / delta));
 
         dragExpansionLevel = clamp(dragExpansionLevel, 0f, 1f);
 
-        gameInfo.setDraggingCardExpansionLevel(dragExpansionLevel);
+        draggableState.setDraggedCardDistanceFromPileField(dragExpansionLevel);
 
         //remove card from player pile
         pileManager.getBottomPlayerPile().removeCard(cardNode.getCard());

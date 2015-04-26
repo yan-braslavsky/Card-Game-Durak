@@ -4,11 +4,13 @@ import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.layouting.CardsLayoutSlot;
 import com.yan.durak.layouting.impl.PlayerCardsLayouter;
 import com.yan.durak.layouting.pile.BasePileLayouter;
-import com.yan.durak.service.services.CardNodesManagerService;
-import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
+import com.yan.durak.service.services.CardNodesManagerService;
+import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.session.GameInfo;
+import com.yan.durak.session.states.IActivePlayerState;
+import com.yan.durak.session.states.BaseDraggableState;
 
 import aurelienribon.tweenengine.TweenManager;
 
@@ -51,17 +53,26 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
     public void layout() {
 
         //TODO:  this is in user testing
-        switch (mGameInfo.getmActivePlayerState()) {
-            case REQUEST_CARD_FOR_ATTACK:
-//            case REQUEST_RETALIATION:
+        IActivePlayerState activePlayerState = mGameInfo.getActivePlayerState();
+        switch (activePlayerState.getStateDefinition()) {
 //            case REQUEST_THROW_IN:
-                mPlayerCardsLayouter.adjustExpansionLevel(PlayerCardsLayouter.ExpansionLevelPreset.EXPANDED);
-                break;
-            case PLAYER_DRAGGING_CARD:
-                //TODO : this is a bad coupling
-                mPlayerCardsLayouter.adjustExpansionLevel(mGameInfo.getDraggingCardExpansionLevel());
+            case REQUEST_CARD_FOR_ATTACK:
+            case REQUEST_RETALIATION:
+
+                //Both states allow to drag a card
+                BaseDraggableState retaliationState = (BaseDraggableState) activePlayerState;
+                if (retaliationState.isDragging()) {
+                    //adjust expansion level by dragging distance
+                    mPlayerCardsLayouter.adjustExpansionLevel(retaliationState.getDraggingCardDistanceFromPileField());
+                } else {
+                    //when player not dragging we want fully expanded hand
+                    mPlayerCardsLayouter.adjustExpansionLevel(PlayerCardsLayouter.ExpansionLevelPreset.EXPANDED);
+                }
+
                 break;
             default:
+
+                //when player is not active we want the layouting to be compact
                 mPlayerCardsLayouter.adjustExpansionLevel(PlayerCardsLayouter.ExpansionLevelPreset.COMPACT);
         }
 

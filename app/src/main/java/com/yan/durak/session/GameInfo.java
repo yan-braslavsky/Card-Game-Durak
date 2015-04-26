@@ -3,11 +3,14 @@ package com.yan.durak.session;
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.communication.protocol.data.CardData;
 import com.yan.durak.service.IService;
-import com.yan.durak.session.states.ActivePlayerState;
+import com.yan.durak.session.states.IActivePlayerState;
+import com.yan.durak.session.states.impl.OtherPlayerTurnState;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
 /**
  * Created by ybra on 17/04/15.
@@ -16,12 +19,6 @@ import java.util.Map;
  * Holds an information regarding current game state.
  */
 public class GameInfo implements IService {
-
-
-    /**
-     * Used to save expansion level of player cards during dragging
-     */
-    private float mDraggingCardExpansionLevel;
 
     public enum Player {
         BOTTOM_PLAYER, TOP_RIGHT_PLAYER, TOP_LEFT_PLAYER;
@@ -38,21 +35,21 @@ public class GameInfo implements IService {
     private ArrayList<CardData> mThrowInPossibleCards;
 
     /**
-     * Cards that still should be retaliated
-     */
-    private HashMap<Card, Card> mCardsPendingRetaliationMap;
-
-    /**
      * Cards that active player selected to throw in
      */
     private ArrayList<Card> mSelectedThrowInCards;
+
+    /**
+     * Cards that still should be retaliated
+     */
+    private HashMap<Card, Card> mCardsPendingRetaliationMap;
 
     private final Map<Integer, Player> mIndexToPlayerMap;
 
     /**
      * Active player can be in several states
      */
-    private ActivePlayerState mActivePlayerState;
+    private IActivePlayerState mActivePlayerState;
 
     private Card mTrumpCard;
 
@@ -63,7 +60,7 @@ public class GameInfo implements IService {
         bottomPlayerGameIndex = -1;
 
         //by default player is not active unless the state changes
-        mActivePlayerState = mActivePlayerState.OTHER_PLAYER_TURN;
+        mActivePlayerState = YANObjectPool.getInstance().obtain(OtherPlayerTurnState.class);
         mIndexToPlayerMap = new HashMap<>();
     }
 
@@ -82,12 +79,14 @@ public class GameInfo implements IService {
         mIndexToPlayerMap.put(topLeftPlayerIndex, Player.TOP_LEFT_PLAYER);
     }
 
-    public ActivePlayerState getmActivePlayerState() {
+    public IActivePlayerState getActivePlayerState() {
         return mActivePlayerState;
     }
 
-    public void setmActivePlayerState(ActivePlayerState mActivePlayerState) {
-        this.mActivePlayerState = mActivePlayerState;
+    public void setActivePlayerState(IActivePlayerState activePlayerState) {
+        //return previous state to the pool
+        YANObjectPool.getInstance().offer(mActivePlayerState);
+        mActivePlayerState = activePlayerState;
     }
 
     public Player getPlayerForIndex(int playerIndex) {
@@ -104,11 +103,4 @@ public class GameInfo implements IService {
         return -1;
     }
 
-    public float getDraggingCardExpansionLevel() {
-        return mDraggingCardExpansionLevel;
-    }
-
-    public void setDraggingCardExpansionLevel(float draggingCardExpansionLevel) {
-        this.mDraggingCardExpansionLevel = draggingCardExpansionLevel;
-    }
 }

@@ -2,12 +2,17 @@ package com.yan.durak.msg_processor.subprocessors.impl;
 
 import com.yan.durak.gamelogic.communication.protocol.messages.PlayerTakesActionMessage;
 import com.yan.durak.input.cards.CardsTouchProcessor;
-import com.yan.durak.service.services.LayouterManagerService;
-import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
 import com.yan.durak.screen_fragments.HudScreenFragment;
+import com.yan.durak.service.services.LayouterManagerService;
+import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.session.GameInfo;
-import com.yan.durak.session.states.ActivePlayerState;
+import com.yan.durak.session.states.impl.AttackState;
+import com.yan.durak.session.states.impl.OtherPlayerTurnState;
+import com.yan.durak.session.states.impl.RetaliationState;
+import com.yan.durak.session.states.impl.ThrowInState;
+
+import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
 /**
  * Created by ybra on 17/04/15.
@@ -52,11 +57,11 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
             PlayerTakesActionMessage.PlayerAction action = PlayerTakesActionMessage.PlayerAction.valueOf(messageData.getAction());
 
             if (action == PlayerTakesActionMessage.PlayerAction.ATTACK) {
-                mGameInfo.setmActivePlayerState(ActivePlayerState.REQUEST_CARD_FOR_ATTACK);
+                mGameInfo.setActivePlayerState(YANObjectPool.getInstance().obtain(AttackState.class));
             } else if (action == PlayerTakesActionMessage.PlayerAction.RETALIATION) {
-                mGameInfo.setmActivePlayerState(ActivePlayerState.REQUEST_RETALIATION);
+                mGameInfo.setActivePlayerState(YANObjectPool.getInstance().obtain(RetaliationState.class));
             } else if (action == PlayerTakesActionMessage.PlayerAction.THROW_IN) {
-                mGameInfo.setmActivePlayerState(ActivePlayerState.REQUEST_THROW_IN);
+                mGameInfo.setActivePlayerState(YANObjectPool.getInstance().obtain(ThrowInState.class));
             } else {
                 throw new RuntimeException("not recognized player action " + action);
             }
@@ -65,7 +70,7 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
             mCardsTouchProcessor.register();
 
         } else {
-            mGameInfo.setmActivePlayerState(ActivePlayerState.OTHER_PLAYER_TURN);
+            mGameInfo.setActivePlayerState(YANObjectPool.getInstance().obtain(OtherPlayerTurnState.class));
 
             //disable user input possibility
             mCardsTouchProcessor.unRegister();
