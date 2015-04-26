@@ -27,6 +27,11 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
 
     @Override
     public void onDraggedCardReleased(CardNode cardNode) {
+
+        //TODO : handle for each dragging state !
+        //we don't know in what state player is .
+        //When player wants to attack or retaliate , the handling should be different.
+
         PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
         GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
         GameServerMessageSender messageSender = ServiceLocator.locateService(GameServerMessageSender.class);

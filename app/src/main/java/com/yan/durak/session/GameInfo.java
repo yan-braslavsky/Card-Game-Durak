@@ -25,11 +25,6 @@ public class GameInfo implements IService {
     }
 
     /**
-     * The index of the game on server for active player
-     */
-    private int bottomPlayerGameIndex;
-
-    /**
      * Cards that can be thrown in at this turn
      */
     private ArrayList<CardData> mThrowInPossibleCards;
@@ -39,10 +34,6 @@ public class GameInfo implements IService {
      */
     private ArrayList<Card> mSelectedThrowInCards;
 
-    /**
-     * Cards that still should be retaliated
-     */
-    private HashMap<Card, Card> mCardsPendingRetaliationMap;
 
     private final Map<Integer, Player> mIndexToPlayerMap;
 
@@ -54,10 +45,9 @@ public class GameInfo implements IService {
     private Card mTrumpCard;
 
     public GameInfo() {
-        mCardsPendingRetaliationMap = new HashMap<>();
+
         mSelectedThrowInCards = new ArrayList<>();
         mThrowInPossibleCards = new ArrayList<>();
-        bottomPlayerGameIndex = -1;
 
         //by default player is not active unless the state changes
         mActivePlayerState = YANObjectPool.getInstance().obtain(OtherPlayerTurnState.class);
