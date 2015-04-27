@@ -173,6 +173,7 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
                 listOfPiles.add(innerRetSet);
             }
 
+
             //send the response
             ServiceLocator.locateService(GameServerMessageSender.class).sendResponseRetaliatePiles(listOfPiles);
         }

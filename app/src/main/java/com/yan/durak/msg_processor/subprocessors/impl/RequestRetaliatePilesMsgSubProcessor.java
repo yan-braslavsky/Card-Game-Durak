@@ -36,6 +36,7 @@ public class RequestRetaliatePilesMsgSubProcessor extends BaseMsgSubProcessor<Re
             throw new IllegalStateException("Currently game must be at Retaliation state , but was at " + mGameInfo.getActivePlayerState());
 
         RetaliationState retaliationState = (RetaliationState) mGameInfo.getActivePlayerState();
+        retaliationState.resetState();
 
         //retaliation set should be clean at this point
         List<RetaliationState.RetaliationSet> pendingRetaliationSets = retaliationState.getPendingRetaliationCardSets();
