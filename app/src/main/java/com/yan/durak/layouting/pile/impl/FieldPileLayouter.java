@@ -17,13 +17,13 @@ import glengine.yan.glengine.util.geometry.YANVector2;
 public class FieldPileLayouter extends BasePileLayouter {
 
 
+    public static final float FIELD_PILE_SIZE_SCALE = 0.7f;
+
     /**
      * When card put on field they have a sligh rotation to the
      * left or to the right
      */
     private static final float FIELD_CARDS_ROTATION_ANGLE = 13f;
-
-    private static final float FIELD_PILE_SIZE_SCALE = 0.7f;
 
     private static final int MAX_PILES_IN_LINE = 4;
 
