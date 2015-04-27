@@ -2,8 +2,8 @@ package com.yan.durak.service.services;
 
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.cards.CardsHelper;
-import com.yan.durak.service.IService;
 import com.yan.durak.models.PileModel;
+import com.yan.durak.service.IService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -124,5 +124,24 @@ public class PileManagerService implements IService {
 
     public List<Card> getAllCards() {
         return mCards;
+    }
+
+    /**
+     * Finds a field pile that contains a card
+     *
+     * @param card card to look for
+     * @return pile that contains provided card or null if no field pile contain such card.
+     */
+    public PileModel getFieldPileWithCard(Card card) {
+
+        for (PileModel fieldPile : mFieldPiles) {
+            for (Card cardInPile : fieldPile.getCardsInPile()) {
+                if (card.equals(cardInPile)) {
+                    return fieldPile;
+                }
+            }
+        }
+
+        return null;
     }
 }

@@ -3,10 +3,10 @@ package com.yan.durak.msg_processor.subprocessors.impl;
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.communication.protocol.messages.CardMovedProtocolMessage;
 import com.yan.durak.layouting.pile.IPileLayouter;
-import com.yan.durak.service.services.LayouterManagerService;
-import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
+import com.yan.durak.service.services.LayouterManagerService;
+import com.yan.durak.service.services.PileManagerService;
 
 /**
  * Created by ybra on 17/04/15.
@@ -38,7 +38,10 @@ public class CardMovedMsgSubProcessor extends BaseMsgSubProcessor<CardMovedProto
 
         //make sure that the card that we want to move is actually in the pile
         if (movedCard == null) {
-            throw new RuntimeException("The card " + movedCard + "is not found in pile");
+            //in some cases we placing intentionally the card away from it's pile even
+            //before we get confirmation from server. In those cases the move card message
+            //will just be ignored.
+            return;
         }
 
         //Pile is a local representation of what is going on on the server

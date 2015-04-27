@@ -63,6 +63,10 @@ public class YANCollisionDetector {
         return mTouchedNodes.get(mTouchedNodes.size() - 1);
     }
 
+    public static boolean areTwoNodesCollide(YANBaseNode nodeA, YANBaseNode nodeB) {
+        return (nodeA != null && nodeB != null) && nodeA.getBoundingRectangle().contains(nodeB.getBoundingRectangle());
+    }
+
 //    public static final YANBaseNode findClosestNodeToNormalizedTouchPoint(float normalizedTouchPointX, float normalizedTouchPointY) {
 //
 //        //TODO : provide a possibility to send reusable vector by reference to this method , to avoid allocations
