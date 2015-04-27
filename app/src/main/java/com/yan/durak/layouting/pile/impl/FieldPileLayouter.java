@@ -77,7 +77,7 @@ public class FieldPileLayouter extends BasePileLayouter {
 
             //animate card to its place with new transform values
             animateCardNode(cardNode, mPilePositionOnField.getX(), mPilePositionOnField.getY(),
-                    rotationZ, mCardWidhtForPile, mCardHeightForPile, 1f);
+                    rotationZ, mCardWidhtForPile, mCardHeightForPile, 1f,CARD_MOVEMENT_ANIMATION_DURATION);
 
             index++;
         }

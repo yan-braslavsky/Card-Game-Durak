@@ -34,15 +34,15 @@ public abstract class BasePileLayouter implements IPileLayouter {
         return mBoundpile;
     }
 
-    protected void animateCardNode(CardNode cardNode, float endPositionX, float endPositionY, float endRotationZ, float endWidth, float endHeight, float endAlpha) {
+    protected void animateCardNode(CardNode cardNode, float endPositionX, float endPositionY, float endRotationZ, float endWidth, float endHeight, float endAlpha,float duration) {
         Timeline.createSequence()
                 .beginParallel()
-                .push(Tween.to(cardNode, YANTweenNodeAccessor.OPACITY, CARD_MOVEMENT_ANIMATION_DURATION).target(endAlpha))
-                .push(Tween.to(cardNode, YANTweenNodeAccessor.ROTATION_Z_CW, CARD_MOVEMENT_ANIMATION_DURATION).target(endRotationZ))
-                .push(Tween.to(cardNode, YANTweenNodeAccessor.POSITION_X, CARD_MOVEMENT_ANIMATION_DURATION).target(endPositionX))
-                .push(Tween.to(cardNode, YANTweenNodeAccessor.POSITION_Y, CARD_MOVEMENT_ANIMATION_DURATION).target(endPositionY))
-                .push(Tween.to(cardNode, YANTweenNodeAccessor.SIZE_X, CARD_MOVEMENT_ANIMATION_DURATION).target(endWidth))
-                .push(Tween.to(cardNode, YANTweenNodeAccessor.SIZE_Y, CARD_MOVEMENT_ANIMATION_DURATION).target(endHeight))
+                .push(Tween.to(cardNode, YANTweenNodeAccessor.OPACITY, duration).target(endAlpha))
+                .push(Tween.to(cardNode, YANTweenNodeAccessor.ROTATION_Z_CW, duration).target(endRotationZ))
+                .push(Tween.to(cardNode, YANTweenNodeAccessor.POSITION_X, duration).target(endPositionX))
+                .push(Tween.to(cardNode, YANTweenNodeAccessor.POSITION_Y, duration).target(endPositionY))
+                .push(Tween.to(cardNode, YANTweenNodeAccessor.SIZE_X, duration).target(endWidth))
+                .push(Tween.to(cardNode, YANTweenNodeAccessor.SIZE_Y, duration).target(endHeight))
                 .start(mTweenManager);
     }
 }

@@ -9,8 +9,8 @@ import com.yan.durak.nodes.CardNode;
 import com.yan.durak.service.services.CardNodesManagerService;
 import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.session.GameInfo;
-import com.yan.durak.session.states.IActivePlayerState;
 import com.yan.durak.session.states.BaseDraggableState;
+import com.yan.durak.session.states.IActivePlayerState;
 
 import aurelienribon.tweenengine.TweenManager;
 
@@ -52,29 +52,52 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
     @Override
     public void layout() {
 
-        //TODO:  this is in user testing
+        //by default every layouting will be animated
+        float animationDuration = CARD_MOVEMENT_ANIMATION_DURATION;
+
+        //cache the state
         IActivePlayerState activePlayerState = mGameInfo.getActivePlayerState();
+
+        //each state will be handled differently
         switch (activePlayerState.getStateDefinition()) {
 //            case REQUEST_THROW_IN:
             case REQUEST_CARD_FOR_ATTACK:
             case REQUEST_RETALIATION:
 
-                //Both states allow to drag a card
-                BaseDraggableState retaliationState = (BaseDraggableState) activePlayerState;
-                if (retaliationState.isDragging()) {
-                    //adjust expansion level by dragging distance
-                    mPlayerCardsLayouter.adjustExpansionLevel(retaliationState.getDraggingCardDistanceFromPileField());
-                } else {
-                    //when player not dragging we want fully expanded hand
-                    mPlayerCardsLayouter.adjustExpansionLevel(PlayerCardsLayouter.ExpansionLevelPreset.EXPANDED);
-                }
-
+                //dragging state alters the expansion level of the layouter
+                //as well as changing the animationDuration of animation
+                animationDuration = handleDraggingState(animationDuration, (BaseDraggableState) activePlayerState);
                 break;
             default:
 
                 //when player is not active we want the layouting to be compact
                 mPlayerCardsLayouter.adjustExpansionLevel(PlayerCardsLayouter.ExpansionLevelPreset.COMPACT);
         }
+
+        //the actual layouting is using underlying card layouter
+        //which layouts slots
+        layoutUsingSlots(animationDuration);
+    }
+
+    private float handleDraggingState(float duration, BaseDraggableState activePlayerState) {
+        //Both states allow to drag a card
+        BaseDraggableState draggableState = (BaseDraggableState) activePlayerState;
+        if (draggableState.isDragging()) {
+            //adjust expansion level by dragging distance
+            mPlayerCardsLayouter.adjustExpansionLevel(draggableState.getDraggingCardDistanceFromPileField());
+
+            //when dragged card distance begins to shrink , we want cards in player
+            //hand to be hidden faster
+            duration *= draggableState.getDraggingCardDistanceFromPileField();
+
+        } else {
+            //when player not dragging we want fully expanded hand
+            mPlayerCardsLayouter.adjustExpansionLevel(PlayerCardsLayouter.ExpansionLevelPreset.EXPANDED);
+        }
+        return duration;
+    }
+
+    private void layoutUsingSlots(float duration) {
 
         //update layouter to recalculate positions
         int cardsInPileAmount = getBoundpile().getCardsInPile().size();
@@ -83,7 +106,7 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
         CardsLayoutSlot slot;
         CardNode cardNode;
         int slotPosition = 0;
-
+        float endAlpha = 1f;
         for (Card card : mBoundpile.getCardsInPile()) {
             cardNode = mCardNodesManager.getCardNodeForCard(card);
             slot = mPlayerCardsLayouter.getSlotAtPosition(slotPosition);
@@ -96,7 +119,7 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
 
             //animate card to its place with new transform values
             animateCardNode(cardNode, slot.getPosition().getX(), slot.getPosition().getY(),
-                    slot.getRotation(), mCardNodesManager.getCardNodeOriginalWidth(), mCardNodesManager.getCardNodeOriginalHeight(), 1f);
+                    slot.getRotation(), mCardNodesManager.getCardNodeOriginalWidth(), mCardNodesManager.getCardNodeOriginalHeight(), endAlpha, duration);
 
             slotPosition++;
         }

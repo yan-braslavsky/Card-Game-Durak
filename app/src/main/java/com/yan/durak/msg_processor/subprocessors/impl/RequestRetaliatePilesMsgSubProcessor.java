@@ -49,6 +49,9 @@ public class RequestRetaliatePilesMsgSubProcessor extends BaseMsgSubProcessor<Re
             //add the card as a covered that waiting retaliation
             RetaliationState.RetaliationSet retSet = YANObjectPool.getInstance().obtain(RetaliationState.RetaliationSet.class);
             retSet.setCoveredCard(pendingCard);
+
+            //add set to pending retaliation sets
+            pendingRetaliationSets.add(retSet);
         }
 
     }

@@ -18,7 +18,12 @@ import glengine.yan.glengine.util.object_pool.YANObjectPool;
  */
 public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.CardsTouchProcessorListener {
 
-    private float _previousExpansionLevel = 1f;
+    /**
+     * This value is a precentage of the screen height that is used to indicate
+     * a point from which cards begin to go down in order to let player
+     * better see the field piles
+     */
+    public static final float DRAG_CARDS_HIDING_THRESHOLD = 0.75f;
 
     @Override
     public void onSelectedCardTap(CardNode cardNode) {
@@ -63,7 +68,6 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
             //layout
             pileLayouterManager.getPileLayouterForPile(pileManager.getBottomPlayerPile()).layout();
         }
-
     }
 
     @Override
@@ -79,31 +83,27 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
             throw new IllegalStateException("The state is not allowing dragging " + gameInfo.getActivePlayerState().getStateDefinition());
         }
 
+        //mark dragging
         draggableState.setDragging(true);
         float sceneHeight = ServiceLocator.locateService(SceneSizeProviderService.class).getSceneHeight();
 
         //TODO : implement
         float screenMiddleY = sceneHeight / 2f;
-        float lowestYPosition = sceneHeight * 0.8f;
+        float lowestYPosition = sceneHeight * DRAG_CARDS_HIDING_THRESHOLD;
         float delta = lowestYPosition - screenMiddleY;
 
-        float dragExpansionLevel = (((cardNode.getPosition().getY() - screenMiddleY) / delta));
+        float distanceFromScreenMiddle = (((cardNode.getPosition().getY() - screenMiddleY) / delta));
 
-        dragExpansionLevel = clamp(dragExpansionLevel, 0f, 1f);
+        //distance is a percentage , it can be in range 0 to 1
+        distanceFromScreenMiddle = clamp(distanceFromScreenMiddle, 0f, 1f);
 
-        draggableState.setDraggedCardDistanceFromPileField(dragExpansionLevel);
+        draggableState.setDraggedCardDistanceFromPileField(distanceFromScreenMiddle);
 
         //remove card from player pile
         pileManager.getBottomPlayerPile().removeCard(cardNode.getCard());
 
-        //To optimize layout only if major change occurred
-//        if (Math.abs(_previousExpansionLevel - dragExpansionLevel) > 0.05f) {
-        if (Math.abs(_previousExpansionLevel - dragExpansionLevel) > 0.005f) {
-            _previousExpansionLevel = dragExpansionLevel;
-
-            //layout
-            pileLayouterManager.getPileLayouterForPile(pileManager.getBottomPlayerPile()).layout();
-        }
+        //layout
+        pileLayouterManager.getPileLayouterForPile(pileManager.getBottomPlayerPile()).layout();
     }
 
     //TODO : move to utils

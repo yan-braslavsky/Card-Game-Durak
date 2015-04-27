@@ -71,7 +71,7 @@ public class MsgProcessor implements IGameServerConnector.IGameServerCommunicato
                 messageSender));
 
         //Request Retaliation
-        mProcessorsMap.put(RequestRetaliatePilesMessage.class, new RequestRetaliatePilesMsgSubProcessor(messageSender));
+        mProcessorsMap.put(RequestRetaliatePilesMessage.class, new RequestRetaliatePilesMsgSubProcessor(gameInfo,messageSender));
 
         //Player Action
         mProcessorsMap.put(PlayerTakesActionMessage.class, new PlayerTakesActionMsgSubProcessor(pileManager,

@@ -94,7 +94,7 @@ public class TopRightPlayerPileLayouter extends BasePileLayouter {
 
             //animate card to its place with new transform values
             animateCardNode(cardNode, slot.getPosition().getX(), slot.getPosition().getY(),
-                    slot.getRotation(), mCardWidhtForPile, mCardHeightForPile, 1f);
+                    slot.getRotation(), mCardWidhtForPile, mCardHeightForPile, 1f,CARD_MOVEMENT_ANIMATION_DURATION);
 
             slotPosition++;
         }

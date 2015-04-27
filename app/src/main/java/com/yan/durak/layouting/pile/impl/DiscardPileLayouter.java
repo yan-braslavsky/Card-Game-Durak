@@ -34,7 +34,7 @@ public class DiscardPileLayouter extends BasePileLayouter {
 
             //animate card to its place with new transform values
             animateCardNode(cardNode, mPilePositionOnField.getX(), mPilePositionOnField.getY(),
-                    300, cardNode.getSize().getX(), cardNode.getSize().getY(), 1f);
+                    300, cardNode.getSize().getX(), cardNode.getSize().getY(), 1f,CARD_MOVEMENT_ANIMATION_DURATION);
         }
     }
 }
