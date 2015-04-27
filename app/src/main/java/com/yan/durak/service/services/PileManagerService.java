@@ -144,4 +144,21 @@ public class PileManagerService implements IService {
 
         return null;
     }
+
+    /**
+     * Finds a field pile that contains a card providing only it's rank and suit
+     *
+     * @return pile that contains provided card or null if no field pile contain such card.
+     */
+    public PileModel getFieldPileWithCardByRankAndSuit(String rank, String suit) {
+
+        for (PileModel fieldPile : mFieldPiles) {
+            for (Card cardInPile : fieldPile.getCardsInPile()) {
+                if (cardInPile.getRank().equals(rank) && cardInPile.getSuit().equals(suit)) {
+                    return fieldPile;
+                }
+            }
+        }
+        return null;
+    }
 }
