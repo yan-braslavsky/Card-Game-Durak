@@ -41,11 +41,13 @@ public class RetaliationState extends BaseDraggableState {
 
         //put back to pool
         for (RetaliationSet retaliationSet : mPendingRetaliationCardSets) {
+            retaliationSet.resetState();
             YANObjectPool.getInstance().offer(retaliationSet);
         }
 
         //put back to pool
         for (RetaliationSet rset : mRetaliatedCardSets) {
+            rset.resetState();
             YANObjectPool.getInstance().offer(rset);
         }
 

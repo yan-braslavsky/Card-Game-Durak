@@ -34,7 +34,7 @@ public class CardMovedMsgSubProcessor extends BaseMsgSubProcessor<CardMovedProto
         final PileModel fromPile = mPileManager.getPileWithIndex(fromPileIndex);
 
         //get the card that is about to be moved
-        final Card movedCard = fromPile.getCardByRankAndSuit(serverMessage.getMessageData().getMovedCard().getRank(), serverMessage.getMessageData().getMovedCard().getSuit());
+        final Card movedCard = fromPile.findCardByRankAndSuit(serverMessage.getMessageData().getMovedCard().getRank(), serverMessage.getMessageData().getMovedCard().getSuit());
 
         //make sure that the card that we want to move is actually in the pile
         if (movedCard == null) {

@@ -150,7 +150,7 @@ public class PileManagerService implements IService {
      *
      * @return pile that contains provided card or null if no field pile contain such card.
      */
-    public PileModel getFieldPileWithCardByRankAndSuit(String rank, String suit) {
+    public PileModel findFieldPileWithCardByRankAndSuit(String rank, String suit) {
 
         for (PileModel fieldPile : mFieldPiles) {
             for (Card cardInPile : fieldPile.getCardsInPile()) {

@@ -5,7 +5,6 @@ import com.yan.durak.gamelogic.cards.Card;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 
 /**
  * Created by ybra on 20/04/15.
@@ -27,7 +26,7 @@ public class PileModel {
      *
      * @return card if it is in the pile or null otherwise
      */
-    public Card getCardByRankAndSuit(String rank, String suit) {
+    public Card findCardByRankAndSuit(String rank, String suit) {
         for (Card card : mCardsInPile) {
             if (card.getRank().equals(rank) && card.getSuit().equals(suit))
                 return card;

@@ -25,8 +25,8 @@ public class RetaliationInvalidMsgSubProcessor extends BaseMsgSubProcessor<Retal
         //we need to find all cards that are wrongly retaliated
         for (RetaliationSetData retaliationSetData : serverMessage.getMessageData().getInvalidRetaliationsList()) {
 
-            PileModel fieldPile = pileManagerService.getFieldPileWithCardByRankAndSuit(retaliationSetData.getCoveringCardData().getRank(), retaliationSetData.getCoveringCardData().getSuit());
-            Card coveringCard = fieldPile.getCardByRankAndSuit(retaliationSetData.getCoveringCardData().getRank(), retaliationSetData.getCoveringCardData().getSuit());
+            PileModel fieldPile = pileManagerService.findFieldPileWithCardByRankAndSuit(retaliationSetData.getCoveringCardData().getRank(), retaliationSetData.getCoveringCardData().getSuit());
+            Card coveringCard = fieldPile.findCardByRankAndSuit(retaliationSetData.getCoveringCardData().getRank(), retaliationSetData.getCoveringCardData().getSuit());
 
             //remove the card from field pile
             fieldPile.removeCard(coveringCard);

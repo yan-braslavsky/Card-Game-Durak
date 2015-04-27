@@ -36,6 +36,7 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
      * better see the field piles
      */
     public static final float DRAG_CARDS_HIDING_THRESHOLD = 0.75f;
+    public static final int DRAGGED_CARD_SORTING_LAYER = 1000;
 
     @Override
     public void onSelectedCardTap(CardNode cardNode) {
@@ -213,6 +214,10 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
 
     @Override
     public void onCardDragProgress(CardNode cardNode) {
+
+        //we want that dragged card will be above all
+        cardNode.setSortingLayer(DRAGGED_CARD_SORTING_LAYER);
+
         PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
         GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
         PileLayouterManagerService pileLayouterManager = ServiceLocator.locateService(PileLayouterManagerService.class);

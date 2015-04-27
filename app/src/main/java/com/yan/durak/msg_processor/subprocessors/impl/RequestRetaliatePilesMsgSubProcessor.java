@@ -15,6 +15,7 @@ import com.yan.durak.session.states.impl.OtherPlayerTurnState;
 import com.yan.durak.session.states.impl.RetaliationState;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import glengine.yan.glengine.nodes.YANButtonNode;
@@ -92,20 +93,39 @@ public class RequestRetaliatePilesMsgSubProcessor extends BaseMsgSubProcessor<Re
         if (!(mGameInfo.getActivePlayerState() instanceof RetaliationState))
             throw new IllegalStateException("Currently game must be at Retaliation state , but was at " + mGameInfo.getActivePlayerState());
 
+        PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
+
         RetaliationState retaliationState = (RetaliationState) mGameInfo.getActivePlayerState();
         retaliationState.resetState();
 
         //retaliation set should be clean at this point
         List<RetaliationState.RetaliationSet> pendingRetaliationSets = retaliationState.getPendingRetaliationCardSets();
+        List<RetaliationState.RetaliationSet> alreadyRetaliatedSets = retaliationState.getRetaliatedCardSets();
 
         //each list/pile should contain only one card that is pending retaliation
         for (List<CardData> cardDatas : serverMessage.getMessageData().getPilesBeforeRetaliation()) {
 
-            //TODO : Pool , not allocate
-            Card pendingCard = new Card(cardDatas.get(0).getRank(), cardDatas.get(0).getSuit());
+            //find the relevant field card
+            PileModel fieldPile = pileManager.findFieldPileWithCardByRankAndSuit(cardDatas.get(0).getRank(), cardDatas.get(0).getSuit());
+
+            //obtain retaliation set
+            RetaliationState.RetaliationSet retSet = YANObjectPool.getInstance().obtain(RetaliationState.RetaliationSet.class);
+
+            //server returns us all the piles that are on the field currently.
+            //but in case we have already retaliated some piles , and getting this request due to invalid retaliation
+            //we need to add this retaliated pile to already retaliated set
+            if (fieldPile.getCardsInPile().size() == 2) {
+                Iterator<Card> iterator = fieldPile.getCardsInPile().iterator();
+                retSet.setCoveredCard(iterator.next());
+                retSet.setCoveringCard(iterator.next());
+                alreadyRetaliatedSets.add(retSet);
+                continue;
+            }
+
+            Card pendingCard = fieldPile
+                    .findCardByRankAndSuit(cardDatas.get(0).getRank(), cardDatas.get(0).getSuit());
 
             //add the card as a covered that waiting retaliation
-            RetaliationState.RetaliationSet retSet = YANObjectPool.getInstance().obtain(RetaliationState.RetaliationSet.class);
             retSet.setCoveredCard(pendingCard);
 
             //add set to pending retaliation sets
