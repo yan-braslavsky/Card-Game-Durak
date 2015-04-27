@@ -49,8 +49,9 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
         GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
         BaseDraggableState draggableState = (BaseDraggableState) gameInfo.getActivePlayerState();
 
-        //we need to reset dragging mark
+        //we need to reset dragging state
         draggableState.setDragging(false);
+        draggableState.setDraggedCardDistanceFromPileField(1f);
 
         //cache screen height
         float sceneHeight = ServiceLocator.locateService(SceneSizeProviderService.class).getSceneHeight();
@@ -176,6 +177,11 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
 
             //send the response
             ServiceLocator.locateService(GameServerMessageSender.class).sendResponseRetaliatePiles(listOfPiles);
+        } else {
+
+            //currently player cards are down , we need to raise them up by relayouting
+            //layout player cards
+            ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(pileManager.getBottomPlayerPile()).layout();
         }
     }
 
