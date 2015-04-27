@@ -2,7 +2,8 @@ package com.yan.durak.msg_processor.subprocessors.impl;
 
 import com.yan.durak.gamelogic.communication.protocol.messages.GameOverProtocolMessage;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
-import com.yan.durak.screen_fragments.HudScreenFragment;
+import com.yan.durak.service.ServiceLocator;
+import com.yan.durak.service.services.HudManagementService;
 import com.yan.durak.session.GameInfo;
 
 /**
@@ -10,12 +11,10 @@ import com.yan.durak.session.GameInfo;
  */
 public class GameOverMsgSubProcessor extends BaseMsgSubProcessor<GameOverProtocolMessage> {
 
-    private final HudScreenFragment mHudScreenFragment;
     private final GameInfo mGameInfo;
 
-    public GameOverMsgSubProcessor(final HudScreenFragment hudScreenFragment, final GameInfo gameInfo) {
+    public GameOverMsgSubProcessor(final GameInfo gameInfo) {
         super();
-        this.mHudScreenFragment = hudScreenFragment;
         this.mGameInfo = gameInfo;
     }
 
@@ -23,9 +22,9 @@ public class GameOverMsgSubProcessor extends BaseMsgSubProcessor<GameOverProtoco
     public void processMessage(GameOverProtocolMessage serverMessage) {
         boolean iLostTheGame = (mGameInfo.getPlayerIndex(GameInfo.Player.BOTTOM_PLAYER) == serverMessage.getMessageData().getLoosingPlayer().getPlayerIndexInGame());
         if (iLostTheGame) {
-            mHudScreenFragment.showYouLooseMessage();
+            ServiceLocator.locateService(HudManagementService.class).showYouLooseMessage();
         } else {
-            mHudScreenFragment.showYouWonMessage();
+            ServiceLocator.locateService(HudManagementService.class).showYouWonMessage();
         }
     }
 }

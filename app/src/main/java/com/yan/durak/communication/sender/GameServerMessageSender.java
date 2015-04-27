@@ -8,6 +8,7 @@ import com.yan.durak.gamelogic.communication.protocol.messages.ResponseRetaliate
 import com.yan.durak.gamelogic.communication.protocol.messages.ResponseThrowInsMessage;
 import com.yan.durak.service.IService;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -35,16 +36,20 @@ public class GameServerMessageSender implements IService {
 
     /**
      * Sends retaliate piles response to the server
-     * If empty list is sent , that means that user takes all the cards in the field.
+     * If empty list or null is sent  , that means that user takes all the cards in the field.
      *
      * @param retaliatedPilesList list of piles after retaliation.
      */
     public void sendResponseRetaliatePiles(List<List<Card>> retaliatedPilesList) {
+        if ((retaliatedPilesList == null)) {
+            retaliatedPilesList = Collections.emptyList();
+        }
         sendMessage(new ResponseRetaliatePilesMessage(retaliatedPilesList));
     }
 
     /**
      * Sends card for attack response to the server
+     *
      * @param attackCard card that player have choosen to start the attack with
      */
     public void sendCardForAttackResponse(Card attackCard) {

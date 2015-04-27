@@ -10,7 +10,6 @@ import com.yan.durak.layouting.pile.impl.TopRightPlayerPileLayouter;
 import com.yan.durak.service.IService;
 import com.yan.durak.service.ServiceLocator;
 import com.yan.durak.models.PileModel;
-import com.yan.durak.screen_fragments.HudScreenFragment;
 import com.yan.durak.session.GameInfo;
 
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ import aurelienribon.tweenengine.TweenManager;
 /**
  * Created by ybra on 20/04/15.
  */
-public class LayouterManagerService implements IService {
+public class PileLayouterManagerService implements IService {
 
     //layouters
     final BottomPlayerPileLayouter mBottomPlayerPileLayouter;
@@ -36,11 +35,12 @@ public class LayouterManagerService implements IService {
     //map
     final Map<PileModel, IPileLayouter> mPileToLayouterMap;
 
-    public LayouterManagerService(final TweenManager tweenManager, final HudScreenFragment hudScreenFragment) {
+    public PileLayouterManagerService(final TweenManager tweenManager) {
 
         GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
         CardNodesManagerService cardNodesManager = ServiceLocator.locateService(CardNodesManagerService.class);
         PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
+        HudManagementService hudManagementService = ServiceLocator.locateService(HudManagementService.class);
 
         this.mPileToLayouterMap = new HashMap<>();
 
@@ -54,7 +54,7 @@ public class LayouterManagerService implements IService {
         this.mTopRightPlayerPileLayouter = new TopRightPlayerPileLayouter(cardNodesManager, tweenManager, pileManager.getTopRightPlayerPile());
 
         //init stock pile layouter
-        this.mStockPileLayouter = new StockPileLayouter(gameInfo, hudScreenFragment, cardNodesManager, tweenManager, pileManager.getStockPile());
+        this.mStockPileLayouter = new StockPileLayouter(gameInfo, hudManagementService, cardNodesManager, tweenManager, pileManager.getStockPile());
 
         //init discard pile layouter
         this.mDiscardPileLayouter = new DiscardPileLayouter(cardNodesManager, tweenManager, pileManager.getDiscardPile());

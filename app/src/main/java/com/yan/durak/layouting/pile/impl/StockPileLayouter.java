@@ -5,7 +5,7 @@ import com.yan.durak.layouting.pile.BasePileLayouter;
 import com.yan.durak.service.services.CardNodesManagerService;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
-import com.yan.durak.screen_fragments.HudScreenFragment;
+import com.yan.durak.service.services.HudManagementService;
 import com.yan.durak.session.GameInfo;
 
 import aurelienribon.tweenengine.TweenManager;
@@ -23,17 +23,17 @@ public class StockPileLayouter extends BasePileLayouter {
     private static final float STOCK_PILE_CARDS_ROTATION = 95;
     public static final float TRUMP_CARD_ROTATION = 190f;
     public static final float TRUMP_CARD_TOP_OFFSET = 0.055f;
-    private final HudScreenFragment mHudScreenFragment;
+    private final HudManagementService mHudManagementService;
     private final GameInfo mGameInfo;
 
     //cached positions
     private float mTrumpCardPositionY;
 
 
-    public StockPileLayouter(final GameInfo gameInfo, final HudScreenFragment hudScreenFragment, final CardNodesManagerService cardNodesManager, final TweenManager tweenManager, final PileModel boundPile) {
+    public StockPileLayouter(final GameInfo gameInfo, final HudManagementService hudManagementService, final CardNodesManagerService cardNodesManager, final TweenManager tweenManager, final PileModel boundPile) {
         super(cardNodesManager, tweenManager, boundPile);
 
-        this.mHudScreenFragment = hudScreenFragment;
+        this.mHudManagementService = hudManagementService;
         this.mGameInfo = gameInfo;
     }
 
@@ -53,7 +53,7 @@ public class StockPileLayouter extends BasePileLayouter {
         }
 
         //now position the mask
-        YANTexturedNode maskCardNode = mHudScreenFragment.getNode(HudScreenFragment.MASK_CARD_INDEX);
+        YANTexturedNode maskCardNode = mHudManagementService.getNode(HudManagementService.MASK_CARD_INDEX);
         layoutCardInPile(stockPilePositionX, stockPilePositionY, maskCardNode);
 
         //only difference is that mask is visible and above other card nodes
@@ -77,7 +77,7 @@ public class StockPileLayouter extends BasePileLayouter {
 
         //When only one card in stock pile left (which is a trump) mask should be hidden
         if (mBoundpile.getCardsInPile().size() == 1) {
-            mHudScreenFragment.getNode(HudScreenFragment.MASK_CARD_INDEX).setOpacity(0f);
+            mHudManagementService.getNode(HudManagementService.MASK_CARD_INDEX).setOpacity(0f);
         }
 
         //when trump card is not in the pile , we doing nothing

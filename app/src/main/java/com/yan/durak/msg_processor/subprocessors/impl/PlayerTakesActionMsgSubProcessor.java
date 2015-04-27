@@ -3,8 +3,9 @@ package com.yan.durak.msg_processor.subprocessors.impl;
 import com.yan.durak.gamelogic.communication.protocol.messages.PlayerTakesActionMessage;
 import com.yan.durak.input.cards.CardsTouchProcessor;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
-import com.yan.durak.screen_fragments.HudScreenFragment;
-import com.yan.durak.service.services.LayouterManagerService;
+import com.yan.durak.service.ServiceLocator;
+import com.yan.durak.service.services.HudManagementService;
+import com.yan.durak.service.services.PileLayouterManagerService;
 import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.session.GameInfo;
 import com.yan.durak.session.states.impl.AttackState;
@@ -20,17 +21,15 @@ import glengine.yan.glengine.util.object_pool.YANObjectPool;
 public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<PlayerTakesActionMessage> {
 
     private final GameInfo mGameInfo;
-    private final HudScreenFragment mHudScreenFragment;
-    private final LayouterManagerService mPileLayouterManager;
+    private final PileLayouterManagerService mPileLayouterManager;
     private final PileManagerService mPileManager;
     private final CardsTouchProcessor mCardsTouchProcessor;
 
-    public PlayerTakesActionMsgSubProcessor(final PileManagerService pileManager, final LayouterManagerService pileLayouterManager,
-                                            final GameInfo gameInfo, final HudScreenFragment hudScreenFragment, final CardsTouchProcessor cardsTouchProcessor) {
+    public PlayerTakesActionMsgSubProcessor(final PileManagerService pileManager, final PileLayouterManagerService pileLayouterManager,
+                                            final GameInfo gameInfo,  final CardsTouchProcessor cardsTouchProcessor) {
         super();
 
         this.mGameInfo = gameInfo;
-        this.mHudScreenFragment = hudScreenFragment;
         this.mPileLayouterManager = pileLayouterManager;
         this.mPileManager = pileManager;
         this.mCardsTouchProcessor = cardsTouchProcessor;
@@ -46,8 +45,8 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
         if (PlayerTakesActionMessage.PlayerAction.valueOf(serverMessage.getMessageData().getAction()) != PlayerTakesActionMessage.PlayerAction.ATTACK)
             return;
 
-        @HudScreenFragment.HudNode int cockNodeIndex = retrieveCockPosition(actionPlayerIndex);
-        mHudScreenFragment.resetCockAnimation(cockNodeIndex);
+        @HudManagementService.HudNode int cockNodeIndex = retrieveCockPosition(actionPlayerIndex);
+        ServiceLocator.locateService(HudManagementService.class).resetCockAnimation(cockNodeIndex);
     }
 
     private void updateActivePlayerState(PlayerTakesActionMessage.ProtocolMessageData messageData) {
@@ -81,15 +80,15 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
     }
 
     private
-    @HudScreenFragment.HudNode
+    @HudManagementService.HudNode
     int retrieveCockPosition(int actionPlayerIndex) {
         switch (mGameInfo.getPlayerForIndex(actionPlayerIndex)) {
             case BOTTOM_PLAYER:
-                return HudScreenFragment.COCK_BOTTOM_RIGHT_INDEX;
+                return HudManagementService.COCK_BOTTOM_RIGHT_INDEX;
             case TOP_RIGHT_PLAYER:
-                return HudScreenFragment.COCK_TOP_RIGHT_INDEX;
+                return HudManagementService.COCK_TOP_RIGHT_INDEX;
             case TOP_LEFT_PLAYER:
-                return HudScreenFragment.COCK_TOP_LEFT_INDEX;
+                return HudManagementService.COCK_TOP_LEFT_INDEX;
             default:
                 throw new RuntimeException("player not found for index : " + actionPlayerIndex);
         }

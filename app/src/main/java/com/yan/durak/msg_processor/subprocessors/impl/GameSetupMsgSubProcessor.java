@@ -4,11 +4,12 @@ import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.communication.protocol.data.CardData;
 import com.yan.durak.gamelogic.communication.protocol.messages.GameSetupProtocolMessage;
 import com.yan.durak.layouting.pile.IPileLayouter;
-import com.yan.durak.service.services.LayouterManagerService;
-import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
-import com.yan.durak.screen_fragments.HudScreenFragment;
+import com.yan.durak.service.ServiceLocator;
+import com.yan.durak.service.services.HudManagementService;
+import com.yan.durak.service.services.PileLayouterManagerService;
+import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.session.GameInfo;
 
 /**
@@ -17,17 +18,15 @@ import com.yan.durak.session.GameInfo;
 public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProtocolMessage> {
 
     private final GameInfo mGameInfo;
-    private final LayouterManagerService mPileLayouterManager;
+    private final PileLayouterManagerService mPileLayouterManager;
     private final PileManagerService mPileManager;
-    private final HudScreenFragment mHudScreenFragment;
 
-    public GameSetupMsgSubProcessor(final HudScreenFragment hudScreenFragment, final GameInfo gameInfo, final LayouterManagerService pileLayouterManager, PileManagerService pileManager) {
+    public GameSetupMsgSubProcessor(final GameInfo gameInfo, final PileLayouterManagerService pileLayouterManager, PileManagerService pileManager) {
         super();
 
         this.mGameInfo = gameInfo;
         this.mPileLayouterManager = pileLayouterManager;
         this.mPileManager = pileManager;
-        this.mHudScreenFragment = hudScreenFragment;
     }
 
     @Override
@@ -80,6 +79,6 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
         mGameInfo.setTrumpCard(new Card(trumpCardData.getRank(), trumpCardData.getSuit()));
 
         //we need set trump suit to be visible when stock pile gets empty
-        mHudScreenFragment.setTrumpSuit(trumpCardData.getSuit());
+        ServiceLocator.locateService(HudManagementService.class).setTrumpSuit(trumpCardData.getSuit());
     }
 }

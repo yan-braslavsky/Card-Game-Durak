@@ -5,7 +5,7 @@ import com.yan.durak.gamelogic.communication.protocol.messages.CardMovedProtocol
 import com.yan.durak.layouting.pile.IPileLayouter;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
-import com.yan.durak.service.services.LayouterManagerService;
+import com.yan.durak.service.services.PileLayouterManagerService;
 import com.yan.durak.service.services.PileManagerService;
 
 /**
@@ -14,9 +14,9 @@ import com.yan.durak.service.services.PileManagerService;
 public class CardMovedMsgSubProcessor extends BaseMsgSubProcessor<CardMovedProtocolMessage> {
 
     private final PileManagerService mPileManager;
-    private final LayouterManagerService mPileLayouterManager;
+    private final PileLayouterManagerService mPileLayouterManager;
 
-    public CardMovedMsgSubProcessor(final PileManagerService mPileManager, final LayouterManagerService mPileLayouterManager) {
+    public CardMovedMsgSubProcessor(final PileManagerService mPileManager, final PileLayouterManagerService mPileLayouterManager) {
         super();
 
         this.mPileManager = mPileManager;

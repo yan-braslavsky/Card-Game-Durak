@@ -4,13 +4,20 @@ import com.yan.durak.communication.sender.GameServerMessageSender;
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.communication.protocol.data.CardData;
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestRetaliatePilesMessage;
+import com.yan.durak.models.PileModel;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
+import com.yan.durak.service.ServiceLocator;
+import com.yan.durak.service.services.HudManagementService;
+import com.yan.durak.service.services.PileLayouterManagerService;
+import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.session.GameInfo;
+import com.yan.durak.session.states.impl.OtherPlayerTurnState;
 import com.yan.durak.session.states.impl.RetaliationState;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import glengine.yan.glengine.nodes.YANButtonNode;
 import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
 /**
@@ -27,6 +34,56 @@ public class RequestRetaliatePilesMsgSubProcessor extends BaseMsgSubProcessor<Re
         this.mMessageSender = messageSender;
         this.mRetaliationList = new ArrayList<>();
         this.mGameInfo = gameInfo;
+
+        //take button can be used to take all the field piles to player's hand
+        setupTakeButton(gameInfo);
+    }
+
+    private void setupTakeButton(final GameInfo gameInfo) {
+        //take click listener is cached by the hud fragment , so no need to cache it locally
+        ServiceLocator.locateService(HudManagementService.class).setTakeButtonClickListener(new YANButtonNode.YanButtonNodeClickListener() {
+
+            //used to cache cards for later removal
+            private List<Card> _cardsToRemoveCachedList;
+
+            @Override
+            public void onButtonClick() {
+                //hide the take button
+                ServiceLocator.locateService(HudManagementService.class).hideTakeButton();
+
+                PileManagerService pileManagerService = ServiceLocator.locateService(PileManagerService.class);
+
+                _cardsToRemoveCachedList = new ArrayList<>();
+
+                //return all field pile cards to player hands
+                for (PileModel pileModel : pileManagerService.getFieldPiles()) {
+
+                    _cardsToRemoveCachedList.clear();
+                    for (Card cardInFieldPile : pileModel.getCardsInPile()) {
+
+                        //add this card to player pile
+                        pileManagerService.getBottomPlayerPile().addCard(cardInFieldPile);
+                        //remove the card from field pile
+                        _cardsToRemoveCachedList.add(cardInFieldPile);
+                    }
+
+                    //remove all the cards that we moved to player hands from this pile
+                    for (Card card : _cardsToRemoveCachedList) {
+                        pileModel.removeCard(card);
+                    }
+                }
+
+                //disable the hand of the player by setting another state
+                gameInfo.setActivePlayerState(YANObjectPool.getInstance().obtain(OtherPlayerTurnState.class));
+
+                //layout the bottom player pile
+                ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(pileManagerService.getBottomPlayerPile()).layout();
+
+                //just send empty message to the
+                //send the response
+                ServiceLocator.locateService(GameServerMessageSender.class).sendResponseRetaliatePiles(null);
+            }
+        });
     }
 
     @Override
@@ -54,6 +111,9 @@ public class RequestRetaliatePilesMsgSubProcessor extends BaseMsgSubProcessor<Re
             //add set to pending retaliation sets
             pendingRetaliationSets.add(retSet);
         }
+
+        //raise take button
+        ServiceLocator.locateService(HudManagementService.class).showTakeButton();
 
     }
 }

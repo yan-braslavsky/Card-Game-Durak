@@ -11,7 +11,7 @@ import com.yan.durak.gamelogic.communication.protocol.messages.RequestCardForAtt
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestRetaliatePilesMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestThrowInsMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.RetaliationInvalidProtocolMessage;
-import com.yan.durak.service.services.LayouterManagerService;
+import com.yan.durak.service.services.PileLayouterManagerService;
 import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.msg_processor.subprocessors.MsgSubProcessor;
 import com.yan.durak.msg_processor.subprocessors.impl.CardMovedMsgSubProcessor;
@@ -57,13 +57,13 @@ public class MsgProcessor implements IGameServerConnector.IGameServerCommunicato
         PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
         GameServerMessageSender messageSender = ServiceLocator.locateService(GameServerMessageSender.class);
         GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
-        LayouterManagerService pileLayouterManager = ServiceLocator.locateService(LayouterManagerService.class);
+        PileLayouterManagerService pileLayouterManager = ServiceLocator.locateService(PileLayouterManagerService.class);
 
         //Card Moved
         mProcessorsMap.put(CardMovedProtocolMessage.class, new CardMovedMsgSubProcessor(pileManager, pileLayouterManager));
 
         //Game Setup
-        mProcessorsMap.put(GameSetupProtocolMessage.class, new GameSetupMsgSubProcessor(getPrototypeGameScreen().getHudNodesFragment(), gameInfo,
+        mProcessorsMap.put(GameSetupProtocolMessage.class, new GameSetupMsgSubProcessor(gameInfo,
                 pileLayouterManager, pileManager));
 
         //Request Attack
@@ -75,7 +75,7 @@ public class MsgProcessor implements IGameServerConnector.IGameServerCommunicato
 
         //Player Action
         mProcessorsMap.put(PlayerTakesActionMessage.class, new PlayerTakesActionMsgSubProcessor(pileManager,
-                pileLayouterManager, gameInfo, getPrototypeGameScreen().getHudNodesFragment(), getPrototypeGameScreen().getCardsTouchProcessor()));
+                pileLayouterManager, gameInfo, getPrototypeGameScreen().getCardsTouchProcessor()));
 
         //Retaliation Invalid
         mProcessorsMap.put(RetaliationInvalidProtocolMessage.class, new RetaliationInvalidMsgSubProcessor());
@@ -84,7 +84,7 @@ public class MsgProcessor implements IGameServerConnector.IGameServerCommunicato
         mProcessorsMap.put(RequestThrowInsMessage.class, new RequestThrowInsMsgSubProcessor(messageSender));
 
         //Game Over
-        mProcessorsMap.put(GameOverProtocolMessage.class, new GameOverMsgSubProcessor(getPrototypeGameScreen().getHudNodesFragment(), gameInfo));
+        mProcessorsMap.put(GameOverProtocolMessage.class, new GameOverMsgSubProcessor(gameInfo));
     }
 
     @Override

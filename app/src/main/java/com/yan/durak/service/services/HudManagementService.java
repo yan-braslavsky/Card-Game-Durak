@@ -1,7 +1,9 @@
-package com.yan.durak.screen_fragments;
+package com.yan.durak.service.services;
 
 
 import android.support.annotation.IntDef;
+
+import com.yan.durak.service.IService;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -25,7 +27,7 @@ import glengine.yan.glengine.util.loggers.YANLogger;
 /**
  * Created by Yan-Home on 1/25/2015.
  */
-public class HudScreenFragment implements IScreenFragment {
+public class HudManagementService implements IService {
 
 
     @Retention(RetentionPolicy.SOURCE)
@@ -110,12 +112,11 @@ public class HudScreenFragment implements IScreenFragment {
     private YANButtonNode.YanButtonNodeClickListener mTakeButtonClickListener;
 
 
-    public HudScreenFragment(TweenManager tweenManager) {
+    public HudManagementService(TweenManager tweenManager) {
         mTweenManager = tweenManager;
         mHudNodesMap = new HashMap<>();
     }
 
-    @Override
     public void createNodes(YANTextureAtlas hudAtlas) {
 
         //cache HUD atlas for later use
@@ -263,7 +264,6 @@ public class HudScreenFragment implements IScreenFragment {
         return avatar;
     }
 
-    @Override
     public void setNodesSizes(YANReadOnlyVector2 sceneSize) {
         //set avatars sizes
         YANTexturedNode avatar = getNode(AVATAR_BOTTOM_RIGHT_INDEX);
@@ -326,12 +326,10 @@ public class HudScreenFragment implements IScreenFragment {
         getNode(GLADE_INDEX).setSize(gladeWidth, gladeWidth / aspectRatio);
     }
 
-    @Override
-    public Collection<? extends YANTexturedNode> getFragmentNodes() {
+    public Collection<? extends YANTexturedNode> getCardNodes() {
         return mHudNodesMap.values();
     }
 
-    @Override
     public void layoutNodes(YANReadOnlyVector2 sceneSize) {
         //layout avatars
         float offsetX = sceneSize.getX() * 0.01f;
@@ -404,7 +402,6 @@ public class HudScreenFragment implements IScreenFragment {
         getNode(GLADE_INDEX).setPosition(centerX, centerY);
     }
 
-    @Override
     public void update(float deltaTimeSeconds) {
         //animate scissoring cock
         YANTexturedScissorNode scissorCock = getNode(COCK_SCISSOR_INDEX);

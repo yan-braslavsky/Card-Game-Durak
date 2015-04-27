@@ -9,7 +9,8 @@ import com.yan.durak.nodes.CardNode;
 import com.yan.durak.physics.YANCollisionDetector;
 import com.yan.durak.service.ServiceLocator;
 import com.yan.durak.service.services.CardNodesManagerService;
-import com.yan.durak.service.services.LayouterManagerService;
+import com.yan.durak.service.services.HudManagementService;
+import com.yan.durak.service.services.PileLayouterManagerService;
 import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.service.services.SceneSizeProviderService;
 import com.yan.durak.session.GameInfo;
@@ -44,10 +45,6 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
     @Override
     public void onDraggedCardReleased(CardNode cardNode) {
 
-        //TODO : handle for each dragging state !
-        //we don't know in what state player is .
-        //When player wants to attack or retaliate , the handling should be different.
-
         GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
         BaseDraggableState draggableState = (BaseDraggableState) gameInfo.getActivePlayerState();
 
@@ -77,7 +74,7 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
         //cache services
         PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
         GameServerMessageSender messageSender = ServiceLocator.locateService(GameServerMessageSender.class);
-        LayouterManagerService pileLayouterManager = ServiceLocator.locateService(LayouterManagerService.class);
+        PileLayouterManagerService pileLayouterManager = ServiceLocator.locateService(PileLayouterManagerService.class);
         GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
 
         //cache screen height
@@ -135,7 +132,7 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
         fieldPile.addCard(cardNode.getCard());
 
         //layout the field pile
-        ServiceLocator.locateService(LayouterManagerService.class).getPileLayouterForPile(fieldPile).layout();
+        ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(fieldPile).layout();
 
 
         //update the retaliation state
@@ -173,6 +170,8 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
                 listOfPiles.add(innerRetSet);
             }
 
+            //hide the take button
+            ServiceLocator.locateService(HudManagementService.class).hideTakeButton();
 
             //send the response
             ServiceLocator.locateService(GameServerMessageSender.class).sendResponseRetaliatePiles(listOfPiles);
@@ -187,7 +186,7 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
         pileManager.getBottomPlayerPile().addCard(cardNode.getCard());
 
         //layout player cards
-        ServiceLocator.locateService(LayouterManagerService.class).getPileLayouterForPile(pileManager.getBottomPlayerPile()).layout();
+        ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(pileManager.getBottomPlayerPile()).layout();
     }
 
     private CardNode findUnderlyingCard(CardNode cardNode) {
@@ -216,7 +215,7 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
     public void onCardDragProgress(CardNode cardNode) {
         PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
         GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
-        LayouterManagerService pileLayouterManager = ServiceLocator.locateService(LayouterManagerService.class);
+        PileLayouterManagerService pileLayouterManager = ServiceLocator.locateService(PileLayouterManagerService.class);
         CardNodesManagerService cardNodesManagerService = ServiceLocator.locateService(CardNodesManagerService.class);
 
         BaseDraggableState draggableState;

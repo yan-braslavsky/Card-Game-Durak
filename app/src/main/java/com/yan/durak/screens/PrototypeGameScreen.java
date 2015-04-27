@@ -5,16 +5,15 @@ import com.yan.durak.communication.sender.GameServerMessageSender;
 import com.yan.durak.input.cards.CardsTouchProcessor;
 import com.yan.durak.input.listener.PlayerCardsTouchProcessorListener;
 import com.yan.durak.msg_processor.MsgProcessor;
-import com.yan.durak.screen_fragments.HudScreenFragment;
+import com.yan.durak.service.services.HudManagementService;
 import com.yan.durak.service.ServiceLocator;
 import com.yan.durak.service.services.CardNodesManagerService;
-import com.yan.durak.service.services.LayouterManagerService;
+import com.yan.durak.service.services.PileLayouterManagerService;
 import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.service.services.SceneSizeProviderService;
 import com.yan.durak.session.GameInfo;
 
 import aurelienribon.tweenengine.TweenManager;
-import glengine.yan.glengine.nodes.YANButtonNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.renderer.YANGLRenderer;
 
@@ -31,7 +30,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
 //    private final GameServerMessageSender mMessageSender;
 
     //fragments
-    private final HudScreenFragment mHudScreenFragment;
+//    private final HudManagementService mHudManagementService;
 
 //    //game state
 //    private final GameInfo mGameInfo;
@@ -63,8 +62,8 @@ public class PrototypeGameScreen extends BaseGameScreen {
         //tween manager is used for various tween animations
         mSharedTweenManager = new TweenManager();
 
-        //fragment that manages all the HUD nodes
-        mHudScreenFragment = new HudScreenFragment(mSharedTweenManager);
+        //service that manages all the HUD nodes
+        ServiceLocator.addService(new HudManagementService(mSharedTweenManager));
 
         //pile manager
 //        mPileManager = new PileManager();
@@ -79,7 +78,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         //layouters manager
 //        mPileLayouterManager = new PileLayouterManager(mCardNodesManager, mSharedTweenManager, mPileManager, mGameInfo, mHudScreenFragment);
 
-        ServiceLocator.addService(new LayouterManagerService(mSharedTweenManager, mHudScreenFragment));
+        ServiceLocator.addService(new PileLayouterManagerService(mSharedTweenManager));
 
 
         //TODO : set the nodes each time there is a change rather then give it by reference
@@ -139,22 +138,22 @@ public class PrototypeGameScreen extends BaseGameScreen {
             addNode(cardNode);
         }
 
-        for (YANTexturedNode hudNode : mHudScreenFragment.getFragmentNodes()) {
+        for (YANTexturedNode hudNode : ServiceLocator.locateService(HudManagementService.class).getCardNodes()) {
             addNode(hudNode);
         }
 
-        mHudScreenFragment.hideBitoButton();
-        mHudScreenFragment.hideTakeButton();
-
+        //TODO : should be created as hidden by default
+        ServiceLocator.locateService(HudManagementService.class).hideBitoButton();
+        ServiceLocator.locateService(HudManagementService.class).hideTakeButton();
     }
 
 
     @Override
     protected void onLayoutNodes() {
         super.onLayoutNodes();
-        mHudScreenFragment.layoutNodes(getSceneSize());
+        ServiceLocator.locateService(HudManagementService.class).layoutNodes(getSceneSize());
         //we also need to initialize the pile manager
-        ServiceLocator.locateService(LayouterManagerService.class).init(getSceneSize().getX(), getSceneSize().getY());
+        ServiceLocator.locateService(PileLayouterManagerService.class).init(getSceneSize().getX(), getSceneSize().getY());
     }
 
 
@@ -163,29 +162,16 @@ public class PrototypeGameScreen extends BaseGameScreen {
         ServiceLocator.locateService(SceneSizeProviderService.class).setSceneSize(getSceneSize().getX(), getSceneSize().getY());
         ServiceLocator.locateService(CardNodesManagerService.class).setNodesSizes(getSceneSize());
         //set size of a card for touch processor
-        mHudScreenFragment.setNodesSizes(getSceneSize());
+        ServiceLocator.locateService(HudManagementService.class).setNodesSizes(getSceneSize());
     }
 
     @Override
     protected void onCreateNodes() {
         super.onCreateNodes();
 
-        mHudScreenFragment.createNodes(mUiAtlas);
+        ServiceLocator.locateService(HudManagementService.class).createNodes(mUiAtlas);
         ServiceLocator.locateService(CardNodesManagerService.class).createNodes(mCardsAtlas);
 
-        mHudScreenFragment.setTakeButtonClickListener(new YANButtonNode.YanButtonNodeClickListener() {
-            @Override
-            public void onButtonClick() {
-                //TODO : set listener
-            }
-        });
-
-        mHudScreenFragment.setBitoButtonClickListener(new YANButtonNode.YanButtonNodeClickListener() {
-            @Override
-            public void onButtonClick() {
-                //TODO : set listener
-            }
-        });
     }
 
     @Override
@@ -196,21 +182,8 @@ public class PrototypeGameScreen extends BaseGameScreen {
         //can be put into
         mSharedTweenManager.update(deltaTimeSeconds * 1);
         mGameServerConnector.update(deltaTimeSeconds);
-        mHudScreenFragment.update(deltaTimeSeconds);
+        ServiceLocator.locateService(HudManagementService.class).update(deltaTimeSeconds);
     }
-
-    public HudScreenFragment getHudNodesFragment() {
-        return mHudScreenFragment;
-    }
-
-//    public GameInfo getGameInfo() {
-//
-//        return mGameInfo;
-//    }
-
-//    public GameServerMessageSender getMessageSender() {
-//        return mMessageSender;
-//    }
 
     public CardsTouchProcessor getCardsTouchProcessor() {
         return mCardsTouchProcessor;
