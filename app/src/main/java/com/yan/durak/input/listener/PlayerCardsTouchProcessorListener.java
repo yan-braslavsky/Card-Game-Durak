@@ -94,12 +94,6 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
         //layout the field pile
         pileLayouterManager.getPileLayouterForPile(pileManager.getFieldPiles().get(0)).layout();
 
-        //now remove the card and put it into player pile
-        pileManager.getFieldPiles().get(0).removeCard(cardNode.getCard());
-
-        //add card to the player
-        pileManager.getBottomPlayerPile().addCard(cardNode.getCard());
-
         //reset the state
         AttackState draggableState = (AttackState) gameInfo.getActivePlayerState();
         draggableState.resetState();
