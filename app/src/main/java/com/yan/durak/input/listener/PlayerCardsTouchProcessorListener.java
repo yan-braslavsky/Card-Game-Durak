@@ -204,7 +204,7 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
         for (PileModel pileModel : pileManager.getFieldPiles()) {
 
             //we skipping already retaliated piles (they have more than 2 cards)
-            if (pileModel.getCardsInPile().size() > 1)
+            if (pileModel.getCardsInPile().isEmpty() || pileModel.getCardsInPile().size() > 1)
                 continue;
 
             //this can be possible collide card
