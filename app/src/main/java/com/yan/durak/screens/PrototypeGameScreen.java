@@ -27,25 +27,9 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
     //communication
     private final IGameServerConnector mGameServerConnector;
-//    private final GameServerMessageSender mMessageSender;
-
-    //fragments
-//    private final HudManagementService mHudManagementService;
-
-//    //game state
-//    private final GameInfo mGameInfo;
 
     //updatables
     private final TweenManager mSharedTweenManager;
-
-//    //managers
-//    private final PileLayouterManager mPileLayouterManager;
-//
-//    //pile manager
-//    private final PileManager mPileManager;
-//
-//    //card nodes manager
-//    private final CardNodesManager mCardNodesManager;
 
 
     public PrototypeGameScreen(YANGLRenderer renderer, IGameServerConnector gameServerConnector) {
@@ -55,8 +39,6 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mGameServerConnector = gameServerConnector;
 
         //game session will store the game state and related info
-//        mGameInfo = new GameInfo();
-
         ServiceLocator.addService(new GameInfo());
 
         //tween manager is used for various tween animations
@@ -66,18 +48,12 @@ public class PrototypeGameScreen extends BaseGameScreen {
         ServiceLocator.addService(new HudManagementService(mSharedTweenManager));
 
         //pile manager
-//        mPileManager = new PileManager();
-
         ServiceLocator.addService(new PileManagerService());
 
         //card nodes manager
-//        mCardNodesManager = new CardNodesManager();
-
         ServiceLocator.addService(new CardNodesManagerService());
 
         //layouters manager
-//        mPileLayouterManager = new PileLayouterManager(mCardNodesManager, mSharedTweenManager, mPileManager, mGameInfo, mHudScreenFragment);
-
         ServiceLocator.addService(new PileLayouterManagerService(mSharedTweenManager));
 
 
@@ -87,7 +63,6 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
 
         //used to send concrete messages to server
-//        mMessageSender = new GameServerMessageSender(mGameServerConnector);
         ServiceLocator.addService(new GameServerMessageSender(mGameServerConnector));
 
         ServiceLocator.addService(new SceneSizeProviderService());
@@ -98,23 +73,6 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mGameServerConnector.setListener(new MsgProcessor(this));
     }
 
-
-    public TweenManager getSharedTweenManager() {
-        return mSharedTweenManager;
-    }
-
-//    public PileLayouterManager getPileLayouterManager() {
-//
-//        return mPileLayouterManager;
-//    }
-
-//    public PileManager getPileManager() {
-//        return mPileManager;
-//    }
-
-//    public CardNodesManager getCardNodesManager() {
-//        return mCardNodesManager;
-//    }
 
     @Override
     public void onSetActive() {
