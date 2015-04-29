@@ -75,8 +75,8 @@ public class CardsTouchProcessor {
 
             @Override
             public int getSortingLayer() {
-                //It does not matter what we returning here , since we managing touch processing ourselves
-                return 0;
+                //Cards should be processed first , so the sorting layer must be hight
+                return 10000;
             }
         };
 
