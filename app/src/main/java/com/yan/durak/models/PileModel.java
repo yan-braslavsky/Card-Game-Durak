@@ -5,19 +5,20 @@ import com.yan.durak.gamelogic.cards.Card;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by ybra on 20/04/15.
  */
 public class PileModel {
 
-    private final Collection<Card> mCardsInPile;
-    private final Collection<Card> mUnmodifiableCardsCollection;
+    private final List<Card> mCardsInPile;
+    private final List<Card> mUnmodifiableCardsCollection;
     private int mPileIndex;
 
     public PileModel(int pileIndex) {
         this.mCardsInPile = new ArrayList<>();
-        this.mUnmodifiableCardsCollection = Collections.unmodifiableCollection(mCardsInPile);
+        this.mUnmodifiableCardsCollection = Collections.unmodifiableList(mCardsInPile);
         this.mPileIndex = pileIndex;
     }
 
@@ -51,7 +52,7 @@ public class PileModel {
         mPileIndex = pileIndex;
     }
 
-    public Collection<Card> getCardsInPile() {
+    public List<Card> getCardsInPile() {
         return mUnmodifiableCardsCollection;
     }
 
@@ -59,4 +60,7 @@ public class PileModel {
         return mCardsInPile.contains(card);
     }
 
+    public void addCardAtIndex(Card card, int indexOfCard) {
+        mCardsInPile.add(indexOfCard,card);
+    }
 }

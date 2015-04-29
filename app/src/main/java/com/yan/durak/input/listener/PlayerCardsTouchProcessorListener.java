@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import glengine.yan.glengine.nodes.YANBaseNode;
 import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
 /**
@@ -56,6 +57,12 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
         //cache screen height
         float sceneHeight = ServiceLocator.locateService(SceneSizeProviderService.class).getSceneHeight();
 
+        //In case player wanted to reposition cards within his hand
+        //We want to allow that kind of interaction
+        if (handleRepositioning(cardNode)) {
+            return;
+        }
+
         //if player didn't drag to the field , we will return the card back to his hand
         if (cardNode.getPosition().getY() > (sceneHeight * 0.5f)) {
             returnCardToPlayerHand(cardNode);
@@ -69,6 +76,60 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
         } else {
             throw new IllegalStateException("The state is not expected " + gameInfo.getActivePlayerState().getStateDefinition());
         }
+    }
+
+    /**
+     * Detects and handles repositioning of cards within the player hand
+     *
+     * @param cardNode dragged card that was released
+     * @return true if there was a repositioning and false otherwise
+     */
+    private boolean handleRepositioning(CardNode cardNode) {
+
+        //TODO : beautify this code !
+
+        //cache services
+        CardNodesManagerService cardNodesManager = ServiceLocator.locateService(CardNodesManagerService.class);
+        PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
+
+        //TODO : cache not allocate
+        List<YANBaseNode> bottomPlayerCardNodes = new ArrayList<>();
+
+        for (Card card : pileManager.getBottomPlayerPile().getCardsInPile()) {
+            bottomPlayerCardNodes.add(cardNodesManager.getCardNodeForCard(card));
+        }
+
+        //TODO : This detector also allocates array every time , this is not efficient
+        List<CardNode> allCollidedNodes = YANCollisionDetector.findAllNodesThatCollideWithGivenNode(cardNode, bottomPlayerCardNodes);
+
+        if (allCollidedNodes.isEmpty())
+            return false;
+
+        int repositionIndex = -1;
+
+        //if three cards then put instead of the middle card
+        if (allCollidedNodes.size() >= 3) {
+            repositionIndex = pileManager.getBottomPlayerPile().getCardsInPile().indexOf(allCollidedNodes.get(2).getCard());
+        }
+        //if 2 put between them
+        else if (allCollidedNodes.size() == 2) {
+            repositionIndex = pileManager.getBottomPlayerPile().getCardsInPile().indexOf(allCollidedNodes.get(1).getCard());
+        }
+        //if only one card , put instead of it
+        else if (allCollidedNodes.size() == 1) {
+            repositionIndex = pileManager.getBottomPlayerPile().getCardsInPile().indexOf(allCollidedNodes.get(0).getCard());
+
+            //in case player wanted to put into the end of the pile
+            if (repositionIndex == (bottomPlayerCardNodes.size() - 1))
+                repositionIndex = bottomPlayerCardNodes.size();
+        }
+
+
+        pileManager.getBottomPlayerPile().addCardAtIndex(cardNode.getCard(), repositionIndex);
+
+        //layout player cards
+        ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(pileManager.getBottomPlayerPile()).layout();
+        return true;
     }
 
     private void handleAttackDragRelease(CardNode cardNode) {

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import glengine.yan.glengine.nodes.YANBaseNode;
 
@@ -37,7 +38,7 @@ public class YANCollisionDetector {
      * @param searchCollection collection of nodes that will be used to find the node
      * @return the closest node for touch point or null if none is found.
      */
-    public static final YANBaseNode findClosestNodeToWorldTouchPoint(float worldTouchPointX, float worldTouchPointY, Collection<YANBaseNode> searchCollection) {
+    public static final <T extends YANBaseNode> YANBaseNode findClosestNodeToWorldTouchPoint(float worldTouchPointX, float worldTouchPointY, Collection<T> searchCollection) {
 
         if (searchCollection == null || searchCollection.isEmpty())
             return null;
@@ -65,6 +66,37 @@ public class YANCollisionDetector {
 
     public static boolean areTwoNodesCollide(YANBaseNode nodeA, YANBaseNode nodeB) {
         return (nodeA != null && nodeB != null) && nodeA.getBoundingRectangle().contains(nodeB.getBoundingRectangle());
+    }
+
+    /**
+     * Finds all the nodes that are collide with the given node in the provided search collection.
+     *
+     * @param testedNode       node that is tested
+     * @param searchCollection collection of nodes to be tested against
+     * @return new allocated array containing all the collided nodes.
+     */
+    public static final <T extends YANBaseNode> List<T> findAllNodesThatCollideWithGivenNode(T testedNode, Collection<YANBaseNode> searchCollection) {
+
+        //we are not initializing the actual list until there are no collided nodes
+        List<T> allCollidedNodes = Collections.emptyList();
+
+        //check edge cases
+        if (searchCollection == null || searchCollection.isEmpty())
+            return allCollidedNodes;
+
+        //search collided nodes
+        for (YANBaseNode searchNode : searchCollection) {
+            if (areTwoNodesCollide(testedNode, searchNode)) {
+
+                //lazy instantiating the list
+                if (allCollidedNodes.isEmpty())
+                    allCollidedNodes = new ArrayList<>();
+
+                //add the node
+                allCollidedNodes.add((T) searchNode);
+            }
+        }
+        return allCollidedNodes;
     }
 
 //    public static final YANBaseNode findClosestNodeToNormalizedTouchPoint(float normalizedTouchPointX, float normalizedTouchPointY) {
