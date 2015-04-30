@@ -13,6 +13,7 @@ import com.yan.durak.session.states.BaseDraggableState;
 import com.yan.durak.session.states.IActivePlayerState;
 
 import aurelienribon.tweenengine.TweenManager;
+import glengine.yan.glengine.util.loggers.YANLogger;
 
 /**
  * Created by ybra on 20/04/15.
@@ -81,7 +82,7 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
 
     private float handleDraggingState(float duration, BaseDraggableState activePlayerState) {
         //Both states allow to drag a card
-        BaseDraggableState draggableState = (BaseDraggableState) activePlayerState;
+        BaseDraggableState draggableState = activePlayerState;
         if (draggableState.isDragging()) {
             //adjust expansion level by dragging distance
             mPlayerCardsLayouter.adjustExpansionLevel(draggableState.getDraggingCardDistanceFromPileField());
@@ -116,6 +117,10 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
 
             //as it is the pile of the active player we want all cards to be visible
             cardNode.useFrontTextureRegion();
+
+            //we need card to move instantly now , so we don't want previous animation to continue
+            if(duration == 0)
+                mTweenManager.killTarget(cardNode);
 
             //animate card to its place with new transform values
             animateCardNode(cardNode, slot.getPosition().getX(), slot.getPosition().getY(),
