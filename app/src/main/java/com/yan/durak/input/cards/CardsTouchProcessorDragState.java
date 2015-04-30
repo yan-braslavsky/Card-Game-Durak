@@ -15,6 +15,7 @@ public class CardsTouchProcessorDragState extends CardsTouchProcessorState {
 
     private CardNode mDraggedCard;
     private YANVector2 mTouchPositionOffset;
+    private long touchTime;
 
     public CardsTouchProcessorDragState() {
         super();
@@ -26,6 +27,7 @@ public class CardsTouchProcessorDragState extends CardsTouchProcessorState {
         super.resetState();
         mDraggedCard = null;
         mTouchPositionOffset.setXY(0, 0);
+        touchTime = 0;
     }
 
     @Override
@@ -37,9 +39,17 @@ public class CardsTouchProcessorDragState extends CardsTouchProcessorState {
     @Override
     protected boolean onTouchUp(float normalizedX, float normalizedY) {
 
-        //notify listener
-        if (mCardsTouchProcessor.getCardsTouchProcessorListener() != null && mDraggedCard != null) {
-            mCardsTouchProcessor.getCardsTouchProcessorListener().onDraggedCardReleased(mDraggedCard);
+        //if there was a short time between touch down and touch up then it is a tap
+        if ((System.currentTimeMillis() - touchTime) < 70) {
+            //notify listener of tap
+            if (mCardsTouchProcessor.getCardsTouchProcessorListener() != null && mDraggedCard != null) {
+                mCardsTouchProcessor.getCardsTouchProcessorListener().onSelectedCardTap(mDraggedCard);
+            }
+        } else {
+            //notify listener of drag release
+            if (mCardsTouchProcessor.getCardsTouchProcessorListener() != null && mDraggedCard != null) {
+                mCardsTouchProcessor.getCardsTouchProcessorListener().onDraggedCardReleased(mDraggedCard);
+            }
         }
 
         CardsTouchProcessorDefaultState defaultState = YANObjectPool.getInstance().obtain(CardsTouchProcessorDefaultState.class);
@@ -85,4 +95,7 @@ public class CardsTouchProcessorDragState extends CardsTouchProcessorState {
     }
 
 
+    public void setTouchTime(long touchTime) {
+        this.touchTime = touchTime;
+    }
 }

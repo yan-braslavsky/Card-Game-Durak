@@ -37,6 +37,11 @@ public class PileModel {
     }
 
     public void addCard(Card card) {
+
+        //do not add the same card twice
+        if(mCardsInPile.contains(card))
+            return;
+
         mCardsInPile.add(card);
     }
 
@@ -61,6 +66,10 @@ public class PileModel {
     }
 
     public void addCardAtIndex(Card card, int indexOfCard) {
+        //do not add the same card twice
+        if(mCardsInPile.contains(card))
+            return;
+
         mCardsInPile.add(indexOfCard,card);
     }
 }

@@ -65,11 +65,15 @@ public class CardsTouchProcessorDefaultState extends CardsTouchProcessorState {
         if (touchedCard == null)
             return false;
 
+        //we need to identify touch time to process tap later
+        long touchTime = System.currentTimeMillis();
+
         //move to drag state
         CardsTouchProcessorDragState dragState = YANObjectPool.getInstance().obtain(CardsTouchProcessorDragState.class);
         dragState.setCardsTouchProcessor(mCardsTouchProcessor);
         dragState.setDraggedCard(touchedCard);
         dragState.setTouchPositionOffset(touchToWorldPoint.getX() - touchedCard.getPosition().getX(), touchToWorldPoint.getY() - touchedCard.getPosition().getY());
+        dragState.setTouchTime(touchTime);
         mCardsTouchProcessor.setCardsTouchProcessorState(dragState);
         return true;
 

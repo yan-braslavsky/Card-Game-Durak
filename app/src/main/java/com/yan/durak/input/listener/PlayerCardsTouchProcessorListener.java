@@ -41,7 +41,16 @@ public class PlayerCardsTouchProcessorListener implements CardsTouchProcessor.Ca
 
     @Override
     public void onSelectedCardTap(CardNode cardNode) {
-        //TODO : implement
+
+        GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
+        BaseDraggableState draggableState = (BaseDraggableState) gameInfo.getActivePlayerState();
+
+        //we need to reset dragging state
+        draggableState.setDragging(false);
+        draggableState.setDraggedCardDistanceFromPileField(0f);
+
+        //just return the card back to player
+        returnCardToPlayerHand(cardNode);
     }
 
     @Override
