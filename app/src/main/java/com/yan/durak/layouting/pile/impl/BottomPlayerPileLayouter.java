@@ -13,7 +13,6 @@ import com.yan.durak.session.states.BaseDraggableState;
 import com.yan.durak.session.states.IActivePlayerState;
 
 import aurelienribon.tweenengine.TweenManager;
-import glengine.yan.glengine.util.loggers.YANLogger;
 
 /**
  * Created by ybra on 20/04/15.
@@ -119,7 +118,7 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
             cardNode.useFrontTextureRegion();
 
             //we need card to move instantly now , so we don't want previous animation to continue
-            if(duration == 0)
+            if(duration < 0.2f)
                 mTweenManager.killTarget(cardNode);
 
             //animate card to its place with new transform values
