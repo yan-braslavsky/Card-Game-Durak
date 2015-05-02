@@ -1,5 +1,10 @@
 apply plugin: 'com.android.application'
 
+//configurations.all {
+//    // check for updates every build
+//    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+//}
+
 repositories {
     mavenCentral()
     maven {

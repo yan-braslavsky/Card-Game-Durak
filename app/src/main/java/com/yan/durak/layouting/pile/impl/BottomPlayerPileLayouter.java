@@ -60,7 +60,7 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
 
         //each state will be handled differently
         switch (activePlayerState.getStateDefinition()) {
-//            case REQUEST_THROW_IN:
+            case REQUEST_THROW_IN:
             case REQUEST_CARD_FOR_ATTACK:
             case REQUEST_RETALIATION:
 

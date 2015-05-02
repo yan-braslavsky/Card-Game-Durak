@@ -101,7 +101,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         }
 
         //TODO : should be created as hidden by default
-        ServiceLocator.locateService(HudManagementService.class).hideBitoButton();
+        ServiceLocator.locateService(HudManagementService.class).hideFinishButton();
         ServiceLocator.locateService(HudManagementService.class).hideTakeButton();
     }
 

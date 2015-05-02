@@ -76,6 +76,7 @@ public class GameInfo implements IService {
     public void setActivePlayerState(IActivePlayerState activePlayerState) {
         //return previous state to the pool
         YANObjectPool.getInstance().offer(mActivePlayerState);
+        activePlayerState.resetState();
         mActivePlayerState = activePlayerState;
     }
 

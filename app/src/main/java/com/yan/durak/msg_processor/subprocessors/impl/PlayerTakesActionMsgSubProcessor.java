@@ -37,15 +37,13 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
 
     @Override
     public void processMessage(PlayerTakesActionMessage serverMessage) {
-        int actionPlayerIndex = serverMessage.getMessageData().getPlayerIndex();
-
         updateActivePlayerState(serverMessage.getMessageData());
 
         //update cock only on attack
         if (PlayerTakesActionMessage.PlayerAction.valueOf(serverMessage.getMessageData().getAction()) != PlayerTakesActionMessage.PlayerAction.ATTACK)
             return;
 
-        @HudManagementService.HudNode int cockNodeIndex = retrieveCockPosition(actionPlayerIndex);
+        @HudManagementService.HudNode int cockNodeIndex = retrieveCockPosition(serverMessage.getMessageData().getPlayerIndex());
         ServiceLocator.locateService(HudManagementService.class).resetCockAnimation(cockNodeIndex);
     }
 

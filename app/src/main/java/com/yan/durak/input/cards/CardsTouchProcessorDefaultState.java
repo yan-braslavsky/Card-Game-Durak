@@ -62,7 +62,7 @@ public class CardsTouchProcessorDefaultState extends CardsTouchProcessorState {
 
         //find touched card under the touch point
         CardNode touchedCard = (CardNode) YANCollisionDetector.findClosestNodeToWorldTouchPoint(touchToWorldPoint.getX(), touchToWorldPoint.getY(), mPlayerCardNodes);
-        if (touchedCard == null)
+        if (touchedCard == null || touchedCard.containsTag(CardNode.TAG_TOUCH_DISABLED))
             return false;
 
         //we need to identify touch time to process tap later
@@ -78,6 +78,5 @@ public class CardsTouchProcessorDefaultState extends CardsTouchProcessorState {
         return true;
 
     }
-
 
 }

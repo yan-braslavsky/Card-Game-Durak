@@ -15,8 +15,7 @@ import glengine.yan.glengine.nodes.YANTexturedNode;
  */
 public class CardNode extends YANTexturedNode {
 
-    public static final String TAG_TEMPORALLY_COVERED = "TAG_TEMPORALLY_COVERED";
-    public static final String TAG_SHOULD_NOT_RESIZE = "TAG_SHOULD_NOT_RESIZE";
+    public static final String TAG_TOUCH_DISABLED = "TAG_TOUCH_DISABLED";
 
     private final YANAtlasTextureRegion mFrontTextureRegion;
     private final YANAtlasTextureRegion mBackTextureRegion;

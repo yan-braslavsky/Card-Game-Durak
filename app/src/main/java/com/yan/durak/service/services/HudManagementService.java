@@ -79,7 +79,7 @@ public class HudManagementService implements IService {
     /**
      * By default hud will be placed on hud sorting layer and above
      */
-    private static final int HUD_SORTING_LAYER = 50;
+    public static final int HUD_SORTING_LAYER = 500;
 
     /**
      * Duration of appearing of the popup window
@@ -415,11 +415,11 @@ public class HudManagementService implements IService {
         mTakeButtonClickListener = listener;
     }
 
-    public void setBitoButtonClickListener(YANButtonNode.YanButtonNodeClickListener listener) {
+    public void setFinishButtonClickListener(YANButtonNode.YanButtonNodeClickListener listener) {
         mBitoBtnClickListener = listener;
     }
 
-    public void showBitoButton() {
+    public void showFinishButton() {
 
         //attach a click listener at the end of animation
         YANButtonNode bitoBtn = getNode(BITO_BUTTON_INDEX);
@@ -442,7 +442,7 @@ public class HudManagementService implements IService {
         takeBtn.setOpacity(0);
     }
 
-    public void hideBitoButton() {
+    public void hideFinishButton() {
         YANButtonNode bitoBtn = getNode(BITO_BUTTON_INDEX);
         bitoBtn.setSortingLayer(bitoBtn.getSortingLayer() - 1);
         bitoBtn.setClickListener(null);

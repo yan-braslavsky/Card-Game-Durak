@@ -1,9 +1,10 @@
 package com.yan.durak.input.cards;
 
-import com.yan.durak.service.services.CardNodesManagerService;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
 import com.yan.durak.service.ServiceLocator;
+import com.yan.durak.service.services.CardNodesManagerService;
+import com.yan.durak.service.services.HudManagementService;
 
 import glengine.yan.glengine.input.YANInputManager;
 import glengine.yan.glengine.util.object_pool.YANObjectPool;
@@ -76,7 +77,7 @@ public class CardsTouchProcessor {
             @Override
             public int getSortingLayer() {
                 //Cards should be processed first , so the sorting layer must be hight
-                return 10000;
+                return (HudManagementService.HUD_SORTING_LAYER - 1);
             }
         };
 

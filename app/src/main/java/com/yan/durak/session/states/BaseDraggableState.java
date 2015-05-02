@@ -8,11 +8,6 @@ public abstract class BaseDraggableState implements IActivePlayerState {
     private boolean mDragging;
 
     @Override
-    public ActivePlayerStateDefinition getStateDefinition() {
-        return ActivePlayerStateDefinition.REQUEST_RETALIATION;
-    }
-
-    @Override
     public void resetState() {
         mDraggedCardDistanceFromPileField = 0f;
         mDragging = false;

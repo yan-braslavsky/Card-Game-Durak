@@ -1,9 +1,9 @@
 package com.yan.durak.service.services;
 
 import com.yan.durak.gamelogic.cards.Card;
+import com.yan.durak.nodes.CardNode;
 import com.yan.durak.service.IService;
 import com.yan.durak.service.ServiceLocator;
-import com.yan.durak.nodes.CardNode;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -93,5 +93,15 @@ public class CardNodesManagerService implements IService {
      */
     public Collection<CardNode> getAllCardNodes() {
         return mImmutableCardNodes;
+    }
+
+    public void disableCardNode(CardNode cardNode) {
+        cardNode.addTag(CardNode.TAG_TOUCH_DISABLED);
+        //TODO : add overlay or tint to disabled nodes
+    }
+
+    public void enableCardNode(CardNode cardNode) {
+        cardNode.removeTag(CardNode.TAG_TOUCH_DISABLED);
+        //TODO : remove overlay or tint to disabled nodes
     }
 }

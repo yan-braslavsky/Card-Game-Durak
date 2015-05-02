@@ -7,6 +7,7 @@ import com.yan.durak.session.GameInfo;
 import com.yan.durak.session.states.BaseDraggableState;
 import com.yan.durak.session.states.impl.AttackState;
 import com.yan.durak.session.states.impl.RetaliationState;
+import com.yan.durak.session.states.impl.ThrowInState;
 
 import java.util.HashMap;
 
@@ -23,6 +24,7 @@ public class PlayerCardsTouchProcessorListener extends BasePlayerCardsTouchProce
         //init handlers
         mTouchProcessors.put(AttackState.class, new AttackProcessorListener(this));
         mTouchProcessors.put(RetaliationState.class, new RetaliationProcessorListener(this));
+        mTouchProcessors.put(ThrowInState.class, new ThrowInProcessorListener(this));
     }
 
     @Override
