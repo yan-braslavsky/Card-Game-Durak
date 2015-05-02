@@ -12,6 +12,7 @@ import java.util.Map;
 
 import glengine.yan.glengine.assets.atlas.YANTextureAtlas;
 import glengine.yan.glengine.nodes.YANTexturedNode;
+import glengine.yan.glengine.util.colors.YANColor;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
 
 /**
@@ -24,6 +25,11 @@ public class CardNodesManagerService implements IService {
      * Exact amount of cards should fit the width of the screen
      */
     private static final int MAX_CARDS_IN_LINE = 8;
+
+    /**
+     * Used to show disabled cards
+     */
+    private static final YANColor CARD_DISABLED_OVERLAY_COLOR = new YANColor(0f, 0f, 0f, 0.5f);
 
     private final Map<Card, CardNode> mCardToCardNodesMap;
     private final PileManagerService mPileManger;
@@ -97,11 +103,11 @@ public class CardNodesManagerService implements IService {
 
     public void disableCardNode(CardNode cardNode) {
         cardNode.addTag(CardNode.TAG_TOUCH_DISABLED);
-        //TODO : add overlay or tint to disabled nodes
+        cardNode.setOverlayColor(CARD_DISABLED_OVERLAY_COLOR.getR(), CARD_DISABLED_OVERLAY_COLOR.getG(), CARD_DISABLED_OVERLAY_COLOR.getB(), CARD_DISABLED_OVERLAY_COLOR.getA());
     }
 
     public void enableCardNode(CardNode cardNode) {
         cardNode.removeTag(CardNode.TAG_TOUCH_DISABLED);
-        //TODO : remove overlay or tint to disabled nodes
+        cardNode.setOverlayColor(0, 0, 0, 0);
     }
 }
