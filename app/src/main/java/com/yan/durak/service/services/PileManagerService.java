@@ -16,8 +16,7 @@ import java.util.Map;
 public class PileManagerService implements IService {
 
     public static final int FIRST_FIELD_PILE_INDEX = 5;
-    //TODO : that is debatable , there could be more piles on field
-    private static final int MAX_PILES_ON_FIELD = 8;
+    public static final int MAX_PILES_ON_FIELD = 12;
     private static final int TOTAL_PILES_AMOUNT = FIRST_FIELD_PILE_INDEX + MAX_PILES_ON_FIELD;
     private static final int STOCK_PILE_INDEX = 0;
     private static final int DISCARD_PILE_INDEX = 1;
@@ -32,7 +31,7 @@ public class PileManagerService implements IService {
     private final PileModel mTopRightPlayerPile;
     private final PileModel mStockPile;
     private final PileModel mDiscardPile;
-    private final List<PileModel> mFieldPiles;
+    private final ArrayList<PileModel> mFieldPiles;
 
     //mapping between pile index and actual pile
     private final Map<Integer, PileModel> mIndexToPileMap;

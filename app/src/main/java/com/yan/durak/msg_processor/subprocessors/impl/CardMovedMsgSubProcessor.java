@@ -56,8 +56,12 @@ public class CardMovedMsgSubProcessor extends BaseMsgSubProcessor<CardMovedProto
         final IPileLayouter toPileLayouter = mPileLayouterManager.getPileLayouterForPile(toPile);
 
         //make the actual layout
-        fromPileLayouter.layout();
-        toPileLayouter.layout();
 
+        //we want to layout only players piles and the stock pile, but not field piles when cards are moving from them
+        if ((fromPileIndex != 1) && (fromPileIndex < PileManagerService.FIRST_FIELD_PILE_INDEX))
+            fromPileLayouter.layout();
+
+        //destination pile should be always layed out
+        toPileLayouter.layout();
     }
 }

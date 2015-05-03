@@ -2,14 +2,16 @@ package com.yan.durak.layouting.pile.impl;
 
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.layouting.pile.BasePileLayouter;
-import com.yan.durak.service.services.CardNodesManagerService;
-import com.yan.durak.service.services.PileManagerService;
+import com.yan.durak.layouting.pile.FieldPilePositioner;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
+import com.yan.durak.service.ServiceLocator;
+import com.yan.durak.service.services.CardNodesManagerService;
+import com.yan.durak.service.services.PileLayouterManagerService;
+import com.yan.durak.service.services.PileManagerService;
 
 import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
-import glengine.yan.glengine.util.geometry.YANVector2;
 
 /**
  * Created by ybra on 20/04/15.
@@ -29,40 +31,33 @@ public class FieldPileLayouter extends BasePileLayouter {
 
     private float mCardWidhtForPile;
     private float mCardHeightForPile;
-    private YANReadOnlyVector2 mPilePositionOnField;
+    //    private YANReadOnlyVector2 mPilePositionOnField;
+    private FieldPilePositioner mFieldPilePositioner;
 
     public FieldPileLayouter(final CardNodesManagerService mCardNodesManager, final TweenManager mTweenManager, final PileModel boundPile) {
         super(mCardNodesManager, mTweenManager, boundPile);
-
+        mFieldPilePositioner = new FieldPilePositioner();
     }
 
     @Override
     public void init(float sceneWidth, float sceneHeight) {
         this.mCardWidhtForPile = mCardNodesManager.getCardNodeOriginalWidth() * FIELD_PILE_SIZE_SCALE;
         this.mCardHeightForPile = mCardNodesManager.getCardNodeOriginalHeight() * FIELD_PILE_SIZE_SCALE;
-
-        float leftBorderX = mCardWidhtForPile * 0.2f;
-        float topBorderY = sceneHeight * 0.3f;
-
-        float xAdvance = mCardWidhtForPile * 1.2f;
-        float yAdvance = mCardHeightForPile * 1.2f;
-
-        //offset pile index to 0 - max_piles range
-        int pileOrderOnField = mBoundpile.getPileIndex() - PileManagerService.FIRST_FIELD_PILE_INDEX;
-
-        int pileIndexX = pileOrderOnField % (MAX_PILES_IN_LINE - 1);
-        int pileIndexY = pileOrderOnField / (MAX_PILES_IN_LINE - 1);
-
-        float currentX = leftBorderX + (xAdvance * pileIndexX);
-        float currentY = topBorderY + (yAdvance * pileIndexY);
-
-        mPilePositionOnField = new YANVector2(currentX, currentY);
-
-
+        mFieldPilePositioner.init(sceneWidth, sceneHeight, mCardWidhtForPile, mCardHeightForPile);
     }
 
     @Override
     public void layout() {
+
+        //before we layouting this pile , we will layout previous piles on field recursively
+        if (mBoundpile.getPileIndex() > PileManagerService.FIRST_FIELD_PILE_INDEX) {
+            PileModel previousFieldPile = ServiceLocator.locateService(PileManagerService.class).getPileWithIndex(mBoundpile.getPileIndex() - 1);
+            ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(previousFieldPile).layout();
+        }
+
+        //get position for current pile
+        YANReadOnlyVector2 pilePositionOnField = mFieldPilePositioner.getPositionForPile(mBoundpile);
+
         int index = 0;
         for (Card card : mBoundpile.getCardsInPile()) {
             CardNode cardNode = mCardNodesManager.getCardNodeForCard(card);
@@ -76,8 +71,8 @@ public class FieldPileLayouter extends BasePileLayouter {
             cardNode.setSortingLayer(sortingLayer);
 
             //animate card to its place with new transform values
-            animateCardNode(cardNode, mPilePositionOnField.getX(), mPilePositionOnField.getY(),
-                    rotationZ, mCardWidhtForPile, mCardHeightForPile, 1f,CARD_MOVEMENT_ANIMATION_DURATION);
+            animateCardNode(cardNode, pilePositionOnField.getX(), pilePositionOnField.getY(),
+                    rotationZ, mCardWidhtForPile, mCardHeightForPile, 1f, CARD_MOVEMENT_ANIMATION_DURATION);
 
             index++;
         }
