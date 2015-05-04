@@ -19,15 +19,21 @@ public class FieldPilePositioner {
      * Key represents the amount of active piles on field
      * Pair key represents the pile and the value represents pile position
      */
-    private HashMap<Integer,HashMap<PileModel, YANReadOnlyVector2>> mPilePositionsForActiveFieldPiles;
+    private HashMap<Integer, HashMap<PileModel, YANReadOnlyVector2>> mPilePositionsForActiveFieldPiles;
+    private static final YANVector2 ZERO_VECTOR = new YANVector2();
 
     public FieldPilePositioner() {
         mPilePositionsForActiveFieldPiles = new HashMap<>();
     }
 
     public YANReadOnlyVector2 getPositionForPile(final PileModel pile) {
-        int key = calculateActivePilesAmount();
-        YANReadOnlyVector2 vector2 = mPilePositionsForActiveFieldPiles.get(key).get(pile);
+        YANReadOnlyVector2 vector2 = mPilePositionsForActiveFieldPiles.get(calculateActivePilesAmount()).get(pile);
+
+        //FIXME : in some situations there is no suitable vector found
+        //FIXME : once server will be limited to 6 cards on field only , try to remove this code
+        if (vector2 == null)
+            return ZERO_VECTOR;
+
         return vector2;
     }
 
@@ -42,9 +48,11 @@ public class FieldPilePositioner {
 
     public void init(final float sceneWidth, final float sceneHeight, final float cardWidth, final float cardHeight) {
 
+        //zero vector is initialized to the center of the screen
+        ZERO_VECTOR.setXY(sceneWidth / 2, sceneHeight / 2);
+
         //cache some values
         float halfCardWidth = cardWidth / 2;
-        float halfCardHeight = cardHeight / 2;
 
         //get reference to field piles
         List<PileModel> fieldPiles = ServiceLocator.locateService(PileManagerService.class).getFieldPiles();
@@ -52,9 +60,8 @@ public class FieldPilePositioner {
         //zero piles
         HashMap<PileModel, YANReadOnlyVector2> zeroCardsOnFieldMap = new HashMap<>();
         for (PileModel fieldPile : fieldPiles) {
-            zeroCardsOnFieldMap.put(fieldPile,new YANVector2());
+            zeroCardsOnFieldMap.put(fieldPile, new YANVector2());
         }
-//        mPilePositionsForActiveFieldPiles.put(0, zeroCardsOnFieldMap);
 
         //one pile
         YANVector2 oneCardFirstPilePos = new YANVector2((sceneWidth - cardWidth) / 2, (sceneHeight - cardHeight) / 2);
@@ -71,9 +78,9 @@ public class FieldPilePositioner {
         mPilePositionsForActiveFieldPiles.put(2, twoCardsOnFieldMap);
 
         //three piles
-        YANVector2 threeCardsFirstPilePos = new YANVector2(twoCardsFirstPilePos.getX(), twoCardsFirstPilePos.getY() - (halfCardHeight));
-        YANVector2 threeCardsSecondPilePos = new YANVector2(twoCardsSecondPilePos.getX(), twoCardsSecondPilePos.getY() - (halfCardHeight));
-        YANVector2 threeCardsThirdPilePos = new YANVector2(oneCardFirstPilePos.getX(), oneCardFirstPilePos.getY() + (halfCardHeight));
+        YANVector2 threeCardsFirstPilePos = new YANVector2(twoCardsFirstPilePos.getX(), twoCardsFirstPilePos.getY() - (cardHeight));
+        YANVector2 threeCardsSecondPilePos = new YANVector2(twoCardsSecondPilePos.getX(), twoCardsSecondPilePos.getY() - (cardHeight));
+        YANVector2 threeCardsThirdPilePos = new YANVector2(oneCardFirstPilePos.getX(), oneCardFirstPilePos.getY() + (cardHeight));
         HashMap<PileModel, YANReadOnlyVector2> threeCardsOnFieldMap = new HashMap<>();
         threeCardsOnFieldMap.put(fieldPiles.get(0), threeCardsFirstPilePos);
         threeCardsOnFieldMap.put(fieldPiles.get(1), threeCardsSecondPilePos);
@@ -93,13 +100,13 @@ public class FieldPilePositioner {
         mPilePositionsForActiveFieldPiles.put(4, fourCardsOnFieldMap);
 
         //five piles
-        YANVector2 fiveCardsFirstPilePos = new YANVector2(fourCardsFirstPilePos.getX(), fourCardsFirstPilePos.getY());
-        YANVector2 fiveCardsSecondPilePos = new YANVector2(fourCardsSecondPilePos.getX(), fourCardsSecondPilePos.getY());
-        YANVector2 fiveCardsThirdPilePos = new YANVector2(fourCardsThirdPilePos.getX(), fourCardsThirdPilePos.getY());
-        YANVector2 fiveCardsFourthPilePos = new YANVector2(fourCardsFourthPilePos.getX(), fourCardsFourthPilePos.getY());
+        YANVector2 fiveCardsFirstPilePos = new YANVector2(fourCardsFirstPilePos.getX() - halfCardWidth, fourCardsFirstPilePos.getY());
+        YANVector2 fiveCardsSecondPilePos = new YANVector2(fourCardsSecondPilePos.getX() + halfCardWidth, fourCardsSecondPilePos.getY());
+        YANVector2 fiveCardsThirdPilePos = new YANVector2(fourCardsThirdPilePos.getX() - halfCardWidth, fourCardsThirdPilePos.getY());
+        YANVector2 fiveCardsFourthPilePos = new YANVector2(fourCardsFourthPilePos.getX() + halfCardWidth, fourCardsFourthPilePos.getY());
         YANVector2 fiveCardsFifthPilePos = new YANVector2(oneCardFirstPilePos.getX(), oneCardFirstPilePos.getY());
         HashMap<PileModel, YANReadOnlyVector2> fiveCardsOnFieldMap = new HashMap<>();
-        fiveCardsOnFieldMap.put(fieldPiles.get(0), fiveCardsFirstPilePos );
+        fiveCardsOnFieldMap.put(fieldPiles.get(0), fiveCardsFirstPilePos);
         fiveCardsOnFieldMap.put(fieldPiles.get(1), fiveCardsSecondPilePos);
         fiveCardsOnFieldMap.put(fieldPiles.get(2), fiveCardsThirdPilePos);
         fiveCardsOnFieldMap.put(fieldPiles.get(3), fiveCardsFourthPilePos);
@@ -112,10 +119,10 @@ public class FieldPilePositioner {
         YANVector2 sixCardsSecondPilePos = new YANVector2(fiveCardsSecondPilePos.getX() + halfCardWidth, fiveCardsSecondPilePos.getY());
         YANVector2 sixCardsThirdPilePos = new YANVector2(fiveCardsThirdPilePos.getX() - halfCardWidth, fiveCardsThirdPilePos.getY());
         YANVector2 sixCardsFourthPilePos = new YANVector2(fiveCardsFourthPilePos.getX() + halfCardWidth, fiveCardsFourthPilePos.getY());
-        YANVector2 sixCardsFifthPilePos = new YANVector2(fiveCardsFifthPilePos.getX(), fiveCardsFifthPilePos.getY() - halfCardHeight);
-        YANVector2 sixCardsSixthPilePos = new YANVector2(fiveCardsFifthPilePos.getX(), fiveCardsFifthPilePos.getY() + halfCardHeight);
+        YANVector2 sixCardsFifthPilePos = new YANVector2(fiveCardsFifthPilePos.getX(), fiveCardsFifthPilePos.getY() - cardHeight);
+        YANVector2 sixCardsSixthPilePos = new YANVector2(fiveCardsFifthPilePos.getX(), fiveCardsFifthPilePos.getY() + cardHeight);
         HashMap<PileModel, YANReadOnlyVector2> sixCardsOnFieldMap = new HashMap<>();
-        sixCardsOnFieldMap.put(fieldPiles.get(0), sixCardsFirstPilePos );
+        sixCardsOnFieldMap.put(fieldPiles.get(0), sixCardsFirstPilePos);
         sixCardsOnFieldMap.put(fieldPiles.get(1), sixCardsSecondPilePos);
         sixCardsOnFieldMap.put(fieldPiles.get(2), sixCardsThirdPilePos);
         sixCardsOnFieldMap.put(fieldPiles.get(3), sixCardsFourthPilePos);
@@ -124,7 +131,8 @@ public class FieldPilePositioner {
         mPilePositionsForActiveFieldPiles.put(6, sixCardsOnFieldMap);
 
 
-        //TODO : remove
+        //TODO : when server throws in cards he sometime uses piles beyond 6
+        //FIXME : once server will be limited to 6 cards on field only , remove this code
         mPilePositionsForActiveFieldPiles.put(7, zeroCardsOnFieldMap);
         mPilePositionsForActiveFieldPiles.put(8, zeroCardsOnFieldMap);
         mPilePositionsForActiveFieldPiles.put(9, zeroCardsOnFieldMap);

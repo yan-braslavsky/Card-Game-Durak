@@ -37,7 +37,7 @@ public abstract class BasePlayerCardsTouchProcessorListener implements CardsTouc
      * Represents percentage of scene height. When card is dragged below this percentage of heigh
      * it will be returned back to player pile.
      */
-    private static final float SCENE_HEIGHT_FOR_CARD_RETURN = 0.5f;
+    protected static final float SCENE_HEIGHT_FOR_CARD_RETURN = 0.5f;
 
     //Used by children to understand whether they should proceed with drag handling or not
     protected boolean mDragReleaseHandled;
@@ -62,13 +62,6 @@ public abstract class BasePlayerCardsTouchProcessorListener implements CardsTouc
         //In case player wanted to reposition cards within his hand
         //We want to allow that kind of interaction
         if (handleRepositioning(cardNode)) {
-            mDragReleaseHandled = true;
-            return;
-        }
-
-        //if player didn't drag to the field , we will return the card back to his hand
-        if (cardNode.getPosition().getY() > (ServiceLocator.locateService(SceneSizeProviderService.class).getSceneHeight() * SCENE_HEIGHT_FOR_CARD_RETURN)) {
-            returnCardToPlayerHand(cardNode);
             mDragReleaseHandled = true;
             return;
         }
