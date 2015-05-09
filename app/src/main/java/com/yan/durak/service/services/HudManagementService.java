@@ -191,7 +191,7 @@ public class HudManagementService implements IService {
                 YANLogger.log("v button clicked");
             }
         });
-        node.setSortingLayer(HUD_SORTING_LAYER + 101);
+        node.setSortingLayer(HUD_SORTING_LAYER - 2);
         return node;
     }
 
@@ -203,13 +203,13 @@ public class HudManagementService implements IService {
 
     private YANTexturedNode createYouWonImage(YANTextureAtlas hudAtlas) {
         YANTexturedNode popupImage = new YANTexturedNode(hudAtlas.getTextureRegion("you_won.png"));
-        popupImage.setSortingLayer(HUD_SORTING_LAYER + 100);
+        popupImage.setSortingLayer(HUD_SORTING_LAYER - 3);
         return popupImage;
     }
 
     private YANTexturedNode createYouLooseImage(YANTextureAtlas hudAtlas) {
         YANTexturedNode popupImage = new YANTexturedNode(hudAtlas.getTextureRegion("you_lose.png"));
-        popupImage.setSortingLayer(HUD_SORTING_LAYER + 100);
+        popupImage.setSortingLayer(HUD_SORTING_LAYER - 3);
         return popupImage;
     }
 
