@@ -5,9 +5,10 @@ import com.yan.durak.communication.sender.GameServerMessageSender;
 import com.yan.durak.input.cards.CardsTouchProcessor;
 import com.yan.durak.input.listener.PlayerCardsTouchProcessorListener;
 import com.yan.durak.msg_processor.MsgProcessor;
-import com.yan.durak.service.services.HudManagementService;
 import com.yan.durak.service.ServiceLocator;
 import com.yan.durak.service.services.CardNodesManagerService;
+import com.yan.durak.service.services.CardsTouchProcessorService;
+import com.yan.durak.service.services.HudManagementService;
 import com.yan.durak.service.services.PileLayouterManagerService;
 import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.service.services.SceneSizeProviderService;
@@ -22,9 +23,6 @@ import glengine.yan.glengine.renderer.YANGLRenderer;
  */
 public class PrototypeGameScreen extends BaseGameScreen {
 
-    //Player hand touch processor
-    private final CardsTouchProcessor mCardsTouchProcessor;
-
     //communication
     private final IGameServerConnector mGameServerConnector;
 
@@ -38,9 +36,6 @@ public class PrototypeGameScreen extends BaseGameScreen {
         //we received the connector that should be used
         mGameServerConnector = gameServerConnector;
 
-        //game session will store the game state and related info
-        ServiceLocator.addService(new GameInfo());
-
         //tween manager is used for various tween animations
         mSharedTweenManager = new TweenManager();
 
@@ -53,14 +48,14 @@ public class PrototypeGameScreen extends BaseGameScreen {
         //card nodes manager
         ServiceLocator.addService(new CardNodesManagerService());
 
+        //game session will store the game state and related info
+        ServiceLocator.addService(new CardsTouchProcessorService(new CardsTouchProcessor(new PlayerCardsTouchProcessorListener(), ServiceLocator.locateService(PileManagerService.class).getBottomPlayerPile())));
+
+        //game session will store the game state and related info
+        ServiceLocator.addService(new GameInfo());
+
         //layouters manager
         ServiceLocator.addService(new PileLayouterManagerService(mSharedTweenManager));
-
-
-        //TODO : set the nodes each time there is a change rather then give it by reference
-        //currently we are initializing with empty array , cards will be set every time player pile content changes
-        mCardsTouchProcessor = new CardsTouchProcessor(new PlayerCardsTouchProcessorListener(), ServiceLocator.locateService(PileManagerService.class).getBottomPlayerPile());
-
 
         //used to send concrete messages to server
         ServiceLocator.addService(new GameServerMessageSender(mGameServerConnector));
@@ -83,7 +78,6 @@ public class PrototypeGameScreen extends BaseGameScreen {
     @Override
     public void onSetNotActive() {
         super.onSetNotActive();
-        mCardsTouchProcessor.unRegister();
         mGameServerConnector.disconnect();
     }
 
@@ -143,7 +137,8 @@ public class PrototypeGameScreen extends BaseGameScreen {
         ServiceLocator.locateService(HudManagementService.class).update(deltaTimeSeconds);
     }
 
-    public CardsTouchProcessor getCardsTouchProcessor() {
-        return mCardsTouchProcessor;
-    }
+//    public CardsTouchProcessor getCardsTouchProcessor() {
+//
+//        return mCardsTouchProcessor;
+//    }
 }

@@ -75,7 +75,7 @@ public class MsgProcessor implements IGameServerConnector.IGameServerCommunicato
 
         //Player Action
         mProcessorsMap.put(PlayerTakesActionMessage.class, new PlayerTakesActionMsgSubProcessor(pileManager,
-                pileLayouterManager, gameInfo, getPrototypeGameScreen().getCardsTouchProcessor()));
+                pileLayouterManager, gameInfo));
 
         //Retaliation Invalid
         mProcessorsMap.put(RetaliationInvalidProtocolMessage.class, new RetaliationInvalidMsgSubProcessor());

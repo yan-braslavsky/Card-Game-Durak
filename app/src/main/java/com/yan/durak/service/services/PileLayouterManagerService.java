@@ -45,7 +45,7 @@ public class PileLayouterManagerService implements IService {
         this.mPileToLayouterMap = new HashMap<>();
 
         //init bottom player layouter
-        this.mBottomPlayerPileLayouter = new BottomPlayerPileLayouter(gameInfo, pileManager, cardNodesManager, tweenManager, pileManager.getBottomPlayerPile());
+        this.mBottomPlayerPileLayouter = new BottomPlayerPileLayouter(pileManager, cardNodesManager, tweenManager, pileManager.getBottomPlayerPile());
 
         //init top left player layouter
         this.mTopLeftPlayerPileLayouter = new TopLeftPlayerPileLayouter(cardNodesManager, tweenManager, pileManager.getTopLeftPlayerPile());

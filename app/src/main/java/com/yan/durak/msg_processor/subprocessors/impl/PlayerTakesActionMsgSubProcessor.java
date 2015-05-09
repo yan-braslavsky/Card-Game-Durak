@@ -1,7 +1,6 @@
 package com.yan.durak.msg_processor.subprocessors.impl;
 
 import com.yan.durak.gamelogic.communication.protocol.messages.PlayerTakesActionMessage;
-import com.yan.durak.input.cards.CardsTouchProcessor;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
 import com.yan.durak.service.ServiceLocator;
 import com.yan.durak.service.services.HudManagementService;
@@ -23,16 +22,14 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
     private final GameInfo mGameInfo;
     private final PileLayouterManagerService mPileLayouterManager;
     private final PileManagerService mPileManager;
-    private final CardsTouchProcessor mCardsTouchProcessor;
 
-    public PlayerTakesActionMsgSubProcessor(final PileManagerService pileManager, final PileLayouterManagerService pileLayouterManager,
-                                            final GameInfo gameInfo,  final CardsTouchProcessor cardsTouchProcessor) {
+    public PlayerTakesActionMsgSubProcessor(final PileManagerService pileManager,
+                                            final PileLayouterManagerService pileLayouterManager,
+                                            final GameInfo gameInfo) {
         super();
-
         this.mGameInfo = gameInfo;
         this.mPileLayouterManager = pileLayouterManager;
         this.mPileManager = pileManager;
-        this.mCardsTouchProcessor = cardsTouchProcessor;
     }
 
     @Override
@@ -63,14 +60,9 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
                 throw new RuntimeException("not recognized player action " + action);
             }
 
-            //enable user input possibility
-            mCardsTouchProcessor.register();
 
         } else {
             mGameInfo.setActivePlayerState(YANObjectPool.getInstance().obtain(OtherPlayerTurnState.class));
-
-            //disable user input possibility
-            mCardsTouchProcessor.unRegister();
         }
 
         //in any case we need to re lay out the player pile :

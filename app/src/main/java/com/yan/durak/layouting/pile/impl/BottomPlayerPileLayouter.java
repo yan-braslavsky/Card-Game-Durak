@@ -1,11 +1,13 @@
 package com.yan.durak.layouting.pile.impl;
 
 import com.yan.durak.gamelogic.cards.Card;
+import com.yan.durak.input.cards.CardsTouchProcessor;
 import com.yan.durak.layouting.CardsLayoutSlot;
 import com.yan.durak.layouting.impl.PlayerCardsLayouter;
 import com.yan.durak.layouting.pile.BasePileLayouter;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
+import com.yan.durak.service.ServiceLocator;
 import com.yan.durak.service.services.CardNodesManagerService;
 import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.session.GameInfo;
@@ -21,14 +23,13 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
 
 
     private final PlayerCardsLayouter mPlayerCardsLayouter;
-    private final GameInfo mGameInfo;
 
-    public BottomPlayerPileLayouter(final GameInfo gameInfo, final PileManagerService pileManager, final CardNodesManagerService cardNodesManager, final TweenManager tweenManager, final PileModel boundPile) {
+    public BottomPlayerPileLayouter(final PileManagerService pileManager, final CardNodesManagerService cardNodesManager,
+                                    final TweenManager tweenManager, final PileModel boundPile) {
         super(cardNodesManager, tweenManager, boundPile);
 
         //init player cards layouter , assuming the entire deck can be in his hands
         mPlayerCardsLayouter = new PlayerCardsLayouter(pileManager.getAllCards().size());
-        mGameInfo = gameInfo;
     }
 
 
@@ -56,7 +57,7 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
         float animationDuration = CARD_MOVEMENT_ANIMATION_DURATION;
 
         //cache the state
-        IActivePlayerState activePlayerState = mGameInfo.getActivePlayerState();
+        IActivePlayerState activePlayerState = ServiceLocator.locateService(GameInfo.class).getActivePlayerState();
 
         //each state will be handled differently
         switch (activePlayerState.getStateDefinition()) {
@@ -64,19 +65,43 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
             case REQUEST_CARD_FOR_ATTACK:
             case REQUEST_RETALIATION:
 
+                //make all card nodes touchable again
+//                activateBottomPile();
+
                 //dragging state alters the expansion level of the layouter
                 //as well as changing the animationDuration of animation
                 animationDuration = handleDraggingState(animationDuration, (BaseDraggableState) activePlayerState);
                 break;
             default:
 
-                //when player is not active we want the layouting to be compact
-                mPlayerCardsLayouter.adjustExpansionLevel(PlayerCardsLayouter.ExpansionLevelPreset.COMPACT);
+                //make all card nodes not touchable
+//                deactivateBottomPile();
         }
 
         //the actual layouting is using underlying card layouter
         //which layouts slots
         layoutUsingSlots(animationDuration);
+
+        //when player is not active we want the layouting to be compact
+        mPlayerCardsLayouter.adjustExpansionLevel(PlayerCardsLayouter.ExpansionLevelPreset.COMPACT);
+    }
+
+    private void activateBottomPile() {
+        //make all cards in player hand enabled
+        CardNodesManagerService cardNodeManager = ServiceLocator.locateService(CardNodesManagerService.class);
+        for (Card card : getBoundpile().getCardsInPile()) {
+            CardNode nodeToDisable = cardNodeManager.getCardNodeForCard(card);
+            cardNodeManager.enableCardNode(nodeToDisable);
+        }
+    }
+
+    private void deactivateBottomPile() {
+        //make all cards in player hand disabled
+        CardNodesManagerService cardNodeManager = ServiceLocator.locateService(CardNodesManagerService.class);
+        for (Card card : getBoundpile().getCardsInPile()) {
+            CardNode nodeToDisable = cardNodeManager.getCardNodeForCard(card);
+            cardNodeManager.disableCardNode(nodeToDisable);
+        }
     }
 
     private float handleDraggingState(float duration, BaseDraggableState activePlayerState) {
@@ -118,7 +143,7 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
             cardNode.useFrontTextureRegion();
 
             //we need card to move instantly now , so we don't want previous animation to continue
-            if(duration < 0.2f)
+            if (duration < 0.2f)
                 mTweenManager.killTarget(cardNode);
 
             //animate card to its place with new transform values

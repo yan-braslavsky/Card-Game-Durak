@@ -1,6 +1,10 @@
 package com.yan.durak.session.states.impl;
 
 import com.yan.durak.gamelogic.cards.Card;
+import com.yan.durak.service.ServiceLocator;
+import com.yan.durak.service.services.CardsTouchProcessorService;
+import com.yan.durak.service.services.PileLayouterManagerService;
+import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.session.states.BaseDraggableState;
 
 import java.util.ArrayList;
@@ -88,5 +92,11 @@ public class RetaliationState extends BaseDraggableState {
             mCoveredCard = null;
             mCoveringCard = null;
         }
+    }
+
+    @Override
+    public void applyState() {
+        ServiceLocator.locateService(CardsTouchProcessorService.class).register();
+        ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(ServiceLocator.locateService(PileManagerService.class).getBottomPlayerPile()).layout();
     }
 }

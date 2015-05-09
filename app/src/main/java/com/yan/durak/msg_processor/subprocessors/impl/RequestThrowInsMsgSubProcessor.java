@@ -9,13 +9,16 @@ import com.yan.durak.nodes.CardNode;
 import com.yan.durak.service.ServiceLocator;
 import com.yan.durak.service.services.CardNodesManagerService;
 import com.yan.durak.service.services.HudManagementService;
+import com.yan.durak.service.services.PileLayouterManagerService;
 import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.session.GameInfo;
+import com.yan.durak.session.states.impl.OtherPlayerTurnState;
 import com.yan.durak.session.states.impl.ThrowInState;
 
 import java.util.ArrayList;
 
 import glengine.yan.glengine.nodes.YANButtonNode;
+import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
 /**
  * Created by ybra on 17/04/15.
@@ -59,6 +62,12 @@ public class RequestThrowInsMsgSubProcessor extends BaseMsgSubProcessor<RequestT
                         cardNodesManagerService.enableCardNode(cardNode);
                     }
                 }
+
+                //disable the hand of the player by setting another state
+                ServiceLocator.locateService(GameInfo.class).setActivePlayerState(YANObjectPool.getInstance().obtain(OtherPlayerTurnState.class));
+
+                //layout the bottom player pile
+                ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(pileManagerService.getBottomPlayerPile()).layout();
 
                 //send the response to server
                 ServiceLocator.locateService(GameServerMessageSender.class).sendThrowInResponse(throwInState.getChosenCardsToThrowIn());

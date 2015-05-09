@@ -12,11 +12,14 @@ import com.yan.durak.service.services.HudManagementService;
 import com.yan.durak.service.services.PileLayouterManagerService;
 import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.session.GameInfo;
+import com.yan.durak.session.states.impl.OtherPlayerTurnState;
 import com.yan.durak.session.states.impl.RetaliationState;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
 /**
  * Created by Yan-Home on 5/1/2015.
@@ -99,6 +102,9 @@ public class RetaliationProcessorListener implements CardsTouchProcessor.CardsTo
 
             //hide the take button
             ServiceLocator.locateService(HudManagementService.class).hideTakeButton();
+
+            //make cards disabled by setting other player state
+            ServiceLocator.locateService(GameInfo.class).setActivePlayerState(YANObjectPool.getInstance().obtain(OtherPlayerTurnState.class));
 
             //send the response
             ServiceLocator.locateService(GameServerMessageSender.class).sendResponseRetaliatePiles(mCachedListOfPiles);

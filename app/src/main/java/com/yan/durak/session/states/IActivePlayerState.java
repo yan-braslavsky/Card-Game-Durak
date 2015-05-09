@@ -7,7 +7,7 @@ import glengine.yan.glengine.util.object_pool.YANIPoolableObject;
  */
 public interface IActivePlayerState extends YANIPoolableObject {
 
-    public enum ActivePlayerStateDefinition {
+    enum ActivePlayerStateDefinition {
 
         /**
          * When player can take no action.
@@ -39,4 +39,6 @@ public interface IActivePlayerState extends YANIPoolableObject {
      * @return
      */
     ActivePlayerStateDefinition getStateDefinition();
+
+    void applyState();
 }

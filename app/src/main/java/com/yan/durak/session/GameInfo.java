@@ -78,6 +78,7 @@ public class GameInfo implements IService {
         YANObjectPool.getInstance().offer(mActivePlayerState);
         activePlayerState.resetState();
         mActivePlayerState = activePlayerState;
+        mActivePlayerState.applyState();
     }
 
     public Player getPlayerForIndex(int playerIndex) {
