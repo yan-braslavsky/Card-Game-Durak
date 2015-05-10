@@ -470,6 +470,10 @@ public class HudManagementService implements IService {
         //change texture region
         YANTexturedNode trumpImage = getNode(TRUMP_IMAGE_INDEX);
         trumpImage.setTextureRegion(mHudAtlas.getTextureRegion("trump_marker_" + suit.toLowerCase() + ".png"));
+
+        //fix aspect ratio
+        float aspectRatio = trumpImage.getTextureRegion().getWidth() / trumpImage.getTextureRegion().getHeight();
+        trumpImage.setSize(trumpImage.getSize().getX(), trumpImage.getSize().getX() / aspectRatio);
     }
 
     public void showYouWonMessage() {
