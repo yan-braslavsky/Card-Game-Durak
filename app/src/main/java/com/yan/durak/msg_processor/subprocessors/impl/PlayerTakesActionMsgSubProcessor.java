@@ -55,7 +55,8 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
             } else if (action == PlayerTakesActionMessage.PlayerAction.RETALIATION) {
                 mGameInfo.setActivePlayerState(YANObjectPool.getInstance().obtain(RetaliationState.class));
             } else if (action == PlayerTakesActionMessage.PlayerAction.THROW_IN) {
-                mGameInfo.setActivePlayerState(YANObjectPool.getInstance().obtain(ThrowInState.class));
+                //Maybe the throw in just sent to notify , but actual action cannot be taken
+//                mGameInfo.setActivePlayerState(YANObjectPool.getInstance().obtain(ThrowInState.class));
             } else {
                 throw new RuntimeException("not recognized player action " + action);
             }

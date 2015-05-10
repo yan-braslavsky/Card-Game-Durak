@@ -78,6 +78,9 @@ public class RequestThrowInsMsgSubProcessor extends BaseMsgSubProcessor<RequestT
     @Override
     public void processMessage(RequestThrowInsMessage serverMessage) {
 
+        //Set the state to throw in
+        ServiceLocator.locateService(GameInfo.class).setActivePlayerState(YANObjectPool.getInstance().obtain(ThrowInState.class));
+
         PileManagerService pileManagerService = ServiceLocator.locateService(PileManagerService.class);
         ThrowInState throwInState = (ThrowInState) ServiceLocator.locateService(GameInfo.class).getActivePlayerState();
         CardNodesManagerService cardNodesManager = ServiceLocator.locateService(CardNodesManagerService.class);
