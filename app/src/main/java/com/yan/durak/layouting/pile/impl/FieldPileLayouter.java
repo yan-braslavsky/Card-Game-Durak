@@ -12,6 +12,8 @@ import com.yan.durak.service.services.PileManagerService;
 
 import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
+import glengine.yan.glengine.util.geometry.YANVector2;
+import glengine.yan.glengine.util.math.YANMathUtils;
 
 /**
  * Created by ybra on 20/04/15.
@@ -25,18 +27,21 @@ public class FieldPileLayouter extends BasePileLayouter {
      * When card put on field they have a sligh rotation to the
      * left or to the right
      */
-    private static final float FIELD_CARDS_ROTATION_ANGLE = 13f;
-
-    private static final int MAX_PILES_IN_LINE = 4;
+    private static final float FIELD_CARDS_ROTATION_ANGLE = 7f;
+    private static final float TOP_CARD_OFFSET_AFTER_ROTATION_X = 0.03f;
+    private static final float TOP_CARD_OFFSET_AFTER_ROTATION_Y = 0.05f;
 
     private float mCardWidhtForPile;
     private float mCardHeightForPile;
-    //    private YANReadOnlyVector2 mPilePositionOnField;
     private FieldPilePositioner mFieldPilePositioner;
+    private YANVector2 mCardOriginVector;
+    private YANVector2 mCardPositionVector;
 
     public FieldPileLayouter(final CardNodesManagerService mCardNodesManager, final TweenManager mTweenManager, final PileModel boundPile) {
         super(mCardNodesManager, mTweenManager, boundPile);
         mFieldPilePositioner = new FieldPilePositioner();
+        mCardOriginVector = new YANVector2();
+        mCardPositionVector = new YANVector2();
     }
 
     @Override
@@ -58,6 +63,12 @@ public class FieldPileLayouter extends BasePileLayouter {
         //get position for current pile
         YANReadOnlyVector2 pilePositionOnField = mFieldPilePositioner.getPositionForPile(mBoundpile);
 
+        //update position of the first card
+        mCardPositionVector.setXY(pilePositionOnField.getX(), pilePositionOnField.getY());
+
+        //set rotation origin that card will be rotated around
+        mCardOriginVector.setXY(pilePositionOnField.getX() - mCardWidhtForPile, pilePositionOnField.getY() + mCardHeightForPile);
+
         int index = 0;
         for (Card card : mBoundpile.getCardsInPile()) {
             CardNode cardNode = mCardNodesManager.getCardNodeForCard(card);
@@ -65,13 +76,34 @@ public class FieldPileLayouter extends BasePileLayouter {
             //field pile cards visible to all
             cardNode.useFrontTextureRegion();
 
-            //adjust rotation
-            float rotationZ = (index == 0) ? (-FIELD_CARDS_ROTATION_ANGLE) : FIELD_CARDS_ROTATION_ANGLE;
-            int sortingLayer = (index == 0) ? 1 : 2;
+            //rotation and sorting layer will change depending on position of the card in field pile
+            float rotationZ;
+            int sortingLayer;
+
+            //when the card is first , means it at the bottom
+            if (index == 0) {
+                rotationZ = -(FIELD_CARDS_ROTATION_ANGLE);
+
+                //we are rotating card around bottom left corner
+                YANMathUtils.rotatePointAroundOrigin(mCardPositionVector, mCardOriginVector, rotationZ);
+                sortingLayer = 1;
+            } else {
+                rotationZ = FIELD_CARDS_ROTATION_ANGLE;
+
+                //we are rotating card around bottom left corner
+                YANMathUtils.rotatePointAroundOrigin(mCardPositionVector, mCardOriginVector, rotationZ);
+
+                //the top card should be slightly offset
+                mCardPositionVector.setXY(mCardPositionVector.getX() + (mCardWidhtForPile * TOP_CARD_OFFSET_AFTER_ROTATION_X),
+                        mCardPositionVector.getY() - (mCardHeightForPile * TOP_CARD_OFFSET_AFTER_ROTATION_Y));
+                sortingLayer = 2;
+            }
+
+            //adjust sorting layer
             cardNode.setSortingLayer(sortingLayer);
 
             //animate card to its place with new transform values
-            animateCardNode(cardNode, pilePositionOnField.getX(), pilePositionOnField.getY(),
+            animateCardNode(cardNode, mCardPositionVector.getX(), mCardPositionVector.getY(),
                     rotationZ, mCardWidhtForPile, mCardHeightForPile, 1f, CARD_MOVEMENT_ANIMATION_DURATION);
 
             index++;
