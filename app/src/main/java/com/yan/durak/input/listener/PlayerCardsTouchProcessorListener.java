@@ -38,4 +38,10 @@ public class PlayerCardsTouchProcessorListener extends BasePlayerCardsTouchProce
         //delegate handling to relevant processor
         mTouchProcessors.get(ServiceLocator.locateService(GameInfo.class).getActivePlayerState().getClass()).onDraggedCardReleased(cardNode);
     }
+
+    @Override
+    public void onCardDragProgress(CardNode cardNode) {
+        super.onCardDragProgress(cardNode);
+        mTouchProcessors.get(ServiceLocator.locateService(GameInfo.class).getActivePlayerState().getClass()).onCardDragProgress(cardNode);
+    }
 }

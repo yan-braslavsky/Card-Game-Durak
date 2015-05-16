@@ -2,15 +2,23 @@
 
 {
 	"filename": "bito.png",
-	"frame": {"x":684,"y":1388,"w":171,"h":141},
+	"frame": {"x":684,"y":1652,"w":171,"h":141},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":171,"h":141},
 	"sourceSize": {"w":171,"h":141}
 },
 {
+	"filename": "card_glow.png",
+	"frame": {"x":684,"y":863,"w":207,"h":262},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":207,"h":262},
+	"sourceSize": {"w":207,"h":262}
+},
+{
 	"filename": "card_shadow.png",
-	"frame": {"x":684,"y":1531,"w":161,"h":215},
+	"frame": {"x":684,"y":1795,"w":161,"h":215},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":161,"h":215},
@@ -18,7 +26,7 @@
 },
 {
 	"filename": "cards_back.png",
-	"frame": {"x":684,"y":863,"w":183,"h":237},
+	"frame": {"x":684,"y":1127,"w":183,"h":237},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":1,"w":183,"h":237},
@@ -42,7 +50,7 @@
 },
 {
 	"filename": "grey_cock.png",
-	"frame": {"x":754,"y":216,"w":94,"h":93},
+	"frame": {"x":754,"y":462,"w":94,"h":93},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":94,"h":93},
@@ -50,7 +58,7 @@
 },
 {
 	"filename": "stump.png",
-	"frame": {"x":684,"y":1245,"w":171,"h":141},
+	"frame": {"x":684,"y":1509,"w":171,"h":141},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":171,"h":141},
@@ -58,7 +66,7 @@
 },
 {
 	"filename": "take.png",
-	"frame": {"x":684,"y":1102,"w":171,"h":141},
+	"frame": {"x":684,"y":1366,"w":171,"h":141},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":171,"h":141},
@@ -66,7 +74,7 @@
 },
 {
 	"filename": "trump_marker_clubs.png",
-	"frame": {"x":804,"y":2,"w":62,"h":62},
+	"frame": {"x":804,"y":84,"w":62,"h":62},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":62,"h":62},
@@ -74,7 +82,7 @@
 },
 {
 	"filename": "trump_marker_diamonds.png",
-	"frame": {"x":754,"y":311,"w":64,"h":80},
+	"frame": {"x":804,"y":2,"w":64,"h":80},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":80},
@@ -82,7 +90,7 @@
 },
 {
 	"filename": "trump_marker_hearts.png",
-	"frame": {"x":804,"y":66,"w":61,"h":53},
+	"frame": {"x":754,"y":557,"w":61,"h":53},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":61,"h":53},
@@ -90,7 +98,7 @@
 },
 {
 	"filename": "trump_marker_spades.png",
-	"frame": {"x":754,"y":393,"w":60,"h":60},
+	"frame": {"x":817,"y":557,"w":60,"h":60},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":60,"h":60},
@@ -98,7 +106,7 @@
 },
 {
 	"filename": "v_btn.png",
-	"frame": {"x":684,"y":1748,"w":136,"h":112},
+	"frame": {"x":754,"y":148,"w":136,"h":112},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":136,"h":112},
@@ -106,7 +114,7 @@
 },
 {
 	"filename": "v_btn_clicked.png",
-	"frame": {"x":684,"y":1862,"w":125,"h":103},
+	"frame": {"x":754,"y":262,"w":125,"h":103},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":125,"h":103},
@@ -114,7 +122,7 @@
 },
 {
 	"filename": "yellow_cock.png",
-	"frame": {"x":754,"y":121,"w":94,"h":93},
+	"frame": {"x":754,"y":367,"w":94,"h":93},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":94,"h":93},
@@ -141,8 +149,8 @@
 	"version": "1.0",
 	"image": "ui_atlas.png",
 	"format": "RGBA8888",
-	"size": {"w":869,"h":2019},
+	"size": {"w":893,"h":2019},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:ff9e664d0aac0ff1a060d3371a64ec8e$"
+	"smartupdate": "$TexturePacker:SmartUpdate:70e91eec8d794504ab56190c4620e6f0$"
 }
 }

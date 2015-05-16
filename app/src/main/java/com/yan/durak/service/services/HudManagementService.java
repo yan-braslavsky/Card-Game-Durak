@@ -29,7 +29,6 @@ import glengine.yan.glengine.util.loggers.YANLogger;
  */
 public class HudManagementService implements IService {
 
-
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
             AVATAR_BOTTOM_RIGHT_INDEX,
@@ -45,15 +44,16 @@ public class HudManagementService implements IService {
             YOU_WIN_IMAGE_INDEX,
             YOU_LOOSE_IMAGE_INDEX,
             V_BUTTON_INDEX,
-            FENCE_INDEX,
-            GLADE_INDEX,
 
             /**
              * We don't want to show all the cards in a stock pile.
              * Instead we are showing only one, which is this node.
              * Underneath this node there is a trump card.
              */
-            MASK_CARD_INDEX
+            MASK_CARD_INDEX,
+            FENCE_INDEX,
+            GLADE_INDEX,
+            GLOW_INDEX
     })
     public @interface HudNode {
     }
@@ -74,6 +74,7 @@ public class HudManagementService implements IService {
     public static final int MASK_CARD_INDEX = 13;
     public static final int FENCE_INDEX = 14;
     public static final int GLADE_INDEX = 15;
+    public static final int GLOW_INDEX = 16;
 
 
     /**
@@ -157,9 +158,15 @@ public class HudManagementService implements IService {
         //create v button for popup
         putToNodeMap(MASK_CARD_INDEX, createMaskCard(hudAtlas));
 
+        putToNodeMap(GLOW_INDEX, createCardGlow(hudAtlas));
+
         //at the beginning some nodes might have a different state
         setupInitialState();
 
+    }
+
+    private YANTexturedNode createCardGlow(YANTextureAtlas hudAtlas) {
+        return new YANTexturedNode(hudAtlas.getTextureRegion("card_glow.png"));
     }
 
     private void setupInitialState() {
@@ -181,6 +188,7 @@ public class HudManagementService implements IService {
         //action buttons also have zero opacity
         getNode(TAKE_BUTTON_INDEX).setOpacity(0);
         getNode(BITO_BUTTON_INDEX).setOpacity(0);
+        getNode(GLOW_INDEX).setOpacity(0);
     }
 
     private YANButtonNode createVButton(YANTextureAtlas hudAtlas) {
@@ -324,6 +332,9 @@ public class HudManagementService implements IService {
         aspectRatio = getNode(GLADE_INDEX).getTextureRegion().getWidth() / getNode(GLADE_INDEX).getTextureRegion().getHeight();
         float gladeWidth = Math.min(sceneSize.getX(), sceneSize.getY()) * 0.9f;
         getNode(GLADE_INDEX).setSize(gladeWidth, gladeWidth / aspectRatio);
+
+        //later glow size will be overriden
+        getNode(GLOW_INDEX).setSize(0, 0);
     }
 
     public Collection<? extends YANTexturedNode> getCardNodes() {

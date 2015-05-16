@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
 /**
@@ -41,6 +42,9 @@ public class RetaliationProcessorListener implements CardsTouchProcessor.CardsTo
 
     @Override
     public void onDraggedCardReleased(CardNode cardNode) {
+
+        //clear the glow
+        clearGlow();
 
         //we must see what is the card node that our card collides with
         CardNode collidedFieldCardNode = findUnderlyingCard(cardNode);
@@ -118,8 +122,40 @@ public class RetaliationProcessorListener implements CardsTouchProcessor.CardsTo
     }
 
     @Override
-    public void onCardDragProgress(CardNode card) {
-        //no implementation
+    public void onCardDragProgress(CardNode cardNode) {
+
+        //We want to show a glow underneath a card that is being currently
+        //hovered by dragged card to provide a visual feedback to the user
+        CardNode collidedFieldCardNode = findUnderlyingCard(cardNode);
+        if (collidedFieldCardNode != null) {
+            showGlowForNode(collidedFieldCardNode);
+        } else {
+            clearGlow();
+        }
+    }
+
+    private void clearGlow() {
+        ServiceLocator.locateService(HudManagementService.class).getNode(HudManagementService.GLOW_INDEX).setOpacity(0f);
+    }
+
+    private void showGlowForNode(CardNode collidedFieldCardNode) {
+        YANTexturedNode glow = ServiceLocator.locateService(HudManagementService.class).getNode(HudManagementService.GLOW_INDEX);
+        //lazy initialize the glow node
+        if(glow.getSize().getX() == 0){
+            float glowScale = 1.25f;
+            float glowWidth = collidedFieldCardNode.getSize().getX() * glowScale;
+            float glowHeight = collidedFieldCardNode.getSize().getY() * glowScale;
+            glow.setSize(glowWidth, glowHeight);
+            glow.setAnchorPoint(0.5f, 0.5f);
+        }
+
+        float glowPositionX = collidedFieldCardNode.getPosition().getX() + (collidedFieldCardNode.getSize().getX() / 2);
+        float glowPositionY = collidedFieldCardNode.getPosition().getY() + collidedFieldCardNode.getSize().getY() / 2;
+
+        glow.setRotationZ(collidedFieldCardNode.getRotationZ());
+        glow.setPosition(glowPositionX, glowPositionY);
+        glow.setSortingLayer(collidedFieldCardNode.getSortingLayer());
+        glow.setOpacity(1f);
     }
 
     private CardNode findUnderlyingCard(CardNode cardNode) {
