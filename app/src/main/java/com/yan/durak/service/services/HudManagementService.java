@@ -142,6 +142,11 @@ public class HudManagementService implements IService {
         putToNodeMap(AVATAR_BG_TOP_RIGHT_INDEX, createAvatar(hudAtlas));
         putToNodeMap(AVATAR_BG_TOP_LEFT_INDEX, createAvatar(hudAtlas));
 
+        //create avatar icons
+        putToNodeMap(AVATAR_ICON_BOTTOM_RIGHT_INDEX, createAvatarIcon(hudAtlas));
+        putToNodeMap(AVATAR_ICON_TOP_RIGHT_INDEX, createAvatarIcon(hudAtlas));
+        putToNodeMap(AVATAR_ICON_TOP_LEFT_INDEX, createAvatarIcon(hudAtlas));
+
         //create action buttons
         putToNodeMap(DONE_BUTTON_INDEX, createDoneButton(hudAtlas));
         putToNodeMap(TAKE_BUTTON_INDEX, createTakeButton(hudAtlas));
@@ -162,6 +167,10 @@ public class HudManagementService implements IService {
         //at the beginning some nodes might have a different state
         setupInitialState();
 
+    }
+
+    private YANTexturedNode createAvatarIcon(YANTextureAtlas hudAtlas) {
+        return new YANTexturedNode(hudAtlas.getTextureRegion("avatar.png"));
     }
 
     private YANTexturedNode createCardGlow(YANTextureAtlas hudAtlas) {
@@ -285,13 +294,22 @@ public class HudManagementService implements IService {
         getNode(AVATAR_BG_TOP_RIGHT_INDEX).setSize(newWidth * topAvatarsScaleFactor, newHeight * topAvatarsScaleFactor);
         getNode(AVATAR_BG_TOP_LEFT_INDEX).setSize(newWidth * topAvatarsScaleFactor, newHeight * topAvatarsScaleFactor);
 
+        //set avatar icons
+        //check how much the icon smaller than background
+        float avatarIconToAvatarBgScaleFactor = getNode(AVATAR_ICON_BOTTOM_RIGHT_INDEX).getTextureRegion().getWidth() / getNode(AVATAR_BG_TOP_RIGHT_INDEX).getTextureRegion().getWidth();
+
+        float bottomIconSize = getNode(AVATAR_BG_BOTTOM_RIGHT_INDEX).getSize().getX() * avatarIconToAvatarBgScaleFactor;
+        //set bottom avatar icon
+        getNode(AVATAR_ICON_BOTTOM_RIGHT_INDEX).setSize(bottomIconSize, bottomIconSize);
+
+        //set top avatar icons
+        float topIconsSize = getNode(AVATAR_BG_TOP_RIGHT_INDEX).getSize().getX() * avatarIconToAvatarBgScaleFactor;
+        getNode(AVATAR_ICON_TOP_RIGHT_INDEX).setSize(topIconsSize, topIconsSize);
+        getNode(AVATAR_ICON_TOP_LEFT_INDEX).setSize(topIconsSize, topIconsSize);
+
         //set action buttons size
-        YANTexturedNode doneBtn = getNode(DONE_BUTTON_INDEX);
-        aspectRatio = doneBtn.getTextureRegion().getWidth() / doneBtn.getTextureRegion().getHeight();
-        newWidth = sceneSize.getX() * bottomAvatarScaleFactor;
-        newHeight = newWidth / aspectRatio;
-        doneBtn.setSize(newWidth, newHeight);
-        getNode(TAKE_BUTTON_INDEX).setSize(newWidth, newHeight);
+        getNode(DONE_BUTTON_INDEX).setSize(bottomIconSize, bottomIconSize);
+        getNode(TAKE_BUTTON_INDEX).setSize(bottomIconSize, bottomIconSize);
 
         //set trump image size
         YANTexturedNode trumpImage = getNode(TRUMP_IMAGE_INDEX);
@@ -338,33 +356,57 @@ public class HudManagementService implements IService {
         //layout avatars
         float offsetX = sceneSize.getX() * 0.01f;
 
-        //setup avatar for bottom player
-        YANTexturedNode avatar = getNode(AVATAR_BG_BOTTOM_RIGHT_INDEX);
-        avatar.setAnchorPoint(1f, 1f);
-        avatar.setSortingLayer(HUD_SORTING_LAYER + 1);
-        avatar.setPosition(sceneSize.getX() - offsetX, sceneSize.getY() - offsetX);
+        //setup avatarBg for bottom player
+        YANTexturedNode avatarBg = getNode(AVATAR_BG_BOTTOM_RIGHT_INDEX);
+        avatarBg.setAnchorPoint(1f, 1f);
+        avatarBg.setSortingLayer(HUD_SORTING_LAYER + 1);
+        avatarBg.setPosition(sceneSize.getX() - offsetX, sceneSize.getY() - offsetX);
 
-        //take action is at the same place as bottom avatar
-        getNode(TAKE_BUTTON_INDEX).setSortingLayer(avatar.getSortingLayer() + 1);
-        getNode(TAKE_BUTTON_INDEX).setPosition(avatar.getPosition().getX() - avatar.getSize().getX(), avatar.getPosition().getY() - avatar.getSize().getY());
+        //setup bottom avatar icon
+        YANTexturedNode bottomAvatarIcon = getNode(AVATAR_ICON_BOTTOM_RIGHT_INDEX);
+        bottomAvatarIcon.setAnchorPoint(1f, 1f);
+        bottomAvatarIcon.setSortingLayer(avatarBg.getSortingLayer() + 1);
+        float offsetSize = (avatarBg.getSize().getX() - bottomAvatarIcon.getSize().getX()) / 2;
+        bottomAvatarIcon.setPosition(avatarBg.getPosition().getX() - offsetSize, avatarBg.getPosition().getY() - offsetSize);
 
-        //bito action is at the same place as bottom avatar
-        getNode(DONE_BUTTON_INDEX).setSortingLayer(avatar.getSortingLayer() + 1);
-        getNode(DONE_BUTTON_INDEX).setPosition(avatar.getPosition().getX() - avatar.getSize().getX(), avatar.getPosition().getY() - avatar.getSize().getY());
+        //take action is at the same place as bottom avatarBg
+        YANTexturedNode takeButton = getNode(TAKE_BUTTON_INDEX);
+        takeButton.setAnchorPoint(1f, 1f);
+        takeButton.setSortingLayer(bottomAvatarIcon.getSortingLayer() + 1);
+        takeButton.setPosition(bottomAvatarIcon.getPosition().getX(), bottomAvatarIcon.getPosition().getY());
 
+        //finish action is at the same place as bottom avatarBg
+        YANTexturedNode doneButton = getNode(DONE_BUTTON_INDEX);
+        doneButton.setSortingLayer(bottomAvatarIcon.getSortingLayer() + 1);
+        doneButton.setAnchorPoint(1f, 1f);
+        doneButton.setPosition(takeButton.getPosition().getX(), takeButton.getPosition().getY());
 
-        //setup avatar for top right player
+        //setup avatarBg for top right player
         float topOffset = sceneSize.getY() * 0.07f;
-        avatar = getNode(AVATAR_BG_TOP_RIGHT_INDEX);
-        avatar.setAnchorPoint(1f, 0f);
-        avatar.setSortingLayer(HUD_SORTING_LAYER + 1);
-        avatar.setPosition(sceneSize.getX() - offsetX, topOffset);
+        avatarBg = getNode(AVATAR_BG_TOP_RIGHT_INDEX);
+        avatarBg.setAnchorPoint(1f, 0f);
+        avatarBg.setSortingLayer(HUD_SORTING_LAYER + 1);
+        avatarBg.setPosition(sceneSize.getX() - offsetX, topOffset);
 
-        //setup avatar for top left player
-        avatar = getNode(AVATAR_BG_TOP_LEFT_INDEX);
-        avatar.setAnchorPoint(0f, 0f);
-        avatar.setSortingLayer(HUD_SORTING_LAYER + 1);
-        avatar.setPosition(offsetX, topOffset);
+        //setup icon for top right player
+        YANTexturedNode topRightAvatarIcon = getNode(AVATAR_ICON_TOP_RIGHT_INDEX);
+        topRightAvatarIcon.setAnchorPoint(1f, 0f);
+        topRightAvatarIcon.setSortingLayer(avatarBg.getSortingLayer() + 1);
+        offsetSize = (avatarBg.getSize().getX() - topRightAvatarIcon.getSize().getX()) / 2;
+        topRightAvatarIcon.setPosition(avatarBg.getPosition().getX() - offsetSize, avatarBg.getPosition().getY() + offsetSize);
+
+        //setup avatarBg for top left player
+        avatarBg = getNode(AVATAR_BG_TOP_LEFT_INDEX);
+        avatarBg.setAnchorPoint(0f, 0f);
+        avatarBg.setSortingLayer(HUD_SORTING_LAYER + 1);
+        avatarBg.setPosition(offsetX, topOffset);
+
+        //setup icon for top left player
+        YANTexturedNode topLeftAvatarIcon = getNode(AVATAR_ICON_TOP_LEFT_INDEX);
+        topLeftAvatarIcon.setAnchorPoint(0f, 0f);
+        topLeftAvatarIcon.setSortingLayer(avatarBg.getSortingLayer() + 1);
+        offsetSize = (avatarBg.getSize().getX() - topLeftAvatarIcon.getSize().getX()) / 2;
+        topLeftAvatarIcon.setPosition(avatarBg.getPosition().getX() + offsetSize, avatarBg.getPosition().getY() + offsetSize);
 
         //trump image
         getNode(TRUMP_IMAGE_INDEX).setPosition((sceneSize.getX() - getNode(TRUMP_IMAGE_INDEX).getSize().getX()) / 2, sceneSize.getY() * 0.06f);
