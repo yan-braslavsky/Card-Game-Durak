@@ -2,6 +2,7 @@ package com.yan.durak.msg_processor.subprocessors.impl;
 
 import com.yan.durak.gamelogic.communication.protocol.messages.PlayerTakesActionMessage;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
+import com.yan.durak.service.ServiceLocator;
 import com.yan.durak.service.services.HudManagementService;
 import com.yan.durak.service.services.PileLayouterManagerService;
 import com.yan.durak.service.services.PileManagerService;
@@ -34,13 +35,13 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
     public void processMessage(PlayerTakesActionMessage serverMessage) {
         updateActivePlayerState(serverMessage.getMessageData());
 
-        //update cock only on attack
-        if (PlayerTakesActionMessage.PlayerAction.valueOf(serverMessage.getMessageData().getAction()) != PlayerTakesActionMessage.PlayerAction.ATTACK)
-            return;
+//        //update cock only on attack
+//        if (PlayerTakesActionMessage.PlayerAction.valueOf(serverMessage.getMessageData().getAction()) != PlayerTakesActionMessage.PlayerAction.ATTACK)
+//            return;
 
         //TODO : update timer animation
-//        @HudManagementService.HudNode int cockNodeIndex = retrieveCockPosition(serverMessage.getMessageData().getPlayerIndex());
-//        ServiceLocator.locateService(HudManagementService.class).resetCockAnimation(cockNodeIndex);
+        @HudManagementService.HudNode int timerNodeIndex = retrieveTimerPosition(serverMessage.getMessageData().getPlayerIndex());
+        ServiceLocator.locateService(HudManagementService.class).resetTimerAnimation(timerNodeIndex);
     }
 
     private void updateActivePlayerState(PlayerTakesActionMessage.ProtocolMessageData messageData) {
@@ -69,18 +70,18 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
         mPileLayouterManager.getPileLayouterForPile(mPileManager.getBottomPlayerPile()).layout();
     }
 
-//    private
-//    @HudManagementService.HudNode
-//    int retrieveCockPosition(int actionPlayerIndex) {
-//        switch (mGameInfo.getPlayerForIndex(actionPlayerIndex)) {
-//            case BOTTOM_PLAYER:
-//                return HudManagementService.COCK_BOTTOM_RIGHT_INDEX;
-//            case TOP_RIGHT_PLAYER:
-//                return HudManagementService.COCK_TOP_RIGHT_INDEX;
-//            case TOP_LEFT_PLAYER:
-//                return HudManagementService.COCK_TOP_LEFT_INDEX;
-//            default:
-//                throw new RuntimeException("player not found for index : " + actionPlayerIndex);
-//        }
-//    }
+    private
+    @HudManagementService.HudNode
+    int retrieveTimerPosition(int actionPlayerIndex) {
+        switch (mGameInfo.getPlayerForIndex(actionPlayerIndex)) {
+            case BOTTOM_PLAYER:
+                return HudManagementService.CIRCLE_TIMER_BOTTOM_RIGHT_INDEX;
+            case TOP_RIGHT_PLAYER:
+                return HudManagementService.CIRCLE_TIMER_TOP_RIGHT_INDEX;
+            case TOP_LEFT_PLAYER:
+                return HudManagementService.CIRCLE_TIMER_TOP_LEFT_INDEX;
+            default:
+                throw new RuntimeException("player not found for index : " + actionPlayerIndex);
+        }
+    }
 }

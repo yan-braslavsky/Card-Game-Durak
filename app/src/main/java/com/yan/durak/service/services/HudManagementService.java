@@ -32,6 +32,7 @@ import glengine.yan.glengine.util.loggers.YANLogger;
  */
 public class HudManagementService implements IService {
 
+
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
             AVATAR_BG_BOTTOM_RIGHT_INDEX,
@@ -128,6 +129,11 @@ public class HudManagementService implements IService {
     //Cached click listeners for action buttons
     private YANButtonNode.YanButtonNodeClickListener mDoneBtnClickListener;
     private YANButtonNode.YanButtonNodeClickListener mTakeButtonClickListener;
+
+    /**
+     * Timer node that is currently animated
+     */
+    private YANCircleNode mActiveTimerNode;
 
 
     public HudManagementService(TweenManager tweenManager) {
@@ -500,6 +506,13 @@ public class HudManagementService implements IService {
     }
 
     public void update(float deltaTimeSeconds) {
+        if (mActiveTimerNode == null)
+            return;
+
+        //TODO : make timer actualy dependant on time
+        float currentPercentage = mActiveTimerNode.getPieCirclePercentage();
+        currentPercentage -= 0.0006f;
+        mActiveTimerNode.setPieCirclePercentage(currentPercentage);
     }
 
     public void setTakeButtonClickListener(YANButtonNode.YanButtonNodeClickListener listener) {
@@ -572,5 +585,18 @@ public class HudManagementService implements IService {
 
         //animate
         sequence.start(mTweenManager);
+    }
+
+    public void resetTimerAnimation(@HudManagementService.HudNode int timerNodeIndex) {
+
+        if(mActiveTimerNode != null){
+            //reset previous timer
+            mActiveTimerNode.setColor(TIMER_RETALIATION_COLOR.getR(),TIMER_RETALIATION_COLOR.getG(),TIMER_RETALIATION_COLOR.getB());
+            mActiveTimerNode.setPieCirclePercentage(1f);
+        }
+
+        //set new timer as active
+        mActiveTimerNode = getNode(timerNodeIndex);
+        mActiveTimerNode.setColor(TIMER_THROW_IN_COLOR.getR(),TIMER_THROW_IN_COLOR.getG(),TIMER_THROW_IN_COLOR.getB());
     }
 }
