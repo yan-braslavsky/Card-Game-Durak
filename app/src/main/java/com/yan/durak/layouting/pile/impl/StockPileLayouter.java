@@ -19,9 +19,9 @@ public class StockPileLayouter extends BasePileLayouter {
     /**
      * The scale difference from card original size
      */
-    private static final float STOCK_PILE_SIZE_SCALE = 0.7f;
+    private static final float STOCK_PILE_SIZE_SCALE = 0.8f;
     private static final float STOCK_PILE_CARDS_ROTATION = 95;
-    public static final float TRUMP_CARD_ROTATION = 190f;
+    public static final float TRUMP_CARD_ROTATION = -190f;
     public static final float TRUMP_CARD_TOP_OFFSET = 0.055f;
     private final HudManagementService mHudManagementService;
     private final GameInfo mGameInfo;
@@ -40,9 +40,10 @@ public class StockPileLayouter extends BasePileLayouter {
     @Override
     public void init(float sceneWidth, float sceneHeight) {
 
-        //place directly at the middle of the screen on top
-        float stockPilePositionX = (sceneWidth - mCardNodesManager.getCardNodeOriginalWidth()) / 2;
-        float stockPilePositionY = 0;
+        //place directly at the middle of the screen on top and then offset to the right
+        float offset = sceneWidth * 0.022f;
+        float stockPilePositionX = ((sceneWidth - mCardNodesManager.getCardNodeOriginalWidth()) / 2) + offset;
+        float stockPilePositionY = offset;
 
         //cache trump card offset
         mTrumpCardPositionY = sceneHeight * TRUMP_CARD_TOP_OFFSET;

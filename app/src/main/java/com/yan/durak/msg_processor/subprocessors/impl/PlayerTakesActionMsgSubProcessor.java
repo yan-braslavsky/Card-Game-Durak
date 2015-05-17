@@ -2,7 +2,6 @@ package com.yan.durak.msg_processor.subprocessors.impl;
 
 import com.yan.durak.gamelogic.communication.protocol.messages.PlayerTakesActionMessage;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
-import com.yan.durak.service.ServiceLocator;
 import com.yan.durak.service.services.HudManagementService;
 import com.yan.durak.service.services.PileLayouterManagerService;
 import com.yan.durak.service.services.PileManagerService;
@@ -10,7 +9,6 @@ import com.yan.durak.session.GameInfo;
 import com.yan.durak.session.states.impl.AttackState;
 import com.yan.durak.session.states.impl.OtherPlayerTurnState;
 import com.yan.durak.session.states.impl.RetaliationState;
-import com.yan.durak.session.states.impl.ThrowInState;
 
 import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
@@ -40,8 +38,9 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
         if (PlayerTakesActionMessage.PlayerAction.valueOf(serverMessage.getMessageData().getAction()) != PlayerTakesActionMessage.PlayerAction.ATTACK)
             return;
 
-        @HudManagementService.HudNode int cockNodeIndex = retrieveCockPosition(serverMessage.getMessageData().getPlayerIndex());
-        ServiceLocator.locateService(HudManagementService.class).resetCockAnimation(cockNodeIndex);
+        //TODO : update timer animation
+//        @HudManagementService.HudNode int cockNodeIndex = retrieveCockPosition(serverMessage.getMessageData().getPlayerIndex());
+//        ServiceLocator.locateService(HudManagementService.class).resetCockAnimation(cockNodeIndex);
     }
 
     private void updateActivePlayerState(PlayerTakesActionMessage.ProtocolMessageData messageData) {
@@ -70,18 +69,18 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
         mPileLayouterManager.getPileLayouterForPile(mPileManager.getBottomPlayerPile()).layout();
     }
 
-    private
-    @HudManagementService.HudNode
-    int retrieveCockPosition(int actionPlayerIndex) {
-        switch (mGameInfo.getPlayerForIndex(actionPlayerIndex)) {
-            case BOTTOM_PLAYER:
-                return HudManagementService.COCK_BOTTOM_RIGHT_INDEX;
-            case TOP_RIGHT_PLAYER:
-                return HudManagementService.COCK_TOP_RIGHT_INDEX;
-            case TOP_LEFT_PLAYER:
-                return HudManagementService.COCK_TOP_LEFT_INDEX;
-            default:
-                throw new RuntimeException("player not found for index : " + actionPlayerIndex);
-        }
-    }
+//    private
+//    @HudManagementService.HudNode
+//    int retrieveCockPosition(int actionPlayerIndex) {
+//        switch (mGameInfo.getPlayerForIndex(actionPlayerIndex)) {
+//            case BOTTOM_PLAYER:
+//                return HudManagementService.COCK_BOTTOM_RIGHT_INDEX;
+//            case TOP_RIGHT_PLAYER:
+//                return HudManagementService.COCK_TOP_RIGHT_INDEX;
+//            case TOP_LEFT_PLAYER:
+//                return HudManagementService.COCK_TOP_LEFT_INDEX;
+//            default:
+//                throw new RuntimeException("player not found for index : " + actionPlayerIndex);
+//        }
+//    }
 }

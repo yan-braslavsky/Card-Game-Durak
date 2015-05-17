@@ -30,7 +30,6 @@ public class TopLeftPlayerPileLayouter extends BasePileLayouter {
 
         //init 3 points layouter to create a fan of opponents hands
         mThreePointFanLayouterTopLeft = new ThreePointFanLayouter(2);
-
         this.mSlotsList = new ArrayList<>();
     }
 
@@ -38,9 +37,9 @@ public class TopLeftPlayerPileLayouter extends BasePileLayouter {
     public void init(float sceneWidth, float sceneHeight) {
 
         //offset from the beginning of the screen left
-        float offsetX = sceneWidth * 0.01f;
-        float topOffset = sceneHeight * 0.07f;
-        float fanDistance = sceneWidth * 0.05f;
+        float offsetX = sceneWidth * 0.02f;
+        float topOffset = sceneHeight * 0.09f;
+        float fanDistance = sceneWidth * 0.1f;
 
         YANVector2 pos = new YANVector2(offsetX, topOffset);
         YANVector2 origin = new YANVector2(pos.getX() * 4, pos.getY());

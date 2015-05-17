@@ -31,20 +31,18 @@ public class HudManagementService implements IService {
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
-            AVATAR_BOTTOM_RIGHT_INDEX,
-            AVATAR_TOP_RIGHT_INDEX,
-            AVATAR_TOP_LEFT_INDEX,
-            COCK_BOTTOM_RIGHT_INDEX,
-            COCK_TOP_RIGHT_INDEX,
-            COCK_TOP_LEFT_INDEX,
-            COCK_SCISSOR_INDEX,
-            BITO_BUTTON_INDEX,
+            AVATAR_BG_BOTTOM_RIGHT_INDEX,
+            AVATAR_BG_TOP_RIGHT_INDEX,
+            AVATAR_BG_TOP_LEFT_INDEX,
+            AVATAR_ICON_BOTTOM_RIGHT_INDEX,
+            AVATAR_ICON_TOP_RIGHT_INDEX,
+            AVATAR_ICON_TOP_LEFT_INDEX,
+            DONE_BUTTON_INDEX,
             TAKE_BUTTON_INDEX,
             TRUMP_IMAGE_INDEX,
             YOU_WIN_IMAGE_INDEX,
             YOU_LOOSE_IMAGE_INDEX,
             V_BUTTON_INDEX,
-
             /**
              * We don't want to show all the cards in a stock pile.
              * Instead we are showing only one, which is this node.
@@ -58,24 +56,32 @@ public class HudManagementService implements IService {
     public @interface HudNode {
     }
 
-    public static final int AVATAR_BOTTOM_RIGHT_INDEX = 0;
-    public static final int AVATAR_TOP_RIGHT_INDEX = 1;
-    public static final int AVATAR_TOP_LEFT_INDEX = 2;
-    public static final int COCK_BOTTOM_RIGHT_INDEX = 3;
-    public static final int COCK_TOP_RIGHT_INDEX = 4;
-    public static final int COCK_TOP_LEFT_INDEX = 5;
-    public static final int COCK_SCISSOR_INDEX = 6;
-    public static final int BITO_BUTTON_INDEX = 7;
+    //Avatar backgrounds
+    public static final int AVATAR_BG_BOTTOM_RIGHT_INDEX = 0;
+    public static final int AVATAR_BG_TOP_RIGHT_INDEX = 1;
+    public static final int AVATAR_BG_TOP_LEFT_INDEX = 2;
+
+    //Avatar icons
+    public static final int AVATAR_ICON_BOTTOM_RIGHT_INDEX = 3;
+    public static final int AVATAR_ICON_TOP_RIGHT_INDEX = 4;
+    public static final int AVATAR_ICON_TOP_LEFT_INDEX = 5;
+    public static final int TRUMP_IMAGE_INDEX = 6;
+
+    //Action buttons
+    public static final int DONE_BUTTON_INDEX = 7;
     public static final int TAKE_BUTTON_INDEX = 8;
-    public static final int TRUMP_IMAGE_INDEX = 9;
+
+    public static final int GLOW_INDEX = 9;
+
+    //End game dialogs
     public static final int YOU_WIN_IMAGE_INDEX = 10;
     public static final int YOU_LOOSE_IMAGE_INDEX = 11;
     public static final int V_BUTTON_INDEX = 12;
+
+
     public static final int MASK_CARD_INDEX = 13;
     public static final int FENCE_INDEX = 14;
     public static final int GLADE_INDEX = 15;
-    public static final int GLOW_INDEX = 16;
-
 
     /**
      * By default hud will be placed on hud sorting layer and above
@@ -96,7 +102,6 @@ public class HudManagementService implements IService {
      * All nodes that exist in the hud manager will be placed in this map
      */
     private Map<Integer, YANTexturedNode> mHudNodesMap;
-    private float mScissoringCockVisibleStartY;
 
     private YANTextureAtlas mHudAtlas;
     private TweenCallback showVButtonTweenCallback = new TweenCallback() {
@@ -109,7 +114,7 @@ public class HudManagementService implements IService {
     };
 
     //Cached click listeners for action buttons
-    private YANButtonNode.YanButtonNodeClickListener mBitoBtnClickListener;
+    private YANButtonNode.YanButtonNodeClickListener mDoneBtnClickListener;
     private YANButtonNode.YanButtonNodeClickListener mTakeButtonClickListener;
 
 
@@ -133,18 +138,12 @@ public class HudManagementService implements IService {
         putToNodeMap(TRUMP_IMAGE_INDEX, createTrumpImage(hudAtlas));
 
         //create avatars
-        putToNodeMap(AVATAR_BOTTOM_RIGHT_INDEX, createAvatar(hudAtlas));
-        putToNodeMap(AVATAR_TOP_RIGHT_INDEX, createAvatar(hudAtlas));
-        putToNodeMap(AVATAR_TOP_LEFT_INDEX, createAvatar(hudAtlas));
-
-        //create cocks
-        putToNodeMap(COCK_BOTTOM_RIGHT_INDEX, createCock(hudAtlas));
-        putToNodeMap(COCK_TOP_RIGHT_INDEX, createCock(hudAtlas));
-        putToNodeMap(COCK_TOP_LEFT_INDEX, createCock(hudAtlas));
-        putToNodeMap(COCK_SCISSOR_INDEX, createScissorCock(hudAtlas));
+        putToNodeMap(AVATAR_BG_BOTTOM_RIGHT_INDEX, createAvatar(hudAtlas));
+        putToNodeMap(AVATAR_BG_TOP_RIGHT_INDEX, createAvatar(hudAtlas));
+        putToNodeMap(AVATAR_BG_TOP_LEFT_INDEX, createAvatar(hudAtlas));
 
         //create action buttons
-        putToNodeMap(BITO_BUTTON_INDEX, createBitoButton(hudAtlas));
+        putToNodeMap(DONE_BUTTON_INDEX, createDoneButton(hudAtlas));
         putToNodeMap(TAKE_BUTTON_INDEX, createTakeButton(hudAtlas));
 
         //end game popups
@@ -171,9 +170,6 @@ public class HudManagementService implements IService {
 
     private void setupInitialState() {
 
-        //top left cock is looking the other way
-        getNode(COCK_TOP_LEFT_INDEX).setRotationY(180);
-
         //popup images are invisible
         getNode(YOU_WIN_IMAGE_INDEX).setOpacity(0);
         getNode(YOU_LOOSE_IMAGE_INDEX).setOpacity(0);
@@ -187,7 +183,7 @@ public class HudManagementService implements IService {
 
         //action buttons also have zero opacity
         getNode(TAKE_BUTTON_INDEX).setOpacity(0);
-        getNode(BITO_BUTTON_INDEX).setOpacity(0);
+        getNode(DONE_BUTTON_INDEX).setOpacity(0);
         getNode(GLOW_INDEX).setOpacity(0);
     }
 
@@ -238,11 +234,11 @@ public class HudManagementService implements IService {
     }
 
     private YANButtonNode createTakeButton(YANTextureAtlas hudAtlas) {
-        return new YANButtonNode(hudAtlas.getTextureRegion("take.png"), hudAtlas.getTextureRegion("take.png"));
+        return new YANButtonNode(hudAtlas.getTextureRegion("btn_take.png"), hudAtlas.getTextureRegion("btn_take.png"));
     }
 
-    private YANButtonNode createBitoButton(YANTextureAtlas hudAtlas) {
-        return new YANButtonNode(hudAtlas.getTextureRegion("bito.png"), hudAtlas.getTextureRegion("bito.png"));
+    private YANButtonNode createDoneButton(YANTextureAtlas hudAtlas) {
+        return new YANButtonNode(hudAtlas.getTextureRegion("btn_done.png"), hudAtlas.getTextureRegion("btn_done.png"));
     }
 
     private <T extends YANTexturedNode> void putToNodeMap(@HudNode int nodeIndex, T node) {
@@ -267,38 +263,35 @@ public class HudManagementService implements IService {
     }
 
     private YANTexturedNode createAvatar(YANTextureAtlas hudAtlas) {
-        YANTexturedNode avatar = new YANTexturedNode(hudAtlas.getTextureRegion("stump.png"));
+        YANTexturedNode avatar = new YANTexturedNode(hudAtlas.getTextureRegion("stump_bg.png"));
         avatar.setSortingLayer(HUD_SORTING_LAYER);
         return avatar;
     }
 
     public void setNodesSizes(YANReadOnlyVector2 sceneSize) {
+
         //set avatars sizes
-        YANTexturedNode avatar = getNode(AVATAR_BOTTOM_RIGHT_INDEX);
+        float bottomAvatarScaleFactor = 0.3f;
+        YANTexturedNode avatar = getNode(AVATAR_BG_BOTTOM_RIGHT_INDEX);
         float aspectRatio = avatar.getTextureRegion().getWidth() / avatar.getTextureRegion().getHeight();
-        float newWidth = sceneSize.getX() * 0.2f;
+        float newWidth = sceneSize.getX() * bottomAvatarScaleFactor;
         float newHeight = newWidth / aspectRatio;
 
-        //set action buttons size
-        getNode(BITO_BUTTON_INDEX).setSize(newWidth, newHeight);
-        getNode(TAKE_BUTTON_INDEX).setSize(newWidth, newHeight);
-
         //avatars
-        getNode(AVATAR_BOTTOM_RIGHT_INDEX).setSize(newWidth, newHeight);
-        getNode(AVATAR_TOP_RIGHT_INDEX).setSize(newWidth, newHeight);
-        getNode(AVATAR_TOP_LEFT_INDEX).setSize(newWidth, newHeight);
+        getNode(AVATAR_BG_BOTTOM_RIGHT_INDEX).setSize(newWidth, newHeight);
 
-        //set cock sizes
-        YANTexturedNode cock = getNode(COCK_BOTTOM_RIGHT_INDEX);
-        aspectRatio = cock.getTextureRegion().getWidth() / cock.getTextureRegion().getHeight();
-        newWidth = sceneSize.getX() * 0.1f;
+        //top avatars is smaller than bottom one
+        float topAvatarsScaleFactor = 0.8f;
+        getNode(AVATAR_BG_TOP_RIGHT_INDEX).setSize(newWidth * topAvatarsScaleFactor, newHeight * topAvatarsScaleFactor);
+        getNode(AVATAR_BG_TOP_LEFT_INDEX).setSize(newWidth * topAvatarsScaleFactor, newHeight * topAvatarsScaleFactor);
+
+        //set action buttons size
+        YANTexturedNode doneBtn = getNode(DONE_BUTTON_INDEX);
+        aspectRatio = doneBtn.getTextureRegion().getWidth() / doneBtn.getTextureRegion().getHeight();
+        newWidth = sceneSize.getX() * bottomAvatarScaleFactor;
         newHeight = newWidth / aspectRatio;
-
-        //all cocks
-        getNode(COCK_BOTTOM_RIGHT_INDEX).setSize(newWidth, newHeight);
-        getNode(COCK_TOP_RIGHT_INDEX).setSize(newWidth, newHeight);
-        getNode(COCK_TOP_LEFT_INDEX).setSize(newWidth, newHeight);
-        getNode(COCK_SCISSOR_INDEX).setSize(newWidth, newHeight);
+        doneBtn.setSize(newWidth, newHeight);
+        getNode(TAKE_BUTTON_INDEX).setSize(newWidth, newHeight);
 
         //set trump image size
         YANTexturedNode trumpImage = getNode(TRUMP_IMAGE_INDEX);
@@ -333,7 +326,7 @@ public class HudManagementService implements IService {
         float gladeWidth = Math.min(sceneSize.getX(), sceneSize.getY()) * 0.9f;
         getNode(GLADE_INDEX).setSize(gladeWidth, gladeWidth / aspectRatio);
 
-        //later glow size will be overriden
+        //later glow size will be overridden
         getNode(GLOW_INDEX).setSize(0, 0);
     }
 
@@ -346,44 +339,32 @@ public class HudManagementService implements IService {
         float offsetX = sceneSize.getX() * 0.01f;
 
         //setup avatar for bottom player
-        YANTexturedNode avatar = getNode(AVATAR_BOTTOM_RIGHT_INDEX);
+        YANTexturedNode avatar = getNode(AVATAR_BG_BOTTOM_RIGHT_INDEX);
         avatar.setAnchorPoint(1f, 1f);
         avatar.setSortingLayer(HUD_SORTING_LAYER + 1);
         avatar.setPosition(sceneSize.getX() - offsetX, sceneSize.getY() - offsetX);
-        getNode(COCK_BOTTOM_RIGHT_INDEX).setSortingLayer(avatar.getSortingLayer());
-        getNode(COCK_BOTTOM_RIGHT_INDEX).setPosition(avatar.getPosition().getX() - avatar.getSize().getX() / 2 - getNode(COCK_BOTTOM_RIGHT_INDEX).getSize().getX() / 2,
-                avatar.getPosition().getY() - avatar.getSize().getY() - getNode(COCK_BOTTOM_RIGHT_INDEX).getSize().getY());
 
         //take action is at the same place as bottom avatar
         getNode(TAKE_BUTTON_INDEX).setSortingLayer(avatar.getSortingLayer() + 1);
         getNode(TAKE_BUTTON_INDEX).setPosition(avatar.getPosition().getX() - avatar.getSize().getX(), avatar.getPosition().getY() - avatar.getSize().getY());
 
         //bito action is at the same place as bottom avatar
-        getNode(BITO_BUTTON_INDEX).setSortingLayer(avatar.getSortingLayer() + 1);
-        getNode(BITO_BUTTON_INDEX).setPosition(avatar.getPosition().getX() - avatar.getSize().getX(), avatar.getPosition().getY() - avatar.getSize().getY());
+        getNode(DONE_BUTTON_INDEX).setSortingLayer(avatar.getSortingLayer() + 1);
+        getNode(DONE_BUTTON_INDEX).setPosition(avatar.getPosition().getX() - avatar.getSize().getX(), avatar.getPosition().getY() - avatar.getSize().getY());
 
 
         //setup avatar for top right player
         float topOffset = sceneSize.getY() * 0.07f;
-        avatar = getNode(AVATAR_TOP_RIGHT_INDEX);
+        avatar = getNode(AVATAR_BG_TOP_RIGHT_INDEX);
         avatar.setAnchorPoint(1f, 0f);
         avatar.setSortingLayer(HUD_SORTING_LAYER + 1);
         avatar.setPosition(sceneSize.getX() - offsetX, topOffset);
-        getNode(COCK_TOP_RIGHT_INDEX).setSortingLayer(avatar.getSortingLayer());
-        getNode(COCK_TOP_RIGHT_INDEX).setPosition(avatar.getPosition().getX() - avatar.getSize().getX() / 2 - getNode(COCK_TOP_RIGHT_INDEX).getSize().getX() / 2,
-                avatar.getPosition().getY() - getNode(COCK_TOP_RIGHT_INDEX).getSize().getY());
-
 
         //setup avatar for top left player
-        avatar = getNode(AVATAR_TOP_LEFT_INDEX);
+        avatar = getNode(AVATAR_BG_TOP_LEFT_INDEX);
         avatar.setAnchorPoint(0f, 0f);
         avatar.setSortingLayer(HUD_SORTING_LAYER + 1);
         avatar.setPosition(offsetX, topOffset);
-        getNode(COCK_TOP_LEFT_INDEX).setSortingLayer(avatar.getSortingLayer());
-        getNode(COCK_TOP_LEFT_INDEX).setPosition(avatar.getPosition().getX() + getNode(COCK_TOP_LEFT_INDEX).getSize().getX() / 2, avatar.getPosition().getY() - getNode(COCK_TOP_LEFT_INDEX).getSize().getY());
-
-        //filled in cock by default is out of the screen
-        getNode(COCK_SCISSOR_INDEX).setPosition(-sceneSize.getX(), 0);
 
         //trump image
         getNode(TRUMP_IMAGE_INDEX).setPosition((sceneSize.getX() - getNode(TRUMP_IMAGE_INDEX).getSize().getX()) / 2, sceneSize.getY() * 0.06f);
@@ -401,7 +382,6 @@ public class HudManagementService implements IService {
                 getNode(YOU_WIN_IMAGE_INDEX).getPosition().getX() - (getNode(V_BUTTON_INDEX).getSize().getX() / 2),
                 getNode(YOU_WIN_IMAGE_INDEX).getPosition().getY() - ((getNode(V_BUTTON_INDEX).getSize().getY()) * 1.25f) + popupAnchorYOffset);
 
-
         //fence
         float centerX = (sceneSize.getX() - getNode(FENCE_INDEX).getSize().getX()) / 2;
         float centerY = (sceneSize.getY() - getNode(FENCE_INDEX).getSize().getY());
@@ -414,12 +394,6 @@ public class HudManagementService implements IService {
     }
 
     public void update(float deltaTimeSeconds) {
-        //animate scissoring cock
-        YANTexturedScissorNode scissorCock = getNode(COCK_SCISSOR_INDEX);
-        scissorCock.setVisibleArea(0, mScissoringCockVisibleStartY, 1, 1);
-        mScissoringCockVisibleStartY += 0.001;
-        if (mScissoringCockVisibleStartY > 1.0)
-            mScissoringCockVisibleStartY = 0.0f;
     }
 
     public void setTakeButtonClickListener(YANButtonNode.YanButtonNodeClickListener listener) {
@@ -427,21 +401,21 @@ public class HudManagementService implements IService {
     }
 
     public void setFinishButtonClickListener(YANButtonNode.YanButtonNodeClickListener listener) {
-        mBitoBtnClickListener = listener;
+        mDoneBtnClickListener = listener;
     }
 
     public void showFinishButton() {
 
         //attach a click listener at the end of animation
-        YANButtonNode bitoBtn = getNode(BITO_BUTTON_INDEX);
-        bitoBtn.setSortingLayer(getNode(TAKE_BUTTON_INDEX).getSortingLayer() + 1);
-        bitoBtn.setOpacity(1f);
-        bitoBtn.setClickListener(mBitoBtnClickListener);
+        YANButtonNode doneBtn = getNode(DONE_BUTTON_INDEX);
+        doneBtn.setSortingLayer(getNode(TAKE_BUTTON_INDEX).getSortingLayer() + 1);
+        doneBtn.setOpacity(1f);
+        doneBtn.setClickListener(mDoneBtnClickListener);
     }
 
     public void showTakeButton() {
         YANButtonNode takeBtn = getNode(TAKE_BUTTON_INDEX);
-        takeBtn.setSortingLayer(getNode(BITO_BUTTON_INDEX).getSortingLayer() + 1);
+        takeBtn.setSortingLayer(getNode(DONE_BUTTON_INDEX).getSortingLayer() + 1);
         takeBtn.setOpacity(1f);
         takeBtn.setClickListener(mTakeButtonClickListener);
     }
@@ -454,27 +428,10 @@ public class HudManagementService implements IService {
     }
 
     public void hideFinishButton() {
-        YANButtonNode bitoBtn = getNode(BITO_BUTTON_INDEX);
-        bitoBtn.setSortingLayer(bitoBtn.getSortingLayer() - 1);
-        bitoBtn.setClickListener(null);
-        bitoBtn.setOpacity(0);
-    }
-
-    public void resetCockAnimation(@HudNode int index) {
-
-        //TODO : make cooler animation
-
-        float rotationAngle = 0;
-        YANReadOnlyVector2 newCockPosition = getNode(index).getPosition();
-        getNode(COCK_SCISSOR_INDEX).setPosition(newCockPosition.getX(), newCockPosition.getY());
-        if (index == COCK_TOP_LEFT_INDEX) {
-            rotationAngle = 180;
-        }
-
-        getNode(COCK_SCISSOR_INDEX).setRotationY(rotationAngle);
-
-        //start animating the cock down
-        mScissoringCockVisibleStartY = 1;
+        YANButtonNode doneBtn = getNode(DONE_BUTTON_INDEX);
+        doneBtn.setSortingLayer(doneBtn.getSortingLayer() - 1);
+        doneBtn.setClickListener(null);
+        doneBtn.setOpacity(0);
     }
 
     public void setTrumpSuit(String suit) {
@@ -509,15 +466,5 @@ public class HudManagementService implements IService {
 
         //animate
         sequence.start(mTweenManager);
-    }
-
-    public void setMaskCardTransform(float positionX, float positionY, float width, float height, float rotationZ) {
-        getNode(MASK_CARD_INDEX).setPosition(positionX, positionY);
-        getNode(MASK_CARD_INDEX).setSize(width, height);
-        getNode(MASK_CARD_INDEX).setRotationZ(rotationZ);
-    }
-
-    public void removeMaskCard() {
-        getNode(MASK_CARD_INDEX).setOpacity(0f);
     }
 }

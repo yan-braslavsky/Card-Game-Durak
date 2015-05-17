@@ -4,9 +4,10 @@ import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.layouting.impl.CardsLayouterSlotImpl;
 import com.yan.durak.layouting.pile.BasePileLayouter;
 import com.yan.durak.layouting.threepoint.ThreePointFanLayouter;
-import com.yan.durak.service.services.CardNodesManagerService;
+import com.yan.durak.layouting.threepoint.ThreePointLayouter;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
+import com.yan.durak.service.services.CardNodesManagerService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,23 +38,20 @@ public class TopRightPlayerPileLayouter extends BasePileLayouter {
     public void init(float sceneWidth, float sceneHeight) {
 
         //layout avatars
-        float offsetX = sceneWidth * 0.01f;
-        float topOffset = sceneHeight * 0.07f;
-
-        //TODO : calculate the position relatively without the avatar
-        float aspectRatio = 171f / 141f;
-        float avatarWidth = sceneWidth * 0.2f;
-        float avatarHeight = avatarWidth / aspectRatio;
-        YANVector2 avatarSize = new YANVector2(avatarWidth, avatarHeight);
+        float offsetX = sceneWidth * 0.02f;
+        float topOffset = sceneHeight * 0.09f;
+        YANVector2 avatarSize = new YANVector2(sceneWidth * 0.25f, sceneWidth * 0.25f);
 
         //setup 3 points for player at right top
-        float fanDistance = sceneWidth * 0.05f;
+        float fanDistance = sceneWidth * 0.1f;
 
-        YANVector2 pos = new YANVector2(sceneWidth - offsetX, topOffset);
+        YANVector2 pos = new YANVector2(sceneWidth + offsetX, topOffset);
         YANVector2 origin = new YANVector2(pos.getX() - avatarSize.getX(), pos.getY());
         YANVector2 leftBasis = new YANVector2(origin.getX(), origin.getY() + fanDistance);
         YANVector2 rightBasis = new YANVector2(origin.getX() - fanDistance, origin.getY());
+
         mThreePointFanLayouterTopRightPlayer.setThreePoints(origin, leftBasis, rightBasis);
+        mThreePointFanLayouterTopRightPlayer.setDirection(ThreePointLayouter.LayoutDirection.LTR);
 
         this.mCardWidhtForPile = mCardNodesManager.getCardNodeOriginalWidth() * OPPONENT_PILE_SIZE_SCALE;
         this.mCardHeightForPile = mCardNodesManager.getCardNodeOriginalHeight() * OPPONENT_PILE_SIZE_SCALE;
