@@ -17,10 +17,13 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.assets.atlas.YANTextureAtlas;
+import glengine.yan.glengine.nodes.YANBaseNode;
 import glengine.yan.glengine.nodes.YANButtonNode;
+import glengine.yan.glengine.nodes.YANCircleNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.nodes.YANTexturedScissorNode;
 import glengine.yan.glengine.tween.YANTweenNodeAccessor;
+import glengine.yan.glengine.util.colors.YANColor;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
 import glengine.yan.glengine.util.loggers.YANLogger;
 
@@ -51,7 +54,10 @@ public class HudManagementService implements IService {
             MASK_CARD_INDEX,
             FENCE_INDEX,
             GLADE_INDEX,
-            GLOW_INDEX
+            GLOW_INDEX,
+            CIRCLE_TIMER_BOTTOM_RIGHT_INDEX,
+            CIRCLE_TIMER_TOP_RIGHT_INDEX,
+            CIRCLE_TIMER_TOP_LEFT_INDEX
     })
     public @interface HudNode {
     }
@@ -82,6 +88,9 @@ public class HudManagementService implements IService {
     public static final int MASK_CARD_INDEX = 13;
     public static final int FENCE_INDEX = 14;
     public static final int GLADE_INDEX = 15;
+    public static final int CIRCLE_TIMER_BOTTOM_RIGHT_INDEX = 16;
+    public static final int CIRCLE_TIMER_TOP_RIGHT_INDEX = 17;
+    public static final int CIRCLE_TIMER_TOP_LEFT_INDEX = 18;
 
     /**
      * By default hud will be placed on hud sorting layer and above
@@ -101,7 +110,10 @@ public class HudManagementService implements IService {
     /**
      * All nodes that exist in the hud manager will be placed in this map
      */
-    private Map<Integer, YANTexturedNode> mHudNodesMap;
+    private Map<Integer, YANBaseNode> mHudNodesMap;
+
+    private static final YANColor TIMER_RETALIATION_COLOR = YANColor.createFromHexColor(0xFFF200);
+    private static final YANColor TIMER_THROW_IN_COLOR = YANColor.createFromHexColor(0x00A5B2);
 
     private YANTextureAtlas mHudAtlas;
     private TweenCallback showVButtonTweenCallback = new TweenCallback() {
@@ -147,6 +159,11 @@ public class HudManagementService implements IService {
         putToNodeMap(AVATAR_ICON_TOP_RIGHT_INDEX, createAvatarIcon(hudAtlas));
         putToNodeMap(AVATAR_ICON_TOP_LEFT_INDEX, createAvatarIcon(hudAtlas));
 
+        //create timers
+        putToNodeMap(CIRCLE_TIMER_BOTTOM_RIGHT_INDEX, createCircleTimer());
+        putToNodeMap(CIRCLE_TIMER_TOP_RIGHT_INDEX, createCircleTimer());
+        putToNodeMap(CIRCLE_TIMER_TOP_LEFT_INDEX, createCircleTimer());
+
         //create action buttons
         putToNodeMap(DONE_BUTTON_INDEX, createDoneButton(hudAtlas));
         putToNodeMap(TAKE_BUTTON_INDEX, createTakeButton(hudAtlas));
@@ -167,6 +184,14 @@ public class HudManagementService implements IService {
         //at the beginning some nodes might have a different state
         setupInitialState();
 
+    }
+
+    private YANCircleNode createCircleTimer() {
+        YANCircleNode yanCircleNode = new YANCircleNode();
+        yanCircleNode.setColor(TIMER_RETALIATION_COLOR.getR(), TIMER_RETALIATION_COLOR.getG(), TIMER_RETALIATION_COLOR.getB());
+        yanCircleNode.setClockWiseDraw(true);
+        yanCircleNode.setPieCirclePercentage(1f);
+        return yanCircleNode;
     }
 
     private YANTexturedNode createAvatarIcon(YANTextureAtlas hudAtlas) {
@@ -250,11 +275,11 @@ public class HudManagementService implements IService {
         return new YANButtonNode(hudAtlas.getTextureRegion("btn_done.png"), hudAtlas.getTextureRegion("btn_done.png"));
     }
 
-    private <T extends YANTexturedNode> void putToNodeMap(@HudNode int nodeIndex, T node) {
+    private <T extends YANBaseNode> void putToNodeMap(@HudNode int nodeIndex, T node) {
         mHudNodesMap.put(nodeIndex, node);
     }
 
-    public <T extends YANTexturedNode> T getNode(@HudNode int nodeIndex) {
+    public <T extends YANBaseNode> T getNode(@HudNode int nodeIndex) {
         return (T) mHudNodesMap.get(nodeIndex);
     }
 
@@ -291,21 +316,35 @@ public class HudManagementService implements IService {
 
         //top avatars is smaller than bottom one
         float topAvatarsScaleFactor = 0.8f;
-        getNode(AVATAR_BG_TOP_RIGHT_INDEX).setSize(newWidth * topAvatarsScaleFactor, newHeight * topAvatarsScaleFactor);
+        YANTexturedNode avatarBGTopRight = getNode(AVATAR_BG_TOP_RIGHT_INDEX);
+        avatarBGTopRight.setSize(newWidth * topAvatarsScaleFactor, newHeight * topAvatarsScaleFactor);
         getNode(AVATAR_BG_TOP_LEFT_INDEX).setSize(newWidth * topAvatarsScaleFactor, newHeight * topAvatarsScaleFactor);
 
         //set avatar icons
         //check how much the icon smaller than background
-        float avatarIconToAvatarBgScaleFactor = getNode(AVATAR_ICON_BOTTOM_RIGHT_INDEX).getTextureRegion().getWidth() / getNode(AVATAR_BG_TOP_RIGHT_INDEX).getTextureRegion().getWidth();
+        YANTexturedNode bottomRightAvatarIcon = getNode(AVATAR_ICON_BOTTOM_RIGHT_INDEX);
+        float avatarIconToAvatarBgScaleFactor = bottomRightAvatarIcon.getTextureRegion().getWidth() / avatarBGTopRight.getTextureRegion().getWidth();
 
         float bottomIconSize = getNode(AVATAR_BG_BOTTOM_RIGHT_INDEX).getSize().getX() * avatarIconToAvatarBgScaleFactor;
         //set bottom avatar icon
-        getNode(AVATAR_ICON_BOTTOM_RIGHT_INDEX).setSize(bottomIconSize, bottomIconSize);
+        bottomRightAvatarIcon.setSize(bottomIconSize, bottomIconSize);
+
+        //setup bottom timer size
+        //calculate timer scale factor
+        float timerToIconScaleFactor = avatarIconToAvatarBgScaleFactor + 0.095f;
+        float bottomTimerSize = getNode(AVATAR_BG_BOTTOM_RIGHT_INDEX).getSize().getX() * timerToIconScaleFactor;
+        getNode(CIRCLE_TIMER_BOTTOM_RIGHT_INDEX).setSize(bottomTimerSize, bottomTimerSize);
 
         //set top avatar icons
-        float topIconsSize = getNode(AVATAR_BG_TOP_RIGHT_INDEX).getSize().getX() * avatarIconToAvatarBgScaleFactor;
+        float topIconsSize = avatarBGTopRight.getSize().getX() * avatarIconToAvatarBgScaleFactor;
         getNode(AVATAR_ICON_TOP_RIGHT_INDEX).setSize(topIconsSize, topIconsSize);
         getNode(AVATAR_ICON_TOP_LEFT_INDEX).setSize(topIconsSize, topIconsSize);
+
+        //set top timers size
+        timerToIconScaleFactor += 0.32f;
+        float topTimerSize = topIconsSize * timerToIconScaleFactor;
+        getNode(CIRCLE_TIMER_TOP_RIGHT_INDEX).setSize(topTimerSize, topTimerSize);
+        getNode(CIRCLE_TIMER_TOP_LEFT_INDEX).setSize(topTimerSize, topTimerSize);
 
         //set action buttons size
         getNode(DONE_BUTTON_INDEX).setSize(bottomIconSize, bottomIconSize);
@@ -319,36 +358,40 @@ public class HudManagementService implements IService {
         trumpImage.setSize(newWidth, newHeight);
 
         //popups
-        aspectRatio = getNode(YOU_WIN_IMAGE_INDEX).getTextureRegion().getWidth() / getNode(YOU_WIN_IMAGE_INDEX).getTextureRegion().getHeight();
+        YANTexturedNode youWinImage = getNode(YOU_WIN_IMAGE_INDEX);
+        aspectRatio = youWinImage.getTextureRegion().getWidth() / youWinImage.getTextureRegion().getHeight();
         newWidth = sceneSize.getX() * 0.9f;
         newHeight = newWidth / aspectRatio;
-        getNode(YOU_WIN_IMAGE_INDEX).setSize(newWidth, newHeight);
+        youWinImage.setSize(newWidth, newHeight);
         getNode(YOU_LOOSE_IMAGE_INDEX).setSize(newWidth, newHeight);
 
         //v button
-        aspectRatio = getNode(V_BUTTON_INDEX).getTextureRegion().getWidth() / getNode(V_BUTTON_INDEX).getTextureRegion().getHeight();
+        YANTexturedNode vButton = getNode(V_BUTTON_INDEX);
+        aspectRatio = vButton.getTextureRegion().getWidth() / vButton.getTextureRegion().getHeight();
         newWidth = sceneSize.getX() * 0.2f;
         newHeight = newWidth / aspectRatio;
-        getNode(V_BUTTON_INDEX).setSize(newWidth, newHeight);
+        vButton.setSize(newWidth, newHeight);
 
         //mask card
         //initial size is not matter as it will be changed once game setup message will be received
         getNode(MASK_CARD_INDEX).setSize(1, 1);
 
         //fence
-        aspectRatio = getNode(FENCE_INDEX).getTextureRegion().getWidth() / getNode(FENCE_INDEX).getTextureRegion().getHeight();
-        getNode(FENCE_INDEX).setSize(sceneSize.getX(), sceneSize.getX() / aspectRatio);
+        YANTexturedNode fenceImage = getNode(FENCE_INDEX);
+        aspectRatio = fenceImage.getTextureRegion().getWidth() / fenceImage.getTextureRegion().getHeight();
+        fenceImage.setSize(sceneSize.getX(), sceneSize.getX() / aspectRatio);
 
         //glade
-        aspectRatio = getNode(GLADE_INDEX).getTextureRegion().getWidth() / getNode(GLADE_INDEX).getTextureRegion().getHeight();
+        YANTexturedNode gladeImage = getNode(GLADE_INDEX);
+        aspectRatio = gladeImage.getTextureRegion().getWidth() / gladeImage.getTextureRegion().getHeight();
         float gladeWidth = Math.min(sceneSize.getX(), sceneSize.getY()) * 0.9f;
-        getNode(GLADE_INDEX).setSize(gladeWidth, gladeWidth / aspectRatio);
+        gladeImage.setSize(gladeWidth, gladeWidth / aspectRatio);
 
         //later glow size will be overridden
         getNode(GLOW_INDEX).setSize(0, 0);
     }
 
-    public Collection<? extends YANTexturedNode> getCardNodes() {
+    public Collection<? extends YANBaseNode> getCardNodes() {
         return mHudNodesMap.values();
     }
 
@@ -362,11 +405,18 @@ public class HudManagementService implements IService {
         avatarBg.setSortingLayer(HUD_SORTING_LAYER + 1);
         avatarBg.setPosition(sceneSize.getX() - offsetX, sceneSize.getY() - offsetX);
 
+        //setup bottom timer
+        YANBaseNode bottomTimer = getNode(CIRCLE_TIMER_BOTTOM_RIGHT_INDEX);
+        float offsetSize = (avatarBg.getSize().getX() - bottomTimer.getSize().getX()) / 2;
+        bottomTimer.setSortingLayer(avatarBg.getSortingLayer() + 1);
+        bottomTimer.setAnchorPoint(1f, 1f);
+        bottomTimer.setPosition(avatarBg.getPosition().getX() - offsetSize, avatarBg.getPosition().getY() - offsetSize);
+
         //setup bottom avatar icon
         YANTexturedNode bottomAvatarIcon = getNode(AVATAR_ICON_BOTTOM_RIGHT_INDEX);
         bottomAvatarIcon.setAnchorPoint(1f, 1f);
-        bottomAvatarIcon.setSortingLayer(avatarBg.getSortingLayer() + 1);
-        float offsetSize = (avatarBg.getSize().getX() - bottomAvatarIcon.getSize().getX()) / 2;
+        bottomAvatarIcon.setSortingLayer(bottomTimer.getSortingLayer() + 1);
+        offsetSize = (avatarBg.getSize().getX() - bottomAvatarIcon.getSize().getX()) / 2;
         bottomAvatarIcon.setPosition(avatarBg.getPosition().getX() - offsetSize, avatarBg.getPosition().getY() - offsetSize);
 
         //take action is at the same place as bottom avatarBg
@@ -388,10 +438,17 @@ public class HudManagementService implements IService {
         avatarBg.setSortingLayer(HUD_SORTING_LAYER + 1);
         avatarBg.setPosition(sceneSize.getX() - offsetX, topOffset);
 
+        //setup top right timer
+        YANBaseNode topRightTimer = getNode(CIRCLE_TIMER_TOP_RIGHT_INDEX);
+        offsetSize = (avatarBg.getSize().getX() - topRightTimer.getSize().getX()) / 2;
+        topRightTimer.setSortingLayer(avatarBg.getSortingLayer() + 1);
+        topRightTimer.setAnchorPoint(1f, 0f);
+        topRightTimer.setPosition(avatarBg.getPosition().getX() - offsetSize, avatarBg.getPosition().getY() + offsetSize);
+
         //setup icon for top right player
         YANTexturedNode topRightAvatarIcon = getNode(AVATAR_ICON_TOP_RIGHT_INDEX);
         topRightAvatarIcon.setAnchorPoint(1f, 0f);
-        topRightAvatarIcon.setSortingLayer(avatarBg.getSortingLayer() + 1);
+        topRightAvatarIcon.setSortingLayer(topRightTimer.getSortingLayer() + 1);
         offsetSize = (avatarBg.getSize().getX() - topRightAvatarIcon.getSize().getX()) / 2;
         topRightAvatarIcon.setPosition(avatarBg.getPosition().getX() - offsetSize, avatarBg.getPosition().getY() + offsetSize);
 
@@ -401,10 +458,17 @@ public class HudManagementService implements IService {
         avatarBg.setSortingLayer(HUD_SORTING_LAYER + 1);
         avatarBg.setPosition(offsetX, topOffset);
 
+        //setup top left timer
+        YANBaseNode topLeftTimer = getNode(CIRCLE_TIMER_TOP_LEFT_INDEX);
+        offsetSize = (avatarBg.getSize().getX() - topLeftTimer.getSize().getX()) / 2;
+        topLeftTimer.setSortingLayer(avatarBg.getSortingLayer() + 1);
+        topLeftTimer.setAnchorPoint(0f, 0f);
+        topLeftTimer.setPosition(avatarBg.getPosition().getX() + offsetSize, avatarBg.getPosition().getY() + offsetSize);
+
         //setup icon for top left player
         YANTexturedNode topLeftAvatarIcon = getNode(AVATAR_ICON_TOP_LEFT_INDEX);
         topLeftAvatarIcon.setAnchorPoint(0f, 0f);
-        topLeftAvatarIcon.setSortingLayer(avatarBg.getSortingLayer() + 1);
+        topLeftAvatarIcon.setSortingLayer(topLeftTimer.getSortingLayer() + 1);
         offsetSize = (avatarBg.getSize().getX() - topLeftAvatarIcon.getSize().getX()) / 2;
         topLeftAvatarIcon.setPosition(avatarBg.getPosition().getX() + offsetSize, avatarBg.getPosition().getY() + offsetSize);
 
@@ -494,7 +558,7 @@ public class HudManagementService implements IService {
         makeNodeAppearWithAnimation(getNode(YOU_LOOSE_IMAGE_INDEX), showVButtonTweenCallback);
     }
 
-    private void makeNodeAppearWithAnimation(YANTexturedNode node, TweenCallback cbk) {
+    private void makeNodeAppearWithAnimation(YANBaseNode node, TweenCallback cbk) {
         Timeline sequence = Timeline.createSequence()
                 .beginParallel()
                 .push(Tween.to(node, YANTweenNodeAccessor.SIZE_X, POPUP_ANIMATION_DURATION).target(node.getSize().getX()))

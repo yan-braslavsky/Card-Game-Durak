@@ -15,6 +15,7 @@ import com.yan.durak.service.services.SceneSizeProviderService;
 import com.yan.durak.session.GameInfo;
 
 import aurelienribon.tweenengine.TweenManager;
+import glengine.yan.glengine.nodes.YANBaseNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.renderer.YANGLRenderer;
 
@@ -90,7 +91,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
             addNode(cardNode);
         }
 
-        for (YANTexturedNode hudNode : ServiceLocator.locateService(HudManagementService.class).getCardNodes()) {
+        for (YANBaseNode hudNode : ServiceLocator.locateService(HudManagementService.class).getCardNodes()) {
             addNode(hudNode);
         }
 
