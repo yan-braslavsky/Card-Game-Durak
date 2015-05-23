@@ -67,10 +67,10 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
 
         //correct other players positions
         if ((topRightPlayerIndex / 3) > 0)
-            topRightPlayerIndex = (topRightPlayerIndex % 3) + 2;
+            topRightPlayerIndex = (topRightPlayerIndex % 3);
 
         if ((topLeftPlayerIndex / 3) > 0)
-            topLeftPlayerIndex = (topLeftPlayerIndex % 3) + 2;
+            topLeftPlayerIndex = (topLeftPlayerIndex % 3);
 
         mGameInfo.setPlayerIndexes(bottomPlayerIndex, topRightPlayerIndex, topLeftPlayerIndex);
 

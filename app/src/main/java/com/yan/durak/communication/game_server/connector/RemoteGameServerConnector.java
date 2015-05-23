@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class RemoteGameServerConnector extends BaseGameServerConnector {
 
-    private static final String SERVER_ADDRESS = "192.168.1.101";
+    private static final String SERVER_ADDRESS = "192.168.1.103";
     private static final int SERVER_PORT = 7000;
 
     public RemoteGameServerConnector() {
