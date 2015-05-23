@@ -195,7 +195,7 @@ public class HudManagementService implements IService {
     private YANCircleNode createCircleTimer() {
         YANCircleNode yanCircleNode = new YANCircleNode();
         yanCircleNode.setColor(TIMER_RETALIATION_COLOR.getR(), TIMER_RETALIATION_COLOR.getG(), TIMER_RETALIATION_COLOR.getB());
-        yanCircleNode.setClockWiseDraw(true);
+        yanCircleNode.setClockWiseDraw(false);
         yanCircleNode.setPieCirclePercentage(1f);
         return yanCircleNode;
     }
@@ -337,7 +337,7 @@ public class HudManagementService implements IService {
 
         //setup bottom timer size
         //calculate timer scale factor
-        float timerToIconScaleFactor = avatarIconToAvatarBgScaleFactor + 0.095f;
+        float timerToIconScaleFactor = avatarIconToAvatarBgScaleFactor + 0.105f;
         float bottomTimerSize = getNode(AVATAR_BG_BOTTOM_RIGHT_INDEX).getSize().getX() * timerToIconScaleFactor;
         getNode(CIRCLE_TIMER_BOTTOM_RIGHT_INDEX).setSize(bottomTimerSize, bottomTimerSize);
 
@@ -347,7 +347,7 @@ public class HudManagementService implements IService {
         getNode(AVATAR_ICON_TOP_LEFT_INDEX).setSize(topIconsSize, topIconsSize);
 
         //set top timers size
-        timerToIconScaleFactor += 0.32f;
+        timerToIconScaleFactor += 0.335f;
         float topTimerSize = topIconsSize * timerToIconScaleFactor;
         getNode(CIRCLE_TIMER_TOP_RIGHT_INDEX).setSize(topTimerSize, topTimerSize);
         getNode(CIRCLE_TIMER_TOP_LEFT_INDEX).setSize(topTimerSize, topTimerSize);
