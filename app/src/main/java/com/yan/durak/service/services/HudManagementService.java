@@ -58,7 +58,8 @@ public class HudManagementService implements IService {
             GLOW_INDEX,
             CIRCLE_TIMER_BOTTOM_RIGHT_INDEX,
             CIRCLE_TIMER_TOP_RIGHT_INDEX,
-            CIRCLE_TIMER_TOP_LEFT_INDEX
+            CIRCLE_TIMER_TOP_LEFT_INDEX,
+            ROOF_INDEX
     })
     public @interface HudNode {
     }
@@ -92,6 +93,7 @@ public class HudManagementService implements IService {
     public static final int CIRCLE_TIMER_BOTTOM_RIGHT_INDEX = 16;
     public static final int CIRCLE_TIMER_TOP_RIGHT_INDEX = 17;
     public static final int CIRCLE_TIMER_TOP_LEFT_INDEX = 18;
+    public static final int ROOF_INDEX = 19;
 
     /**
      * By default hud will be placed on hud sorting layer and above
@@ -186,10 +188,15 @@ public class HudManagementService implements IService {
         putToNodeMap(MASK_CARD_INDEX, createMaskCard(hudAtlas));
 
         putToNodeMap(GLOW_INDEX, createCardGlow(hudAtlas));
+        putToNodeMap(ROOF_INDEX, createRoof(hudAtlas));
 
         //at the beginning some nodes might have a different state
         setupInitialState();
 
+    }
+
+    private YANBaseNode createRoof(YANTextureAtlas hudAtlas) {
+        return new YANTexturedNode(hudAtlas.getTextureRegion("roof.png"));
     }
 
     private YANCircleNode createCircleTimer() {
@@ -387,6 +394,11 @@ public class HudManagementService implements IService {
         aspectRatio = fenceImage.getTextureRegion().getWidth() / fenceImage.getTextureRegion().getHeight();
         fenceImage.setSize(sceneSize.getX(), sceneSize.getX() / aspectRatio);
 
+        //rood
+        YANTexturedNode roofImage = getNode(ROOF_INDEX);
+        aspectRatio = roofImage.getTextureRegion().getWidth() / roofImage.getTextureRegion().getHeight();
+        roofImage.setSize(sceneSize.getX(), sceneSize.getX() / aspectRatio);
+
         //glade
         YANTexturedNode gladeImage = getNode(GLADE_INDEX);
         aspectRatio = gladeImage.getTextureRegion().getWidth() / gladeImage.getTextureRegion().getHeight();
@@ -498,6 +510,9 @@ public class HudManagementService implements IService {
         float centerX = (sceneSize.getX() - getNode(FENCE_INDEX).getSize().getX()) / 2;
         float centerY = (sceneSize.getY() - getNode(FENCE_INDEX).getSize().getY());
         getNode(FENCE_INDEX).setPosition(centerX, centerY);
+
+        //roof
+        getNode(ROOF_INDEX).setSortingLayer(1000);
 
         //glade
         centerX = (sceneSize.getX() - getNode(GLADE_INDEX).getSize().getX()) / 2;

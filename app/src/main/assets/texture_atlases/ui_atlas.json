@@ -2,7 +2,7 @@
 
 {
 	"filename": "avatar.png",
-	"frame": {"x":754,"y":476,"w":162,"h":162},
+	"frame": {"x":939,"y":430,"w":162,"h":162},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":162,"h":162},
@@ -10,7 +10,7 @@
 },
 {
 	"filename": "btn_done.png",
-	"frame": {"x":754,"y":312,"w":162,"h":162},
+	"frame": {"x":1103,"y":266,"w":162,"h":162},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":162,"h":162},
@@ -18,7 +18,7 @@
 },
 {
 	"filename": "btn_take.png",
-	"frame": {"x":754,"y":148,"w":162,"h":162},
+	"frame": {"x":939,"y":266,"w":162,"h":162},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":162,"h":162},
@@ -26,7 +26,7 @@
 },
 {
 	"filename": "card_glow.png",
-	"frame": {"x":684,"y":1152,"w":207,"h":262},
+	"frame": {"x":1037,"y":2,"w":207,"h":262},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":207,"h":262},
@@ -34,7 +34,7 @@
 },
 {
 	"filename": "cards_back.png",
-	"frame": {"x":684,"y":1416,"w":183,"h":237},
+	"frame": {"x":754,"y":233,"w":183,"h":237},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":1,"w":183,"h":237},
@@ -42,7 +42,7 @@
 },
 {
 	"filename": "fence.png",
-	"frame": {"x":2,"y":2,"w":800,"h":93},
+	"frame": {"x":2,"y":98,"w":800,"h":93},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":800,"h":93},
@@ -50,15 +50,23 @@
 },
 {
 	"filename": "glade.png",
-	"frame": {"x":2,"y":97,"w":750,"h":764},
+	"frame": {"x":2,"y":193,"w":750,"h":764},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":750,"h":764},
 	"sourceSize": {"w":750,"h":764}
 },
 {
+	"filename": "roof.png",
+	"frame": {"x":2,"y":2,"w":802,"h":94},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":802,"h":94},
+	"sourceSize": {"w":802,"h":94}
+},
+{
 	"filename": "stump_bg.png",
-	"frame": {"x":684,"y":921,"w":229,"h":229},
+	"frame": {"x":806,"y":2,"w":229,"h":229},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":229,"h":229},
@@ -66,7 +74,7 @@
 },
 {
 	"filename": "trump_marker_clubs.png",
-	"frame": {"x":804,"y":84,"w":62,"h":62},
+	"frame": {"x":1246,"y":84,"w":62,"h":62},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":62,"h":62},
@@ -74,7 +82,7 @@
 },
 {
 	"filename": "trump_marker_diamonds.png",
-	"frame": {"x":804,"y":2,"w":64,"h":80},
+	"frame": {"x":1246,"y":2,"w":64,"h":80},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":80},
@@ -82,7 +90,7 @@
 },
 {
 	"filename": "trump_marker_hearts.png",
-	"frame": {"x":754,"y":859,"w":61,"h":53},
+	"frame": {"x":1246,"y":148,"w":61,"h":53},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":61,"h":53},
@@ -90,7 +98,7 @@
 },
 {
 	"filename": "trump_marker_spades.png",
-	"frame": {"x":817,"y":859,"w":60,"h":60},
+	"frame": {"x":1246,"y":203,"w":60,"h":60},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":60,"h":60},
@@ -98,7 +106,7 @@
 },
 {
 	"filename": "v_btn.png",
-	"frame": {"x":754,"y":640,"w":136,"h":112},
+	"frame": {"x":754,"y":472,"w":136,"h":112},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":136,"h":112},
@@ -106,7 +114,7 @@
 },
 {
 	"filename": "v_btn_clicked.png",
-	"frame": {"x":754,"y":754,"w":125,"h":103},
+	"frame": {"x":754,"y":586,"w":125,"h":103},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":125,"h":103},
@@ -114,7 +122,7 @@
 },
 {
 	"filename": "you_lose.png",
-	"frame": {"x":2,"y":1441,"w":680,"h":576},
+	"frame": {"x":684,"y":959,"w":680,"h":576},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":680,"h":576},
@@ -122,7 +130,7 @@
 },
 {
 	"filename": "you_won.png",
-	"frame": {"x":2,"y":863,"w":680,"h":576},
+	"frame": {"x":2,"y":959,"w":680,"h":576},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":680,"h":576},
@@ -133,8 +141,8 @@
 	"version": "1.0",
 	"image": "ui_atlas.png",
 	"format": "RGBA8888",
-	"size": {"w":918,"h":2019},
+	"size": {"w":1366,"h":1537},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:b5b9ad2b69f16c29942fe328c037c990$"
+	"smartupdate": "$TexturePacker:SmartUpdate:50504e0da48a12d915ed2571d7a05c72$"
 }
 }
