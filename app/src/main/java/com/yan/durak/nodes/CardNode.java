@@ -30,15 +30,6 @@ public class CardNode extends YANTexturedNode {
         mTags = new HashSet<>();
     }
 
-    @Override
-    public void onAttachedToScreen() {
-        //TODO : implement
-    }
-
-    @Override
-    public void onDetachedFromScreen() {
-        //TODO : implement
-    }
 
     public Card getCard() {
         return mCard;

@@ -32,6 +32,7 @@ public class CardMovedMsgSubProcessor extends BaseMsgSubProcessor<CardMovedProto
 
         //Pile is a local representation of what is going on on the server
         final PileModel fromPile = mPileManager.getPileWithIndex(fromPileIndex);
+        final PileModel toPile = mPileManager.getPileWithIndex(toPileIndex);
 
         //get the card that is about to be moved
         final Card movedCard = fromPile.findCardByRankAndSuit(serverMessage.getMessageData().getMovedCard().getRank(), serverMessage.getMessageData().getMovedCard().getSuit());
@@ -43,9 +44,6 @@ public class CardMovedMsgSubProcessor extends BaseMsgSubProcessor<CardMovedProto
             //will just be ignored.
             return;
         }
-
-        //Pile is a local representation of what is going on on the server
-        final PileModel toPile = mPileManager.getPileWithIndex(toPileIndex);
 
         //remove the card from the pile and place into the other
         fromPile.removeCard(movedCard);
