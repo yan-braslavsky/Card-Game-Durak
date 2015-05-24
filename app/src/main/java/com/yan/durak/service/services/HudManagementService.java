@@ -3,6 +3,7 @@ package com.yan.durak.service.services;
 
 import android.support.annotation.IntDef;
 
+import com.yan.durak.screens.BaseGameScreen;
 import com.yan.durak.service.IService;
 
 import java.lang.annotation.Retention;
@@ -16,10 +17,12 @@ import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenManager;
+import glengine.yan.glengine.assets.YANAssetManager;
 import glengine.yan.glengine.assets.atlas.YANTextureAtlas;
 import glengine.yan.glengine.nodes.YANBaseNode;
 import glengine.yan.glengine.nodes.YANButtonNode;
 import glengine.yan.glengine.nodes.YANCircleNode;
+import glengine.yan.glengine.nodes.YANTextNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.nodes.YANTexturedScissorNode;
 import glengine.yan.glengine.tween.YANTweenNodeAccessor;
@@ -59,7 +62,13 @@ public class HudManagementService implements IService {
             CIRCLE_TIMER_BOTTOM_RIGHT_INDEX,
             CIRCLE_TIMER_TOP_RIGHT_INDEX,
             CIRCLE_TIMER_TOP_LEFT_INDEX,
-            ROOF_INDEX
+            ROOF_INDEX,
+            BOTTOM_SPEECH_BUBBLE_INDEX,
+            TOP_RIGHT_SPEECH_BUBBLE_INDEX,
+            TOP_LEFT_SPEECH_BUBBLE_INDEX,
+            BOTTOM_SPEECH_BUBBLE_TEXT_INDEX,
+            TOP_RIGHT_SPEECH_BUBBLE_TEXT_INDEX,
+            TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX
     })
     public @interface HudNode {
     }
@@ -94,6 +103,12 @@ public class HudManagementService implements IService {
     public static final int CIRCLE_TIMER_TOP_RIGHT_INDEX = 17;
     public static final int CIRCLE_TIMER_TOP_LEFT_INDEX = 18;
     public static final int ROOF_INDEX = 19;
+    public static final int BOTTOM_SPEECH_BUBBLE_INDEX = 20;
+    public static final int TOP_RIGHT_SPEECH_BUBBLE_INDEX = 21;
+    public static final int TOP_LEFT_SPEECH_BUBBLE_INDEX = 22;
+    public static final int BOTTOM_SPEECH_BUBBLE_TEXT_INDEX = 23;
+    public static final int TOP_RIGHT_SPEECH_BUBBLE_TEXT_INDEX = 24;
+    public static final int TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX = 25;
 
     /**
      * By default hud will be placed on hud sorting layer and above
@@ -114,6 +129,8 @@ public class HudManagementService implements IService {
      * All nodes that exist in the hud manager will be placed in this map
      */
     private Map<Integer, YANBaseNode> mHudNodesMap;
+
+    private static final YANColor SPEECH_BUBBLE_TEXT_COLOR = YANColor.createFromHexColor(0x4F3723);
 
     private static final YANColor TIMER_RETALIATION_COLOR = YANColor.createFromHexColor(0xFFF200);
     private static final YANColor TIMER_THROW_IN_COLOR = YANColor.createFromHexColor(0x00A5B2);
@@ -162,6 +179,16 @@ public class HudManagementService implements IService {
         putToNodeMap(AVATAR_BG_TOP_RIGHT_INDEX, createAvatar(hudAtlas));
         putToNodeMap(AVATAR_BG_TOP_LEFT_INDEX, createAvatar(hudAtlas));
 
+        //speech bubbles
+        putToNodeMap(BOTTOM_SPEECH_BUBBLE_INDEX, createSpeechBubble(hudAtlas));
+        putToNodeMap(TOP_RIGHT_SPEECH_BUBBLE_INDEX, createSpeechBubble(hudAtlas));
+        putToNodeMap(TOP_LEFT_SPEECH_BUBBLE_INDEX, createSpeechBubble(hudAtlas));
+
+        //speechBubble text
+        putToNodeMap(BOTTOM_SPEECH_BUBBLE_TEXT_INDEX, createSpeechBubbleText(hudAtlas));
+        putToNodeMap(TOP_RIGHT_SPEECH_BUBBLE_TEXT_INDEX, createSpeechBubbleText(hudAtlas));
+        putToNodeMap(TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX, createSpeechBubbleText(hudAtlas));
+
         //create avatar icons
         putToNodeMap(AVATAR_ICON_BOTTOM_RIGHT_INDEX, createAvatarIcon(hudAtlas));
         putToNodeMap(AVATAR_ICON_TOP_RIGHT_INDEX, createAvatarIcon(hudAtlas));
@@ -193,6 +220,19 @@ public class HudManagementService implements IService {
         //at the beginning some nodes might have a different state
         setupInitialState();
 
+    }
+
+    private YANBaseNode createSpeechBubbleText(YANTextureAtlas hudAtlas) {
+        YANTextNode yanTextNode = new YANTextNode(YANAssetManager.getInstance().getLoadedFont(BaseGameScreen.SPEECH_BUBBLES_FONT_NAME), "I will Take This !".length());
+        yanTextNode.setTextColor(SPEECH_BUBBLE_TEXT_COLOR.getR(), SPEECH_BUBBLE_TEXT_COLOR.getG(), SPEECH_BUBBLE_TEXT_COLOR.getB());
+        yanTextNode.setText("I'll Take!");
+        yanTextNode.setTextScale(1.4f);
+        //TODO : set scale ?
+        return yanTextNode;
+    }
+
+    private YANBaseNode createSpeechBubble(YANTextureAtlas hudAtlas) {
+        return new YANTexturedNode(hudAtlas.getTextureRegion("speech_bubble.png"));
     }
 
     private YANBaseNode createRoof(YANTextureAtlas hudAtlas) {
@@ -333,6 +373,16 @@ public class HudManagementService implements IService {
         avatarBGTopRight.setSize(newWidth * topAvatarsScaleFactor, newHeight * topAvatarsScaleFactor);
         getNode(AVATAR_BG_TOP_LEFT_INDEX).setSize(newWidth * topAvatarsScaleFactor, newHeight * topAvatarsScaleFactor);
 
+        //speech bubbles
+        YANTexturedNode bottomSpeechBubble = getNode(BOTTOM_SPEECH_BUBBLE_INDEX);
+        aspectRatio = bottomSpeechBubble.getTextureRegion().getWidth() / bottomSpeechBubble.getTextureRegion().getHeight();
+        newWidth = sceneSize.getX() * 0.4f;
+        newHeight = newWidth / aspectRatio;
+
+        getNode(BOTTOM_SPEECH_BUBBLE_INDEX).setSize(newWidth, newHeight);
+        getNode(TOP_RIGHT_SPEECH_BUBBLE_INDEX).setSize(newWidth, newHeight);
+        getNode(TOP_LEFT_SPEECH_BUBBLE_INDEX).setSize(newWidth, newHeight);
+
         //set avatar icons
         //check how much the icon smaller than background
         YANTexturedNode bottomRightAvatarIcon = getNode(AVATAR_ICON_BOTTOM_RIGHT_INDEX);
@@ -443,6 +493,7 @@ public class HudManagementService implements IService {
         takeButton.setSortingLayer(bottomAvatarIcon.getSortingLayer() + 1);
         takeButton.setPosition(bottomAvatarIcon.getPosition().getX(), bottomAvatarIcon.getPosition().getY());
 
+
         //finish action is at the same place as bottom avatarBg
         YANTexturedNode doneButton = getNode(DONE_BUTTON_INDEX);
         doneButton.setSortingLayer(bottomAvatarIcon.getSortingLayer() + 1);
@@ -518,6 +569,51 @@ public class HudManagementService implements IService {
         centerX = (sceneSize.getX() - getNode(GLADE_INDEX).getSize().getX()) / 2;
         centerY = (sceneSize.getY() - getNode(GLADE_INDEX).getSize().getY()) / 2;
         getNode(GLADE_INDEX).setPosition(centerX, centerY);
+
+
+        //speech bubbles
+        //bottom speech bubble
+        YANBaseNode bottomSpeechBubble = getNode(BOTTOM_SPEECH_BUBBLE_INDEX);
+        bottomSpeechBubble.setAnchorPoint(1f, 1f);
+        bottomSpeechBubble.setSortingLayer(HUD_SORTING_LAYER + 100);
+        bottomSpeechBubble.setPosition(sceneSize.getX() - (sceneSize.getX() * 0.05f),
+                bottomAvatarIcon.getPosition().getY() - bottomAvatarIcon.getSize().getY());
+
+        //top right speech bubble
+        YANBaseNode topRightSpeechBubble = getNode(TOP_RIGHT_SPEECH_BUBBLE_INDEX);
+        topRightSpeechBubble.setRotationZ(180);
+        topRightSpeechBubble.setRotationY(180);
+        topRightSpeechBubble.setAnchorPoint(1f, 0f);
+        topRightSpeechBubble.setSortingLayer(HUD_SORTING_LAYER + 100);
+        topRightSpeechBubble.setPosition(sceneSize.getX() - (sceneSize.getX() * 0.05f),
+                topRightAvatarIcon.getPosition().getY() + topRightAvatarIcon.getSize().getY());
+
+        //top left speech bubble
+        YANBaseNode topLeftSpeechBubble = getNode(TOP_LEFT_SPEECH_BUBBLE_INDEX);
+        topLeftSpeechBubble.setRotationZ(180);
+        topLeftSpeechBubble.setAnchorPoint(0f, 0f);
+        topLeftSpeechBubble.setSortingLayer(HUD_SORTING_LAYER + 100);
+        topLeftSpeechBubble.setPosition((sceneSize.getX() * 0.05f),
+                topLeftAvatarIcon.getPosition().getY() + topLeftAvatarIcon.getSize().getY());
+
+        //speech bubble texts
+        //bottom
+        float rightSpeechTextXPosition = bottomSpeechBubble.getPosition().getX() - bottomSpeechBubble.getSize().getX();
+        rightSpeechTextXPosition += sceneSize.getX() * 0.06f;
+        float bottomSpeechTextY = bottomSpeechBubble.getPosition().getY() - (bottomSpeechBubble.getSize().getY() / 1.4f);
+        getNode(BOTTOM_SPEECH_BUBBLE_TEXT_INDEX).setPosition(rightSpeechTextXPosition,
+                bottomSpeechTextY);
+        getNode(BOTTOM_SPEECH_BUBBLE_TEXT_INDEX).setSortingLayer(bottomSpeechBubble.getSortingLayer() + 1);
+
+        //top right
+        getNode(TOP_RIGHT_SPEECH_BUBBLE_TEXT_INDEX).setPosition(rightSpeechTextXPosition,
+                topRightSpeechBubble.getPosition().getY() + (bottomSpeechBubble.getSize().getY() * 0.4f));
+        getNode(TOP_RIGHT_SPEECH_BUBBLE_TEXT_INDEX).setSortingLayer(topRightSpeechBubble.getSortingLayer() + 1);
+
+        //top left
+        getNode(TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX).setPosition(topLeftSpeechBubble.getPosition().getX() + (sceneSize.getX() * 0.06f),
+                topLeftSpeechBubble.getPosition().getY() + (bottomSpeechBubble.getSize().getY() * 0.4f));
+        getNode(TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX).setSortingLayer(topLeftSpeechBubble.getSortingLayer() + 1);
     }
 
     public void update(float deltaTimeSeconds) {
@@ -604,14 +700,14 @@ public class HudManagementService implements IService {
 
     public void resetTimerAnimation(@HudManagementService.HudNode int timerNodeIndex) {
 
-        if(mActiveTimerNode != null){
+        if (mActiveTimerNode != null) {
             //reset previous timer
-            mActiveTimerNode.setColor(TIMER_RETALIATION_COLOR.getR(),TIMER_RETALIATION_COLOR.getG(),TIMER_RETALIATION_COLOR.getB());
+            mActiveTimerNode.setColor(TIMER_RETALIATION_COLOR.getR(), TIMER_RETALIATION_COLOR.getG(), TIMER_RETALIATION_COLOR.getB());
             mActiveTimerNode.setPieCirclePercentage(1f);
         }
 
         //set new timer as active
         mActiveTimerNode = getNode(timerNodeIndex);
-        mActiveTimerNode.setColor(TIMER_THROW_IN_COLOR.getR(),TIMER_THROW_IN_COLOR.getG(),TIMER_THROW_IN_COLOR.getB());
+        mActiveTimerNode.setColor(TIMER_THROW_IN_COLOR.getR(), TIMER_THROW_IN_COLOR.getG(), TIMER_THROW_IN_COLOR.getB());
     }
 }
