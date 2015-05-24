@@ -2,9 +2,12 @@ package com.yan.durak.service.services;
 
 
 import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringDef;
 
 import com.yan.durak.screens.BaseGameScreen;
 import com.yan.durak.service.IService;
+import com.yan.durak.session.GameInfo;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -25,16 +28,39 @@ import glengine.yan.glengine.nodes.YANCircleNode;
 import glengine.yan.glengine.nodes.YANTextNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.nodes.YANTexturedScissorNode;
+import glengine.yan.glengine.tasks.YANDelayedTask;
 import glengine.yan.glengine.tween.YANTweenNodeAccessor;
 import glengine.yan.glengine.util.colors.YANColor;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
 import glengine.yan.glengine.util.loggers.YANLogger;
+import glengine.yan.glengine.util.object_pool.YANIPoolableObject;
+import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
 /**
  * Created by Yan-Home on 1/25/2015.
  */
 public class HudManagementService implements IService {
 
+    public static final float SPEECH_BUBBLE_APPEARANCE_DURATION_SECONDS = 1.3f;
+
+    @Retention(RetentionPolicy.SOURCE)
+    @StringDef({
+            SPEECH_BUBBLE_TAKING_TEXT,
+            SPEECH_BUBBLE_PASS_TEXT,
+            SPEECH_BUBBLE_DONE_TEXT,
+            SPEECH_BUBBLE_THROW_IN_TEXT,
+            SPEECH_BUBBLE_ATTACK_TEXT,
+            SPEECH_BUBBLE_RETALIATION_TEXT
+    })
+    public @interface SpeechBubbleText {
+    }
+
+    public static final String SPEECH_BUBBLE_TAKING_TEXT = "I'll Take!";
+    public static final String SPEECH_BUBBLE_PASS_TEXT = "Pass";
+    public static final String SPEECH_BUBBLE_DONE_TEXT = "Done!";
+    public static final String SPEECH_BUBBLE_THROW_IN_TEXT = "Adding";
+    public static final String SPEECH_BUBBLE_ATTACK_TEXT = "My Turn!";
+    public static final String SPEECH_BUBBLE_RETALIATION_TEXT = "Defending";
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
@@ -158,6 +184,10 @@ public class HudManagementService implements IService {
     public HudManagementService(TweenManager tweenManager) {
         mTweenManager = tweenManager;
         mHudNodesMap = new HashMap<>();
+
+        //preallocate speech bubble delayed task
+        YANObjectPool.getInstance().preallocate(YANDelayedTask.class, 3);
+        YANObjectPool.getInstance().preallocate(HideSpeechBubbleDelayedTaskListener.class, 3);
     }
 
     public void createNodes(YANTextureAtlas hudAtlas) {
@@ -272,6 +302,14 @@ public class HudManagementService implements IService {
         getNode(TAKE_BUTTON_INDEX).setOpacity(0);
         getNode(DONE_BUTTON_INDEX).setOpacity(0);
         getNode(GLOW_INDEX).setOpacity(0);
+
+        //all speech bubbles and their texts are invisible at the beginning
+        getNode(BOTTOM_SPEECH_BUBBLE_INDEX).setOpacity(0f);
+        getNode(TOP_RIGHT_SPEECH_BUBBLE_INDEX).setOpacity(0f);
+        getNode(TOP_LEFT_SPEECH_BUBBLE_INDEX).setOpacity(0f);
+        getNode(BOTTOM_SPEECH_BUBBLE_TEXT_INDEX).setOpacity(0f);
+        getNode(TOP_RIGHT_SPEECH_BUBBLE_TEXT_INDEX).setOpacity(0f);
+        getNode(TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX).setOpacity(0f);
     }
 
     private YANButtonNode createVButton(YANTextureAtlas hudAtlas) {
@@ -698,6 +736,56 @@ public class HudManagementService implements IService {
         sequence.start(mTweenManager);
     }
 
+    public void showSpeechBubbleWithText(@NonNull @SpeechBubbleText String text, @NonNull GameInfo.Player player) {
+        YANBaseNode speechBubble = getSpeechBubbleForPlayer(player);
+        YANTextNode textNode = getTextNodeForPlayer(player);
+        speechBubble.setOpacity(1f);
+        textNode.setText(text);
+        textNode.setOpacity(1f);
+
+        //open delayed task to hide Speech Bubble
+        //obtain objects from an object pool
+        YANDelayedTask delayedTask = YANObjectPool.getInstance().obtain(YANDelayedTask.class);
+        HideSpeechBubbleDelayedTaskListener delayedTaskListener = YANObjectPool.getInstance().obtain(HideSpeechBubbleDelayedTaskListener.class);
+
+        //init the listener
+        delayedTaskListener.setSpeechBubbleNode(speechBubble);
+        delayedTaskListener.setSpeechBubbleTextNode(textNode);
+        delayedTaskListener.setDelayedTask(delayedTask);
+
+        //init the task
+        delayedTask.setDurationSeconds(SPEECH_BUBBLE_APPEARANCE_DURATION_SECONDS);
+        delayedTask.setDelayedTaskListener(delayedTaskListener);
+
+        //start the task
+        delayedTask.start();
+    }
+
+    private YANTextNode getTextNodeForPlayer(@NonNull GameInfo.Player player) {
+        switch (player) {
+            case BOTTOM_PLAYER:
+                return getNode(BOTTOM_SPEECH_BUBBLE_TEXT_INDEX);
+            case TOP_RIGHT_PLAYER:
+                return getNode(TOP_RIGHT_SPEECH_BUBBLE_TEXT_INDEX);
+            case TOP_LEFT_PLAYER:
+                return getNode(TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX);
+        }
+        return null;
+    }
+
+    private YANBaseNode getSpeechBubbleForPlayer(@NonNull GameInfo.Player player) {
+        switch (player) {
+            case BOTTOM_PLAYER:
+                return getNode(BOTTOM_SPEECH_BUBBLE_INDEX);
+            case TOP_RIGHT_PLAYER:
+                return getNode(TOP_RIGHT_SPEECH_BUBBLE_INDEX);
+            case TOP_LEFT_PLAYER:
+                return getNode(TOP_LEFT_SPEECH_BUBBLE_INDEX);
+        }
+        return null;
+    }
+
+
     public void resetTimerAnimation(@HudManagementService.HudNode int timerNodeIndex) {
 
         if (mActiveTimerNode != null) {
@@ -709,5 +797,52 @@ public class HudManagementService implements IService {
         //set new timer as active
         mActiveTimerNode = getNode(timerNodeIndex);
         mActiveTimerNode.setColor(TIMER_THROW_IN_COLOR.getR(), TIMER_THROW_IN_COLOR.getG(), TIMER_THROW_IN_COLOR.getB());
+    }
+
+    /**
+     * We retaining this class to not create many instances of it
+     */
+    protected static class HideSpeechBubbleDelayedTaskListener implements YANDelayedTask.YANDelayedTaskListener, YANIPoolableObject {
+        private YANBaseNode mSpeechBubbleNode;
+        private YANTextNode mSpeechBubbleTextNode;
+        private YANDelayedTask mDelayedTask;
+
+        public HideSpeechBubbleDelayedTaskListener() {
+            //Empty constructor required
+        }
+
+        @Override
+        public void onComplete() {
+
+            //hide the speech bubble and text
+            mSpeechBubbleNode.setOpacity(0f);
+            mSpeechBubbleTextNode.setOpacity(0f);
+
+            //recycle delayed task
+            YANObjectPool.getInstance().offer(mDelayedTask);
+
+            //recycle this listener
+            YANObjectPool.getInstance().offer(HideSpeechBubbleDelayedTaskListener.this);
+
+        }
+
+        @Override
+        public void resetState() {
+            mSpeechBubbleNode = null;
+            mSpeechBubbleTextNode = null;
+            mDelayedTask = null;
+        }
+
+        public void setSpeechBubbleNode(YANBaseNode speechBubbleNode) {
+            mSpeechBubbleNode = speechBubbleNode;
+        }
+
+        public void setSpeechBubbleTextNode(YANTextNode speechBubbleTextNode) {
+            mSpeechBubbleTextNode = speechBubbleTextNode;
+        }
+
+        public void setDelayedTask(YANDelayedTask delayedTask) {
+            mDelayedTask = delayedTask;
+        }
     }
 }

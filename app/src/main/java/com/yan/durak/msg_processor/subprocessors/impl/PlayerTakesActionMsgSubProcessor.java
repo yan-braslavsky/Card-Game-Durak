@@ -42,6 +42,18 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
         //TODO : update timer animation
         @HudManagementService.HudNode int timerNodeIndex = retrieveTimerPosition(serverMessage.getMessageData().getPlayerIndex());
         ServiceLocator.locateService(HudManagementService.class).resetTimerAnimation(timerNodeIndex);
+
+        //show my turn message
+        if (PlayerTakesActionMessage.PlayerAction.valueOf(serverMessage.getMessageData().getAction()) == PlayerTakesActionMessage.PlayerAction.ATTACK) {
+            //show speech bubble
+            ServiceLocator.locateService(HudManagementService.class).showSpeechBubbleWithText(HudManagementService.SPEECH_BUBBLE_ATTACK_TEXT,
+                    mGameInfo.getPlayerForIndex(serverMessage.getMessageData().getPlayerIndex()));
+        } else if (PlayerTakesActionMessage.PlayerAction.valueOf(serverMessage.getMessageData().getAction()) == PlayerTakesActionMessage.PlayerAction.RETALIATION) {
+            //show speech bubble
+            ServiceLocator.locateService(HudManagementService.class).showSpeechBubbleWithText(HudManagementService.SPEECH_BUBBLE_RETALIATION_TEXT,
+                    mGameInfo.getPlayerForIndex(serverMessage.getMessageData().getPlayerIndex()));
+        }
+
     }
 
     private void updateActivePlayerState(PlayerTakesActionMessage.ProtocolMessageData messageData) {
