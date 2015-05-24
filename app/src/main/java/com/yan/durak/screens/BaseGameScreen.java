@@ -22,6 +22,7 @@ public abstract class BaseGameScreen extends YANNodeScreen {
     public static final String UI_ATLAS_NAME = "ui_atlas";
     public static final String CARDS_ATLAS_NAME = "cards_atlas";
     public static final String STANDARD_FONT_NAME = "standard_font";
+    public static final String SPEECH_BUBBLES_FONT_NAME = "chunkfive";
 
     //texture atlases
     protected YANTextureAtlas mUiAtlas;
@@ -64,7 +65,7 @@ public abstract class BaseGameScreen extends YANNodeScreen {
     protected void onCreateNodes() {
 
         //create a text node
-        mFpsTextNode = new YANTextNode(YANAssetManager.getInstance().getLoadedFont(STANDARD_FONT_NAME));
+        mFpsTextNode = new YANTextNode(YANAssetManager.getInstance().getLoadedFont(STANDARD_FONT_NAME), "FPS 1000".length());
         mFpsTextNode.setText("FPS " + 0);
         mFpsTextNode.setSortingLayer(5000);
     }
@@ -79,7 +80,8 @@ public abstract class BaseGameScreen extends YANNodeScreen {
         YANAssetManager.getInstance().loadTexture(mCardsAtlas.getAtlasImageFilePath());
 
         //load font atlas into a memory
-        YANAssetManager.getInstance().loadTexture(YANAssetManager.getInstance().getLoadedFont("standard_font").getGlyphImageFilePath());
+        YANAssetManager.getInstance().loadTexture(YANAssetManager.getInstance().getLoadedFont(STANDARD_FONT_NAME).getGlyphImageFilePath());
+        YANAssetManager.getInstance().loadTexture(YANAssetManager.getInstance().getLoadedFont(SPEECH_BUBBLES_FONT_NAME).getGlyphImageFilePath());
     }
 
     @Override
@@ -91,7 +93,8 @@ public abstract class BaseGameScreen extends YANNodeScreen {
         YANAssetManager.getInstance().unloadTexture(mCardsAtlas.getAtlasImageFilePath());
 
         //release atlas font from a memory
-        YANAssetManager.getInstance().unloadTexture(YANAssetManager.getInstance().getLoadedFont("standard_font").getGlyphImageFilePath());
+        YANAssetManager.getInstance().unloadTexture(YANAssetManager.getInstance().getLoadedFont(STANDARD_FONT_NAME).getGlyphImageFilePath());
+        YANAssetManager.getInstance().unloadTexture(YANAssetManager.getInstance().getLoadedFont(SPEECH_BUBBLES_FONT_NAME).getGlyphImageFilePath());
     }
 
     @Override
