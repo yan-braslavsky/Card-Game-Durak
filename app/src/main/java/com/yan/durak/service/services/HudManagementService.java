@@ -48,8 +48,9 @@ public class HudManagementService implements IService {
             SPEECH_BUBBLE_TAKING_TEXT,
             SPEECH_BUBBLE_PASS_TEXT,
             SPEECH_BUBBLE_DONE_TEXT,
-            SPEECH_BUBBLE_THROW_IN_TEXT,
+            SPEECH_BUBBLE_THROW_IN_END_TEXT,
             SPEECH_BUBBLE_ATTACK_TEXT,
+            SPEECH_BUBBLE_THINKING_TEXT,
             SPEECH_BUBBLE_RETALIATION_TEXT
     })
     public @interface SpeechBubbleText {
@@ -58,7 +59,8 @@ public class HudManagementService implements IService {
     public static final String SPEECH_BUBBLE_TAKING_TEXT = "I'll Take!";
     public static final String SPEECH_BUBBLE_PASS_TEXT = "Pass";
     public static final String SPEECH_BUBBLE_DONE_TEXT = "Done!";
-    public static final String SPEECH_BUBBLE_THROW_IN_TEXT = "Adding";
+    public static final String SPEECH_BUBBLE_THROW_IN_END_TEXT = "Adding";
+    public static final String SPEECH_BUBBLE_THINKING_TEXT = "Thinking";
     public static final String SPEECH_BUBBLE_ATTACK_TEXT = "My Turn!";
     public static final String SPEECH_BUBBLE_RETALIATION_TEXT = "Defending";
 

@@ -4,6 +4,7 @@ import com.yan.durak.communication.game_server.connector.IGameServerConnector;
 import com.yan.durak.communication.sender.GameServerMessageSender;
 import com.yan.durak.input.cards.CardsTouchProcessor;
 import com.yan.durak.input.listener.PlayerCardsTouchProcessorListener;
+import com.yan.durak.models.PileModel;
 import com.yan.durak.msg_processor.MsgProcessor;
 import com.yan.durak.service.ServiceLocator;
 import com.yan.durak.service.services.CardNodesManagerService;
@@ -107,6 +108,28 @@ public class PrototypeGameScreen extends BaseGameScreen {
         ServiceLocator.locateService(HudManagementService.class).layoutNodes(getSceneSize());
         //we also need to initialize the pile manager
         ServiceLocator.locateService(PileLayouterManagerService.class).init(getSceneSize().getX(), getSceneSize().getY());
+
+        //if we are coming from background we must relayout piles
+        relayoutPiles();
+
+    }
+
+    private void relayoutPiles() {
+        //if we are coming from background we must relayout piles
+        PileModel topRightPlayerPile = ServiceLocator.locateService(PileManagerService.class).getTopRightPlayerPile();
+        PileModel topLeftPlayerPile = ServiceLocator.locateService(PileManagerService.class).getTopLeftPlayerPile();
+        PileModel stockPile = ServiceLocator.locateService(PileManagerService.class).getStockPile();
+        ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(topRightPlayerPile).layout();
+        ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(topLeftPlayerPile).layout();
+
+        //releayout also field piles
+        for (PileModel pileModel : ServiceLocator.locateService(PileManagerService.class).getFieldPiles()) {
+            if (!pileModel.getCardsInPile().isEmpty())
+                ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(pileModel).layout();
+        }
+
+        //layout stock pile
+        ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(stockPile).layout();
     }
 
 
@@ -137,9 +160,4 @@ public class PrototypeGameScreen extends BaseGameScreen {
         mGameServerConnector.update(deltaTimeSeconds);
         ServiceLocator.locateService(HudManagementService.class).update(deltaTimeSeconds);
     }
-
-//    public CardsTouchProcessor getCardsTouchProcessor() {
-//
-//        return mCardsTouchProcessor;
-//    }
 }

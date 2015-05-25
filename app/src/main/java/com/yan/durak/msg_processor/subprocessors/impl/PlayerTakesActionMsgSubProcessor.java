@@ -33,24 +33,43 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
 
     @Override
     public void processMessage(PlayerTakesActionMessage serverMessage) {
-        updateActivePlayerState(serverMessage.getMessageData());
 
-//        //update cock only on attack
-//        if (PlayerTakesActionMessage.PlayerAction.valueOf(serverMessage.getMessageData().getAction()) != PlayerTakesActionMessage.PlayerAction.ATTACK)
-//            return;
+        updateActivePlayerState(serverMessage.getMessageData());
 
         //TODO : update timer animation
         @HudManagementService.HudNode int timerNodeIndex = retrieveTimerPosition(serverMessage.getMessageData().getPlayerIndex());
         ServiceLocator.locateService(HudManagementService.class).resetTimerAnimation(timerNodeIndex);
 
-        //show my turn message
-        if (PlayerTakesActionMessage.PlayerAction.valueOf(serverMessage.getMessageData().getAction()) == PlayerTakesActionMessage.PlayerAction.ATTACK) {
+        @HudManagementService.SpeechBubbleText String speechBubbleText = null;
+        PlayerTakesActionMessage.PlayerAction playerAction = PlayerTakesActionMessage.PlayerAction.valueOf(serverMessage.getMessageData().getAction());
+
+        switch (playerAction) {
+            case ATTACK_START:
+                speechBubbleText = HudManagementService.SPEECH_BUBBLE_ATTACK_TEXT;
+                break;
+            case RETALIATION_START:
+                //this will be called every time player retaliates , on attack and on throw ins
+                break;
+            case THROW_IN_PASS:
+                speechBubbleText = HudManagementService.SPEECH_BUBBLE_PASS_TEXT;
+                break;
+            case THROW_IN_END:
+                speechBubbleText = HudManagementService.SPEECH_BUBBLE_THROW_IN_END_TEXT;
+                break;
+            case THROW_IN_START:
+                speechBubbleText = HudManagementService.SPEECH_BUBBLE_THINKING_TEXT;
+                break;
+            case PLAYER_TAKES_CARDS:
+                speechBubbleText = HudManagementService.SPEECH_BUBBLE_TAKING_TEXT;
+                break;
+            default:
+                //Nothing
+                break;
+        }
+
+        if (speechBubbleText != null) {
             //show speech bubble
-            ServiceLocator.locateService(HudManagementService.class).showSpeechBubbleWithText(HudManagementService.SPEECH_BUBBLE_ATTACK_TEXT,
-                    mGameInfo.getPlayerForIndex(serverMessage.getMessageData().getPlayerIndex()));
-        } else if (PlayerTakesActionMessage.PlayerAction.valueOf(serverMessage.getMessageData().getAction()) == PlayerTakesActionMessage.PlayerAction.RETALIATION) {
-            //show speech bubble
-            ServiceLocator.locateService(HudManagementService.class).showSpeechBubbleWithText(HudManagementService.SPEECH_BUBBLE_RETALIATION_TEXT,
+            ServiceLocator.locateService(HudManagementService.class).showSpeechBubbleWithText(speechBubbleText,
                     mGameInfo.getPlayerForIndex(serverMessage.getMessageData().getPlayerIndex()));
         }
 
@@ -62,17 +81,12 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
 
             PlayerTakesActionMessage.PlayerAction action = PlayerTakesActionMessage.PlayerAction.valueOf(messageData.getAction());
 
-            if (action == PlayerTakesActionMessage.PlayerAction.ATTACK) {
+            //TODO : make those updates in specific subprocessors
+            if (action == PlayerTakesActionMessage.PlayerAction.ATTACK_START) {
                 mGameInfo.setActivePlayerState(YANObjectPool.getInstance().obtain(AttackState.class));
-            } else if (action == PlayerTakesActionMessage.PlayerAction.RETALIATION) {
+            } else if (action == PlayerTakesActionMessage.PlayerAction.RETALIATION_START) {
                 mGameInfo.setActivePlayerState(YANObjectPool.getInstance().obtain(RetaliationState.class));
-            } else if (action == PlayerTakesActionMessage.PlayerAction.THROW_IN) {
-                //Maybe the throw in just sent to notify , but actual action cannot be taken
-//                mGameInfo.setActivePlayerState(YANObjectPool.getInstance().obtain(ThrowInState.class));
-            } else {
-                throw new RuntimeException("not recognized player action " + action);
             }
-
 
         } else {
             mGameInfo.setActivePlayerState(YANObjectPool.getInstance().obtain(OtherPlayerTurnState.class));
