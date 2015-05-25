@@ -28,20 +28,17 @@ import glengine.yan.glengine.nodes.YANCircleNode;
 import glengine.yan.glengine.nodes.YANTextNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.nodes.YANTexturedScissorNode;
-import glengine.yan.glengine.tasks.YANDelayedTask;
 import glengine.yan.glengine.tween.YANTweenNodeAccessor;
 import glengine.yan.glengine.util.colors.YANColor;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
 import glengine.yan.glengine.util.loggers.YANLogger;
-import glengine.yan.glengine.util.object_pool.YANIPoolableObject;
-import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
 /**
  * Created by Yan-Home on 1/25/2015.
  */
 public class HudManagementService implements IService {
 
-    public static final float SPEECH_BUBBLE_APPEARANCE_DURATION_SECONDS = 1.3f;
+
 
     @Retention(RetentionPolicy.SOURCE)
     @StringDef({
@@ -149,6 +146,21 @@ public class HudManagementService implements IService {
     private static final float POPUP_ANIMATION_DURATION = 0.7f;
 
     /**
+     * Duration of scale up scale down animation
+     */
+    private static final float SCALE_UP_SCALE_DOWN_ANIMATION_DURATION = 0.5f;
+
+    /**
+     * Time when speech bubble is fully visible
+     */
+    public static final float SPEECH_BUBBLE_VISIBILITY_DURATION_SECONDS = 1.3f;
+
+    /**
+     * Time when speech bubble is fully visible
+     */
+    public static final float SPEECH_BUBBLE_APPEARANCE_DURATION_SECONDS = 0.25f;
+
+    /**
      * Used to perform tween animations
      */
     private final TweenManager mTweenManager;
@@ -160,8 +172,8 @@ public class HudManagementService implements IService {
 
     private static final YANColor SPEECH_BUBBLE_TEXT_COLOR = YANColor.createFromHexColor(0x4F3723);
 
-    private static final YANColor TIMER_RETALIATION_COLOR = YANColor.createFromHexColor(0xFFF200);
-    private static final YANColor TIMER_THROW_IN_COLOR = YANColor.createFromHexColor(0x00A5B2);
+    public static final YANColor TIMER_RETALIATION_COLOR = YANColor.createFromHexColor(0xFFF200);
+    public static final YANColor TIMER_THROW_IN_COLOR = YANColor.createFromHexColor(0x00A5B2);
 
     private YANTextureAtlas mHudAtlas;
     private TweenCallback showVButtonTweenCallback = new TweenCallback() {
@@ -172,6 +184,14 @@ public class HudManagementService implements IService {
             }
         }
     };
+//    private TweenCallback scaleUpScaleDownTweenCallback = new TweenCallback() {
+//        @Override
+//        public void onEvent(int type, BaseTween<?> baseTween) {
+//            if (TweenCallback.COMPLETE == type) {
+//                getNode(V_BUTTON_INDEX).setOpacity(1f);
+//            }
+//        }
+//    };
 
     //Cached click listeners for action buttons
     private YANButtonNode.YanButtonNodeClickListener mDoneBtnClickListener;
@@ -187,9 +207,9 @@ public class HudManagementService implements IService {
         mTweenManager = tweenManager;
         mHudNodesMap = new HashMap<>();
 
-        //preallocate speech bubble delayed task
-        YANObjectPool.getInstance().preallocate(YANDelayedTask.class, 3);
-        YANObjectPool.getInstance().preallocate(HideSpeechBubbleDelayedTaskListener.class, 3);
+//        //preallocate speech bubble delayed task
+//        YANObjectPool.getInstance().preallocate(YANDelayedTask.class, 3);
+//        YANObjectPool.getInstance().preallocate(HideSpeechBubbleDelayedTaskListener.class, 3);
     }
 
     public void createNodes(YANTextureAtlas hudAtlas) {
@@ -292,6 +312,11 @@ public class HudManagementService implements IService {
         //popup images are invisible
         getNode(YOU_WIN_IMAGE_INDEX).setOpacity(0);
         getNode(YOU_LOOSE_IMAGE_INDEX).setOpacity(0);
+
+        //timers are invisible
+        getNode(CIRCLE_TIMER_BOTTOM_RIGHT_INDEX).setOpacity(0);
+        getNode(CIRCLE_TIMER_TOP_RIGHT_INDEX).setOpacity(0);
+        getNode(CIRCLE_TIMER_TOP_LEFT_INDEX).setOpacity(0);
 
         //popups anchor is at the middle
         getNode(YOU_WIN_IMAGE_INDEX).setAnchorPoint(0.5f, 0.5f);
@@ -522,14 +547,15 @@ public class HudManagementService implements IService {
 
         //setup bottom avatar icon
         YANTexturedNode bottomAvatarIcon = getNode(AVATAR_ICON_BOTTOM_RIGHT_INDEX);
-        bottomAvatarIcon.setAnchorPoint(1f, 1f);
+        float bottomAvatarIconHalfSize = bottomAvatarIcon.getSize().getX() / 2;
+        bottomAvatarIcon.setAnchorPoint(0.5f, 0.5f);
         bottomAvatarIcon.setSortingLayer(bottomTimer.getSortingLayer() + 1);
         offsetSize = (avatarBg.getSize().getX() - bottomAvatarIcon.getSize().getX()) / 2;
-        bottomAvatarIcon.setPosition(avatarBg.getPosition().getX() - offsetSize, avatarBg.getPosition().getY() - offsetSize);
+        bottomAvatarIcon.setPosition(avatarBg.getPosition().getX() - offsetSize - bottomAvatarIconHalfSize, avatarBg.getPosition().getY() - offsetSize - bottomAvatarIconHalfSize);
 
         //take action is at the same place as bottom avatarBg
         YANTexturedNode takeButton = getNode(TAKE_BUTTON_INDEX);
-        takeButton.setAnchorPoint(1f, 1f);
+        takeButton.setAnchorPoint(0.5f, 0.5f);
         takeButton.setSortingLayer(bottomAvatarIcon.getSortingLayer() + 1);
         takeButton.setPosition(bottomAvatarIcon.getPosition().getX(), bottomAvatarIcon.getPosition().getY());
 
@@ -537,7 +563,7 @@ public class HudManagementService implements IService {
         //finish action is at the same place as bottom avatarBg
         YANTexturedNode doneButton = getNode(DONE_BUTTON_INDEX);
         doneButton.setSortingLayer(bottomAvatarIcon.getSortingLayer() + 1);
-        doneButton.setAnchorPoint(1f, 1f);
+        doneButton.setAnchorPoint(0.5f, 0.5f);
         doneButton.setPosition(takeButton.getPosition().getX(), takeButton.getPosition().getY());
 
         //setup avatarBg for top right player
@@ -556,10 +582,11 @@ public class HudManagementService implements IService {
 
         //setup icon for top right player
         YANTexturedNode topRightAvatarIcon = getNode(AVATAR_ICON_TOP_RIGHT_INDEX);
-        topRightAvatarIcon.setAnchorPoint(1f, 0f);
+        float topRightAvatarHalfSize = topRightAvatarIcon.getSize().getX() / 2;
+        topRightAvatarIcon.setAnchorPoint(0.5f, 0.5f);
         topRightAvatarIcon.setSortingLayer(topRightTimer.getSortingLayer() + 1);
         offsetSize = (avatarBg.getSize().getX() - topRightAvatarIcon.getSize().getX()) / 2;
-        topRightAvatarIcon.setPosition(avatarBg.getPosition().getX() - offsetSize, avatarBg.getPosition().getY() + offsetSize);
+        topRightAvatarIcon.setPosition(avatarBg.getPosition().getX() - offsetSize - topRightAvatarHalfSize, avatarBg.getPosition().getY() + offsetSize + topRightAvatarHalfSize);
 
         //setup avatarBg for top left player
         avatarBg = getNode(AVATAR_BG_TOP_LEFT_INDEX);
@@ -576,10 +603,11 @@ public class HudManagementService implements IService {
 
         //setup icon for top left player
         YANTexturedNode topLeftAvatarIcon = getNode(AVATAR_ICON_TOP_LEFT_INDEX);
-        topLeftAvatarIcon.setAnchorPoint(0f, 0f);
+        float topLeftAvatarHalfSize = topLeftAvatarIcon.getSize().getX() / 2;
+        topLeftAvatarIcon.setAnchorPoint(0.5f, 0.5f);
         topLeftAvatarIcon.setSortingLayer(topLeftTimer.getSortingLayer() + 1);
         offsetSize = (avatarBg.getSize().getX() - topLeftAvatarIcon.getSize().getX()) / 2;
-        topLeftAvatarIcon.setPosition(avatarBg.getPosition().getX() + offsetSize, avatarBg.getPosition().getY() + offsetSize);
+        topLeftAvatarIcon.setPosition(avatarBg.getPosition().getX() + offsetSize + topLeftAvatarHalfSize, avatarBg.getPosition().getY() + offsetSize + topLeftAvatarHalfSize);
 
         //trump image
         getNode(TRUMP_IMAGE_INDEX).setPosition((sceneSize.getX() - getNode(TRUMP_IMAGE_INDEX).getSize().getX()) / 2, sceneSize.getY() * 0.06f);
@@ -738,30 +766,98 @@ public class HudManagementService implements IService {
         sequence.start(mTweenManager);
     }
 
-    public void showSpeechBubbleWithText(@NonNull @SpeechBubbleText String text, @NonNull GameInfo.Player player) {
-        YANBaseNode speechBubble = getSpeechBubbleForPlayer(player);
-        YANTextNode textNode = getTextNodeForPlayer(player);
-        speechBubble.setOpacity(1f);
-        textNode.setText(text);
-        textNode.setOpacity(1f);
 
-        //open delayed task to hide Speech Bubble
-        //obtain objects from an object pool
-        YANDelayedTask delayedTask = YANObjectPool.getInstance().obtain(YANDelayedTask.class);
-        HideSpeechBubbleDelayedTaskListener delayedTaskListener = YANObjectPool.getInstance().obtain(HideSpeechBubbleDelayedTaskListener.class);
+    public void animateScaleUpPlayerAvatar(@NonNull GameInfo.Player player) {
 
-        //init the listener
-        delayedTaskListener.setSpeechBubbleNode(speechBubble);
-        delayedTaskListener.setSpeechBubbleTextNode(textNode);
-        delayedTaskListener.setDelayedTask(delayedTask);
+//        YANBaseNode backgroundAvatarNode = getAvatarBgForPlayer(player);
+        final YANBaseNode avatarIconNode = getIconForPlayer(player);
+        final int originalSortingLayer = avatarIconNode.getSortingLayer();
+        avatarIconNode.setSortingLayer(HUD_SORTING_LAYER + 1000);
+//        YANBaseNode timerNode = getTimerNodeForPlayer(player);
 
-        //init the task
-        delayedTask.setDurationSeconds(SPEECH_BUBBLE_APPEARANCE_DURATION_SECONDS);
-        delayedTask.setDelayedTaskListener(delayedTaskListener);
+        float originSize = avatarIconNode.getSize().getX();
+        float targetSize = originSize * 1.3f;
 
-        //start the task
-        delayedTask.start();
+        Timeline sequence = Timeline.createSequence()
+                .beginSequence().beginParallel()
+                .push(Tween.to(avatarIconNode, YANTweenNodeAccessor.SIZE_X, SCALE_UP_SCALE_DOWN_ANIMATION_DURATION).target(targetSize))
+                .push(Tween.to(avatarIconNode, YANTweenNodeAccessor.SIZE_Y, SCALE_UP_SCALE_DOWN_ANIMATION_DURATION).target(targetSize))
+                .end()
+                .beginSequence().beginParallel()
+                .push(Tween.to(avatarIconNode, YANTweenNodeAccessor.SIZE_X, SCALE_UP_SCALE_DOWN_ANIMATION_DURATION).target(originSize))
+
+                        //TODO : avoid allocations
+                .push(Tween.to(avatarIconNode, YANTweenNodeAccessor.SIZE_Y, SCALE_UP_SCALE_DOWN_ANIMATION_DURATION).target(originSize)).setCallback(new TweenCallback() {
+                    @Override
+                    public void onEvent(int type, BaseTween<?> baseTween) {
+                        if (TweenCallback.COMPLETE == type) {
+                            avatarIconNode.setSortingLayer(originalSortingLayer);
+                        }
+                    }
+                });
+
+        //animate
+        sequence.start(mTweenManager);
     }
+
+    private YANBaseNode getIconForPlayer(GameInfo.Player player) {
+        switch (player) {
+            case BOTTOM_PLAYER:
+                return getNode(AVATAR_ICON_BOTTOM_RIGHT_INDEX);
+            case TOP_RIGHT_PLAYER:
+                return getNode(AVATAR_ICON_TOP_RIGHT_INDEX);
+            case TOP_LEFT_PLAYER:
+                return getNode(AVATAR_ICON_TOP_LEFT_INDEX);
+            default:
+                return null;
+        }
+    }
+
+    public void showSpeechBubbleWithText(@NonNull @SpeechBubbleText String text, @NonNull GameInfo.Player player) {
+        YANBaseNode speechBubbleNode = getSpeechBubbleForPlayer(player);
+        YANTextNode textNode = getTextNodeForPlayer(player);
+        textNode.setText(text);
+
+        Timeline sequence = Timeline.createSequence()
+                .beginSequence()
+                .beginParallel()
+                .push(Tween.to(speechBubbleNode, YANTweenNodeAccessor.OPACITY, SPEECH_BUBBLE_APPEARANCE_DURATION_SECONDS).target(1f))
+                .push(Tween.to(textNode, YANTweenNodeAccessor.OPACITY, SPEECH_BUBBLE_APPEARANCE_DURATION_SECONDS).target(1f))
+                .end()
+                .pushPause(SPEECH_BUBBLE_VISIBILITY_DURATION_SECONDS)
+                .beginParallel()
+                .push(Tween.to(speechBubbleNode, YANTweenNodeAccessor.OPACITY, SPEECH_BUBBLE_APPEARANCE_DURATION_SECONDS).target(0f))
+                .push(Tween.to(textNode, YANTweenNodeAccessor.OPACITY, SPEECH_BUBBLE_APPEARANCE_DURATION_SECONDS).target(0f))
+                .end();
+
+        //animate
+        sequence.start(mTweenManager);
+    }
+
+//    public void showSpeechBubbleWithText(@NonNull @SpeechBubbleText String text, @NonNull GameInfo.Player player) {
+//        YANBaseNode speechBubble = getSpeechBubbleForPlayer(player);
+//        YANTextNode textNode = getTextNodeForPlayer(player);
+//        speechBubble.setOpacity(1f);
+//        textNode.setText(text);
+//        textNode.setOpacity(1f);
+//
+//        //open delayed task to hide Speech Bubble
+//        //obtain objects from an object pool
+//        YANDelayedTask delayedTask = YANObjectPool.getInstance().obtain(YANDelayedTask.class);
+//        HideSpeechBubbleDelayedTaskListener delayedTaskListener = YANObjectPool.getInstance().obtain(HideSpeechBubbleDelayedTaskListener.class);
+//
+//        //init the listener
+//        delayedTaskListener.setSpeechBubbleNode(speechBubble);
+//        delayedTaskListener.setSpeechBubbleTextNode(textNode);
+//        delayedTaskListener.setDelayedTask(delayedTask);
+//
+//        //init the task
+//        delayedTask.setDurationSeconds(SPEECH_BUBBLE_APPEARANCE_DURATION_SECONDS);
+//        delayedTask.setDelayedTaskListener(delayedTaskListener);
+//
+//        //start the task
+//        delayedTask.start();
+//    }
 
     private YANTextNode getTextNodeForPlayer(@NonNull GameInfo.Player player) {
         switch (player) {
@@ -788,63 +884,78 @@ public class HudManagementService implements IService {
     }
 
 
-    public void resetTimerAnimation(@HudManagementService.HudNode int timerNodeIndex) {
+    public void startTimerForPlayer(@NonNull GameInfo.Player player, YANColor timerColor) {
 
         if (mActiveTimerNode != null) {
             //reset previous timer
-            mActiveTimerNode.setColor(TIMER_RETALIATION_COLOR.getR(), TIMER_RETALIATION_COLOR.getG(), TIMER_RETALIATION_COLOR.getB());
             mActiveTimerNode.setPieCirclePercentage(1f);
+            mActiveTimerNode.setOpacity(0f);
         }
 
         //set new timer as active
-        mActiveTimerNode = getNode(timerNodeIndex);
-        mActiveTimerNode.setColor(TIMER_THROW_IN_COLOR.getR(), TIMER_THROW_IN_COLOR.getG(), TIMER_THROW_IN_COLOR.getB());
+        mActiveTimerNode = getTimerNodeForPlayer(player);
+        mActiveTimerNode.setColor(timerColor.getR(), timerColor.getG(), timerColor.getB());
+        mActiveTimerNode.setOpacity(1f);
     }
 
-    /**
-     * We retaining this class to not create many instances of it
-     */
-    protected static class HideSpeechBubbleDelayedTaskListener implements YANDelayedTask.YANDelayedTaskListener, YANIPoolableObject {
-        private YANBaseNode mSpeechBubbleNode;
-        private YANTextNode mSpeechBubbleTextNode;
-        private YANDelayedTask mDelayedTask;
-
-        public HideSpeechBubbleDelayedTaskListener() {
-            //Empty constructor required
-        }
-
-        @Override
-        public void onComplete() {
-
-            //hide the speech bubble and text
-            mSpeechBubbleNode.setOpacity(0f);
-            mSpeechBubbleTextNode.setOpacity(0f);
-
-            //recycle delayed task
-            YANObjectPool.getInstance().offer(mDelayedTask);
-
-            //recycle this listener
-            YANObjectPool.getInstance().offer(HideSpeechBubbleDelayedTaskListener.this);
-
-        }
-
-        @Override
-        public void resetState() {
-            mSpeechBubbleNode = null;
-            mSpeechBubbleTextNode = null;
-            mDelayedTask = null;
-        }
-
-        public void setSpeechBubbleNode(YANBaseNode speechBubbleNode) {
-            mSpeechBubbleNode = speechBubbleNode;
-        }
-
-        public void setSpeechBubbleTextNode(YANTextNode speechBubbleTextNode) {
-            mSpeechBubbleTextNode = speechBubbleTextNode;
-        }
-
-        public void setDelayedTask(YANDelayedTask delayedTask) {
-            mDelayedTask = delayedTask;
+    private YANCircleNode getTimerNodeForPlayer(GameInfo.Player player) {
+        switch (player) {
+            case BOTTOM_PLAYER:
+                return getNode(CIRCLE_TIMER_BOTTOM_RIGHT_INDEX);
+            case TOP_RIGHT_PLAYER:
+                return getNode(CIRCLE_TIMER_TOP_RIGHT_INDEX);
+            case TOP_LEFT_PLAYER:
+                return getNode(CIRCLE_TIMER_TOP_LEFT_INDEX);
+            default:
+                return null;
         }
     }
+
+
+//    /**
+//     * We retaining this class to not create many instances of it
+//     */
+//    protected static class HideSpeechBubbleDelayedTaskListener implements YANDelayedTask.YANDelayedTaskListener, YANIPoolableObject {
+//        private YANBaseNode mSpeechBubbleNode;
+//        private YANTextNode mSpeechBubbleTextNode;
+//        private YANDelayedTask mDelayedTask;
+//
+//        public HideSpeechBubbleDelayedTaskListener() {
+//            //Empty constructor required
+//        }
+//
+//        @Override
+//        public void onComplete() {
+//
+//            //hide the speech bubble and text
+//            mSpeechBubbleNode.setOpacity(0f);
+//            mSpeechBubbleTextNode.setOpacity(0f);
+//
+//            //recycle delayed task
+//            YANObjectPool.getInstance().offer(mDelayedTask);
+//
+//            //recycle this listener
+//            YANObjectPool.getInstance().offer(HideSpeechBubbleDelayedTaskListener.this);
+//
+//        }
+//
+//        @Override
+//        public void resetState() {
+//            mSpeechBubbleNode = null;
+//            mSpeechBubbleTextNode = null;
+//            mDelayedTask = null;
+//        }
+//
+//        public void setSpeechBubbleNode(YANBaseNode speechBubbleNode) {
+//            mSpeechBubbleNode = speechBubbleNode;
+//        }
+//
+//        public void setSpeechBubbleTextNode(YANTextNode speechBubbleTextNode) {
+//            mSpeechBubbleTextNode = speechBubbleTextNode;
+//        }
+//
+//        public void setDelayedTask(YANDelayedTask delayedTask) {
+//            mDelayedTask = delayedTask;
+//        }
+//    }
 }

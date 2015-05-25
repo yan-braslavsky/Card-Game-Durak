@@ -36,19 +36,25 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
 
         updateActivePlayerState(serverMessage.getMessageData());
 
-        //TODO : update timer animation
-        @HudManagementService.HudNode int timerNodeIndex = retrieveTimerPosition(serverMessage.getMessageData().getPlayerIndex());
-        ServiceLocator.locateService(HudManagementService.class).resetTimerAnimation(timerNodeIndex);
-
         @HudManagementService.SpeechBubbleText String speechBubbleText = null;
         PlayerTakesActionMessage.PlayerAction playerAction = PlayerTakesActionMessage.PlayerAction.valueOf(serverMessage.getMessageData().getAction());
 
         switch (playerAction) {
             case ATTACK_START:
+                //update timer animation
+                ServiceLocator.locateService(HudManagementService.class).startTimerForPlayer(mGameInfo.getPlayerForIndex(serverMessage.getMessageData().getPlayerIndex()),
+                        HudManagementService.TIMER_RETALIATION_COLOR);
+
                 speechBubbleText = HudManagementService.SPEECH_BUBBLE_ATTACK_TEXT;
                 break;
             case RETALIATION_START:
+
+                //update timer animation
+                ServiceLocator.locateService(HudManagementService.class).startTimerForPlayer(mGameInfo.getPlayerForIndex(serverMessage.getMessageData().getPlayerIndex()),
+                        HudManagementService.TIMER_RETALIATION_COLOR);
+
                 //this will be called every time player retaliates , on attack and on throw ins
+                ServiceLocator.locateService(HudManagementService.class).animateScaleUpPlayerAvatar(mGameInfo.getPlayerForIndex(serverMessage.getMessageData().getPlayerIndex()));
                 break;
             case THROW_IN_PASS:
                 speechBubbleText = HudManagementService.SPEECH_BUBBLE_PASS_TEXT;
@@ -57,7 +63,12 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
                 speechBubbleText = HudManagementService.SPEECH_BUBBLE_THROW_IN_END_TEXT;
                 break;
             case THROW_IN_START:
-                speechBubbleText = HudManagementService.SPEECH_BUBBLE_THINKING_TEXT;
+
+                //update timer animation
+                ServiceLocator.locateService(HudManagementService.class).startTimerForPlayer(mGameInfo.getPlayerForIndex(serverMessage.getMessageData().getPlayerIndex()),
+                        HudManagementService.TIMER_THROW_IN_COLOR);
+
+                ServiceLocator.locateService(HudManagementService.class).animateScaleUpPlayerAvatar(mGameInfo.getPlayerForIndex(serverMessage.getMessageData().getPlayerIndex()));
                 break;
             case PLAYER_TAKES_CARDS:
                 speechBubbleText = HudManagementService.SPEECH_BUBBLE_TAKING_TEXT;
@@ -96,18 +107,18 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
         mPileLayouterManager.getPileLayouterForPile(mPileManager.getBottomPlayerPile()).layout();
     }
 
-    private
-    @HudManagementService.HudNode
-    int retrieveTimerPosition(int actionPlayerIndex) {
-        switch (mGameInfo.getPlayerForIndex(actionPlayerIndex)) {
-            case BOTTOM_PLAYER:
-                return HudManagementService.CIRCLE_TIMER_BOTTOM_RIGHT_INDEX;
-            case TOP_RIGHT_PLAYER:
-                return HudManagementService.CIRCLE_TIMER_TOP_RIGHT_INDEX;
-            case TOP_LEFT_PLAYER:
-                return HudManagementService.CIRCLE_TIMER_TOP_LEFT_INDEX;
-            default:
-                throw new RuntimeException("player not found for index : " + actionPlayerIndex);
-        }
-    }
+//    private
+//    @HudManagementService.HudNode
+//    int retrieveTimerPosition(int actionPlayerIndex) {
+//        switch (mGameInfo.getPlayerForIndex(actionPlayerIndex)) {
+//            case BOTTOM_PLAYER:
+//                return HudManagementService.CIRCLE_TIMER_BOTTOM_RIGHT_INDEX;
+//            case TOP_RIGHT_PLAYER:
+//                return HudManagementService.CIRCLE_TIMER_TOP_RIGHT_INDEX;
+//            case TOP_LEFT_PLAYER:
+//                return HudManagementService.CIRCLE_TIMER_TOP_LEFT_INDEX;
+//            default:
+//                throw new RuntimeException("player not found for index : " + actionPlayerIndex);
+//        }
+//    }
 }
