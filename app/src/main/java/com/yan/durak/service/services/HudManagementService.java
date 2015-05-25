@@ -818,6 +818,10 @@ public class HudManagementService implements IService {
         YANTextNode textNode = getTextNodeForPlayer(player);
         textNode.setText(text);
 
+        //kill all previous animations
+        mTweenManager.killTarget(speechBubbleNode);
+        mTweenManager.killTarget(textNode);
+
         Timeline sequence = Timeline.createSequence()
                 .beginSequence()
                 .beginParallel()
