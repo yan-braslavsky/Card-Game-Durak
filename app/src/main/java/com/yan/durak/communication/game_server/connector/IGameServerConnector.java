@@ -12,7 +12,7 @@ public interface IGameServerConnector {
     /**
      * Listener will be notified of different server events
      */
-    public interface IGameServerCommunicatorListener {
+    interface IGameServerCommunicatorListener {
 
         /**
          * New message from the server received.
@@ -32,6 +32,7 @@ public interface IGameServerConnector {
 
     /**
      * Call this function every frame , to poll any incoming messages
+     *
      * @param deltaTimeSeconds time elapsed since last frame
      */
     void update(float deltaTimeSeconds);

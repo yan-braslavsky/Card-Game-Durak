@@ -1,13 +1,13 @@
-package com.yan.durak.communication.socket;
-import com.yan.durak.gamelogic.communication.connection.SocketClient;
+package com.yan.durak.communication.client.local;
+import com.yan.durak.gamelogic.communication.connection.IRemoteClient;
 
 /**
  * Created by Yan-Home on 12/24/2014.
  *
- * Used to serve as a SocketClient on a local server side to represent
- * Local player.
+ * Used to serve as a {@link IRemoteClient} on a local server side to represent
+ * a Local player.
  */
-public class LocalServerClient implements SocketClient {
+public class LocalServerClient implements IRemoteClient {
 
     @Override
     public void sendMessage(String msg) {

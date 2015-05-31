@@ -1,6 +1,5 @@
 package com.yan.durak.communication.game_server.connector;
 
-import com.yan.durak.communication.socket.SocketConnectionManager;
 import com.yan.durak.gamelogic.communication.protocol.BaseProtocolMessage;
 
 /**

@@ -1,6 +1,6 @@
-package com.yan.durak.communication.socket;
+package com.yan.durak.communication.client.remote;
 
-import com.yan.durak.gamelogic.communication.connection.SocketClient;
+import com.yan.durak.gamelogic.communication.connection.IRemoteClient;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,15 +11,17 @@ import java.net.Socket;
 
 /**
  * Created by Yan-Home on 12/24/2014.
+ * Used to serve as a {@link IRemoteClient} on a client side that connected
+ * to a remote server using plain sockets.
  */
-public class RemoteClient implements SocketClient {
+public class RemoteSocketClient implements IRemoteClient {
 
     private final Socket mSocket;
     private PrintWriter mOutputWriter;
     private BufferedReader mInputReader;
     private boolean mDisconnected;
 
-    public RemoteClient(Socket socket) {
+    public RemoteSocketClient(Socket socket) {
         mSocket = socket;
         try {
             mOutputWriter = new PrintWriter(socket.getOutputStream(), true);

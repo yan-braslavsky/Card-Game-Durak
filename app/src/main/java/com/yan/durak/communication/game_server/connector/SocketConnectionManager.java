@@ -1,11 +1,18 @@
-package com.yan.durak.communication.socket;
+package com.yan.durak.communication.game_server.connector;
 
-import com.yan.durak.gamelogic.communication.connection.SocketClient;
+import com.koushikdutta.async.future.Future;
+import com.koushikdutta.async.http.AsyncHttpClient;
+import com.koushikdutta.async.http.WebSocket;
+import com.yan.durak.communication.client.local.RemoteServerClient;
+import com.yan.durak.communication.client.remote.RemoteSocketClient;
+import com.yan.durak.communication.client.remote.RemoteWsClient;
+import com.yan.durak.gamelogic.communication.connection.IRemoteClient;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ExecutionException;
 
 import glengine.yan.glengine.util.loggers.YANLogger;
 
@@ -18,7 +25,7 @@ import glengine.yan.glengine.util.loggers.YANLogger;
 public class SocketConnectionManager {
 
     private static final SocketConnectionManager INSTANCE = new SocketConnectionManager();
-    private SocketClient mSocketClient;
+    private IRemoteClient mSocketClient;
     private volatile boolean mConnected;
     private Queue<String> mMessageQueue;
 
@@ -31,11 +38,11 @@ public class SocketConnectionManager {
     }
 
     /**
-     * Connects to remote socket server
+     * Connects to remote web socket server.
      *
      * @return true if connection was established , false otherwise
      */
-    public boolean connectToRemoteServer(final String serverAddress, final int serverPort) {
+    public boolean connectToRemoteServerViaWebSocket(final String serverDomain, final int serverPort) {
 
         if (isConnected())
             return false;
@@ -45,7 +52,49 @@ public class SocketConnectionManager {
             @Override
             public void run() {
                 try {
-                    mSocketClient = new RemoteClient(new Socket(serverAddress, serverPort));
+
+                    Future<WebSocket> future = AsyncHttpClient.getDefaultInstance().websocket("http://" + serverDomain + ":" + serverPort, null, null);
+                    WebSocket websocket = future.get();
+                    mSocketClient = new RemoteWsClient(websocket);
+                    mConnected = true;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+                while (isConnected()) {
+                    String msg = mSocketClient.readMessage();
+                    if (msg != null) {
+                        synchronized (mMessageQueue) {
+                            YANLogger.log("[RECEIVED] " + msg);
+                            mMessageQueue.add(msg);
+                        }
+                    }
+                }
+
+            }
+        })).start();
+
+        return true;
+    }
+
+    /**
+     * Connects to remote socket server using plain sockets.
+     *
+     * @return true if connection was established , false otherwise
+     */
+    public boolean connectToRemoteServerViaSocket(final String serverAddress, final int serverPort) {
+
+        if (isConnected())
+            return false;
+
+        //TODO : this might be not an appropriate way to maintain connection
+        (new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mSocketClient = new RemoteSocketClient(new Socket(serverAddress, serverPort));
                     mConnected = true;
                 } catch (IOException e) {
                     e.printStackTrace();

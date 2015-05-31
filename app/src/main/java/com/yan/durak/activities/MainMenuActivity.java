@@ -7,11 +7,10 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.yan.durak.R;
+import com.yan.durak.communication.game_server.LocalGameServer;
 import com.yan.durak.communication.game_server.connector.IGameServerConnector;
 import com.yan.durak.communication.game_server.connector.LocalGameServerConnector;
 import com.yan.durak.communication.game_server.connector.RemoteGameServerConnector;
-import com.yan.durak.communication.socket.LocalServerClient;
-import com.yan.durak.gamelogic.GameStarter;
 
 public class MainMenuActivity extends Activity {
 
@@ -43,14 +42,7 @@ public class MainMenuActivity extends Activity {
     }
 
     private void startLocalGame() {
-        //open local server on different thread
-        (new Thread(new Runnable() {
-            @Override
-            public void run() {
-                (new GameStarter(new LocalServerClient(), null, null)).start();
-            }
-        })).start();
-
+        LocalGameServer.start();
         Class<? extends IGameServerConnector> connectorClass = LocalGameServerConnector.class;
         startGameActivity(connectorClass);
     }

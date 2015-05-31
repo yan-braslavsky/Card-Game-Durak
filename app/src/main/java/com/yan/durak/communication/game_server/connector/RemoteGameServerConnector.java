@@ -1,6 +1,5 @@
 package com.yan.durak.communication.game_server.connector;
 
-import com.yan.durak.communication.socket.SocketConnectionManager;
 import com.yan.durak.gamelogic.communication.protocol.BaseProtocolMessage;
 
 import org.apache.http.HttpEntity;
@@ -26,8 +25,11 @@ import java.util.List;
  */
 public class RemoteGameServerConnector extends BaseGameServerConnector {
 
-    private static final String SERVER_ADDRESS = "192.168.1.103";
-    private static final int SERVER_PORT = 7000;
+    private static final String SERVER_ADDRESS = "192.168.1.100";
+    //    private static final String SERVER_ADDRESS = "yan-durak-server-lobby-staging.herokuapp.com";
+//    private static final int SERVER_PORT = 1314;
+//    private static final int SERVER_PORT = 5000;
+    private static final int SERVER_PORT = 80;
 
     public RemoteGameServerConnector() {
         super();
@@ -35,20 +37,28 @@ public class RemoteGameServerConnector extends BaseGameServerConnector {
 
     @Override
     public void connect() {
-
         //opening new thread to do network operation off the GL thread
         (new Thread(new Runnable() {
             @Override
             public void run() {
-                //FIXME: that will work only from simulator
                 String domain = SERVER_ADDRESS;
 
                 //obtain socket adress
-                String socketAdress = requestSocketAdress("http://" + domain + ":8080/DurakGameServer/");
-                String[] splittedAdress = socketAdress.split(":");
+                String socketAdress = requestSocketAdress("http://" + domain + ":" + SERVER_PORT);
+
+                //server returns us "domain:port" formatted string
+                String[] splitString = socketAdress.split(":");
+                String socketDomain = splitString[0];
+                int socketPort = Integer.parseInt(splitString[1]);
 
                 //connect to socket adress
-                SocketConnectionManager.getInstance().connectToRemoteServer(splittedAdress[0], Integer.parseInt(splittedAdress[1]));
+                SocketConnectionManager.getInstance().connectToRemoteServerViaWebSocket(socketDomain, socketPort);
+//                SocketConnectionManager.getInstance().connectToRemoteServerViaSocket( socketDomain, socketPort);
+
+
+//                SocketConnectionManager.getInstance().connectToRemoteServerViaSocket("http://" + "yan-durak-server-lobby-staging.herokuapp.com:" +splitString[1]  /*splitString[0]*/,-1 /*Integer.parseInt(splitString[1])*/);
+//                SocketConnectionManager.getInstance().connectToRemoteServerViaSocket("http://" + socketAdress  /*splitString[0]*/,-1 /*Integer.parseInt(splitString[1])*/);
+//                SocketConnectionManager.getInstance().connectToRemoteServerViaSocket("http://yan-durak-server-lobby-staging.herokuapp.com:8080", 1234);
             }
         })).start();
     }

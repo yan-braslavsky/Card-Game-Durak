@@ -1,4 +1,4 @@
-package com.yan.durak.communication.socket;
+package com.yan.durak.communication.client.local;
 
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -6,7 +6,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by Yan-Home on 2/23/2015.
  */
-public class SharedLocalMessageQueue {
+class SharedLocalMessageQueue {
 
     private static final SharedLocalMessageQueue INSTANCE = new SharedLocalMessageQueue();
     private Queue<String> mForClientMessageQueue;

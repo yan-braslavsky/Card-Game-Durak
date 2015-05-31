@@ -3,9 +3,15 @@ package com.yan.durak.communication.game_server.connector;
 import com.google.gson.Gson;
 import com.yan.durak.communication.game_server.connector.filter.CardMoveBatchMessageFilter;
 import com.yan.durak.communication.game_server.connector.filter.IGameServerMessageFilter;
-import com.yan.durak.communication.socket.SocketConnectionManager;
 import com.yan.durak.gamelogic.communication.protocol.BaseProtocolMessage;
-import com.yan.durak.gamelogic.communication.protocol.messages.*;
+import com.yan.durak.gamelogic.communication.protocol.messages.CardMovedProtocolMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.GameOverProtocolMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.GameSetupProtocolMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.PlayerTakesActionMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.RequestCardForAttackMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.RequestRetaliatePilesMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.RequestThrowInsMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.RetaliationInvalidProtocolMessage;
 import com.yan.durak.protocol.messages.BlankProtocolMessage;
 
 import java.util.HashMap;
