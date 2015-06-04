@@ -25,9 +25,8 @@ import java.util.List;
  */
 public class RemoteGameServerConnector extends BaseGameServerConnector {
 
-    //    private static final String SERVER_ADDRESS = "192.168.1.100";
-    private static final String SERVER_ADDRESS = "10.10.21.89";
-    //    private static final String SERVER_ADDRESS = "yan-durak-server-lobby-staging.herokuapp.com";
+//        private static final String SERVER_ADDRESS = "192.168.1.101";
+        private static final String SERVER_ADDRESS = "yan-durak-server-lobby-staging.herokuapp.com";
 //    private static final int SERVER_PORT = 1314;
 //    private static final int SERVER_PORT = 5000;
     private static final int SERVER_PORT = 80;

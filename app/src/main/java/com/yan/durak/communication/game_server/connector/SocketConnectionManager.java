@@ -53,7 +53,7 @@ public class SocketConnectionManager {
             public void run() {
                 try {
 
-                    Future<WebSocket> future = AsyncHttpClient.getDefaultInstance().websocket("http://" + serverDomain + ":" + serverPort, null, null);
+                    Future<WebSocket> future = AsyncHttpClient.getDefaultInstance().websocket("ws://" + serverDomain, null, null);
                     WebSocket websocket = future.get();
                     mSocketClient = new RemoteWsClient(websocket);
                     mConnected = true;
