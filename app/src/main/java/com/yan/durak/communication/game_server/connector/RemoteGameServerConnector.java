@@ -25,7 +25,8 @@ import java.util.List;
  */
 public class RemoteGameServerConnector extends BaseGameServerConnector {
 
-    private static final String SERVER_ADDRESS = "192.168.1.100";
+    //    private static final String SERVER_ADDRESS = "192.168.1.100";
+    private static final String SERVER_ADDRESS = "10.10.21.89";
     //    private static final String SERVER_ADDRESS = "yan-durak-server-lobby-staging.herokuapp.com";
 //    private static final int SERVER_PORT = 1314;
 //    private static final int SERVER_PORT = 5000;
@@ -44,15 +45,10 @@ public class RemoteGameServerConnector extends BaseGameServerConnector {
                 String domain = SERVER_ADDRESS;
 
                 //obtain socket adress
-                String socketAdress = requestSocketAdress("http://" + domain + ":" + SERVER_PORT);
-
-                //server returns us "domain:port" formatted string
-                String[] splitString = socketAdress.split(":");
-                String socketDomain = splitString[0];
-                int socketPort = Integer.parseInt(splitString[1]);
+                String socketRelativeAdress = requestSocketAdress("http://" + domain);
 
                 //connect to socket adress
-                SocketConnectionManager.getInstance().connectToRemoteServerViaWebSocket(socketDomain, socketPort);
+                SocketConnectionManager.getInstance().connectToRemoteServerViaWebSocket(SERVER_ADDRESS + socketRelativeAdress, -1);
 //                SocketConnectionManager.getInstance().connectToRemoteServerViaSocket( socketDomain, socketPort);
 
 
