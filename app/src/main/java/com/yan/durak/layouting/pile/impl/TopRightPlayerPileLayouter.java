@@ -12,6 +12,7 @@ import com.yan.durak.service.services.CardNodesManagerService;
 import java.util.ArrayList;
 import java.util.List;
 
+import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.util.geometry.YANVector2;
 import glengine.yan.glengine.util.object_pool.YANObjectPool;
@@ -79,7 +80,7 @@ public class TopRightPlayerPileLayouter extends BasePileLayouter {
         int slotPosition = 0;
         CardsLayouterSlotImpl slot;
         CardNode cardNode;
-
+        final Timeline tl = Timeline.createSequence().beginParallel();
         for (Card card : mBoundpile.getCardsInPile()) {
             cardNode = mCardNodesManager.getCardNodeForCard(card);
             slot = mSlotsList.get(slotPosition);
@@ -91,10 +92,11 @@ public class TopRightPlayerPileLayouter extends BasePileLayouter {
             cardNode.useBackTextureRegion();
 
             //animate card to its place with new transform values
-            animateCardNode(cardNode, slot.getPosition().getX(), slot.getPosition().getY(),
-                    slot.getRotation(), mCardWidhtForPile, mCardHeightForPile, 1f,CARD_MOVEMENT_ANIMATION_DURATION);
+            addAnimationToTimelineForCardNode(tl,cardNode, slot.getPosition().getX(), slot.getPosition().getY(),
+                    slot.getRotation(), mCardWidhtForPile, mCardHeightForPile, 1f, CARD_MOVEMENT_ANIMATION_DURATION);
 
             slotPosition++;
         }
+        tl.start(mTweenManager);
     }
 }

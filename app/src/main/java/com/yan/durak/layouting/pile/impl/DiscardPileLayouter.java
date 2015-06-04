@@ -6,6 +6,7 @@ import com.yan.durak.service.services.CardNodesManagerService;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
 
+import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
 import glengine.yan.glengine.util.geometry.YANVector2;
@@ -15,6 +16,7 @@ import glengine.yan.glengine.util.geometry.YANVector2;
  */
 public class DiscardPileLayouter extends BasePileLayouter {
 
+    public static final int END_ROTATION_Z_DEGREES = 300;
     private YANReadOnlyVector2 mPilePositionOnField;
 
     public DiscardPileLayouter(final CardNodesManagerService mCardNodesManager, final TweenManager mTweenManager, final PileModel boundPile) {
@@ -29,12 +31,14 @@ public class DiscardPileLayouter extends BasePileLayouter {
     @Override
     public void layout() {
 
+        final Timeline tl = Timeline.createSequence().beginParallel();
         for (Card card : mBoundpile.getCardsInPile()) {
             CardNode cardNode = mCardNodesManager.getCardNodeForCard(card);
 
             //animate card to its place with new transform values
-            animateCardNode(cardNode, mPilePositionOnField.getX(), mPilePositionOnField.getY(),
-                    300, cardNode.getSize().getX(), cardNode.getSize().getY(), 1f,CARD_MOVEMENT_ANIMATION_DURATION);
+            addAnimationToTimelineForCardNode(tl, cardNode, mPilePositionOnField.getX(), mPilePositionOnField.getY(),
+                    END_ROTATION_Z_DEGREES, cardNode.getSize().getX(), cardNode.getSize().getY(), 1f, CARD_MOVEMENT_ANIMATION_DURATION);
         }
+        tl.start(mTweenManager);
     }
 }

@@ -1,7 +1,6 @@
 package com.yan.durak.layouting.pile.impl;
 
 import com.yan.durak.gamelogic.cards.Card;
-import com.yan.durak.input.cards.CardsTouchProcessor;
 import com.yan.durak.layouting.CardsLayoutSlot;
 import com.yan.durak.layouting.impl.PlayerCardsLayouter;
 import com.yan.durak.layouting.pile.BasePileLayouter;
@@ -14,6 +13,7 @@ import com.yan.durak.session.GameInfo;
 import com.yan.durak.session.states.BaseDraggableState;
 import com.yan.durak.session.states.IActivePlayerState;
 
+import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.TweenManager;
 
 /**
@@ -132,8 +132,10 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
         CardNode cardNode;
         int slotPosition = 0;
         float endAlpha = 1f;
+        final Timeline tl = Timeline.createSequence().beginParallel();
         for (Card card : mBoundpile.getCardsInPile()) {
             cardNode = mCardNodesManager.getCardNodeForCard(card);
+
             slot = mPlayerCardsLayouter.getSlotAtPosition(slotPosition);
 
             //important to update sorting layer
@@ -142,15 +144,13 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
             //as it is the pile of the active player we want all cards to be visible
             cardNode.useFrontTextureRegion();
 
-            //we need card to move instantly now , so we don't want previous animation to continue
-            if (duration < 0.2f)
-                mTweenManager.killTarget(cardNode);
+            //we need card to move instantly so we don't want previous animation to continue
+            mTweenManager.killTarget(cardNode);
 
-            //animate card to its place with new transform values
-            animateCardNode(cardNode, slot.getPosition().getX(), slot.getPosition().getY(),
+            addAnimationToTimelineForCardNode(tl, cardNode, slot.getPosition().getX(), slot.getPosition().getY(),
                     slot.getRotation(), mCardNodesManager.getCardNodeOriginalWidth(), mCardNodesManager.getCardNodeOriginalHeight(), endAlpha, duration);
-
             slotPosition++;
         }
+        tl.start(mTweenManager);
     }
 }
