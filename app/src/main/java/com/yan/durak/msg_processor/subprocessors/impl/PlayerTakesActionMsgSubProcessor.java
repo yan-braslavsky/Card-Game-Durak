@@ -103,22 +103,5 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
             mGameInfo.setActivePlayerState(YANObjectPool.getInstance().obtain(OtherPlayerTurnState.class));
         }
 
-        //in any case we need to re lay out the player pile :
-        mPileLayouterManager.getPileLayouterForPile(mPileManager.getBottomPlayerPile()).layout();
     }
-
-//    private
-//    @HudManagementService.HudNode
-//    int retrieveTimerPosition(int actionPlayerIndex) {
-//        switch (mGameInfo.getPlayerForIndex(actionPlayerIndex)) {
-//            case BOTTOM_PLAYER:
-//                return HudManagementService.CIRCLE_TIMER_BOTTOM_RIGHT_INDEX;
-//            case TOP_RIGHT_PLAYER:
-//                return HudManagementService.CIRCLE_TIMER_TOP_RIGHT_INDEX;
-//            case TOP_LEFT_PLAYER:
-//                return HudManagementService.CIRCLE_TIMER_TOP_LEFT_INDEX;
-//            default:
-//                throw new RuntimeException("player not found for index : " + actionPlayerIndex);
-//        }
-//    }
 }
