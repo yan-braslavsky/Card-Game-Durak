@@ -6,15 +6,15 @@ import com.yan.durak.layouting.impl.PlayerCardsLayouter;
 import com.yan.durak.layouting.pile.BasePileLayouter;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
-import com.yan.durak.service.ServiceLocator;
-import com.yan.durak.service.services.CardNodesManagerService;
-import com.yan.durak.service.services.PileManagerService;
+import com.yan.durak.services.CardNodesManagerService;
+import com.yan.durak.services.PileManagerService;
 import com.yan.durak.session.GameInfo;
 import com.yan.durak.session.states.BaseDraggableState;
 import com.yan.durak.session.states.IActivePlayerState;
 
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.TweenManager;
+import glengine.yan.glengine.service.ServiceLocator;
 
 /**
  * Created by ybra on 20/04/15.

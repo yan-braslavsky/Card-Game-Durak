@@ -2,7 +2,6 @@ package com.yan.durak.input.cards;
 
 import com.yan.durak.nodes.CardNode;
 
-import glengine.yan.glengine.EngineWrapper;
 import glengine.yan.glengine.input.YANInputManager;
 import glengine.yan.glengine.util.geometry.YANVector2;
 import glengine.yan.glengine.util.object_pool.YANObjectPool;
@@ -30,11 +29,6 @@ public class CardsTouchProcessorDragState extends CardsTouchProcessorState {
         touchTime = 0;
     }
 
-    @Override
-    protected void applyState() {
-        //Do nothing
-        //TODO : layout player pile ?
-    }
 
     @Override
     protected boolean onTouchUp(float normalizedX, float normalizedY) {
@@ -63,7 +57,7 @@ public class CardsTouchProcessorDragState extends CardsTouchProcessorState {
 
         //get the world position
         YANVector2 touchToWorldPoint = YANInputManager.touchToWorld(normalizedX, normalizedY,
-                EngineWrapper.getRenderer().getSurfaceSize().getX(), EngineWrapper.getRenderer().getSurfaceSize().getY());
+                mScreenSize.getX(), mScreenSize.getY());
 
         //change position of dragged card
         if (mDraggedCard != null) {

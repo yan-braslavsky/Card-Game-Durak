@@ -1,4 +1,4 @@
-package com.yan.durak.service.services;
+package com.yan.durak.services;
 
 
 import android.support.annotation.IntDef;
@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringDef;
 
 import com.yan.durak.screens.BaseGameScreen;
-import com.yan.durak.service.IService;
 import com.yan.durak.session.GameInfo;
 
 import java.lang.annotation.Retention;
@@ -28,6 +27,8 @@ import glengine.yan.glengine.nodes.YANCircleNode;
 import glengine.yan.glengine.nodes.YANTextNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.nodes.YANTexturedScissorNode;
+import glengine.yan.glengine.service.IService;
+import glengine.yan.glengine.service.ServiceLocator;
 import glengine.yan.glengine.tween.YANTweenNodeAccessor;
 import glengine.yan.glengine.util.colors.YANColor;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
@@ -275,7 +276,7 @@ public class HudManagementService implements IService {
     }
 
     private YANBaseNode createSpeechBubbleText(YANTextureAtlas hudAtlas) {
-        YANTextNode yanTextNode = new YANTextNode(YANAssetManager.getInstance().getLoadedFont(BaseGameScreen.SPEECH_BUBBLES_FONT_NAME), "I will Take This !".length());
+        YANTextNode yanTextNode = new YANTextNode(ServiceLocator.locateService(YANAssetManager.class).getLoadedFont(BaseGameScreen.SPEECH_BUBBLES_FONT_NAME), "I will Take This !".length());
         yanTextNode.setTextColor(SPEECH_BUBBLE_TEXT_COLOR.getR(), SPEECH_BUBBLE_TEXT_COLOR.getG(), SPEECH_BUBBLE_TEXT_COLOR.getB());
 
         //we are setting the longest text that will be used

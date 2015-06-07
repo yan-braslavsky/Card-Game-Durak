@@ -6,19 +6,19 @@ import com.yan.durak.input.cards.CardsTouchProcessor;
 import com.yan.durak.input.listener.PlayerCardsTouchProcessorListener;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.msg_processor.MsgProcessor;
-import com.yan.durak.service.ServiceLocator;
-import com.yan.durak.service.services.CardNodesManagerService;
-import com.yan.durak.service.services.CardsTouchProcessorService;
-import com.yan.durak.service.services.HudManagementService;
-import com.yan.durak.service.services.PileLayouterManagerService;
-import com.yan.durak.service.services.PileManagerService;
-import com.yan.durak.service.services.SceneSizeProviderService;
+import com.yan.durak.services.CardNodesManagerService;
+import com.yan.durak.services.CardsTouchProcessorService;
+import com.yan.durak.services.HudManagementService;
+import com.yan.durak.services.PileLayouterManagerService;
+import com.yan.durak.services.PileManagerService;
+import com.yan.durak.services.SceneSizeProviderService;
 import com.yan.durak.session.GameInfo;
 
 import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.nodes.YANBaseNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.renderer.YANGLRenderer;
+import glengine.yan.glengine.service.ServiceLocator;
 
 /**
  * Created by Yan-Home on 10/3/2014.
@@ -135,6 +135,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
     @Override
     protected void onChangeNodesSize() {
+        ServiceLocator.locateService(CardsTouchProcessorService.class).setSceneSize(getSceneSize().getX(), getSceneSize().getY());
         ServiceLocator.locateService(SceneSizeProviderService.class).setSceneSize(getSceneSize().getX(), getSceneSize().getY());
         ServiceLocator.locateService(CardNodesManagerService.class).setNodesSizes(getSceneSize());
         //set size of a card for touch processor

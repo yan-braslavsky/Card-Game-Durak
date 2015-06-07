@@ -2,11 +2,12 @@ package com.yan.durak.input.cards;
 
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
-import com.yan.durak.service.ServiceLocator;
-import com.yan.durak.service.services.CardNodesManagerService;
-import com.yan.durak.service.services.HudManagementService;
+import com.yan.durak.services.CardNodesManagerService;
+import com.yan.durak.services.HudManagementService;
 
 import glengine.yan.glengine.input.YANInputManager;
+import glengine.yan.glengine.service.ServiceLocator;
+import glengine.yan.glengine.util.geometry.YANVector2;
 import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
 /**
@@ -19,6 +20,12 @@ public class CardsTouchProcessor {
 
     private final CardNodesManagerService mCardNodesManager;
     private final PileModel mPlayerPile;
+    private final YANVector2 mScreenSize;
+
+    public void setSceneSize(float screenWidth, float screenHeight) {
+        mScreenSize.setXY(screenWidth, screenHeight);
+        mCardsTouchProcessorState.applyState(mScreenSize.getX(),mScreenSize.getY());
+    }
 
     public interface CardsTouchProcessorListener {
 
@@ -51,6 +58,7 @@ public class CardsTouchProcessor {
         mCardsTouchProcessorListener = cardsTouchProcessorListener;
         mCardNodesManager = ServiceLocator.locateService(CardNodesManagerService.class);
         mPlayerPile = playerPile;
+        mScreenSize = new YANVector2();
 
         //starting from a default state
         CardsTouchProcessorDefaultState defaultState = YANObjectPool.getInstance().obtain(CardsTouchProcessorDefaultState.class);
@@ -103,7 +111,7 @@ public class CardsTouchProcessor {
         //release previous state to pool
         YANObjectPool.getInstance().offer(cardsTouchProcessorState);
         mCardsTouchProcessorState = cardsTouchProcessorState;
-        mCardsTouchProcessorState.applyState();
+        mCardsTouchProcessorState.applyState(mScreenSize.getX(),mScreenSize.getY());
     }
 
     protected CardsTouchProcessorListener getCardsTouchProcessorListener() {

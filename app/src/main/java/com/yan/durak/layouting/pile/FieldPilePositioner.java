@@ -1,12 +1,12 @@
 package com.yan.durak.layouting.pile;
 
 import com.yan.durak.models.PileModel;
-import com.yan.durak.service.ServiceLocator;
-import com.yan.durak.service.services.PileManagerService;
+import com.yan.durak.services.PileManagerService;
 
 import java.util.HashMap;
 import java.util.List;
 
+import glengine.yan.glengine.service.ServiceLocator;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
 import glengine.yan.glengine.util.geometry.YANVector2;
 

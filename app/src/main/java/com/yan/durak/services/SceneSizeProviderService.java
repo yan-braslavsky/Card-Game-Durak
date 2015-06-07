@@ -1,6 +1,7 @@
-package com.yan.durak.service.services;
+package com.yan.durak.services;
 
-import com.yan.durak.service.IService;
+
+import glengine.yan.glengine.service.IService;
 
 /**
  * Created by Yan-Home on 4/25/2015.

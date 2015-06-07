@@ -4,13 +4,13 @@ import com.yan.durak.communication.sender.GameServerMessageSender;
 import com.yan.durak.input.cards.CardsTouchProcessor;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
-import com.yan.durak.service.ServiceLocator;
-import com.yan.durak.service.services.PileLayouterManagerService;
-import com.yan.durak.service.services.PileManagerService;
-import com.yan.durak.service.services.SceneSizeProviderService;
+import com.yan.durak.services.PileLayouterManagerService;
+import com.yan.durak.services.PileManagerService;
+import com.yan.durak.services.SceneSizeProviderService;
 import com.yan.durak.session.GameInfo;
 import com.yan.durak.session.states.impl.OtherPlayerTurnState;
 
+import glengine.yan.glengine.service.ServiceLocator;
 import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
 /**

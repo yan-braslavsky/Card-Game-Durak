@@ -1,6 +1,6 @@
 package com.yan.durak.layouting.pile;
 
-import com.yan.durak.service.services.CardNodesManagerService;
+import com.yan.durak.services.CardNodesManagerService;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
 

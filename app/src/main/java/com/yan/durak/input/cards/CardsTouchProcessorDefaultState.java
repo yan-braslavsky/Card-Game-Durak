@@ -7,7 +7,6 @@ import com.yan.durak.physics.YANCollisionDetector;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import glengine.yan.glengine.EngineWrapper;
 import glengine.yan.glengine.input.YANInputManager;
 import glengine.yan.glengine.nodes.YANBaseNode;
 import glengine.yan.glengine.util.geometry.YANVector2;
@@ -32,10 +31,6 @@ public class CardsTouchProcessorDefaultState extends CardsTouchProcessorState {
         mPlayerCardNodes.clear();
     }
 
-    @Override
-    protected void applyState() {
-        //Do nothing
-    }
 
     @Override
     protected boolean onTouchUp(float normalizedX, float normalizedY) {
@@ -58,7 +53,7 @@ public class CardsTouchProcessorDefaultState extends CardsTouchProcessorState {
 
         //adapt to world touch point
         YANVector2 touchToWorldPoint = YANInputManager.touchToWorld(normalizedX, normalizedY,
-                EngineWrapper.getRenderer().getSurfaceSize().getX(), EngineWrapper.getRenderer().getSurfaceSize().getY());
+                mScreenSize.getX(), mScreenSize.getY());
 
         //find touched card under the touch point
         CardNode touchedCard = (CardNode) YANCollisionDetector.findClosestNodeToWorldTouchPoint(touchToWorldPoint.getX(), touchToWorldPoint.getY(), mPlayerCardNodes);

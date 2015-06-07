@@ -2,10 +2,10 @@ package com.yan.durak.layouting.pile.impl;
 
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.layouting.pile.BasePileLayouter;
-import com.yan.durak.service.services.CardNodesManagerService;
+import com.yan.durak.services.CardNodesManagerService;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
-import com.yan.durak.service.services.HudManagementService;
+import com.yan.durak.services.HudManagementService;
 import com.yan.durak.session.GameInfo;
 
 import aurelienribon.tweenengine.TweenManager;

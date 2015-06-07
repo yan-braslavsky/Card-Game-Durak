@@ -6,10 +6,9 @@ import com.yan.durak.gamelogic.communication.protocol.data.CardData;
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestRetaliatePilesMessage;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
-import com.yan.durak.service.ServiceLocator;
-import com.yan.durak.service.services.HudManagementService;
-import com.yan.durak.service.services.PileLayouterManagerService;
-import com.yan.durak.service.services.PileManagerService;
+import com.yan.durak.services.HudManagementService;
+import com.yan.durak.services.PileLayouterManagerService;
+import com.yan.durak.services.PileManagerService;
 import com.yan.durak.session.GameInfo;
 import com.yan.durak.session.states.impl.OtherPlayerTurnState;
 import com.yan.durak.session.states.impl.RetaliationState;
@@ -19,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import glengine.yan.glengine.nodes.YANButtonNode;
+import glengine.yan.glengine.service.ServiceLocator;
 import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
 /**

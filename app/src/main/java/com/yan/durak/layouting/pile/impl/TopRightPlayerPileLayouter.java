@@ -7,7 +7,7 @@ import com.yan.durak.layouting.threepoint.ThreePointFanLayouter;
 import com.yan.durak.layouting.threepoint.ThreePointLayouter;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
-import com.yan.durak.service.services.CardNodesManagerService;
+import com.yan.durak.services.CardNodesManagerService;
 
 import java.util.ArrayList;
 import java.util.List;
