@@ -31,6 +31,7 @@ import glengine.yan.glengine.nodes.YANTexturedScissorNode;
 import glengine.yan.glengine.tween.YANTweenNodeAccessor;
 import glengine.yan.glengine.util.colors.YANColor;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
+import glengine.yan.glengine.util.geometry.YANVector2;
 import glengine.yan.glengine.util.loggers.YANLogger;
 
 /**
@@ -147,7 +148,7 @@ public class HudManagementService implements IService {
     /**
      * Duration of scale up scale down animation
      */
-    private static final float SCALE_UP_SCALE_DOWN_ANIMATION_DURATION = 0.5f;
+    private static final float SCALE_UP_SCALE_DOWN_ANIMATION_DURATION = 0.4f;
 
     /**
      * Time when speech bubble is fully visible
@@ -276,9 +277,9 @@ public class HudManagementService implements IService {
     private YANBaseNode createSpeechBubbleText(YANTextureAtlas hudAtlas) {
         YANTextNode yanTextNode = new YANTextNode(YANAssetManager.getInstance().getLoadedFont(BaseGameScreen.SPEECH_BUBBLES_FONT_NAME), "I will Take This !".length());
         yanTextNode.setTextColor(SPEECH_BUBBLE_TEXT_COLOR.getR(), SPEECH_BUBBLE_TEXT_COLOR.getG(), SPEECH_BUBBLE_TEXT_COLOR.getB());
-        yanTextNode.setText("I'll Take!");
-        yanTextNode.setTextScale(1.4f);
-        //TODO : set scale ?
+
+        //we are setting the longest text that will be used
+        yanTextNode.setText(SPEECH_BUBBLE_TAKING_TEXT);
         return yanTextNode;
     }
 
@@ -668,19 +669,30 @@ public class HudManagementService implements IService {
         float rightSpeechTextXPosition = bottomSpeechBubble.getPosition().getX() - bottomSpeechBubble.getSize().getX();
         rightSpeechTextXPosition += sceneSize.getX() * 0.06f;
         float bottomSpeechTextY = bottomSpeechBubble.getPosition().getY() - (bottomSpeechBubble.getSize().getY() / 1.4f);
-        getNode(BOTTOM_SPEECH_BUBBLE_TEXT_INDEX).setPosition(rightSpeechTextXPosition,
-                bottomSpeechTextY);
-        getNode(BOTTOM_SPEECH_BUBBLE_TEXT_INDEX).setSortingLayer(bottomSpeechBubble.getSortingLayer() + 1);
+
+        YANTextNode bottomSpeechBubbleText = getNode(BOTTOM_SPEECH_BUBBLE_TEXT_INDEX);
+        bottomSpeechBubbleText.setAnchorPoint(0.5f, 0.5f);
+        bottomSpeechBubbleText.setPosition(
+                //middle of speech bubble
+                bottomSpeechBubble.getPosition().getX() - (bottomSpeechBubble.getSize().getX() * 0.53f),
+                bottomSpeechBubble.getPosition().getY() - (bottomSpeechBubble.getSize().getY() * 0.5f) - (bottomSpeechBubbleText.getSize().getY() * 0.25f));
+        bottomSpeechBubbleText.setSortingLayer(bottomSpeechBubble.getSortingLayer() + 1);
 
         //top right
-        getNode(TOP_RIGHT_SPEECH_BUBBLE_TEXT_INDEX).setPosition(rightSpeechTextXPosition,
-                topRightSpeechBubble.getPosition().getY() + (bottomSpeechBubble.getSize().getY() * 0.4f));
-        getNode(TOP_RIGHT_SPEECH_BUBBLE_TEXT_INDEX).setSortingLayer(topRightSpeechBubble.getSortingLayer() + 1);
+        YANBaseNode topRightSpeechBubbleText = getNode(TOP_RIGHT_SPEECH_BUBBLE_TEXT_INDEX);
+        topRightSpeechBubbleText.setAnchorPoint(0.5f, 0.5f);
+        topRightSpeechBubbleText.setPosition(
+                topRightSpeechBubble.getPosition().getX() - (topRightSpeechBubble.getSize().getX() * 0.5f),
+                topRightSpeechBubble.getPosition().getY() + (topRightSpeechBubble.getSize().getY() * 0.5f) + (topRightSpeechBubbleText.getSize().getY() * 0.2f));
+        topRightSpeechBubbleText.setSortingLayer(topRightSpeechBubble.getSortingLayer() + 1);
 
         //top left
-        getNode(TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX).setPosition(topLeftSpeechBubble.getPosition().getX() + (sceneSize.getX() * 0.06f),
-                topLeftSpeechBubble.getPosition().getY() + (bottomSpeechBubble.getSize().getY() * 0.4f));
-        getNode(TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX).setSortingLayer(topLeftSpeechBubble.getSortingLayer() + 1);
+        YANBaseNode topLeftSpeechBubbleText = getNode(TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX);
+        topLeftSpeechBubbleText.setAnchorPoint(0.5f, 0.5f);
+        topLeftSpeechBubbleText.setPosition(
+                topLeftSpeechBubble.getPosition().getX() + (topLeftSpeechBubble.getSize().getX() / 2),
+                topLeftSpeechBubble.getPosition().getY() + (topLeftSpeechBubble.getSize().getY() * 0.5f) + (topLeftSpeechBubbleText.getSize().getY() * 0.2f));
+        topLeftSpeechBubbleText.setSortingLayer(topLeftSpeechBubble.getSortingLayer() + 1);
     }
 
     public void update(float deltaTimeSeconds) {
@@ -815,7 +827,9 @@ public class HudManagementService implements IService {
     public void showSpeechBubbleWithText(@NonNull @SpeechBubbleText String text, @NonNull GameInfo.Player player) {
         YANBaseNode speechBubbleNode = getSpeechBubbleForPlayer(player);
         YANTextNode textNode = getTextNodeForPlayer(player);
-        textNode.setText(text);
+
+        //TODO : it is not an elegant way
+        adjustSpeechTextScale(text, speechBubbleNode, textNode);
 
         //kill all previous animations
         mTweenManager.killTarget(speechBubbleNode);
@@ -837,30 +851,28 @@ public class HudManagementService implements IService {
         sequence.start(mTweenManager);
     }
 
-//    public void showSpeechBubbleWithText(@NonNull @SpeechBubbleText String text, @NonNull GameInfo.Player player) {
-//        YANBaseNode speechBubble = getSpeechBubbleForPlayer(player);
-//        YANTextNode textNode = getTextNodeForPlayer(player);
-//        speechBubble.setOpacity(1f);
-//        textNode.setText(text);
-//        textNode.setOpacity(1f);
-//
-//        //open delayed task to hide Speech Bubble
-//        //obtain objects from an object pool
-//        YANDelayedTask delayedTask = YANObjectPool.getInstance().obtain(YANDelayedTask.class);
-//        HideSpeechBubbleDelayedTaskListener delayedTaskListener = YANObjectPool.getInstance().obtain(HideSpeechBubbleDelayedTaskListener.class);
-//
-//        //init the listener
-//        delayedTaskListener.setSpeechBubbleNode(speechBubble);
-//        delayedTaskListener.setSpeechBubbleTextNode(textNode);
-//        delayedTaskListener.setDelayedTask(delayedTask);
-//
-//        //init the task
-//        delayedTask.setDurationSeconds(SPEECH_BUBBLE_APPEARANCE_DURATION_SECONDS);
-//        delayedTask.setDelayedTaskListener(delayedTaskListener);
-//
-//        //start the task
-//        delayedTask.start();
-//    }
+    private YANVector2 _cachedVector = new YANVector2();
+
+    /**
+     * Text can appear differently on different screens.
+     * In order to scale the node properly we need to do some calculations.
+     */
+    private void adjustSpeechTextScale(@NonNull @SpeechBubbleText String text, @NonNull YANBaseNode speechBubbleNode, @NonNull YANTextNode textNode) {
+        float percentageOfSpeechBubbleWidth = (text == SPEECH_BUBBLE_PASS_TEXT) ? 0.37f : (text == SPEECH_BUBBLE_THROW_IN_END_TEXT) ? 0.55f : 0.65f;
+        float maxAllowedTextWidth = speechBubbleNode.getSize().getX() * percentageOfSpeechBubbleWidth;
+        float rangeDelta = 5f;
+        float neededScale = 1.0f;
+        textNode.calculateSizeForString(text, neededScale, _cachedVector);
+        if (!isFloatInRange(_cachedVector.getX(), maxAllowedTextWidth - rangeDelta, maxAllowedTextWidth + rangeDelta)) {
+            neededScale = maxAllowedTextWidth / _cachedVector.getX();
+        }
+        textNode.setTextScale(neededScale);
+        textNode.setText(text);
+    }
+
+    private boolean isFloatInRange(float num, float min, float max) {
+        return num < max && num > min;
+    }
 
     private YANTextNode getTextNodeForPlayer(@NonNull GameInfo.Player player) {
         switch (player) {
