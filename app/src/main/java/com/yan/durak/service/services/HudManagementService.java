@@ -675,7 +675,7 @@ public class HudManagementService implements IService {
         bottomSpeechBubbleText.setPosition(
                 //middle of speech bubble
                 bottomSpeechBubble.getPosition().getX() - (bottomSpeechBubble.getSize().getX() * 0.53f),
-                bottomSpeechBubble.getPosition().getY() - (bottomSpeechBubble.getSize().getY() * 0.5f) - (bottomSpeechBubbleText.getSize().getY() * 0.25f));
+                bottomSpeechBubble.getPosition().getY() - (bottomSpeechBubble.getSize().getY() * 0.5f) - (bottomSpeechBubbleText.getSize().getY() * 0.05f));
         bottomSpeechBubbleText.setSortingLayer(bottomSpeechBubble.getSortingLayer() + 1);
 
         //top right
@@ -683,7 +683,7 @@ public class HudManagementService implements IService {
         topRightSpeechBubbleText.setAnchorPoint(0.5f, 0.5f);
         topRightSpeechBubbleText.setPosition(
                 topRightSpeechBubble.getPosition().getX() - (topRightSpeechBubble.getSize().getX() * 0.5f),
-                topRightSpeechBubble.getPosition().getY() + (topRightSpeechBubble.getSize().getY() * 0.5f) + (topRightSpeechBubbleText.getSize().getY() * 0.2f));
+                topRightSpeechBubble.getPosition().getY() + (topRightSpeechBubble.getSize().getY() * 0.5f) + (topRightSpeechBubbleText.getSize().getY() * 0.05f));
         topRightSpeechBubbleText.setSortingLayer(topRightSpeechBubble.getSortingLayer() + 1);
 
         //top left
@@ -691,7 +691,7 @@ public class HudManagementService implements IService {
         topLeftSpeechBubbleText.setAnchorPoint(0.5f, 0.5f);
         topLeftSpeechBubbleText.setPosition(
                 topLeftSpeechBubble.getPosition().getX() + (topLeftSpeechBubble.getSize().getX() / 2),
-                topLeftSpeechBubble.getPosition().getY() + (topLeftSpeechBubble.getSize().getY() * 0.5f) + (topLeftSpeechBubbleText.getSize().getY() * 0.2f));
+                topLeftSpeechBubble.getPosition().getY() + (topLeftSpeechBubble.getSize().getY() * 0.5f) + (topLeftSpeechBubbleText.getSize().getY() * 0.05f));
         topLeftSpeechBubbleText.setSortingLayer(topLeftSpeechBubble.getSortingLayer() + 1);
     }
 
