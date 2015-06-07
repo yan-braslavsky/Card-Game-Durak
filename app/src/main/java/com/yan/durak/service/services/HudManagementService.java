@@ -39,7 +39,6 @@ import glengine.yan.glengine.util.loggers.YANLogger;
 public class HudManagementService implements IService {
 
 
-
     @Retention(RetentionPolicy.SOURCE)
     @StringDef({
             SPEECH_BUBBLE_TAKING_TEXT,
@@ -242,9 +241,9 @@ public class HudManagementService implements IService {
         putToNodeMap(TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX, createSpeechBubbleText(hudAtlas));
 
         //create avatar_1 icons
-        putToNodeMap(AVATAR_ICON_BOTTOM_RIGHT_INDEX, createAvatarIcon(hudAtlas,"avatar_1.png"));
-        putToNodeMap(AVATAR_ICON_TOP_RIGHT_INDEX, createAvatarIcon(hudAtlas,"avatar_2.png"));
-        putToNodeMap(AVATAR_ICON_TOP_LEFT_INDEX, createAvatarIcon(hudAtlas,"avatar_3.png"));
+        putToNodeMap(AVATAR_ICON_BOTTOM_RIGHT_INDEX, createAvatarIcon(hudAtlas, "avatar_1.png"));
+        putToNodeMap(AVATAR_ICON_TOP_RIGHT_INDEX, createAvatarIcon(hudAtlas, "avatar_2.png"));
+        putToNodeMap(AVATAR_ICON_TOP_LEFT_INDEX, createAvatarIcon(hudAtlas, "avatar_3.png"));
 
         //create timers
         putToNodeMap(CIRCLE_TIMER_BOTTOM_RIGHT_INDEX, createCircleTimer());
@@ -299,7 +298,7 @@ public class HudManagementService implements IService {
         return yanCircleNode;
     }
 
-    private YANTexturedNode createAvatarIcon(YANTextureAtlas hudAtlas,String avatarTextureName) {
+    private YANTexturedNode createAvatarIcon(YANTextureAtlas hudAtlas, String avatarTextureName) {
         return new YANTexturedNode(hudAtlas.getTextureRegion(avatarTextureName));
     }
 
@@ -645,7 +644,7 @@ public class HudManagementService implements IService {
         bottomSpeechBubble.setAnchorPoint(1f, 1f);
         bottomSpeechBubble.setSortingLayer(HUD_SORTING_LAYER + 100);
         bottomSpeechBubble.setPosition(sceneSize.getX() - (sceneSize.getX() * 0.05f),
-                bottomAvatarIcon.getPosition().getY() - bottomAvatarIcon.getSize().getY());
+                bottomAvatarIcon.getPosition().getY() - (bottomAvatarIcon.getSize().getY() / 2));
 
         //top right speech bubble
         YANBaseNode topRightSpeechBubble = getNode(TOP_RIGHT_SPEECH_BUBBLE_INDEX);
@@ -654,7 +653,7 @@ public class HudManagementService implements IService {
         topRightSpeechBubble.setAnchorPoint(1f, 0f);
         topRightSpeechBubble.setSortingLayer(HUD_SORTING_LAYER + 100);
         topRightSpeechBubble.setPosition(sceneSize.getX() - (sceneSize.getX() * 0.05f),
-                topRightAvatarIcon.getPosition().getY() + topRightAvatarIcon.getSize().getY());
+                topRightAvatarIcon.getPosition().getY() + (topRightAvatarIcon.getSize().getY() / 2));
 
         //top left speech bubble
         YANBaseNode topLeftSpeechBubble = getNode(TOP_LEFT_SPEECH_BUBBLE_INDEX);
@@ -662,7 +661,7 @@ public class HudManagementService implements IService {
         topLeftSpeechBubble.setAnchorPoint(0f, 0f);
         topLeftSpeechBubble.setSortingLayer(HUD_SORTING_LAYER + 100);
         topLeftSpeechBubble.setPosition((sceneSize.getX() * 0.05f),
-                topLeftAvatarIcon.getPosition().getY() + topLeftAvatarIcon.getSize().getY());
+                topLeftAvatarIcon.getPosition().getY() + (topLeftAvatarIcon.getSize().getY() / 2));
 
         //speech bubble texts
         //bottom
