@@ -241,10 +241,10 @@ public class HudManagementService implements IService {
         putToNodeMap(TOP_RIGHT_SPEECH_BUBBLE_TEXT_INDEX, createSpeechBubbleText(hudAtlas));
         putToNodeMap(TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX, createSpeechBubbleText(hudAtlas));
 
-        //create avatar icons
-        putToNodeMap(AVATAR_ICON_BOTTOM_RIGHT_INDEX, createAvatarIcon(hudAtlas));
-        putToNodeMap(AVATAR_ICON_TOP_RIGHT_INDEX, createAvatarIcon(hudAtlas));
-        putToNodeMap(AVATAR_ICON_TOP_LEFT_INDEX, createAvatarIcon(hudAtlas));
+        //create avatar_1 icons
+        putToNodeMap(AVATAR_ICON_BOTTOM_RIGHT_INDEX, createAvatarIcon(hudAtlas,"avatar_1.png"));
+        putToNodeMap(AVATAR_ICON_TOP_RIGHT_INDEX, createAvatarIcon(hudAtlas,"avatar_2.png"));
+        putToNodeMap(AVATAR_ICON_TOP_LEFT_INDEX, createAvatarIcon(hudAtlas,"avatar_3.png"));
 
         //create timers
         putToNodeMap(CIRCLE_TIMER_BOTTOM_RIGHT_INDEX, createCircleTimer());
@@ -299,8 +299,8 @@ public class HudManagementService implements IService {
         return yanCircleNode;
     }
 
-    private YANTexturedNode createAvatarIcon(YANTextureAtlas hudAtlas) {
-        return new YANTexturedNode(hudAtlas.getTextureRegion("avatar.png"));
+    private YANTexturedNode createAvatarIcon(YANTextureAtlas hudAtlas,String avatarTextureName) {
+        return new YANTexturedNode(hudAtlas.getTextureRegion(avatarTextureName));
     }
 
     private YANTexturedNode createCardGlow(YANTextureAtlas hudAtlas) {
@@ -448,13 +448,13 @@ public class HudManagementService implements IService {
         getNode(TOP_RIGHT_SPEECH_BUBBLE_INDEX).setSize(newWidth, newHeight);
         getNode(TOP_LEFT_SPEECH_BUBBLE_INDEX).setSize(newWidth, newHeight);
 
-        //set avatar icons
+        //set avatar_1 icons
         //check how much the icon smaller than background
         YANTexturedNode bottomRightAvatarIcon = getNode(AVATAR_ICON_BOTTOM_RIGHT_INDEX);
         float avatarIconToAvatarBgScaleFactor = bottomRightAvatarIcon.getTextureRegion().getWidth() / avatarBGTopRight.getTextureRegion().getWidth();
 
         float bottomIconSize = getNode(AVATAR_BG_BOTTOM_RIGHT_INDEX).getSize().getX() * avatarIconToAvatarBgScaleFactor;
-        //set bottom avatar icon
+        //set bottom avatar_1 icon
         bottomRightAvatarIcon.setSize(bottomIconSize, bottomIconSize);
 
         //setup bottom timer size
@@ -463,7 +463,7 @@ public class HudManagementService implements IService {
         float bottomTimerSize = getNode(AVATAR_BG_BOTTOM_RIGHT_INDEX).getSize().getX() * timerToIconScaleFactor;
         getNode(CIRCLE_TIMER_BOTTOM_RIGHT_INDEX).setSize(bottomTimerSize, bottomTimerSize);
 
-        //set top avatar icons
+        //set top avatar_1 icons
         float topIconsSize = avatarBGTopRight.getSize().getX() * avatarIconToAvatarBgScaleFactor;
         getNode(AVATAR_ICON_TOP_RIGHT_INDEX).setSize(topIconsSize, topIconsSize);
         getNode(AVATAR_ICON_TOP_LEFT_INDEX).setSize(topIconsSize, topIconsSize);
@@ -545,7 +545,7 @@ public class HudManagementService implements IService {
         bottomTimer.setAnchorPoint(1f, 1f);
         bottomTimer.setPosition(avatarBg.getPosition().getX() - offsetSize, avatarBg.getPosition().getY() - offsetSize);
 
-        //setup bottom avatar icon
+        //setup bottom avatar_1 icon
         YANTexturedNode bottomAvatarIcon = getNode(AVATAR_ICON_BOTTOM_RIGHT_INDEX);
         float bottomAvatarIconHalfSize = bottomAvatarIcon.getSize().getX() / 2;
         bottomAvatarIcon.setAnchorPoint(0.5f, 0.5f);
