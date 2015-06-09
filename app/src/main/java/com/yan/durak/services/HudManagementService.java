@@ -185,14 +185,6 @@ public class HudManagementService implements IService {
             }
         }
     };
-//    private TweenCallback scaleUpScaleDownTweenCallback = new TweenCallback() {
-//        @Override
-//        public void onEvent(int type, BaseTween<?> baseTween) {
-//            if (TweenCallback.COMPLETE == type) {
-//                getNode(V_BUTTON_INDEX).setOpacity(1f);
-//            }
-//        }
-//    };
 
     //Cached click listeners for action buttons
     private YANButtonNode.YanButtonNodeClickListener mDoneBtnClickListener;
@@ -207,10 +199,6 @@ public class HudManagementService implements IService {
     public HudManagementService(TweenManager tweenManager) {
         mTweenManager = tweenManager;
         mHudNodesMap = new HashMap<>();
-
-//        //preallocate speech bubble delayed task
-//        YANObjectPool.getInstance().preallocate(YANDelayedTask.class, 3);
-//        YANObjectPool.getInstance().preallocate(HideSpeechBubbleDelayedTaskListener.class, 3);
     }
 
     public void createNodes(YANTextureAtlas hudAtlas) {
@@ -525,7 +513,7 @@ public class HudManagementService implements IService {
         getNode(GLOW_INDEX).setSize(0, 0);
     }
 
-    public Collection<? extends YANBaseNode> getCardNodes() {
+    public Collection<? extends YANBaseNode> getNodes() {
         return mHudNodesMap.values();
     }
 

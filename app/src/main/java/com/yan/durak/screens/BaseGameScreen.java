@@ -22,12 +22,14 @@ public abstract class BaseGameScreen extends YANNodeScreen {
     //names of used assets
     public static final String UI_ATLAS_NAME = "ui_atlas";
     public static final String CARDS_ATLAS_NAME = "cards_atlas";
+    public static final String DIALOGS_ATLAS_NAME = "dialogs_atlas";
     public static final String STANDARD_FONT_NAME = "standard_font";
     public static final String SPEECH_BUBBLES_FONT_NAME = "chunkfive";
 
     //texture atlases
-    protected YANTextureAtlas mUiAtlas;
+    protected final YANTextureAtlas mUiAtlas;
     protected final YANTextureAtlas mCardsAtlas;
+    protected final YANTextureAtlas mDialogsAtlas;
 
     //TODO : remove on production
     //Used to log FPS data on screen
@@ -49,6 +51,7 @@ public abstract class BaseGameScreen extends YANNodeScreen {
         //load atlases
         mUiAtlas = ServiceLocator.locateService(YANAssetManager.class).getLoadedAtlas(UI_ATLAS_NAME);
         mCardsAtlas = ServiceLocator.locateService(YANAssetManager.class).getLoadedAtlas(CARDS_ATLAS_NAME);
+        mDialogsAtlas = ServiceLocator.locateService(YANAssetManager.class).getLoadedAtlas(DIALOGS_ATLAS_NAME);
     }
 
     @Override
@@ -79,6 +82,7 @@ public abstract class BaseGameScreen extends YANNodeScreen {
         //for efficiency reasons we are not loading texture into openGL until we are need it
         ServiceLocator.locateService(YANAssetManager.class).loadTexture(mUiAtlas.getAtlasImageFilePath());
         ServiceLocator.locateService(YANAssetManager.class).loadTexture(mCardsAtlas.getAtlasImageFilePath());
+        ServiceLocator.locateService(YANAssetManager.class).loadTexture(mDialogsAtlas.getAtlasImageFilePath());
 
         //load font atlas into a memory
         ServiceLocator.locateService(YANAssetManager.class).loadTexture(ServiceLocator.locateService(YANAssetManager.class).getLoadedFont(STANDARD_FONT_NAME).getGlyphImageFilePath());
@@ -92,6 +96,7 @@ public abstract class BaseGameScreen extends YANNodeScreen {
         //for efficiency reasons we are deleting loaded texture into openGL
         ServiceLocator.locateService(YANAssetManager.class).unloadTexture(mUiAtlas.getAtlasImageFilePath());
         ServiceLocator.locateService(YANAssetManager.class).unloadTexture(mCardsAtlas.getAtlasImageFilePath());
+        ServiceLocator.locateService(YANAssetManager.class).unloadTexture(mDialogsAtlas.getAtlasImageFilePath());
 
         //release atlas font from a memory
         ServiceLocator.locateService(YANAssetManager.class).unloadTexture(ServiceLocator.locateService(YANAssetManager.class).getLoadedFont(STANDARD_FONT_NAME).getGlyphImageFilePath());

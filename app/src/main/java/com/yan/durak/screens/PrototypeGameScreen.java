@@ -8,6 +8,7 @@ import com.yan.durak.models.PileModel;
 import com.yan.durak.msg_processor.MsgProcessor;
 import com.yan.durak.services.CardNodesManagerService;
 import com.yan.durak.services.CardsTouchProcessorService;
+import com.yan.durak.services.DialogManagerService;
 import com.yan.durak.services.HudManagementService;
 import com.yan.durak.services.PileLayouterManagerService;
 import com.yan.durak.services.PileManagerService;
@@ -16,6 +17,7 @@ import com.yan.durak.session.GameInfo;
 
 import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.nodes.YANBaseNode;
+import glengine.yan.glengine.nodes.YANButtonNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.renderer.YANGLRenderer;
 import glengine.yan.glengine.service.ServiceLocator;
@@ -40,6 +42,9 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
         //tween manager is used for various tween animations
         mSharedTweenManager = new TweenManager();
+
+        //service that manages dialogs
+        ServiceLocator.addService(new DialogManagerService());
 
         //service that manages all the HUD nodes
         ServiceLocator.addService(new HudManagementService(mSharedTweenManager));
@@ -92,13 +97,31 @@ public class PrototypeGameScreen extends BaseGameScreen {
             addNode(cardNode);
         }
 
-        for (YANBaseNode hudNode : ServiceLocator.locateService(HudManagementService.class).getCardNodes()) {
+        for (YANBaseNode hudNode : ServiceLocator.locateService(HudManagementService.class).getNodes()) {
+            addNode(hudNode);
+        }
+
+        for (YANBaseNode hudNode : ServiceLocator.locateService(DialogManagerService.class).getNodes()) {
             addNode(hudNode);
         }
 
         //TODO : should be created as hidden by default
         ServiceLocator.locateService(HudManagementService.class).hideFinishButton();
         ServiceLocator.locateService(HudManagementService.class).hideTakeButton();
+        ServiceLocator.locateService(DialogManagerService.class).hideExitDialog();
+        ServiceLocator.locateService(DialogManagerService.class).setExitDialogClickListeners(new YANButtonNode.YanButtonNodeClickListener() {
+            @Override
+            public void onButtonClick() {
+                //when confirm button clicked we are closing the game
+                getRenderer().getEngineActivity().finish();
+            }
+        }, new YANButtonNode.YanButtonNodeClickListener() {
+            @Override
+            public void onButtonClick() {
+                //When decline button hit , we are simply closing the dialog
+                ServiceLocator.locateService(DialogManagerService.class).hideExitDialog();
+            }
+        });
     }
 
 
@@ -106,6 +129,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
     protected void onLayoutNodes() {
         super.onLayoutNodes();
         ServiceLocator.locateService(HudManagementService.class).layoutNodes(getSceneSize());
+        ServiceLocator.locateService(DialogManagerService.class).layoutNodes(getSceneSize());
         //we also need to initialize the pile manager
         ServiceLocator.locateService(PileLayouterManagerService.class).init(getSceneSize().getX(), getSceneSize().getY());
 
@@ -140,15 +164,21 @@ public class PrototypeGameScreen extends BaseGameScreen {
         ServiceLocator.locateService(CardNodesManagerService.class).setNodesSizes(getSceneSize());
         //set size of a card for touch processor
         ServiceLocator.locateService(HudManagementService.class).setNodesSizes(getSceneSize());
+        ServiceLocator.locateService(DialogManagerService.class).setNodesSizes(getSceneSize());
     }
 
     @Override
     protected void onCreateNodes() {
         super.onCreateNodes();
-
         ServiceLocator.locateService(HudManagementService.class).createNodes(mUiAtlas);
+        ServiceLocator.locateService(DialogManagerService.class).createNodes(mDialogsAtlas);
         ServiceLocator.locateService(CardNodesManagerService.class).createNodes(mCardsAtlas);
+    }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        ServiceLocator.locateService(DialogManagerService.class).showExitDialog();
     }
 
     @Override
