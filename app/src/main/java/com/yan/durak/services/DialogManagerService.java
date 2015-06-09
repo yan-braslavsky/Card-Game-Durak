@@ -149,7 +149,9 @@ public class DialogManagerService implements IService {
 
     public void showExitDialog() {
 
-        //bring buttons to front
+        //bring dialog to front
+        getNode(DIALOG_BG_OVERLAY_INDEX).setSortingLayer(DIALOG_SORTING_LAYER);
+        getNode(DIALOG_BG_INDEX).setSortingLayer(DIALOG_SORTING_LAYER + 1);
         getNode(DIALOG_YES_BUTTON_INDEX).setSortingLayer(DIALOG_SORTING_LAYER + 2);
         getNode(DIALOG_NO_BUTTON_INDEX).setSortingLayer(DIALOG_SORTING_LAYER + 2);
 
@@ -164,6 +166,8 @@ public class DialogManagerService implements IService {
         //bring buttons to front
         getNode(DIALOG_YES_BUTTON_INDEX).setSortingLayer(-1);
         getNode(DIALOG_NO_BUTTON_INDEX).setSortingLayer(-1);
+        getNode(DIALOG_BG_INDEX).setSortingLayer(-1);
+        getNode(DIALOG_BG_OVERLAY_INDEX).setSortingLayer(-1);
 
         //show all nodes
         for (YANBaseNode node : mDialogNodesMap.values()) {

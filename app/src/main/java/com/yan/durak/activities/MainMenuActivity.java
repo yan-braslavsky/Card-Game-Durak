@@ -51,5 +51,7 @@ public class MainMenuActivity extends Activity {
         Intent myIntent = new Intent(MainMenuActivity.this, GameActivity.class);
         myIntent.putExtra(EXTRA_CONNECTOR_CLASS_KEY, connectorClass);
         startActivity(myIntent);
+        overridePendingTransition(R.anim.abc_fade_in,R.anim.abc_fade_out);
+        finish();
     }
 }
