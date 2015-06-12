@@ -10,18 +10,24 @@ import com.yan.durak.gamelogic.communication.connection.IRemoteClient;
  */
 public class RemoteLsClient implements IRemoteClient {
 
+    private final SharedLocalMessageQueue mSharedMessageQueue;
+
+    public RemoteLsClient(SharedLocalMessageQueue sharedMessageQueue) {
+        mSharedMessageQueue = sharedMessageQueue;
+    }
+
     @Override
     public void sendMessage(String msg) {
-        SharedLocalMessageQueue.getInstance().insertMessageForServerQueue(msg);
+        mSharedMessageQueue.insertMessageForServerQueue(msg);
     }
 
     @Override
     public String readMessage() {
-        return SharedLocalMessageQueue.getInstance().getMessageForClientQueue();
+        return mSharedMessageQueue.getMessageForClientQueue();
     }
 
     @Override
     public void disconnect() {
-        SharedLocalMessageQueue.getInstance().clearForClientQueue();
+        mSharedMessageQueue.clearForClientQueue();
     }
 }

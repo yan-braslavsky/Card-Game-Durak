@@ -4,6 +4,7 @@ import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.WebSocket;
 import com.yan.durak.communication.client.local.RemoteLsClient;
+import com.yan.durak.communication.client.local.SharedLocalMessageQueue;
 import com.yan.durak.communication.client.remote.RemoteSocketClient;
 import com.yan.durak.communication.client.remote.RemoteWsClient;
 import com.yan.durak.gamelogic.communication.connection.IRemoteClient;
@@ -22,10 +23,11 @@ import glengine.yan.glengine.util.loggers.YANLogger;
  * <p/>
  * Implemented as a singleton.
  * Manages connection to remote socket server
+ *
  * @deprecated requires redefinition of responsibilities
  */
 @Deprecated
-public class SocketConnectionManager implements IService{
+public class SocketConnectionManager implements IService {
 
     private IRemoteClient mSocketClient;
     private volatile boolean mConnected;
@@ -129,7 +131,7 @@ public class SocketConnectionManager implements IService{
         mListeningThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                mSocketClient = new RemoteLsClient();
+                mSocketClient = new RemoteLsClient(SharedLocalMessageQueue.getInstance());
                 mConnected = true;
 
                 while (isConnected()) {

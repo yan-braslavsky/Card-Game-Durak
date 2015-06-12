@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.yan.durak.R;
-import com.yan.durak.communication.game_server.LocalGameServer;
 import com.yan.durak.communication.game_server.connector.IGameServerConnector;
 import com.yan.durak.communication.game_server.connector.LocalGameServerConnector;
 import com.yan.durak.communication.game_server.connector.RemoteGameServerConnector;
@@ -42,7 +41,6 @@ public class MainMenuActivity extends Activity {
     }
 
     private void startLocalGame() {
-        LocalGameServer.start();
         Class<? extends IGameServerConnector> connectorClass = LocalGameServerConnector.class;
         startGameActivity(connectorClass);
     }
@@ -52,6 +50,6 @@ public class MainMenuActivity extends Activity {
         myIntent.putExtra(EXTRA_CONNECTOR_CLASS_KEY, connectorClass);
         startActivity(myIntent);
         overridePendingTransition(R.anim.abc_fade_in,R.anim.abc_fade_out);
-        finish();
+//        finish();
     }
 }

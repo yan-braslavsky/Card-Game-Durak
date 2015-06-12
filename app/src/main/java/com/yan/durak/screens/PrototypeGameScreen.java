@@ -1,5 +1,6 @@
 package com.yan.durak.screens;
 
+import com.yan.durak.communication.game_server.LocalGameServer;
 import com.yan.durak.communication.game_server.connector.IGameServerConnector;
 import com.yan.durak.communication.game_server.connector.SocketConnectionManager;
 import com.yan.durak.communication.sender.GameServerMessageSender;
@@ -83,12 +84,14 @@ public class PrototypeGameScreen extends BaseGameScreen {
     @Override
     public void onSetActive() {
         super.onSetActive();
+        LocalGameServer.start();
         mGameServerConnector.connect();
     }
 
     @Override
     public void onSetNotActive() {
         super.onSetNotActive();
+        LocalGameServer.shutDown();
         mGameServerConnector.disconnect();
     }
 
