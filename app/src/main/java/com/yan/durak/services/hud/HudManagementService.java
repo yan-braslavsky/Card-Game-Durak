@@ -4,6 +4,7 @@ package com.yan.durak.services.hud;
 import android.support.annotation.NonNull;
 
 import com.yan.durak.session.GameInfo;
+import com.yan.durak.session.states.IActivePlayerState;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import glengine.yan.glengine.nodes.YANCircleNode;
 import glengine.yan.glengine.nodes.YANTextNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.service.IService;
+import glengine.yan.glengine.service.ServiceLocator;
 import glengine.yan.glengine.tween.YANTweenNodeAccessor;
 import glengine.yan.glengine.util.colors.YANColor;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
@@ -56,6 +58,12 @@ public class HudManagementService implements IService {
      * Time when speech bubble is fully visible
      */
     public static final float SPEECH_BUBBLE_APPEARANCE_DURATION_SECONDS = 0.25f;
+
+
+    private static final float TOTAL_THROW_IN_TIMER_DURATION_SECONDS = 8f;
+
+    private static final float TOTAL_RETALIATION_TIMER_DURATION_SECONDS = 12f;
+
 
     /**
      * Used to perform tween animations
@@ -142,14 +150,14 @@ public class HudManagementService implements IService {
     }
 
     public void setNodesSizes(YANReadOnlyVector2 sceneSize) {
-       mHudNodesPositioner.setNodesSizes(sceneSize);
+        mHudNodesPositioner.setNodesSizes(sceneSize);
     }
 
     public void layoutNodes(YANReadOnlyVector2 sceneSize) {
         mHudNodesPositioner.layoutNodes(sceneSize);
     }
 
-    protected  <T extends YANBaseNode> void putToNodeMap(@HudNodes.HudNode int nodeIndex, T node) {
+    protected <T extends YANBaseNode> void putToNodeMap(@HudNodes.HudNode int nodeIndex, T node) {
         mHudNodesMap.put(nodeIndex, node);
     }
 
@@ -165,10 +173,22 @@ public class HudManagementService implements IService {
         if (mActiveTimerNode == null)
             return;
 
-        //TODO : make timer actually dependant on time
+        //we assume that default state is retaliation or request for attack
+        float speed = 1.0f / TOTAL_RETALIATION_TIMER_DURATION_SECONDS;
+
+        //if it is a throw in request than speed should be different
+        IActivePlayerState.ActivePlayerStateDefinition stateDefinition = ServiceLocator.locateService(GameInfo.class).getActivePlayerState().getStateDefinition();
+        if (stateDefinition == IActivePlayerState.ActivePlayerStateDefinition.REQUEST_THROW_IN) {
+            speed = 1.0f / TOTAL_THROW_IN_TIMER_DURATION_SECONDS;
+        }
+
         float currentPercentage = mActiveTimerNode.getPieCirclePercentage();
-        currentPercentage -= 0.0006f;
+        currentPercentage -= deltaTimeSeconds * speed;
         mActiveTimerNode.setPieCirclePercentage(currentPercentage);
+
+        if (currentPercentage <= 0) {
+            //TODO : notify timer listener that current timer is expired
+        }
     }
 
     public void setTakeButtonClickListener(YANButtonNode.YanButtonNodeClickListener listener) {
