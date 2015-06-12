@@ -7,9 +7,10 @@ import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
 import com.yan.durak.physics.YANCollisionDetector;
 import com.yan.durak.services.CardNodesManagerService;
-import com.yan.durak.services.HudManagementService;
+import com.yan.durak.services.hud.HudManagementService;
 import com.yan.durak.services.PileLayouterManagerService;
 import com.yan.durak.services.PileManagerService;
+import com.yan.durak.services.hud.HudNodes;
 import com.yan.durak.session.GameInfo;
 import com.yan.durak.session.states.impl.OtherPlayerTurnState;
 import com.yan.durak.session.states.impl.RetaliationState;
@@ -135,11 +136,11 @@ public class RetaliationProcessorListener implements CardsTouchProcessor.CardsTo
     }
 
     private void clearGlow() {
-        ServiceLocator.locateService(HudManagementService.class).getNode(HudManagementService.GLOW_INDEX).setOpacity(0f);
+        ServiceLocator.locateService(HudManagementService.class).getNode(HudNodes.GLOW_INDEX).setOpacity(0f);
     }
 
     private void showGlowForNode(CardNode collidedFieldCardNode) {
-        YANTexturedNode glow = ServiceLocator.locateService(HudManagementService.class).getNode(HudManagementService.GLOW_INDEX);
+        YANTexturedNode glow = ServiceLocator.locateService(HudManagementService.class).getNode(HudNodes.GLOW_INDEX);
         //lazy initialize the glow node
         if(glow.getSize().getX() == 0){
             float glowScale = 1.25f;

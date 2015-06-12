@@ -6,7 +6,7 @@ import com.yan.durak.gamelogic.communication.protocol.data.CardData;
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestRetaliatePilesMessage;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
-import com.yan.durak.services.HudManagementService;
+import com.yan.durak.services.hud.HudManagementService;
 import com.yan.durak.services.PileLayouterManagerService;
 import com.yan.durak.services.PileManagerService;
 import com.yan.durak.session.GameInfo;

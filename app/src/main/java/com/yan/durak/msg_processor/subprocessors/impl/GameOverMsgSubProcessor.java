@@ -2,7 +2,7 @@ package com.yan.durak.msg_processor.subprocessors.impl;
 
 import com.yan.durak.gamelogic.communication.protocol.messages.GameOverProtocolMessage;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
-import com.yan.durak.services.HudManagementService;
+import com.yan.durak.services.hud.HudManagementService;
 import com.yan.durak.session.GameInfo;
 
 import glengine.yan.glengine.service.ServiceLocator;

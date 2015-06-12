@@ -20,6 +20,8 @@ import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
 public class DialogManagerService implements IService {
 
     private static final int DIALOG_SORTING_LAYER = 3000;
+    private YANButtonNode.YanButtonNodeClickListener mConfirmListener;
+    private YANButtonNode.YanButtonNodeClickListener mDeclineListener;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
@@ -142,8 +144,11 @@ public class DialogManagerService implements IService {
                                             final YANButtonNode.YanButtonNodeClickListener declineListener) {
         YANButtonNode yesBtn = getNode(DIALOG_YES_BUTTON_INDEX);
         YANButtonNode noBtn = getNode(DIALOG_NO_BUTTON_INDEX);
-        yesBtn.setClickListener(confirmListener);
-        noBtn.setClickListener(declineListener);
+
+        mConfirmListener = confirmListener;
+        mDeclineListener = declineListener;
+
+
     }
 
 
@@ -152,8 +157,14 @@ public class DialogManagerService implements IService {
         //bring dialog to front
         getNode(DIALOG_BG_OVERLAY_INDEX).setSortingLayer(DIALOG_SORTING_LAYER);
         getNode(DIALOG_BG_INDEX).setSortingLayer(DIALOG_SORTING_LAYER + 1);
-        getNode(DIALOG_YES_BUTTON_INDEX).setSortingLayer(DIALOG_SORTING_LAYER + 2);
-        getNode(DIALOG_NO_BUTTON_INDEX).setSortingLayer(DIALOG_SORTING_LAYER + 2);
+        YANButtonNode yesButton = getNode(DIALOG_YES_BUTTON_INDEX);
+        YANButtonNode noButton = getNode(DIALOG_NO_BUTTON_INDEX);
+        yesButton.setSortingLayer(DIALOG_SORTING_LAYER + 2);
+        noButton.setSortingLayer(DIALOG_SORTING_LAYER + 2);
+
+        //set click listeners
+        yesButton.setClickListener(mConfirmListener);
+        noButton.setClickListener(mDeclineListener);
 
         //show all nodes
         for (YANBaseNode node : mDialogNodesMap.values()) {
@@ -168,6 +179,11 @@ public class DialogManagerService implements IService {
         getNode(DIALOG_NO_BUTTON_INDEX).setSortingLayer(-1);
         getNode(DIALOG_BG_INDEX).setSortingLayer(-1);
         getNode(DIALOG_BG_OVERLAY_INDEX).setSortingLayer(-1);
+
+        YANButtonNode yesButton = getNode(DIALOG_YES_BUTTON_INDEX);
+        YANButtonNode noButton = getNode(DIALOG_NO_BUTTON_INDEX);
+        yesButton.setClickListener(null);
+        noButton.setClickListener(null);
 
         //show all nodes
         for (YANBaseNode node : mDialogNodesMap.values()) {

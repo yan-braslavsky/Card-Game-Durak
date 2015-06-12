@@ -3,7 +3,7 @@ package com.yan.durak.input.cards;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
 import com.yan.durak.services.CardNodesManagerService;
-import com.yan.durak.services.HudManagementService;
+import com.yan.durak.services.hud.HudManagementService;
 
 import glengine.yan.glengine.input.YANInputManager;
 import glengine.yan.glengine.service.ServiceLocator;

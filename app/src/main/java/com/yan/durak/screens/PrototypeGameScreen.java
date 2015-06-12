@@ -9,7 +9,7 @@ import com.yan.durak.msg_processor.MsgProcessor;
 import com.yan.durak.services.CardNodesManagerService;
 import com.yan.durak.services.CardsTouchProcessorService;
 import com.yan.durak.services.DialogManagerService;
-import com.yan.durak.services.HudManagementService;
+import com.yan.durak.services.hud.HudManagementService;
 import com.yan.durak.services.PileLayouterManagerService;
 import com.yan.durak.services.PileManagerService;
 import com.yan.durak.services.SceneSizeProviderService;
