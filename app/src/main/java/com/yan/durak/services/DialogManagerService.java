@@ -190,4 +190,9 @@ public class DialogManagerService implements IService {
             node.setOpacity(0f);
         }
     }
+
+    @Override
+    public void clearServiceData() {
+        //Does nothing
+    }
 }

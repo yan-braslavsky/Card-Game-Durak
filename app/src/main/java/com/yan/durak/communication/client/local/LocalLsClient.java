@@ -7,7 +7,7 @@ import com.yan.durak.gamelogic.communication.connection.IRemoteClient;
  * Used to serve as a {@link IRemoteClient} on a local server side to represent
  * a Local player.
  */
-public class LocalServerClient implements IRemoteClient {
+public class LocalLsClient implements IRemoteClient {
 
     @Override
     public void sendMessage(String msg) {

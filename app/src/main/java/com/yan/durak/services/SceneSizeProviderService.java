@@ -24,4 +24,9 @@ public class SceneSizeProviderService implements IService {
         mSceneWidth = sceneWidth;
         mSceneHeight = sceneHeight;
     }
+
+    @Override
+    public void clearServiceData() {
+        //Does nothing
+    }
 }

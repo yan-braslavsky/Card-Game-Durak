@@ -1,6 +1,6 @@
 package com.yan.durak.communication.game_server;
 
-import com.yan.durak.communication.client.local.LocalServerClient;
+import com.yan.durak.communication.client.local.LocalLsClient;
 import com.yan.durak.gamelogic.GameStarter;
 
 /**
@@ -18,7 +18,7 @@ public class LocalGameServer {
         gameThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                (new GameStarter(new LocalServerClient(), null, null)).start();
+                (new GameStarter(new LocalLsClient(), null, null)).start();
             }
         });
         gameThread.start();

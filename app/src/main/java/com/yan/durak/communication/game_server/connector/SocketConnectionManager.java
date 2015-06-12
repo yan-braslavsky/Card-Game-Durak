@@ -3,7 +3,7 @@ package com.yan.durak.communication.game_server.connector;
 import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.WebSocket;
-import com.yan.durak.communication.client.local.RemoteServerClient;
+import com.yan.durak.communication.client.local.RemoteLsClient;
 import com.yan.durak.communication.client.remote.RemoteSocketClient;
 import com.yan.durak.communication.client.remote.RemoteWsClient;
 import com.yan.durak.gamelogic.communication.connection.IRemoteClient;
@@ -130,7 +130,7 @@ public class SocketConnectionManager {
         (new Thread(new Runnable() {
             @Override
             public void run() {
-                mSocketClient = new RemoteServerClient();
+                mSocketClient = new RemoteLsClient();
                 mConnected = true;
 
                 while (isConnected()) {

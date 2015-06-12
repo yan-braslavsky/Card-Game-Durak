@@ -61,4 +61,9 @@ public class GameServerMessageSender implements IService {
     private void sendMessage(BaseProtocolMessage message) {
         mConnector.sentMessageToServer(message);
     }
+
+    @Override
+    public void clearServiceData() {
+        mConnector.disconnect();
+    }
 }

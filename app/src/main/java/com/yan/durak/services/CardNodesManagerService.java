@@ -110,4 +110,9 @@ public class CardNodesManagerService implements IService {
         cardNode.removeTag(CardNode.TAG_TOUCH_DISABLED);
         cardNode.setOverlayColor(0, 0, 0, 0);
     }
+
+    @Override
+    public void clearServiceData() {
+        //Does Nothing
+    }
 }

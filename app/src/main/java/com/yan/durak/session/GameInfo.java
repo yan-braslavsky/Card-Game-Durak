@@ -101,4 +101,9 @@ public class GameInfo implements IService {
         return -1;
     }
 
+    @Override
+    public void clearServiceData() {
+        //Does Nothing
+    }
+
 }

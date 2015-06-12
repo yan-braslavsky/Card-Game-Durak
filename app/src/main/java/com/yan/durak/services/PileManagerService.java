@@ -161,4 +161,9 @@ public class PileManagerService implements IService {
         }
         return null;
     }
+
+    @Override
+    public void clearServiceData() {
+        //Does Nothing
+    }
 }

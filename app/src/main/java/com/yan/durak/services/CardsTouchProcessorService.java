@@ -27,4 +27,8 @@ public class CardsTouchProcessorService implements IService {
         mCardsTouchProcessor.setSceneSize(screenWidth, screenHeight);
     }
 
+    @Override
+    public void clearServiceData() {
+        unRegister();
+    }
 }

@@ -8,7 +8,7 @@ import com.yan.durak.gamelogic.communication.connection.IRemoteClient;
  * Used to serve as a {@link IRemoteClient} on a client side that connected
  * to a local server.
  */
-public class RemoteServerClient implements IRemoteClient {
+public class RemoteLsClient implements IRemoteClient {
 
     @Override
     public void sendMessage(String msg) {
@@ -22,6 +22,6 @@ public class RemoteServerClient implements IRemoteClient {
 
     @Override
     public void disconnect() {
-        SharedLocalMessageQueue.getInstance().clearForServerQueue();
+        SharedLocalMessageQueue.getInstance().clearForClientQueue();
     }
 }

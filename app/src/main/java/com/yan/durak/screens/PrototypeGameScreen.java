@@ -113,7 +113,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
             @Override
             public void onButtonClick() {
                 //when confirm button clicked we are closing the game
-                getRenderer().getEngineActivity().finish();
+                getRenderer().shutDown();
             }
         }, new YANButtonNode.YanButtonNodeClickListener() {
             @Override
@@ -177,7 +177,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+//        super.onBackPressed();
         ServiceLocator.locateService(DialogManagerService.class).showExitDialog();
     }
 

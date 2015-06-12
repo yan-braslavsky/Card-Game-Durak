@@ -117,4 +117,9 @@ public class PileLayouterManagerService implements IService {
     public IPileLayouter getPileLayouterForPile(PileModel pile) {
         return mPileToLayouterMap.get(pile);
     }
+
+    @Override
+    public void clearServiceData() {
+        //Does Nothing
+    }
 }
