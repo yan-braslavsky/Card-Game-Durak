@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ExecutionException;
 
+import glengine.yan.glengine.service.IService;
 import glengine.yan.glengine.util.loggers.YANLogger;
 
 /**
@@ -21,19 +22,17 @@ import glengine.yan.glengine.util.loggers.YANLogger;
  * <p/>
  * Implemented as a singleton.
  * Manages connection to remote socket server
+ * @deprecated requires redefinition of responsibilities
  */
-public class SocketConnectionManager {
+@Deprecated
+public class SocketConnectionManager implements IService{
 
-    private static final SocketConnectionManager INSTANCE = new SocketConnectionManager();
     private IRemoteClient mSocketClient;
     private volatile boolean mConnected;
     private Queue<String> mMessageQueue;
+    private Thread mListeningThread;
 
-    public static final SocketConnectionManager getInstance() {
-        return INSTANCE;
-    }
-
-    private SocketConnectionManager() {
+    public SocketConnectionManager() {
         mMessageQueue = new LinkedList<>();
     }
 
@@ -48,7 +47,7 @@ public class SocketConnectionManager {
             return false;
 
         //TODO : this might be not an appropriate way to maintain connection
-        (new Thread(new Runnable() {
+        mListeningThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -72,10 +71,10 @@ public class SocketConnectionManager {
                         }
                     }
                 }
-
             }
-        })).start();
+        });
 
+        mListeningThread.start();
         return true;
     }
 
@@ -127,7 +126,7 @@ public class SocketConnectionManager {
             return false;
 
         //TODO : this might be not an appropriate way to maintain connection
-        (new Thread(new Runnable() {
+        mListeningThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 mSocketClient = new RemoteLsClient();
@@ -143,7 +142,8 @@ public class SocketConnectionManager {
                     }
                 }
             }
-        })).start();
+        });
+        mListeningThread.start();
 
         return true;
     }
@@ -172,5 +172,12 @@ public class SocketConnectionManager {
 
     public boolean isConnected() {
         return mConnected;
+    }
+
+    @Override
+    public void clearServiceData() {
+        mConnected = false;
+        mListeningThread = null;
+        mMessageQueue.clear();
     }
 }

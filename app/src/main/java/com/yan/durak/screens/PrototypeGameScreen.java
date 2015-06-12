@@ -1,6 +1,7 @@
 package com.yan.durak.screens;
 
 import com.yan.durak.communication.game_server.connector.IGameServerConnector;
+import com.yan.durak.communication.game_server.connector.SocketConnectionManager;
 import com.yan.durak.communication.sender.GameServerMessageSender;
 import com.yan.durak.input.cards.CardsTouchProcessor;
 import com.yan.durak.input.listener.PlayerCardsTouchProcessorListener;
@@ -9,10 +10,10 @@ import com.yan.durak.msg_processor.MsgProcessor;
 import com.yan.durak.services.CardNodesManagerService;
 import com.yan.durak.services.CardsTouchProcessorService;
 import com.yan.durak.services.DialogManagerService;
-import com.yan.durak.services.hud.HudManagementService;
 import com.yan.durak.services.PileLayouterManagerService;
 import com.yan.durak.services.PileManagerService;
 import com.yan.durak.services.SceneSizeProviderService;
+import com.yan.durak.services.hud.HudManagementService;
 import com.yan.durak.session.GameInfo;
 
 import aurelienribon.tweenengine.TweenManager;
@@ -42,6 +43,9 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
         //tween manager is used for various tween animations
         mSharedTweenManager = new TweenManager();
+
+        //TODO : redefine socket manager
+        ServiceLocator.addService(new SocketConnectionManager());
 
         //service that manages dialogs
         ServiceLocator.addService(new DialogManagerService());
