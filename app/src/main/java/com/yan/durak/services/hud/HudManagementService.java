@@ -99,6 +99,11 @@ public class HudManagementService implements IService {
 
     private HudNodesCreator mHudNodesCreator;
     private HudNodesPositioner mHudNodesPositioner;
+    private TimerListener mTimerListener;
+
+    public interface TimerListener {
+        void onTimerExpired(YANCircleNode activeTimerNode);
+    }
 
     public HudManagementService(TweenManager tweenManager) {
         mTweenManager = tweenManager;
@@ -170,6 +175,7 @@ public class HudManagementService implements IService {
     }
 
     public void update(float deltaTimeSeconds) {
+
         if (mActiveTimerNode == null)
             return;
 
@@ -186,8 +192,13 @@ public class HudManagementService implements IService {
         currentPercentage -= deltaTimeSeconds * speed;
         mActiveTimerNode.setPieCirclePercentage(currentPercentage);
 
+        //handle timer expiration
         if (currentPercentage <= 0) {
-            //TODO : notify timer listener that current timer is expired
+            //notify timer listener that current timer is expired
+            if (mTimerListener != null) {
+                mTimerListener.onTimerExpired(mActiveTimerNode);
+            }
+            mActiveTimerNode = null;
         }
     }
 
@@ -383,19 +394,30 @@ public class HudManagementService implements IService {
         return null;
     }
 
-
+    /**
+     * Starts the animation of timer attached to player.
+     */
     public void startTimerForPlayer(@NonNull GameInfo.Player player, YANColor timerColor) {
 
-        if (mActiveTimerNode != null) {
-            //reset previous timer
-            mActiveTimerNode.setPieCirclePercentage(1f);
-            mActiveTimerNode.setOpacity(0f);
-        }
+        //stop active timer
+        stopActiveTimer();
 
         //set new timer as active
         mActiveTimerNode = getTimerNodeForPlayer(player);
         mActiveTimerNode.setColor(timerColor.getR(), timerColor.getG(), timerColor.getB());
+        mActiveTimerNode.setPieCirclePercentage(1f);
         mActiveTimerNode.setOpacity(1f);
+    }
+
+    /**
+     * Stops and hides the active timer
+     */
+    public void stopActiveTimer() {
+        if (mActiveTimerNode == null)
+            return;
+        //reset active timer
+        mActiveTimerNode.setPieCirclePercentage(1f);
+        mActiveTimerNode.setOpacity(0f);
     }
 
     private YANCircleNode getTimerNodeForPlayer(GameInfo.Player player) {
@@ -414,5 +436,9 @@ public class HudManagementService implements IService {
     @Override
     public void clearServiceData() {
         //Does Nothing
+    }
+
+    public void setTimerListener(TimerListener timerListener) {
+        mTimerListener = timerListener;
     }
 }
