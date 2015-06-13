@@ -142,13 +142,8 @@ public class DialogManagerService implements IService {
 
     public void setExitDialogClickListeners(final YANButtonNode.YanButtonNodeClickListener confirmListener,
                                             final YANButtonNode.YanButtonNodeClickListener declineListener) {
-        YANButtonNode yesBtn = getNode(DIALOG_YES_BUTTON_INDEX);
-        YANButtonNode noBtn = getNode(DIALOG_NO_BUTTON_INDEX);
-
         mConfirmListener = confirmListener;
         mDeclineListener = declineListener;
-
-
     }
 
 

@@ -13,6 +13,7 @@ import com.yan.durak.services.CardsTouchProcessorService;
 import com.yan.durak.services.DialogManagerService;
 import com.yan.durak.services.PileLayouterManagerService;
 import com.yan.durak.services.PileManagerService;
+import com.yan.durak.services.PlayerMoveService;
 import com.yan.durak.services.SceneSizeProviderService;
 import com.yan.durak.services.hud.HudManagementService;
 import com.yan.durak.session.GameInfo;
@@ -20,6 +21,7 @@ import com.yan.durak.session.GameInfo;
 import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.nodes.YANBaseNode;
 import glengine.yan.glengine.nodes.YANButtonNode;
+import glengine.yan.glengine.nodes.YANCircleNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.renderer.YANGLRenderer;
 import glengine.yan.glengine.service.ServiceLocator;
@@ -72,12 +74,25 @@ public class PrototypeGameScreen extends BaseGameScreen {
         //used to send concrete messages to server
         ServiceLocator.addService(new GameServerMessageSender(mGameServerConnector));
 
+        //screen size provider grants an access to screen dimensions
         ServiceLocator.addService(new SceneSizeProviderService());
+
+        //Auto move service helps to make an auto move for player
+        ServiceLocator.addService(new PlayerMoveService());
 
         //TODO : replace "this" by managers that are really required by the processor
         //message processor will receive messages and react on them
         //msg processor is the listener for game server connector
         mGameServerConnector.setListener(new MsgProcessor(this));
+
+        //set timer listener
+        ServiceLocator.locateService(HudManagementService.class).setTimerListener(new HudManagementService.TimerListener() {
+            @Override
+            public void onTimerExpired(YANCircleNode activeTimerNode) {
+                ServiceLocator.locateService(PlayerMoveService.class)
+                        .makeAutoMoveForState(ServiceLocator.locateService(GameInfo.class).getActivePlayerState().getStateDefinition());
+            }
+        });
     }
 
 
