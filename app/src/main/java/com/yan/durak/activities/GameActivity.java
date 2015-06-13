@@ -2,6 +2,7 @@ package com.yan.durak.activities;
 
 import android.os.Bundle;
 
+import com.yan.durak.BuildConfig;
 import com.yan.durak.communication.game_server.connector.IGameServerConnector;
 import com.yan.durak.screens.PrototypeGameScreen;
 
@@ -49,4 +50,8 @@ public class GameActivity extends EngineActivity {
         return new PrototypeGameScreen(renderer, connector);
     }
 
+    @Override
+    protected boolean isUsingAntiAliasing() {
+        return (BuildConfig.FLAVOR.equals("device"));
+    }
 }

@@ -21,7 +21,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 21
         versionCode 1
-        versionName "1.0"
+        versionName "prototype-1.0"
     }
 
     compileOptions {
@@ -33,6 +33,15 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    productFlavors {
+        device {
+            //Device specific
+        }
+        emulator {
+            //Emulator specific
         }
     }
 }
