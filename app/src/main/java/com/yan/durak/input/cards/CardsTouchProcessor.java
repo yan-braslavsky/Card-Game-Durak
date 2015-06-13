@@ -96,14 +96,14 @@ public class CardsTouchProcessor {
      * and process it on cards.
      */
     public void register() {
-        YANInputManager.getInstance().addEventListener(mTouchListener);
+        ServiceLocator.locateService(YANInputManager.class).addEventListener(mTouchListener);
     }
 
     /**
      * Makes touch processor not active.It no longer processes touch events on cards.
      */
     public void unRegister() {
-        YANInputManager.getInstance().removeEventListener(mTouchListener);
+        ServiceLocator.locateService(YANInputManager.class).removeEventListener(mTouchListener);
     }
 
 
