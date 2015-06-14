@@ -6,14 +6,18 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by Yan-Home on 2/23/2015.
  */
-class SharedLocalMessageQueue {
+public class SharedLocalMessageQueue {
 
-    private static final SharedLocalMessageQueue INSTANCE = new SharedLocalMessageQueue();
+    private static SharedLocalMessageQueue INSTANCE = new SharedLocalMessageQueue();
     private Queue<String> mForClientMessageQueue;
     private Queue<String> mForServerMessageQueue;
 
     public static final SharedLocalMessageQueue getInstance() {
         return INSTANCE;
+    }
+
+    public static final void recreateInstance() {
+        INSTANCE = new SharedLocalMessageQueue();
     }
 
     private SharedLocalMessageQueue() {

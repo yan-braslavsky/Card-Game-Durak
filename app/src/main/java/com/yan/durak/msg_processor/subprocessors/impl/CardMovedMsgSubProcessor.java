@@ -5,8 +5,8 @@ import com.yan.durak.gamelogic.communication.protocol.messages.CardMovedProtocol
 import com.yan.durak.layouting.pile.IPileLayouter;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
-import com.yan.durak.service.services.PileLayouterManagerService;
-import com.yan.durak.service.services.PileManagerService;
+import com.yan.durak.services.PileLayouterManagerService;
+import com.yan.durak.services.PileManagerService;
 
 /**
  * Created by ybra on 17/04/15.

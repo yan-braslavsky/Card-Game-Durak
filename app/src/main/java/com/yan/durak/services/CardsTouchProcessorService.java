@@ -1,7 +1,9 @@
-package com.yan.durak.service.services;
+package com.yan.durak.services;
 
 import com.yan.durak.input.cards.CardsTouchProcessor;
-import com.yan.durak.service.IService;
+
+import glengine.yan.glengine.service.IService;
+
 
 /**
  * Created by Yan-Home on 5/9/2015.
@@ -19,5 +21,14 @@ public class CardsTouchProcessorService implements IService {
 
     public void register() {
         mCardsTouchProcessor.register();
+    }
+
+    public void setSceneSize(float screenWidth, float screenHeight) {
+        mCardsTouchProcessor.setSceneSize(screenWidth, screenHeight);
+    }
+
+    @Override
+    public void clearServiceData() {
+        unRegister();
     }
 }

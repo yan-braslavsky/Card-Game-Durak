@@ -1,13 +1,14 @@
 package com.yan.durak.session.states.impl;
 
 import com.yan.durak.gamelogic.cards.Card;
-import com.yan.durak.service.ServiceLocator;
-import com.yan.durak.service.services.CardsTouchProcessorService;
-import com.yan.durak.service.services.PileLayouterManagerService;
-import com.yan.durak.service.services.PileManagerService;
+import com.yan.durak.services.CardsTouchProcessorService;
+import com.yan.durak.services.PileLayouterManagerService;
+import com.yan.durak.services.PileManagerService;
 import com.yan.durak.session.states.BaseDraggableState;
 
 import java.util.ArrayList;
+
+import glengine.yan.glengine.service.ServiceLocator;
 
 /**
  * Created by Yan-Home on 4/26/2015.

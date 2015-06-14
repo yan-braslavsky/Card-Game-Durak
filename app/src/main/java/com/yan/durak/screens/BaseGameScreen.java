@@ -5,6 +5,7 @@ import glengine.yan.glengine.assets.atlas.YANTextureAtlas;
 import glengine.yan.glengine.nodes.YANTextNode;
 import glengine.yan.glengine.renderer.YANGLRenderer;
 import glengine.yan.glengine.screens.YANNodeScreen;
+import glengine.yan.glengine.service.ServiceLocator;
 import glengine.yan.glengine.util.colors.YANColor;
 import glengine.yan.glengine.util.loggers.YANFPSLogger;
 
@@ -21,12 +22,14 @@ public abstract class BaseGameScreen extends YANNodeScreen {
     //names of used assets
     public static final String UI_ATLAS_NAME = "ui_atlas";
     public static final String CARDS_ATLAS_NAME = "cards_atlas";
+    public static final String DIALOGS_ATLAS_NAME = "dialogs_atlas";
     public static final String STANDARD_FONT_NAME = "standard_font";
     public static final String SPEECH_BUBBLES_FONT_NAME = "chunkfive";
 
     //texture atlases
-    protected YANTextureAtlas mUiAtlas;
+    protected final YANTextureAtlas mUiAtlas;
     protected final YANTextureAtlas mCardsAtlas;
+    protected final YANTextureAtlas mDialogsAtlas;
 
     //TODO : remove on production
     //Used to log FPS data on screen
@@ -46,8 +49,9 @@ public abstract class BaseGameScreen extends YANNodeScreen {
         });
 
         //load atlases
-        mUiAtlas = YANAssetManager.getInstance().getLoadedAtlas(UI_ATLAS_NAME);
-        mCardsAtlas = YANAssetManager.getInstance().getLoadedAtlas(CARDS_ATLAS_NAME);
+        mUiAtlas = ServiceLocator.locateService(YANAssetManager.class).getLoadedAtlas(UI_ATLAS_NAME);
+        mCardsAtlas = ServiceLocator.locateService(YANAssetManager.class).getLoadedAtlas(CARDS_ATLAS_NAME);
+        mDialogsAtlas = ServiceLocator.locateService(YANAssetManager.class).getLoadedAtlas(DIALOGS_ATLAS_NAME);
     }
 
     @Override
@@ -65,7 +69,7 @@ public abstract class BaseGameScreen extends YANNodeScreen {
     protected void onCreateNodes() {
 
         //create a text node
-        mFpsTextNode = new YANTextNode(YANAssetManager.getInstance().getLoadedFont(STANDARD_FONT_NAME), "FPS 1000".length());
+        mFpsTextNode = new YANTextNode(ServiceLocator.locateService(YANAssetManager.class).getLoadedFont(STANDARD_FONT_NAME), "FPS 1000".length());
         mFpsTextNode.setText("FPS " + 0);
         mFpsTextNode.setSortingLayer(5000);
     }
@@ -76,12 +80,13 @@ public abstract class BaseGameScreen extends YANNodeScreen {
         getRenderer().setRendererBackgroundColor(YANColor.createFromHexColor(BG_HEX_COLOR));
 
         //for efficiency reasons we are not loading texture into openGL until we are need it
-        YANAssetManager.getInstance().loadTexture(mUiAtlas.getAtlasImageFilePath());
-        YANAssetManager.getInstance().loadTexture(mCardsAtlas.getAtlasImageFilePath());
+        ServiceLocator.locateService(YANAssetManager.class).loadTexture(mUiAtlas.getAtlasImageFilePath());
+        ServiceLocator.locateService(YANAssetManager.class).loadTexture(mCardsAtlas.getAtlasImageFilePath());
+        ServiceLocator.locateService(YANAssetManager.class).loadTexture(mDialogsAtlas.getAtlasImageFilePath());
 
         //load font atlas into a memory
-        YANAssetManager.getInstance().loadTexture(YANAssetManager.getInstance().getLoadedFont(STANDARD_FONT_NAME).getGlyphImageFilePath());
-        YANAssetManager.getInstance().loadTexture(YANAssetManager.getInstance().getLoadedFont(SPEECH_BUBBLES_FONT_NAME).getGlyphImageFilePath());
+        ServiceLocator.locateService(YANAssetManager.class).loadTexture(ServiceLocator.locateService(YANAssetManager.class).getLoadedFont(STANDARD_FONT_NAME).getGlyphImageFilePath());
+        ServiceLocator.locateService(YANAssetManager.class).loadTexture(ServiceLocator.locateService(YANAssetManager.class).getLoadedFont(SPEECH_BUBBLES_FONT_NAME).getGlyphImageFilePath());
     }
 
     @Override
@@ -89,12 +94,13 @@ public abstract class BaseGameScreen extends YANNodeScreen {
         super.onSetNotActive();
 
         //for efficiency reasons we are deleting loaded texture into openGL
-        YANAssetManager.getInstance().unloadTexture(mUiAtlas.getAtlasImageFilePath());
-        YANAssetManager.getInstance().unloadTexture(mCardsAtlas.getAtlasImageFilePath());
+        ServiceLocator.locateService(YANAssetManager.class).unloadTexture(mUiAtlas.getAtlasImageFilePath());
+        ServiceLocator.locateService(YANAssetManager.class).unloadTexture(mCardsAtlas.getAtlasImageFilePath());
+        ServiceLocator.locateService(YANAssetManager.class).unloadTexture(mDialogsAtlas.getAtlasImageFilePath());
 
         //release atlas font from a memory
-        YANAssetManager.getInstance().unloadTexture(YANAssetManager.getInstance().getLoadedFont(STANDARD_FONT_NAME).getGlyphImageFilePath());
-        YANAssetManager.getInstance().unloadTexture(YANAssetManager.getInstance().getLoadedFont(SPEECH_BUBBLES_FONT_NAME).getGlyphImageFilePath());
+        ServiceLocator.locateService(YANAssetManager.class).unloadTexture(ServiceLocator.locateService(YANAssetManager.class).getLoadedFont(STANDARD_FONT_NAME).getGlyphImageFilePath());
+        ServiceLocator.locateService(YANAssetManager.class).unloadTexture(ServiceLocator.locateService(YANAssetManager.class).getLoadedFont(SPEECH_BUBBLES_FONT_NAME).getGlyphImageFilePath());
     }
 
     @Override

@@ -17,6 +17,8 @@ import com.yan.durak.protocol.messages.BlankProtocolMessage;
 import java.util.HashMap;
 import java.util.Map;
 
+import glengine.yan.glengine.service.ServiceLocator;
+
 /**
  * Created by Yan-Home on 4/2/2015.
  */
@@ -68,11 +70,11 @@ public abstract class BaseGameServerConnector implements IGameServerConnector {
     private void readMessageFromServer() {
 
         //we are reading messages only if the connector is currently connected
-        if (!SocketConnectionManager.getInstance().isConnected())
+        if (!ServiceLocator.locateService(SocketConnectionManager.class).isConnected())
             return;
 
         //try to obtain message from the connector
-        String msg = SocketConnectionManager.getInstance().readMessageFromRemoteServer();
+        String msg = ServiceLocator.locateService(SocketConnectionManager.class).readMessageFromRemoteServer();
 
         //in case there was no message or no listener to process it ,we will do nothing
         if (msg == null || mMessageFilter == null)

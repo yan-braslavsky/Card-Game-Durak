@@ -2,15 +2,16 @@ package com.yan.durak.msg_processor.subprocessors.impl;
 
 import com.yan.durak.gamelogic.communication.protocol.messages.PlayerTakesActionMessage;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
-import com.yan.durak.service.ServiceLocator;
-import com.yan.durak.service.services.HudManagementService;
-import com.yan.durak.service.services.PileLayouterManagerService;
-import com.yan.durak.service.services.PileManagerService;
+import com.yan.durak.services.hud.HudManagementService;
+import com.yan.durak.services.PileLayouterManagerService;
+import com.yan.durak.services.PileManagerService;
+import com.yan.durak.services.hud.HudNodes;
 import com.yan.durak.session.GameInfo;
 import com.yan.durak.session.states.impl.AttackState;
 import com.yan.durak.session.states.impl.OtherPlayerTurnState;
 import com.yan.durak.session.states.impl.RetaliationState;
 
+import glengine.yan.glengine.service.ServiceLocator;
 import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
 /**
@@ -36,7 +37,7 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
 
         updateActivePlayerState(serverMessage.getMessageData());
 
-        @HudManagementService.SpeechBubbleText String speechBubbleText = null;
+        @HudNodes.SpeechBubbleText String speechBubbleText = null;
         PlayerTakesActionMessage.PlayerAction playerAction = PlayerTakesActionMessage.PlayerAction.valueOf(serverMessage.getMessageData().getAction());
 
         switch (playerAction) {
@@ -45,7 +46,7 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
                 ServiceLocator.locateService(HudManagementService.class).startTimerForPlayer(mGameInfo.getPlayerForIndex(serverMessage.getMessageData().getPlayerIndex()),
                         HudManagementService.TIMER_RETALIATION_COLOR);
 
-                speechBubbleText = HudManagementService.SPEECH_BUBBLE_ATTACK_TEXT;
+                speechBubbleText = HudNodes.SPEECH_BUBBLE_ATTACK_TEXT;
                 break;
             case RETALIATION_START:
 
@@ -57,10 +58,10 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
                 ServiceLocator.locateService(HudManagementService.class).animateScaleUpPlayerAvatar(mGameInfo.getPlayerForIndex(serverMessage.getMessageData().getPlayerIndex()));
                 break;
             case THROW_IN_PASS:
-                speechBubbleText = HudManagementService.SPEECH_BUBBLE_PASS_TEXT;
+                speechBubbleText = HudNodes.SPEECH_BUBBLE_PASS_TEXT;
                 break;
             case THROW_IN_END:
-                speechBubbleText = HudManagementService.SPEECH_BUBBLE_THROW_IN_END_TEXT;
+                speechBubbleText = HudNodes.SPEECH_BUBBLE_THROW_IN_END_TEXT;
                 break;
             case THROW_IN_START:
 
@@ -71,7 +72,7 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
                 ServiceLocator.locateService(HudManagementService.class).animateScaleUpPlayerAvatar(mGameInfo.getPlayerForIndex(serverMessage.getMessageData().getPlayerIndex()));
                 break;
             case PLAYER_TAKES_CARDS:
-                speechBubbleText = HudManagementService.SPEECH_BUBBLE_TAKING_TEXT;
+                speechBubbleText = HudNodes.SPEECH_BUBBLE_TAKING_TEXT;
                 break;
             default:
                 //Nothing
@@ -103,22 +104,5 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
             mGameInfo.setActivePlayerState(YANObjectPool.getInstance().obtain(OtherPlayerTurnState.class));
         }
 
-        //in any case we need to re lay out the player pile :
-        mPileLayouterManager.getPileLayouterForPile(mPileManager.getBottomPlayerPile()).layout();
     }
-
-//    private
-//    @HudManagementService.HudNode
-//    int retrieveTimerPosition(int actionPlayerIndex) {
-//        switch (mGameInfo.getPlayerForIndex(actionPlayerIndex)) {
-//            case BOTTOM_PLAYER:
-//                return HudManagementService.CIRCLE_TIMER_BOTTOM_RIGHT_INDEX;
-//            case TOP_RIGHT_PLAYER:
-//                return HudManagementService.CIRCLE_TIMER_TOP_RIGHT_INDEX;
-//            case TOP_LEFT_PLAYER:
-//                return HudManagementService.CIRCLE_TIMER_TOP_LEFT_INDEX;
-//            default:
-//                throw new RuntimeException("player not found for index : " + actionPlayerIndex);
-//        }
-//    }
 }

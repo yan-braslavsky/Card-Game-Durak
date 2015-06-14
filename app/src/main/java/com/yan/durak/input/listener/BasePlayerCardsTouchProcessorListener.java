@@ -6,11 +6,10 @@ import com.yan.durak.layouting.pile.impl.FieldPileLayouter;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
 import com.yan.durak.physics.YANCollisionDetector;
-import com.yan.durak.service.ServiceLocator;
-import com.yan.durak.service.services.CardNodesManagerService;
-import com.yan.durak.service.services.PileLayouterManagerService;
-import com.yan.durak.service.services.PileManagerService;
-import com.yan.durak.service.services.SceneSizeProviderService;
+import com.yan.durak.services.CardNodesManagerService;
+import com.yan.durak.services.PileLayouterManagerService;
+import com.yan.durak.services.PileManagerService;
+import com.yan.durak.services.SceneSizeProviderService;
 import com.yan.durak.session.GameInfo;
 import com.yan.durak.session.states.BaseDraggableState;
 
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import glengine.yan.glengine.nodes.YANBaseNode;
+import glengine.yan.glengine.service.ServiceLocator;
 import glengine.yan.glengine.util.math.YANMathUtils;
 
 /**

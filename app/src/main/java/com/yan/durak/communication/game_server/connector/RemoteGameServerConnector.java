@@ -18,6 +18,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import glengine.yan.glengine.service.ServiceLocator;
+
 /**
  * Created by Yan-Home on 1/25/2015.
  * <p/>
@@ -25,8 +27,8 @@ import java.util.List;
  */
 public class RemoteGameServerConnector extends BaseGameServerConnector {
 
-    private static final String SERVER_ADDRESS = "192.168.1.100";
-    //    private static final String SERVER_ADDRESS = "yan-durak-server-lobby-staging.herokuapp.com";
+//        private static final String SERVER_ADDRESS = "192.168.1.101";
+        private static final String SERVER_ADDRESS = "yan-durak-server-lobby-staging.herokuapp.com";
 //    private static final int SERVER_PORT = 1314;
 //    private static final int SERVER_PORT = 5000;
     private static final int SERVER_PORT = 80;
@@ -44,21 +46,16 @@ public class RemoteGameServerConnector extends BaseGameServerConnector {
                 String domain = SERVER_ADDRESS;
 
                 //obtain socket adress
-                String socketAdress = requestSocketAdress("http://" + domain + ":" + SERVER_PORT);
-
-                //server returns us "domain:port" formatted string
-                String[] splitString = socketAdress.split(":");
-                String socketDomain = splitString[0];
-                int socketPort = Integer.parseInt(splitString[1]);
+                String socketRelativeAdress = requestSocketAdress("http://" + domain);
 
                 //connect to socket adress
-                SocketConnectionManager.getInstance().connectToRemoteServerViaWebSocket(socketDomain, socketPort);
-//                SocketConnectionManager.getInstance().connectToRemoteServerViaSocket( socketDomain, socketPort);
+                ServiceLocator.locateService(SocketConnectionManager.class).connectToRemoteServerViaWebSocket(SERVER_ADDRESS + socketRelativeAdress, -1);
+//                ServiceLocator.locateService(SocketConnectionManager.class).connectToRemoteServerViaSocket( socketDomain, socketPort);
 
 
-//                SocketConnectionManager.getInstance().connectToRemoteServerViaSocket("http://" + "yan-durak-server-lobby-staging.herokuapp.com:" +splitString[1]  /*splitString[0]*/,-1 /*Integer.parseInt(splitString[1])*/);
-//                SocketConnectionManager.getInstance().connectToRemoteServerViaSocket("http://" + socketAdress  /*splitString[0]*/,-1 /*Integer.parseInt(splitString[1])*/);
-//                SocketConnectionManager.getInstance().connectToRemoteServerViaSocket("http://yan-durak-server-lobby-staging.herokuapp.com:8080", 1234);
+//                ServiceLocator.locateService(SocketConnectionManager.class).connectToRemoteServerViaSocket("http://" + "yan-durak-server-lobby-staging.herokuapp.com:" +splitString[1]  /*splitString[0]*/,-1 /*Integer.parseInt(splitString[1])*/);
+//                ServiceLocator.locateService(SocketConnectionManager.class).connectToRemoteServerViaSocket("http://" + socketAdress  /*splitString[0]*/,-1 /*Integer.parseInt(splitString[1])*/);
+//                ServiceLocator.locateService(SocketConnectionManager.class).connectToRemoteServerViaSocket("http://yan-durak-server-lobby-staging.herokuapp.com:8080", 1234);
             }
         })).start();
     }
@@ -106,11 +103,11 @@ public class RemoteGameServerConnector extends BaseGameServerConnector {
 
     @Override
     public void disconnect() {
-        SocketConnectionManager.getInstance().disconnectFromRemoteServer();
+        ServiceLocator.locateService(SocketConnectionManager.class).disconnectFromRemoteServer();
     }
 
     @Override
     public void sentMessageToServer(BaseProtocolMessage message) {
-        SocketConnectionManager.getInstance().sendMessageToRemoteServer(message.toJsonString());
+        ServiceLocator.locateService(SocketConnectionManager.class).sendMessageToRemoteServer(message.toJsonString());
     }
 }

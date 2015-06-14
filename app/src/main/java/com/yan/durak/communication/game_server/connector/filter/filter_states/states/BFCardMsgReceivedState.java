@@ -1,6 +1,5 @@
 package com.yan.durak.communication.game_server.connector.filter.filter_states.states;
 
-import com.yan.durak.communication.game_server.connector.filter.CardMoveBatchMessageFilter;
 import com.yan.durak.communication.game_server.connector.filter.filter_states.BFBaseState;
 import com.yan.durak.gamelogic.communication.protocol.BaseProtocolMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.CardMovedProtocolMessage;
@@ -12,17 +11,9 @@ import com.yan.durak.gamelogic.communication.protocol.messages.CardMovedProtocol
  */
 public class BFCardMsgReceivedState extends BFBaseState {
 
-    private static BFCardMsgReceivedState INSTANCE;
 
-    public static BFCardMsgReceivedState getInstance(CardMoveBatchMessageFilter cardMoveBatchMessageFilter) {
-        if (INSTANCE == null) {
-            INSTANCE = new BFCardMsgReceivedState(cardMoveBatchMessageFilter);
-        }
-        return INSTANCE;
-    }
-
-    protected BFCardMsgReceivedState(CardMoveBatchMessageFilter batchFilter) {
-        super(batchFilter);
+    public BFCardMsgReceivedState() {
+        //must have a public constructor
     }
 
     @Override
@@ -43,9 +34,8 @@ public class BFCardMsgReceivedState extends BFBaseState {
             //pool message and handle
             handleCardMessageReceived(previousCardMessage, (CardMovedProtocolMessage) currentMessage);
         } else {
-
             //non card message received
-            mBatchFilter.setBatchFilterState(BFReleaseAndWaitState.getInstance(mBatchFilter));
+            goToNextState(BFReleaseAndWaitState.class);
         }
     }
 
@@ -65,7 +55,7 @@ public class BFCardMsgReceivedState extends BFBaseState {
             //poll add current message to batch queue
             mBatchFilter.getBatchedMessages().add((CardMovedProtocolMessage) mBatchFilter.getIncomingMessagesQueue().poll());
         } else {
-            mBatchFilter.setBatchFilterState(BFReleaseAndWaitState.getInstance(mBatchFilter));
+            goToNextState(BFReleaseAndWaitState.class);
         }
     }
 }

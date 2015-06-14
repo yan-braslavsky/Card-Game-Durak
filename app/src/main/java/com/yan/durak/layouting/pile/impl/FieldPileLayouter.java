@@ -5,12 +5,13 @@ import com.yan.durak.layouting.pile.BasePileLayouter;
 import com.yan.durak.layouting.pile.FieldPilePositioner;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
-import com.yan.durak.service.ServiceLocator;
-import com.yan.durak.service.services.CardNodesManagerService;
-import com.yan.durak.service.services.PileLayouterManagerService;
-import com.yan.durak.service.services.PileManagerService;
+import com.yan.durak.services.CardNodesManagerService;
+import com.yan.durak.services.PileLayouterManagerService;
+import com.yan.durak.services.PileManagerService;
 
+import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.TweenManager;
+import glengine.yan.glengine.service.ServiceLocator;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
 import glengine.yan.glengine.util.geometry.YANVector2;
 import glengine.yan.glengine.util.math.YANMathUtils;
@@ -70,6 +71,7 @@ public class FieldPileLayouter extends BasePileLayouter {
         mCardOriginVector.setXY(pilePositionOnField.getX() - mCardWidhtForPile, pilePositionOnField.getY() + mCardHeightForPile);
 
         int index = 0;
+        final Timeline tl = Timeline.createSequence().beginParallel();
         for (Card card : mBoundpile.getCardsInPile()) {
             CardNode cardNode = mCardNodesManager.getCardNodeForCard(card);
 
@@ -103,10 +105,12 @@ public class FieldPileLayouter extends BasePileLayouter {
             cardNode.setSortingLayer(sortingLayer);
 
             //animate card to its place with new transform values
-            animateCardNode(cardNode, mCardPositionVector.getX(), mCardPositionVector.getY(),
+            addAnimationToTimelineForCardNode(tl,cardNode, mCardPositionVector.getX(), mCardPositionVector.getY(),
                     rotationZ, mCardWidhtForPile, mCardHeightForPile, 1f, CARD_MOVEMENT_ANIMATION_DURATION);
 
             index++;
         }
+
+        tl.start(mTweenManager);
     }
 }

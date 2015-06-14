@@ -4,13 +4,14 @@ import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.layouting.impl.CardsLayouterSlotImpl;
 import com.yan.durak.layouting.pile.BasePileLayouter;
 import com.yan.durak.layouting.threepoint.ThreePointFanLayouter;
-import com.yan.durak.service.services.CardNodesManagerService;
+import com.yan.durak.services.CardNodesManagerService;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.util.geometry.YANVector2;
 import glengine.yan.glengine.util.object_pool.YANObjectPool;
@@ -78,7 +79,7 @@ public class TopLeftPlayerPileLayouter extends BasePileLayouter {
         int slotPosition = 0;
         CardsLayouterSlotImpl slot;
         CardNode cardNode;
-
+        final Timeline tl = Timeline.createSequence().beginParallel();
         for (Card card : mBoundpile.getCardsInPile()) {
             cardNode = mCardNodesManager.getCardNodeForCard(card);
             slot = mSlotsList.get(slotPosition);
@@ -90,10 +91,11 @@ public class TopLeftPlayerPileLayouter extends BasePileLayouter {
             cardNode.useBackTextureRegion();
 
             //animate card to its place with new transform values
-            animateCardNode(cardNode, slot.getPosition().getX(), slot.getPosition().getY(),
+            addAnimationToTimelineForCardNode(tl,cardNode, slot.getPosition().getX(), slot.getPosition().getY(),
                     slot.getRotation(), mCardWidhtForPile, mCardHeightForPile, 1f,CARD_MOVEMENT_ANIMATION_DURATION);
 
             slotPosition++;
         }
+        tl.start(mTweenManager);
     }
 }

@@ -6,10 +6,11 @@ import com.yan.durak.gamelogic.communication.protocol.BaseProtocolMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.ResponseCardForAttackMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.ResponseRetaliatePilesMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.ResponseThrowInsMessage;
-import com.yan.durak.service.IService;
 
 import java.util.Collections;
 import java.util.List;
+
+import glengine.yan.glengine.service.IService;
 
 /**
  * Created by ybra on 20/04/15.
@@ -59,5 +60,10 @@ public class GameServerMessageSender implements IService {
 
     private void sendMessage(BaseProtocolMessage message) {
         mConnector.sentMessageToServer(message);
+    }
+
+    @Override
+    public void clearServiceData() {
+        mConnector.disconnect();
     }
 }

@@ -11,8 +11,6 @@ import com.yan.durak.gamelogic.communication.protocol.messages.RequestCardForAtt
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestRetaliatePilesMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestThrowInsMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.RetaliationInvalidProtocolMessage;
-import com.yan.durak.service.services.PileLayouterManagerService;
-import com.yan.durak.service.services.PileManagerService;
 import com.yan.durak.msg_processor.subprocessors.MsgSubProcessor;
 import com.yan.durak.msg_processor.subprocessors.impl.CardMovedMsgSubProcessor;
 import com.yan.durak.msg_processor.subprocessors.impl.GameOverMsgSubProcessor;
@@ -23,11 +21,14 @@ import com.yan.durak.msg_processor.subprocessors.impl.RequestRetaliatePilesMsgSu
 import com.yan.durak.msg_processor.subprocessors.impl.RequestThrowInsMsgSubProcessor;
 import com.yan.durak.msg_processor.subprocessors.impl.RetaliationInvalidMsgSubProcessor;
 import com.yan.durak.screens.PrototypeGameScreen;
-import com.yan.durak.service.ServiceLocator;
+import com.yan.durak.services.PileLayouterManagerService;
+import com.yan.durak.services.PileManagerService;
 import com.yan.durak.session.GameInfo;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import glengine.yan.glengine.service.ServiceLocator;
 
 /**
  * Created by ybra on 16/04/15.

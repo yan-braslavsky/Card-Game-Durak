@@ -1,14 +1,15 @@
-package com.yan.durak.service.services;
+package com.yan.durak.services;
 
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.cards.CardsHelper;
 import com.yan.durak.models.PileModel;
-import com.yan.durak.service.IService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import glengine.yan.glengine.service.IService;
 
 /**
  * Created by ybra on 20/04/15.
@@ -159,5 +160,10 @@ public class PileManagerService implements IService {
             }
         }
         return null;
+    }
+
+    @Override
+    public void clearServiceData() {
+        //Does Nothing
     }
 }

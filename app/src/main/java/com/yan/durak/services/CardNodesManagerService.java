@@ -1,9 +1,7 @@
-package com.yan.durak.service.services;
+package com.yan.durak.services;
 
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.nodes.CardNode;
-import com.yan.durak.service.IService;
-import com.yan.durak.service.ServiceLocator;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -12,6 +10,8 @@ import java.util.Map;
 
 import glengine.yan.glengine.assets.atlas.YANTextureAtlas;
 import glengine.yan.glengine.nodes.YANTexturedNode;
+import glengine.yan.glengine.service.IService;
+import glengine.yan.glengine.service.ServiceLocator;
 import glengine.yan.glengine.util.colors.YANColor;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
 
@@ -109,5 +109,10 @@ public class CardNodesManagerService implements IService {
     public void enableCardNode(CardNode cardNode) {
         cardNode.removeTag(CardNode.TAG_TOUCH_DISABLED);
         cardNode.setOverlayColor(0, 0, 0, 0);
+    }
+
+    @Override
+    public void clearServiceData() {
+        //Does Nothing
     }
 }

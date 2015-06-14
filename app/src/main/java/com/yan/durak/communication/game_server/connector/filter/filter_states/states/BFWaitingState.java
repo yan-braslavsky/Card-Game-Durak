@@ -16,21 +16,11 @@ public class BFWaitingState extends BFBaseState {
 
     public static final float DURATION_SECONDS = 0.6f;
     public static final int COUNT_OF_PREALLOCATED_OBJECTS = 6;
-    private static BFWaitingState INSTANCE;
 
-    public static BFWaitingState getInstance(CardMoveBatchMessageFilter cardMoveBatchMessageFilter) {
-        if (INSTANCE == null) {
-            INSTANCE = new BFWaitingState(cardMoveBatchMessageFilter);
-
-            //preallocate delayed tasks in the object pool
-            YANObjectPool.getInstance().preallocate(YANDelayedTask.class, COUNT_OF_PREALLOCATED_OBJECTS);
-            YANObjectPool.getInstance().preallocate(BFWaitingStateDelayedTaskListener.class, COUNT_OF_PREALLOCATED_OBJECTS);
-        }
-        return INSTANCE;
-    }
-
-    protected BFWaitingState(CardMoveBatchMessageFilter batchFilter) {
-        super(batchFilter);
+    public BFWaitingState() {
+        //preallocate delayed tasks in the object pool
+        YANObjectPool.getInstance().preallocate(YANDelayedTask.class, COUNT_OF_PREALLOCATED_OBJECTS);
+        YANObjectPool.getInstance().preallocate(BFWaitingStateDelayedTaskListener.class, COUNT_OF_PREALLOCATED_OBJECTS);
     }
 
     @Override
@@ -45,6 +35,7 @@ public class BFWaitingState extends BFBaseState {
         //init the listener
         delayedTaskListener.setBatchFilter(mBatchFilter);
         delayedTaskListener.setDelayedTask(delayedTask);
+        delayedTaskListener.setWaitingState(this);
 
         //init the task
         delayedTask.setDurationSeconds(DURATION_SECONDS);
@@ -65,6 +56,7 @@ public class BFWaitingState extends BFBaseState {
     protected static class BFWaitingStateDelayedTaskListener implements YANDelayedTask.YANDelayedTaskListener, YANIPoolableObject {
         private CardMoveBatchMessageFilter mBatchFilter;
         private YANDelayedTask mDelayedTask;
+        private BFWaitingState mWaitingState;
 
         public BFWaitingStateDelayedTaskListener() {
             //Empty constructor required
@@ -82,8 +74,16 @@ public class BFWaitingState extends BFBaseState {
             //recycle this listener
             YANObjectPool.getInstance().offer(BFWaitingStateDelayedTaskListener.this);
 
+            //obtain the next state from pool
+            BFInitState initState = YANObjectPool.getInstance().obtain(BFInitState.class);
+            initState.setBatchFilter(cachedFilter);
+
+            //reset the waiting state and offer it to pool
+            mWaitingState.resetState();
+            YANObjectPool.getInstance().offer(mWaitingState);
+
             //go back to initial state
-            cachedFilter.setBatchFilterState(BFInitState.getInstance(cachedFilter));
+            cachedFilter.setBatchFilterState(initState);
         }
 
         @Override
@@ -98,6 +98,10 @@ public class BFWaitingState extends BFBaseState {
 
         public void setDelayedTask(YANDelayedTask delayedTask) {
             mDelayedTask = delayedTask;
+        }
+
+        public void setWaitingState(BFWaitingState waitingState) {
+            mWaitingState = waitingState;
         }
     }
 }

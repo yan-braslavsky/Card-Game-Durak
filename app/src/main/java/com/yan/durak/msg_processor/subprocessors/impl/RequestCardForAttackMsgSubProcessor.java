@@ -3,7 +3,7 @@ package com.yan.durak.msg_processor.subprocessors.impl;
 import com.yan.durak.communication.sender.GameServerMessageSender;
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestCardForAttackMessage;
-import com.yan.durak.service.services.PileManagerService;
+import com.yan.durak.services.PileManagerService;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
 

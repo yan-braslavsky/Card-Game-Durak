@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import glengine.yan.glengine.util.object_pool.YANObjectPool;
+
 /**
  * Created by Yan-Home on 4/2/2015.
  * <p/>
@@ -30,7 +32,11 @@ public class CardMoveBatchMessageFilter implements IGameServerMessageFilter {
     public CardMoveBatchMessageFilter() {
         mBatchedMessages = new ArrayList<>();
         mIncomingMessagesQueue = new LinkedList<>();
-        setBatchFilterState(BFInitState.getInstance(this));
+
+        BFInitState initState = YANObjectPool.getInstance().obtain(BFInitState.class);
+        initState.resetState();
+        initState.setBatchFilter(this);
+        setBatchFilterState(initState);
     }
 
     public void releaseBatchedMessages() {

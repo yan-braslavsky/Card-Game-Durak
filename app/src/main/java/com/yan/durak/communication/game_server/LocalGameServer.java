@@ -1,6 +1,7 @@
 package com.yan.durak.communication.game_server;
 
-import com.yan.durak.communication.client.local.LocalServerClient;
+import com.yan.durak.communication.client.local.LocalLsClient;
+import com.yan.durak.communication.client.local.SharedLocalMessageQueue;
 import com.yan.durak.gamelogic.GameStarter;
 
 /**
@@ -14,11 +15,15 @@ public class LocalGameServer {
      * Starts a local game server on another thread.
      */
     public static void start() {
+
+        //we must recreate the message queue to make sure we are using a fresh queue
+        SharedLocalMessageQueue.recreateInstance();
+
         //open local server on different thread
         gameThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                (new GameStarter(new LocalServerClient(), null, null)).start();
+                (new GameStarter(new LocalLsClient(SharedLocalMessageQueue.getInstance()), null, null)).start();
             }
         });
         gameThread.start();
@@ -29,5 +34,7 @@ public class LocalGameServer {
      */
     public static void shutDown() {
         //TODO : Shut down the server
+        gameThread.interrupt();
+        gameThread = null;
     }
 }

@@ -2,6 +2,8 @@ package com.yan.durak.communication.game_server.connector;
 
 import com.yan.durak.gamelogic.communication.protocol.BaseProtocolMessage;
 
+import glengine.yan.glengine.service.ServiceLocator;
+
 /**
  * Created by Yan-Home on 1/25/2015.
  * <p/>
@@ -15,16 +17,16 @@ public class LocalGameServerConnector extends BaseGameServerConnector {
 
     @Override
     public void connect() {
-        SocketConnectionManager.getInstance().connectToLocalServer();
+        ServiceLocator.locateService(SocketConnectionManager.class).connectToLocalServer();
     }
 
     @Override
     public void disconnect() {
-        SocketConnectionManager.getInstance().disconnectFromLocalServer();
+        ServiceLocator.locateService(SocketConnectionManager.class).disconnectFromLocalServer();
     }
 
     @Override
     public void sentMessageToServer(BaseProtocolMessage message) {
-        SocketConnectionManager.getInstance().sendMessageToRemoteServer(message.toJsonString());
+        ServiceLocator.locateService(SocketConnectionManager.class).sendMessageToRemoteServer(message.toJsonString());
     }
 }

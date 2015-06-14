@@ -2,10 +2,11 @@ package com.yan.durak.layouting.pile.impl;
 
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.layouting.pile.BasePileLayouter;
-import com.yan.durak.service.services.CardNodesManagerService;
+import com.yan.durak.services.CardNodesManagerService;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
-import com.yan.durak.service.services.HudManagementService;
+import com.yan.durak.services.hud.HudManagementService;
+import com.yan.durak.services.hud.HudNodes;
 import com.yan.durak.session.GameInfo;
 
 import aurelienribon.tweenengine.TweenManager;
@@ -54,7 +55,7 @@ public class StockPileLayouter extends BasePileLayouter {
         }
 
         //now position the mask
-        YANTexturedNode maskCardNode = mHudManagementService.getNode(HudManagementService.MASK_CARD_INDEX);
+        YANTexturedNode maskCardNode = mHudManagementService.getNode(HudNodes.MASK_CARD_INDEX);
         layoutCardInPile(stockPilePositionX, stockPilePositionY, maskCardNode);
 
         //only difference is that mask is visible and above other card nodes
@@ -78,7 +79,7 @@ public class StockPileLayouter extends BasePileLayouter {
 
         //When only one card in stock pile left (which is a trump) mask should be hidden
         if (mBoundpile.getCardsInPile().size() == 1) {
-            mHudManagementService.getNode(HudManagementService.MASK_CARD_INDEX).setOpacity(0f);
+            mHudManagementService.getNode(HudNodes.MASK_CARD_INDEX).setOpacity(0f);
         }
 
         //when trump card is not in the pile , we doing nothing

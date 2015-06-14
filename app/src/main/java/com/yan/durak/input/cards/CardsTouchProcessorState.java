@@ -1,5 +1,6 @@
 package com.yan.durak.input.cards;
 
+import glengine.yan.glengine.util.geometry.YANVector2;
 import glengine.yan.glengine.util.object_pool.YANIPoolableObject;
 
 /**
@@ -8,16 +9,20 @@ import glengine.yan.glengine.util.object_pool.YANIPoolableObject;
 public abstract class CardsTouchProcessorState implements YANIPoolableObject {
 
     protected CardsTouchProcessor mCardsTouchProcessor;
+    protected final YANVector2 mScreenSize;
 
+    //Must have a public constructor
     public CardsTouchProcessorState() {
-        //Must have a public constructor
+        mScreenSize = new YANVector2();
     }
 
     protected void setCardsTouchProcessor(CardsTouchProcessor cardsTouchProcessor) {
         mCardsTouchProcessor = cardsTouchProcessor;
     }
 
-    protected abstract void applyState();
+    protected void applyState(float screenWidth, float screenHeight) {
+        mScreenSize.setXY(screenWidth, screenHeight);
+    }
 
     protected abstract boolean onTouchUp(float normalizedX, float normalizedY);
 

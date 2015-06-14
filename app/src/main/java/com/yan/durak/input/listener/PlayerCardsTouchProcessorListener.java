@@ -2,7 +2,6 @@ package com.yan.durak.input.listener;
 
 import com.yan.durak.input.cards.CardsTouchProcessor;
 import com.yan.durak.nodes.CardNode;
-import com.yan.durak.service.ServiceLocator;
 import com.yan.durak.session.GameInfo;
 import com.yan.durak.session.states.BaseDraggableState;
 import com.yan.durak.session.states.impl.AttackState;
@@ -10,6 +9,8 @@ import com.yan.durak.session.states.impl.RetaliationState;
 import com.yan.durak.session.states.impl.ThrowInState;
 
 import java.util.HashMap;
+
+import glengine.yan.glengine.service.ServiceLocator;
 
 /**
  * Created by Yan-Home on 4/25/2015.

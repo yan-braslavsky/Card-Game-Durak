@@ -3,7 +3,8 @@ package com.yan.durak.communication.game_server.connector;
 import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.WebSocket;
-import com.yan.durak.communication.client.local.RemoteServerClient;
+import com.yan.durak.communication.client.local.RemoteLsClient;
+import com.yan.durak.communication.client.local.SharedLocalMessageQueue;
 import com.yan.durak.communication.client.remote.RemoteSocketClient;
 import com.yan.durak.communication.client.remote.RemoteWsClient;
 import com.yan.durak.gamelogic.communication.connection.IRemoteClient;
@@ -14,6 +15,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ExecutionException;
 
+import glengine.yan.glengine.service.IService;
 import glengine.yan.glengine.util.loggers.YANLogger;
 
 /**
@@ -21,19 +23,18 @@ import glengine.yan.glengine.util.loggers.YANLogger;
  * <p/>
  * Implemented as a singleton.
  * Manages connection to remote socket server
+ *
+ * @deprecated requires redefinition of responsibilities
  */
-public class SocketConnectionManager {
+@Deprecated
+public class SocketConnectionManager implements IService {
 
-    private static final SocketConnectionManager INSTANCE = new SocketConnectionManager();
     private IRemoteClient mSocketClient;
     private volatile boolean mConnected;
     private Queue<String> mMessageQueue;
+    private Thread mListeningThread;
 
-    public static final SocketConnectionManager getInstance() {
-        return INSTANCE;
-    }
-
-    private SocketConnectionManager() {
+    public SocketConnectionManager() {
         mMessageQueue = new LinkedList<>();
     }
 
@@ -48,12 +49,12 @@ public class SocketConnectionManager {
             return false;
 
         //TODO : this might be not an appropriate way to maintain connection
-        (new Thread(new Runnable() {
+        mListeningThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
 
-                    Future<WebSocket> future = AsyncHttpClient.getDefaultInstance().websocket("http://" + serverDomain + ":" + serverPort, null, null);
+                    Future<WebSocket> future = AsyncHttpClient.getDefaultInstance().websocket("ws://" + serverDomain, null, null);
                     WebSocket websocket = future.get();
                     mSocketClient = new RemoteWsClient(websocket);
                     mConnected = true;
@@ -72,10 +73,10 @@ public class SocketConnectionManager {
                         }
                     }
                 }
-
             }
-        })).start();
+        });
 
+        mListeningThread.start();
         return true;
     }
 
@@ -127,10 +128,10 @@ public class SocketConnectionManager {
             return false;
 
         //TODO : this might be not an appropriate way to maintain connection
-        (new Thread(new Runnable() {
+        mListeningThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                mSocketClient = new RemoteServerClient();
+                mSocketClient = new RemoteLsClient(SharedLocalMessageQueue.getInstance());
                 mConnected = true;
 
                 while (isConnected()) {
@@ -143,7 +144,8 @@ public class SocketConnectionManager {
                     }
                 }
             }
-        })).start();
+        });
+        mListeningThread.start();
 
         return true;
     }
@@ -172,5 +174,12 @@ public class SocketConnectionManager {
 
     public boolean isConnected() {
         return mConnected;
+    }
+
+    @Override
+    public void clearServiceData() {
+        mConnected = false;
+        mListeningThread = null;
+        mMessageQueue.clear();
     }
 }

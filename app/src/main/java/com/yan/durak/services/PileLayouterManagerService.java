@@ -1,4 +1,4 @@
-package com.yan.durak.service.services;
+package com.yan.durak.services;
 
 import com.yan.durak.layouting.pile.IPileLayouter;
 import com.yan.durak.layouting.pile.impl.BottomPlayerPileLayouter;
@@ -7,9 +7,8 @@ import com.yan.durak.layouting.pile.impl.FieldPileLayouter;
 import com.yan.durak.layouting.pile.impl.StockPileLayouter;
 import com.yan.durak.layouting.pile.impl.TopLeftPlayerPileLayouter;
 import com.yan.durak.layouting.pile.impl.TopRightPlayerPileLayouter;
-import com.yan.durak.service.IService;
-import com.yan.durak.service.ServiceLocator;
 import com.yan.durak.models.PileModel;
+import com.yan.durak.services.hud.HudManagementService;
 import com.yan.durak.session.GameInfo;
 
 import java.util.ArrayList;
@@ -18,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 import aurelienribon.tweenengine.TweenManager;
+import glengine.yan.glengine.service.IService;
+import glengine.yan.glengine.service.ServiceLocator;
 
 /**
  * Created by ybra on 20/04/15.
@@ -115,5 +116,10 @@ public class PileLayouterManagerService implements IService {
      */
     public IPileLayouter getPileLayouterForPile(PileModel pile) {
         return mPileToLayouterMap.get(pile);
+    }
+
+    @Override
+    public void clearServiceData() {
+        //Does Nothing
     }
 }

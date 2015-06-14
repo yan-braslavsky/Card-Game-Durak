@@ -1,6 +1,6 @@
 package com.yan.durak.layouting.pile;
 
-import com.yan.durak.service.services.CardNodesManagerService;
+import com.yan.durak.services.CardNodesManagerService;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
 
@@ -34,15 +34,15 @@ public abstract class BasePileLayouter implements IPileLayouter {
         return mBoundpile;
     }
 
-    protected void animateCardNode(CardNode cardNode, float endPositionX, float endPositionY, float endRotationZ, float endWidth, float endHeight, float endAlpha,float duration) {
-        Timeline.createSequence()
-                .beginParallel()
-                .push(Tween.to(cardNode, YANTweenNodeAccessor.OPACITY, duration).target(endAlpha))
+    /**
+     * Using an existing timeline object adds tween animation for card node.
+     */
+    protected void addAnimationToTimelineForCardNode(Timeline tl, CardNode cardNode, float endPositionX, float endPositionY, float endRotationZ, float endWidth, float endHeight, float endAlpha, float duration) {
+        tl.push(Tween.to(cardNode, YANTweenNodeAccessor.OPACITY, duration).target(endAlpha))
                 .push(Tween.to(cardNode, YANTweenNodeAccessor.ROTATION_Z_CW, duration).target(endRotationZ))
                 .push(Tween.to(cardNode, YANTweenNodeAccessor.POSITION_X, duration).target(endPositionX))
                 .push(Tween.to(cardNode, YANTweenNodeAccessor.POSITION_Y, duration).target(endPositionY))
                 .push(Tween.to(cardNode, YANTweenNodeAccessor.SIZE_X, duration).target(endWidth))
-                .push(Tween.to(cardNode, YANTweenNodeAccessor.SIZE_Y, duration).target(endHeight))
-                .start(mTweenManager);
+                .push(Tween.to(cardNode, YANTweenNodeAccessor.SIZE_Y, duration).target(endHeight));
     }
 }

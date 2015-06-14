@@ -2,7 +2,6 @@ package com.yan.durak.session;
 
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.communication.protocol.data.CardData;
-import com.yan.durak.service.IService;
 import com.yan.durak.session.states.IActivePlayerState;
 import com.yan.durak.session.states.impl.OtherPlayerTurnState;
 
@@ -10,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import glengine.yan.glengine.service.IService;
 import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
 /**
@@ -77,6 +77,12 @@ public class GameInfo implements IService {
         //return previous state to the pool
         YANObjectPool.getInstance().offer(mActivePlayerState);
         activePlayerState.resetState();
+
+        if(mActivePlayerState.getStateDefinition().equals(activePlayerState.getStateDefinition())){
+            //We don't want to set the same state over and over again
+            return;
+        }
+
         mActivePlayerState = activePlayerState;
         mActivePlayerState.applyState();
     }
@@ -93,6 +99,11 @@ public class GameInfo implements IService {
         }
 
         return -1;
+    }
+
+    @Override
+    public void clearServiceData() {
+        //Does Nothing
     }
 
 }

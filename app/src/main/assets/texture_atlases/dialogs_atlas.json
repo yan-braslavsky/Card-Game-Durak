@@ -1,0 +1,60 @@
+{"frames": [
+
+{
+	"filename": "leave_game.png",
+	"frame": {"x":2,"y":1284,"w":633,"h":337},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":633,"h":337},
+	"sourceSize": {"w":633,"h":337}
+},
+{
+	"filename": "no_btn.png",
+	"frame": {"x":403,"y":1623,"w":199,"h":114},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":199,"h":114},
+	"sourceSize": {"w":199,"h":114}
+},
+{
+	"filename": "no_clicked_btn.png",
+	"frame": {"x":604,"y":1623,"w":198,"h":114},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":198,"h":114},
+	"sourceSize": {"w":198,"h":114}
+},
+{
+	"filename": "screen_shadow.png",
+	"frame": {"x":2,"y":2,"w":800,"h":1280},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":800,"h":1280},
+	"sourceSize": {"w":800,"h":1280}
+},
+{
+	"filename": "yes_btn.png",
+	"frame": {"x":2,"y":1623,"w":199,"h":115},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":199,"h":115},
+	"sourceSize": {"w":199,"h":115}
+},
+{
+	"filename": "yes_clicked_btn.png",
+	"frame": {"x":203,"y":1623,"w":198,"h":115},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":198,"h":115},
+	"sourceSize": {"w":198,"h":115}
+}],
+"meta": {
+	"app": "http://www.texturepacker.com",
+	"version": "1.0",
+	"image": "dialogs_atlas.png",
+	"format": "RGBA8888",
+	"size": {"w":804,"h":1740},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:aa3171ca47754064b25777f393ed3a6a$"
+}
+}

@@ -2,6 +2,7 @@ package com.yan.durak.activities;
 
 import android.os.Bundle;
 
+import com.yan.durak.BuildConfig;
 import com.yan.durak.communication.game_server.connector.IGameServerConnector;
 import com.yan.durak.screens.PrototypeGameScreen;
 
@@ -26,6 +27,7 @@ public class GameActivity extends EngineActivity {
         ArrayList<YANAssetDescriptor> assets = new ArrayList<>();
         assets.add(new YANAssetDescriptor(YANAssetDescriptor.YANAssetType.TEXTURE_ATLAS, "texture_atlases" + File.separator, "ui_atlas", "json"));
         assets.add(new YANAssetDescriptor(YANAssetDescriptor.YANAssetType.TEXTURE_ATLAS, "texture_atlases" + File.separator, "cards_atlas", "json"));
+        assets.add(new YANAssetDescriptor(YANAssetDescriptor.YANAssetType.TEXTURE_ATLAS, "texture_atlases" + File.separator, "dialogs_atlas", "json"));
         assets.add(new YANAssetDescriptor(YANAssetDescriptor.YANAssetType.FONT, "fonts" + File.separator, "standard_font", "fnt"));
         assets.add(new YANAssetDescriptor(YANAssetDescriptor.YANAssetType.FONT, "fonts" + File.separator, "chunkfive", "fnt"));
         return assets;
@@ -48,4 +50,8 @@ public class GameActivity extends EngineActivity {
         return new PrototypeGameScreen(renderer, connector);
     }
 
+    @Override
+    protected boolean isUsingAntiAliasing() {
+        return (BuildConfig.FLAVOR.equals("device"));
+    }
 }
