@@ -1,6 +1,9 @@
 package com.yan.durak.services;
 
+import android.support.annotation.Nullable;
+
 import com.yan.durak.input.cards.CardsTouchProcessor;
+import com.yan.durak.nodes.CardNode;
 
 import glengine.yan.glengine.service.IService;
 
@@ -10,6 +13,7 @@ import glengine.yan.glengine.service.IService;
  */
 public class CardsTouchProcessorService implements IService {
     private final CardsTouchProcessor mCardsTouchProcessor;
+    private CardNode mDraggedCardNode;
 
     public CardsTouchProcessorService(CardsTouchProcessor cardsTouchProcessor) {
         mCardsTouchProcessor = cardsTouchProcessor;
@@ -30,5 +34,13 @@ public class CardsTouchProcessorService implements IService {
     @Override
     public void clearServiceData() {
         unRegister();
+    }
+
+    public void setDraggedCardNode(@Nullable CardNode draggedCardNode) {
+        mDraggedCardNode = draggedCardNode;
+    }
+
+    public @Nullable CardNode getDraggedCardNode() {
+        return mDraggedCardNode;
     }
 }

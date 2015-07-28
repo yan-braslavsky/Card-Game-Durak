@@ -7,6 +7,7 @@ import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
 import com.yan.durak.physics.YANCollisionDetector;
 import com.yan.durak.services.CardNodesManagerService;
+import com.yan.durak.services.CardsTouchProcessorService;
 import com.yan.durak.services.PileLayouterManagerService;
 import com.yan.durak.services.PileManagerService;
 import com.yan.durak.services.SceneSizeProviderService;
@@ -51,6 +52,9 @@ public abstract class BasePlayerCardsTouchProcessorListener implements CardsTouc
     @Override
     public void onDraggedCardReleased(CardNode cardNode) {
 
+        //when card is released we need to reset remembered dragged card
+        ServiceLocator.locateService(CardsTouchProcessorService.class).setDraggedCardNode(null);
+
         //reset the flag
         mDragReleaseHandled = false;
 
@@ -69,6 +73,9 @@ public abstract class BasePlayerCardsTouchProcessorListener implements CardsTouc
 
     @Override
     public void onCardDragProgress(CardNode cardNode) {
+
+        //the dragged card is removed from all piles so we need to remember the node during the dragging
+        ServiceLocator.locateService(CardsTouchProcessorService.class).setDraggedCardNode(cardNode);
 
         //we want that dragged card will be above all
         cardNode.setSortingLayer(DRAGGED_CARD_SORTING_LAYER);
