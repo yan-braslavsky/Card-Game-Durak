@@ -25,9 +25,9 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
     public GameSetupMsgSubProcessor(final GameInfo gameInfo, final PileLayouterManagerService pileLayouterManager, PileManagerService pileManager) {
         super();
 
-        this.mGameInfo = gameInfo;
-        this.mPileLayouterManager = pileLayouterManager;
-        this.mPileManager = pileManager;
+        mGameInfo = gameInfo;
+        mPileLayouterManager = pileLayouterManager;
+        mPileManager = pileManager;
     }
 
     @Override
@@ -45,8 +45,8 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
     private void extractPilesData(GameSetupProtocolMessage serverMessage) {
         //depending on my player index we need to identify indexes of all players
         int bottomPlayerPileIndex = serverMessage.getMessageData().getMyPlayerData().getPlayerPileIndex();
-        int topRightPlayerPileIndex = (bottomPlayerPileIndex + 1);
-        int topLeftPlayerPileIndex = (bottomPlayerPileIndex + 2);
+        int topLeftPlayerPileIndex = (bottomPlayerPileIndex + 1);
+        int topRightPlayerPileIndex = (bottomPlayerPileIndex + 2);
 
         //TODO :load all pile indexes from server ?
         //correct other players positions
@@ -63,8 +63,8 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
     private void extractGameInfoData(GameSetupProtocolMessage serverMessage) {
 
         int bottomPlayerIndex = serverMessage.getMessageData().getMyPlayerData().getPlayerIndexInGame();
-        int topRightPlayerIndex = bottomPlayerIndex + 1;
-        int topLeftPlayerIndex = bottomPlayerIndex + 2;
+        int topLeftPlayerIndex = bottomPlayerIndex + 1;
+        int topRightPlayerIndex = bottomPlayerIndex + 2;
 
         //correct other players positions
         if ((topRightPlayerIndex / 3) > 0)
