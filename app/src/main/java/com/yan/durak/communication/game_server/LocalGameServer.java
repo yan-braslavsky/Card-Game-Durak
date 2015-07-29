@@ -3,6 +3,7 @@ package com.yan.durak.communication.game_server;
 import com.yan.durak.communication.client.local.LocalLsClient;
 import com.yan.durak.communication.client.local.SharedLocalMessageQueue;
 import com.yan.durak.gamelogic.GameStarter;
+import com.yan.durak.gamelogic.game.IGameRules;
 
 /**
  * Created by Yan-Home on 5/31/2015.
@@ -23,7 +24,7 @@ public class LocalGameServer {
         gameThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                (new GameStarter(new LocalLsClient(SharedLocalMessageQueue.getInstance()), null, null)).start();
+                (new GameStarter(new IGameRules(){},new LocalLsClient(SharedLocalMessageQueue.getInstance()), null, null)).start();
             }
         });
         gameThread.start();
