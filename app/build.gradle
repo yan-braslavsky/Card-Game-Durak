@@ -49,7 +49,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'com.yan.glengine:engine-lib:1.0-SNAPSHOT@aar'
     compile 'com.yan.durak:gamelogic-lib:1.1-SNAPSHOT'
+    compile 'com.yan.glengine:engine-lib:1.0-SNAPSHOT@aar'
     compile 'com.koushikdutta.async:androidasync:2.+'
 }

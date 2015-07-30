@@ -11,10 +11,12 @@ import com.yan.durak.gamelogic.communication.protocol.messages.RequestCardForAtt
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestRetaliatePilesMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestThrowInsMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.RetaliationInvalidProtocolMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.PlayerJoinProtocolMessage;
 import com.yan.durak.msg_processor.subprocessors.MsgSubProcessor;
 import com.yan.durak.msg_processor.subprocessors.impl.CardMovedMsgSubProcessor;
 import com.yan.durak.msg_processor.subprocessors.impl.GameOverMsgSubProcessor;
 import com.yan.durak.msg_processor.subprocessors.impl.GameSetupMsgSubProcessor;
+import com.yan.durak.msg_processor.subprocessors.impl.PlayerJoinSubProcessor;
 import com.yan.durak.msg_processor.subprocessors.impl.PlayerTakesActionMsgSubProcessor;
 import com.yan.durak.msg_processor.subprocessors.impl.RequestCardForAttackMsgSubProcessor;
 import com.yan.durak.msg_processor.subprocessors.impl.RequestRetaliatePilesMsgSubProcessor;
@@ -86,6 +88,9 @@ public class MsgProcessor implements IGameServerConnector.IGameServerCommunicato
 
         //Game Over
         mProcessorsMap.put(GameOverProtocolMessage.class, new GameOverMsgSubProcessor(gameInfo));
+
+        //Player Join
+        mProcessorsMap.put(PlayerJoinProtocolMessage.class, new PlayerJoinSubProcessor());
     }
 
     @Override
