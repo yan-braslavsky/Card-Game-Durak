@@ -5,12 +5,14 @@ import com.yan.durak.layouting.pile.BasePileLayouter;
 import com.yan.durak.services.CardNodesManagerService;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
+import com.yan.durak.services.SceneSizeProviderService;
 import com.yan.durak.services.hud.HudManagementService;
 import com.yan.durak.services.hud.HudNodes;
 import com.yan.durak.session.GameInfo;
 
 import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.nodes.YANTexturedNode;
+import glengine.yan.glengine.service.ServiceLocator;
 
 /**
  * Created by ybra on 20/04/15.
@@ -20,10 +22,11 @@ public class StockPileLayouter extends BasePileLayouter {
     /**
      * The scale difference from card original size
      */
-    private static final float STOCK_PILE_SIZE_SCALE = 0.8f;
+    private static final float STOCK_PILE_SIZE_SCALE = 0.7f;
     private static final float STOCK_PILE_CARDS_ROTATION = 95;
-    public static final float TRUMP_CARD_ROTATION = -190f;
-    public static final float TRUMP_CARD_TOP_OFFSET = 0.055f;
+    public static final float TRUMP_CARD_ROTATION = -165f;
+    public static final float STOCK_PILE_TOP_OFFSET = 0.06f;
+    public static final float TRUMP_CARD_TOP_OFFSET = STOCK_PILE_TOP_OFFSET + 0.03f;
     private final HudManagementService mHudManagementService;
     private final GameInfo mGameInfo;
 
@@ -33,7 +36,6 @@ public class StockPileLayouter extends BasePileLayouter {
 
     public StockPileLayouter(final GameInfo gameInfo, final HudManagementService hudManagementService, final CardNodesManagerService cardNodesManager, final TweenManager tweenManager, final PileModel boundPile) {
         super(cardNodesManager, tweenManager, boundPile);
-
         this.mHudManagementService = hudManagementService;
         this.mGameInfo = gameInfo;
     }
@@ -42,13 +44,17 @@ public class StockPileLayouter extends BasePileLayouter {
     public void init(float sceneWidth, float sceneHeight) {
 
         //place directly at the middle of the screen on top and then offset to the right
-        float offset = sceneWidth * 0.022f;
+        float offset = sceneWidth * 0.04f;
         float stockPilePositionX = ((sceneWidth - mCardNodesManager.getCardNodeOriginalWidth()) / 2) + offset;
-        float stockPilePositionY = offset;
+        float stockPilePositionY = sceneHeight * STOCK_PILE_TOP_OFFSET;
 
         //cache trump card offset
         mTrumpCardPositionY = sceneHeight * TRUMP_CARD_TOP_OFFSET;
 
+        initRelativeToPosition(stockPilePositionX, stockPilePositionY);
+    }
+
+    private void initRelativeToPosition(float stockPilePositionX, float stockPilePositionY) {
         for (Card card : mBoundpile.getCardsInPile()) {
             //get card node representing this pile and layout it
             layoutCardInPile(stockPilePositionX, stockPilePositionY, mCardNodesManager.getCardNodeForCard(card));
@@ -93,5 +99,13 @@ public class StockPileLayouter extends BasePileLayouter {
         trumpCardNode.setSortingLayer(0);
         trumpCardNode.useFrontTextureRegion();
         trumpCardNode.setRotationZ(TRUMP_CARD_ROTATION);
+    }
+
+    public void placeAtRightTop() {
+        SceneSizeProviderService screenSize = ServiceLocator.locateService(SceneSizeProviderService.class);
+        float offsetX = screenSize.getSceneWidth() * 0.06f;
+        float stockPilePositionX = ((screenSize.getSceneWidth() - mCardNodesManager.getCardNodeOriginalWidth())) - offsetX;
+        float stockPilePositionY = screenSize.getSceneHeight() * STOCK_PILE_TOP_OFFSET;
+        initRelativeToPosition(stockPilePositionX, stockPilePositionY);
     }
 }

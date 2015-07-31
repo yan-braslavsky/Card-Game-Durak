@@ -68,7 +68,7 @@ public class PileLayouterManagerService implements IService {
         initMap();
     }
 
-    public void initFieldPileLayouters(){
+    public void initFieldPileLayouters() {
         PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
         CardNodesManagerService cardNodesManager = ServiceLocator.locateService(CardNodesManagerService.class);
         SceneSizeProviderService screenSize = ServiceLocator.locateService(SceneSizeProviderService.class);
@@ -120,8 +120,8 @@ public class PileLayouterManagerService implements IService {
      *
      * @return layouter or null if layouter is not found
      */
-    public IPileLayouter getPileLayouterForPile(PileModel pile) {
-        return mPileToLayouterMap.get(pile);
+    public <T extends IPileLayouter> T getPileLayouterForPile(PileModel pile) {
+        return (T) mPileToLayouterMap.get(pile);
     }
 
     @Override

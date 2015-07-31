@@ -5,6 +5,7 @@ import com.yan.durak.gamelogic.communication.protocol.data.CardData;
 import com.yan.durak.gamelogic.communication.protocol.data.PlayerData;
 import com.yan.durak.gamelogic.communication.protocol.messages.GameSetupProtocolMessage;
 import com.yan.durak.layouting.pile.IPileLayouter;
+import com.yan.durak.layouting.pile.impl.StockPileLayouter;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
 import com.yan.durak.services.PileLayouterManagerService;
 import com.yan.durak.services.PileManagerService;
@@ -48,10 +49,21 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
         extractAlreadyJoinedPlayers(serverMessage.getMessageData().getAlreadyJoinedPlayers(),
                 serverMessage.getMessageData().getTotalPlayersInGame());
 
-        //since all the piles are currently in the stock pile , we should lay out it
-        IPileLayouter stockPileLayouter = mPileLayouterManager.getPileLayouterForPile(mPileManager.getStockPile());
-        //TODO : set stock layouter position according to amount of players in game
-        //TODO : Hide top right player if amount of players is 2
+        //we need to adapt UI to amount of players in game
+        initUI(serverMessage.getMessageData().getTotalPlayersInGame());
+
+    }
+
+    private void initUI(final int totalPlayers) {
+        //since all the piles are currently in the stock pile , we should lay it out
+        StockPileLayouter stockPileLayouter = mPileLayouterManager.getPileLayouterForPile(mPileManager.getStockPile());
+        //we need to hide top right player if there are only 2 players
+        if(totalPlayers == 2){
+            ServiceLocator.locateService(HudManagementService.class).hidePlayerUI(GameInfo.Player.TOP_RIGHT_PLAYER);
+            stockPileLayouter.placeAtRightTop();
+            ServiceLocator.locateService(HudManagementService.class).placeTrumpIconAtRightTop();
+        }
+
         stockPileLayouter.layout();
     }
 
