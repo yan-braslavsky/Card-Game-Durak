@@ -35,9 +35,8 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
     @Override
     public void processMessage(GameSetupProtocolMessage serverMessage) {
 
-//        int firsPileIndex = (2 + serverMessage.getMessageData().getTotalPlayersInGame());
-//        ServiceLocator.locateService(PileManagerService.class).setFirstFiledPileindex(firsPileIndex);
-//        ServiceLocator.locateService(PileLayouterManagerService.class).initFieldPileLayouters();
+        //We need to initialize piles according to amount of players in game
+        initializePilesServices(serverMessage.getMessageData().getTotalPlayersInGame());
 
         //extract trump card data
         extractTrumpCardData(serverMessage.getMessageData().getTrumpCard());
@@ -51,8 +50,21 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
 
         //since all the piles are currently in the stock pile , we should lay out it
         IPileLayouter stockPileLayouter = mPileLayouterManager.getPileLayouterForPile(mPileManager.getStockPile());
-        //TODO : set layouter position according to amount of players in game
+        //TODO : set stock layouter position according to amount of players in game
+        //TODO : Hide top right player if amount of players is 2
         stockPileLayouter.layout();
+    }
+
+    private void initializePilesServices(int totalPlayersInGame) {
+
+        //first player pile comes after stock and discard piles
+        //then we calculate first field pile index
+        int firsFieldPileIndex = (2 + totalPlayersInGame);
+        ServiceLocator.locateService(PileManagerService.class).setFirstFiledPileindex(firsFieldPileIndex);
+
+        //now when field piles correctly initialized , we can initialize
+        //field piles layouters
+        ServiceLocator.locateService(PileLayouterManagerService.class).initFieldPileLayouters();
     }
 
     private void extractCurrentPlayer(PlayerData playerData) {

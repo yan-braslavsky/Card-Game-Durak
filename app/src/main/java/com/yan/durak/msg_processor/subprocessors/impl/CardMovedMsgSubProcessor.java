@@ -8,6 +8,8 @@ import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
 import com.yan.durak.services.PileLayouterManagerService;
 import com.yan.durak.services.PileManagerService;
 
+import glengine.yan.glengine.service.ServiceLocator;
+
 /**
  * Created by ybra on 17/04/15.
  */
@@ -56,7 +58,7 @@ public class CardMovedMsgSubProcessor extends BaseMsgSubProcessor<CardMovedProto
         //make the actual layout
 
         //we want to layout only players piles and the stock pile, but not field piles when cards are moving from them
-        if ((fromPileIndex != 1) && (fromPileIndex < PileManagerService.FIRST_FIELD_PILE_INDEX))
+        if ((fromPileIndex != 1) && (fromPileIndex < ServiceLocator.locateService(PileManagerService.class).getFirstFiledPileindex()))
             fromPileLayouter.layout();
 
         //destination pile should be always layed out

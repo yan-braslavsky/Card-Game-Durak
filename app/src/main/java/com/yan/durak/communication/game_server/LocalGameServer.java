@@ -23,7 +23,7 @@ public class LocalGameServer {
 
         //create remote clients array
         final IRemoteClient[] clients = new IRemoteClient[]{
-                new LocalLsClient(SharedLocalMessageQueue.getInstance()), null, null};
+                new LocalLsClient(SharedLocalMessageQueue.getInstance()),null, null};
 
         //open local server on different thread
         gameThread = new Thread(new Runnable() {
