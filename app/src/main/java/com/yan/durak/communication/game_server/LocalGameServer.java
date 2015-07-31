@@ -3,6 +3,7 @@ package com.yan.durak.communication.game_server;
 import com.yan.durak.communication.client.local.LocalLsClient;
 import com.yan.durak.communication.client.local.SharedLocalMessageQueue;
 import com.yan.durak.gamelogic.GameStarter;
+import com.yan.durak.gamelogic.communication.connection.IRemoteClient;
 import com.yan.durak.gamelogic.game.IGameRules;
 
 /**
@@ -20,11 +21,20 @@ public class LocalGameServer {
         //we must recreate the message queue to make sure we are using a fresh queue
         SharedLocalMessageQueue.recreateInstance();
 
+        //create remote clients array
+        final IRemoteClient[] clients = new IRemoteClient[]{
+                new LocalLsClient(SharedLocalMessageQueue.getInstance()), null, null};
+
         //open local server on different thread
         gameThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                (new GameStarter(new IGameRules(){},new LocalLsClient(SharedLocalMessageQueue.getInstance()), null, null)).start();
+                (new GameStarter(new IGameRules() {
+                    @Override
+                    public int getTotalPlayersInGameAmount() {
+                        return clients.length;
+                    }
+                }, clients)).start();
             }
         });
         gameThread.start();

@@ -74,17 +74,18 @@ public class PileManagerService implements IService {
         }
     }
 
-    public void setPlayersPilesIndexes(int bottomPlayerPileIndex, int topRightPlayerPileIndex, int topLeftPlayerPileIndex) {
+    public void setBottomPlayerPileIndex(int playerPileIndex) {
+        mBottomPlayerPile.setPileIndex(playerPileIndex);
+        mIndexToPileMap.put(playerPileIndex, mBottomPlayerPile);
+    }
+    public void setTopRightPlayerPileIndex(int playerPileIndex) {
+        mTopRightPlayerPile.setPileIndex(playerPileIndex);
+        mIndexToPileMap.put(playerPileIndex, mTopRightPlayerPile);
+    }
 
-        //update pile indexes
-        mBottomPlayerPile.setPileIndex(bottomPlayerPileIndex);
-        mTopRightPlayerPile.setPileIndex(topRightPlayerPileIndex);
-        mTopLeftPlayerPile.setPileIndex(topLeftPlayerPileIndex);
-
-        //update mapping
-        this.mIndexToPileMap.put(bottomPlayerPileIndex, mBottomPlayerPile);
-        this.mIndexToPileMap.put(topRightPlayerPileIndex, mTopRightPlayerPile);
-        this.mIndexToPileMap.put(topLeftPlayerPileIndex, mTopLeftPlayerPile);
+    public void setTopLeftPlayerPileIndex(int playerPileIndex) {
+        mTopLeftPlayerPile.setPileIndex(playerPileIndex);
+        mIndexToPileMap.put(playerPileIndex, mTopLeftPlayerPile);
     }
 
     /**
@@ -166,4 +167,7 @@ public class PileManagerService implements IService {
     public void clearServiceData() {
         //Does Nothing
     }
+
+
+
 }
