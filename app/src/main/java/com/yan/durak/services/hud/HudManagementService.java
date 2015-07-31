@@ -3,6 +3,7 @@ package com.yan.durak.services.hud;
 
 import android.support.annotation.NonNull;
 
+import com.yan.durak.services.SceneSizeProviderService;
 import com.yan.durak.session.GameInfo;
 import com.yan.durak.session.states.IActivePlayerState;
 
@@ -100,6 +101,29 @@ public class HudManagementService implements IService {
     private HudNodesCreator mHudNodesCreator;
     private HudNodesPositioner mHudNodesPositioner;
     private TimerListener mTimerListener;
+
+    /**
+     * Hides all related UI for given player
+     */
+    public void hidePlayerUI(GameInfo.Player player) {
+        getTextNodeForPlayer(player).setOpacity(0);
+        getBGAvatarForPlayer(player).setOpacity(0);
+        getIconForPlayer(player).setOpacity(0);
+        getTimerNodeForPlayer(player).setOpacity(0);
+    }
+
+    /**
+     * Places the trump icon at the right top position
+     */
+    public void placeTrumpIconAtRightTop() {
+        SceneSizeProviderService screenSize = ServiceLocator.locateService(SceneSizeProviderService.class);
+        //trump image
+        float originalYPos = getNode(HudNodes.TRUMP_IMAGE_INDEX).getPosition().getY();
+        float xPos = getNode(HudNodes.MASK_CARD_INDEX).getPosition().getX() + screenSize.getSceneWidth() * 0.05f;
+        getNode(HudNodes.TRUMP_IMAGE_INDEX).setPosition(xPos, originalYPos);
+
+    }
+
 
     public interface TimerListener {
         void onTimerExpired(YANCircleNode activeTimerNode);
@@ -379,7 +403,19 @@ public class HudManagementService implements IService {
             case TOP_LEFT_PLAYER:
                 return getNode(HudNodes.TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX);
         }
-        return null;
+        throw new IllegalStateException("cannot find a node for give player");
+    }
+
+    private YANTexturedNode getBGAvatarForPlayer(GameInfo.Player player) {
+        switch (player) {
+            case BOTTOM_PLAYER:
+                return getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX);
+            case TOP_RIGHT_PLAYER:
+                return getNode(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX);
+            case TOP_LEFT_PLAYER:
+                return getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX);
+        }
+        throw new IllegalStateException("cannot find a node for give player");
     }
 
     private YANBaseNode getSpeechBubbleForPlayer(@NonNull GameInfo.Player player) {

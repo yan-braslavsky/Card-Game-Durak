@@ -63,10 +63,8 @@ public class GameInfo implements IService {
         return mTrumpCard;
     }
 
-    public void setPlayerIndexes(int bottomPlayerIndex, int topRightPlayerIndex, int topLeftPlayerIndex) {
-        mIndexToPlayerMap.put(bottomPlayerIndex, Player.BOTTOM_PLAYER);
-        mIndexToPlayerMap.put(topRightPlayerIndex, Player.TOP_RIGHT_PLAYER);
-        mIndexToPlayerMap.put(topLeftPlayerIndex, Player.TOP_LEFT_PLAYER);
+    public void setGameIndexForPlayer(final Player player, final int indexInGame) {
+        mIndexToPlayerMap.put(indexInGame, player);
     }
 
     public IActivePlayerState getActivePlayerState() {
@@ -78,7 +76,7 @@ public class GameInfo implements IService {
         YANObjectPool.getInstance().offer(mActivePlayerState);
         activePlayerState.resetState();
 
-        if(mActivePlayerState.getStateDefinition().equals(activePlayerState.getStateDefinition())){
+        if (mActivePlayerState.getStateDefinition().equals(activePlayerState.getStateDefinition())) {
             //We don't want to set the same state over and over again
             return;
         }

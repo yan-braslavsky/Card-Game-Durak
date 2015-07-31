@@ -2,14 +2,17 @@ package com.yan.durak.msg_processor.subprocessors.impl;
 
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.communication.protocol.data.CardData;
+import com.yan.durak.gamelogic.communication.protocol.data.PlayerData;
 import com.yan.durak.gamelogic.communication.protocol.messages.GameSetupProtocolMessage;
 import com.yan.durak.layouting.pile.IPileLayouter;
-import com.yan.durak.models.PileModel;
+import com.yan.durak.layouting.pile.impl.StockPileLayouter;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
-import com.yan.durak.services.hud.HudManagementService;
 import com.yan.durak.services.PileLayouterManagerService;
 import com.yan.durak.services.PileManagerService;
+import com.yan.durak.services.hud.HudManagementService;
 import com.yan.durak.session.GameInfo;
+
+import java.util.List;
 
 import glengine.yan.glengine.service.ServiceLocator;
 
@@ -33,50 +36,100 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
     @Override
     public void processMessage(GameSetupProtocolMessage serverMessage) {
 
-        extractPilesData(serverMessage);
-        extractGameInfoData(serverMessage);
+        //We need to initialize piles according to amount of players in game
+        initializePilesServices(serverMessage.getMessageData().getTotalPlayersInGame());
 
-        //since all the piles are currently in the stock pile , we should lay out it
-        PileModel stockPile = mPileManager.getStockPile();
-        IPileLayouter stockPileLayouter = mPileLayouterManager.getPileLayouterForPile(stockPile);
+        //extract trump card data
+        extractTrumpCardData(serverMessage.getMessageData().getTrumpCard());
+
+        //extract current player as a bottom player
+        extractCurrentPlayer(serverMessage.getMessageData().getMyPlayerData());
+
+        //extract others already joined players
+        extractAlreadyJoinedPlayers(serverMessage.getMessageData().getAlreadyJoinedPlayers(),
+                serverMessage.getMessageData().getTotalPlayersInGame());
+
+        //we need to adapt UI to amount of players in game
+        initUI(serverMessage.getMessageData().getTotalPlayersInGame());
+
+    }
+
+    private void initUI(final int totalPlayers) {
+        //since all the piles are currently in the stock pile , we should lay it out
+        StockPileLayouter stockPileLayouter = mPileLayouterManager.getPileLayouterForPile(mPileManager.getStockPile());
+        //we need to hide top right player if there are only 2 players
+        if(totalPlayers == 2){
+            ServiceLocator.locateService(HudManagementService.class).hidePlayerUI(GameInfo.Player.TOP_RIGHT_PLAYER);
+            stockPileLayouter.placeAtRightTop();
+            ServiceLocator.locateService(HudManagementService.class).placeTrumpIconAtRightTop();
+        }
+
         stockPileLayouter.layout();
     }
 
-    private void extractPilesData(GameSetupProtocolMessage serverMessage) {
-        //depending on my player index we need to identify indexes of all players
-        int bottomPlayerPileIndex = serverMessage.getMessageData().getMyPlayerData().getPlayerPileIndex();
-        int topLeftPlayerPileIndex = (bottomPlayerPileIndex + 1);
-        int topRightPlayerPileIndex = (bottomPlayerPileIndex + 2);
+    private void initializePilesServices(int totalPlayersInGame) {
 
-        //TODO :load all pile indexes from server ?
-        //correct other players positions
-        if ((topRightPlayerPileIndex / 5) > 0)
-            topRightPlayerPileIndex = (topRightPlayerPileIndex % 5) + 2;
+        //first player pile comes after stock and discard piles
+        //then we calculate first field pile index
+        int firsFieldPileIndex = (2 + totalPlayersInGame);
+        ServiceLocator.locateService(PileManagerService.class).setFirstFiledPileindex(firsFieldPileIndex);
 
-        if ((topLeftPlayerPileIndex / 5) > 0)
-            topLeftPlayerPileIndex = (topLeftPlayerPileIndex % 5) + 2;
-
-        //store pile indexes of all players
-        mPileManager.setPlayersPilesIndexes(bottomPlayerPileIndex, topRightPlayerPileIndex, topLeftPlayerPileIndex);
+        //now when field piles correctly initialized , we can initialize
+        //field piles layouters
+        ServiceLocator.locateService(PileLayouterManagerService.class).initFieldPileLayouters();
     }
 
-    private void extractGameInfoData(GameSetupProtocolMessage serverMessage) {
+    private void extractCurrentPlayer(PlayerData playerData) {
+        //current player is a bottom player so we are extracting his pile index and assigning to pile manager
+        mPileManager.setBottomPlayerPileIndex(playerData.getPlayerPileIndex());
+        //set index in game for bottom player
+        mGameInfo.setGameIndexForPlayer(GameInfo.Player.BOTTOM_PLAYER, playerData.getPlayerIndexInGame());
+    }
 
-        int bottomPlayerIndex = serverMessage.getMessageData().getMyPlayerData().getPlayerIndexInGame();
+    private void extractAlreadyJoinedPlayers(List<PlayerData> alreadyJoinedPlayers, final int totalPlayersInGame) {
+
+        //maybe there are no joined players yet
+        if (alreadyJoinedPlayers.isEmpty())
+            return;
+
+        for (int i = 0; i < alreadyJoinedPlayers.size(); i++) {
+            placePlayer(mGameInfo.getPlayerIndex(GameInfo.Player.BOTTOM_PLAYER),
+                    alreadyJoinedPlayers.get(i), totalPlayersInGame);
+        }
+    }
+
+    private void placePlayer(int bottomPlayerIndex, PlayerData joinedPlayer,
+                             final int totalPlayersInGame) {
         int topLeftPlayerIndex = bottomPlayerIndex + 1;
         int topRightPlayerIndex = bottomPlayerIndex + 2;
 
         //correct other players positions
-        if ((topRightPlayerIndex / 3) > 0)
-            topRightPlayerIndex = (topRightPlayerIndex % 3);
+        if ((topRightPlayerIndex / totalPlayersInGame) > 0)
+            topRightPlayerIndex = (topRightPlayerIndex % totalPlayersInGame);
 
-        if ((topLeftPlayerIndex / 3) > 0)
-            topLeftPlayerIndex = (topLeftPlayerIndex % 3);
+        if ((topLeftPlayerIndex / totalPlayersInGame) > 0)
+            topLeftPlayerIndex = (topLeftPlayerIndex % totalPlayersInGame);
 
-        mGameInfo.setPlayerIndexes(bottomPlayerIndex, topRightPlayerIndex, topLeftPlayerIndex);
+        if (joinedPlayer.getPlayerIndexInGame() == topLeftPlayerIndex) {
+            placeAsTopLeft(joinedPlayer);
+        } else if (joinedPlayer.getPlayerIndexInGame() == topRightPlayerIndex) {
+            placeAsTopRight(joinedPlayer);
+        } else
+            throw new IllegalStateException("Couldn't identify player position");
+    }
 
+    private void placeAsTopRight(PlayerData joinedPlayer) {
+        ServiceLocator.locateService(PileManagerService.class).setTopRightPlayerPileIndex(joinedPlayer.getPlayerPileIndex());
+        ServiceLocator.locateService(GameInfo.class).setGameIndexForPlayer(GameInfo.Player.TOP_RIGHT_PLAYER, joinedPlayer.getPlayerIndexInGame());
+    }
+
+    private void placeAsTopLeft(PlayerData joinedPlayer) {
+        ServiceLocator.locateService(PileManagerService.class).setTopLeftPlayerPileIndex(joinedPlayer.getPlayerPileIndex());
+        ServiceLocator.locateService(GameInfo.class).setGameIndexForPlayer(GameInfo.Player.TOP_LEFT_PLAYER, joinedPlayer.getPlayerIndexInGame());
+    }
+
+    private void extractTrumpCardData(CardData trumpCardData) {
         //extract trump card and save it in game session
-        CardData trumpCardData = serverMessage.getMessageData().getTrumpCard();
         mGameInfo.setTrumpCard(new Card(trumpCardData.getRank(), trumpCardData.getSuit()));
 
         //we need set trump suit to be visible when stock pile gets empty

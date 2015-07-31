@@ -200,7 +200,8 @@ public class HudNodesPositioner {
         topLeftAvatarIcon.setPosition(avatarBg.getPosition().getX() + offsetSize + topLeftAvatarHalfSize, avatarBg.getPosition().getY() + offsetSize + topLeftAvatarHalfSize);
 
         //trump image
-        getNode(HudNodes.TRUMP_IMAGE_INDEX).setPosition((sceneSize.getX() - getNode(HudNodes.TRUMP_IMAGE_INDEX).getSize().getX()) / 2, sceneSize.getY() * 0.06f);
+        getNode(HudNodes.TRUMP_IMAGE_INDEX).setPosition(
+                (sceneSize.getX() - getNode(HudNodes.TRUMP_IMAGE_INDEX).getSize().getX()) / 2, sceneSize.getY() * 0.1f);
 
         //setup popups
         float popupAnchorXOffset = getNode(HudNodes.YOU_WIN_IMAGE_INDEX).getSize().getX() / 2;

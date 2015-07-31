@@ -152,15 +152,15 @@ public class PrototypeGameScreen extends BaseGameScreen {
         super.onLayoutNodes();
         ServiceLocator.locateService(HudManagementService.class).layoutNodes(getSceneSize());
         ServiceLocator.locateService(DialogManagerService.class).layoutNodes(getSceneSize());
-        //we also need to initialize the pile manager
-        ServiceLocator.locateService(PileLayouterManagerService.class).init(getSceneSize().getX(), getSceneSize().getY());
 
         //if we are coming from background we must relayout piles
         relayoutPiles();
-
     }
 
     private void relayoutPiles() {
+        //we also need to initialize the pile layouter manager
+        ServiceLocator.locateService(PileLayouterManagerService.class).init(getSceneSize().getX(), getSceneSize().getY());
+
         //if we are coming from background we must relayout piles
         PileModel topRightPlayerPile = ServiceLocator.locateService(PileManagerService.class).getTopRightPlayerPile();
         PileModel topLeftPlayerPile = ServiceLocator.locateService(PileManagerService.class).getTopLeftPlayerPile();
