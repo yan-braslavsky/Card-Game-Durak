@@ -67,7 +67,8 @@ public class HudNodes {
             TOP_LEFT_SPEECH_BUBBLE_INDEX,
             BOTTOM_SPEECH_BUBBLE_TEXT_INDEX,
             TOP_RIGHT_SPEECH_BUBBLE_TEXT_INDEX,
-            TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX
+            TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX,
+            BG_GRADIENT_INDEX
     })
 
 
@@ -109,4 +110,5 @@ public class HudNodes {
     public static final int BOTTOM_SPEECH_BUBBLE_TEXT_INDEX = 23;
     public static final int TOP_RIGHT_SPEECH_BUBBLE_TEXT_INDEX = 24;
     public static final int TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX = 25;
+    public static final int BG_GRADIENT_INDEX = 26;
 }

@@ -229,6 +229,10 @@ public class HudNodesPositioner {
         centerY = (sceneSize.getY() - getNode(HudNodes.GLADE_INDEX).getSize().getY()) / 2;
         getNode(HudNodes.GLADE_INDEX).setPosition(centerX, centerY);
 
+        //background gradient
+        getNode(HudNodes.BG_GRADIENT_INDEX).setSize(sceneSize.getX(), sceneSize.getY());
+        getNode(HudNodes.BG_GRADIENT_INDEX).setSortingLayer(getNode(HudNodes.GLADE_INDEX).getSortingLayer() + 1);
+
 
         //speech bubbles
         //bottom speech bubble

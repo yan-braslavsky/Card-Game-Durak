@@ -1,5 +1,7 @@
 package com.yan.durak.services.hud;
 
+import android.opengl.GLES20;
+
 import com.yan.durak.screens.BaseGameScreen;
 
 import glengine.yan.glengine.assets.YANAssetManager;
@@ -9,6 +11,7 @@ import glengine.yan.glengine.nodes.YANButtonNode;
 import glengine.yan.glengine.nodes.YANCircleNode;
 import glengine.yan.glengine.nodes.YANTextNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
+import glengine.yan.glengine.renderer.YANGLRenderer;
 import glengine.yan.glengine.service.ServiceLocator;
 import glengine.yan.glengine.util.colors.YANColor;
 import glengine.yan.glengine.util.loggers.YANLogger;
@@ -29,6 +32,9 @@ public class HudNodesCreator {
     public void createNodes(YANTextureAtlas hudAtlas) {
         //add image of glade
         putToNodeMap(HudNodes.GLADE_INDEX, createGladeImage(hudAtlas));
+
+        //add background gradient
+        putToNodeMap(HudNodes.BG_GRADIENT_INDEX, createBgGradientImage(hudAtlas));
 
         //add image of fence
         putToNodeMap(HudNodes.FENCE_INDEX, createFenceImage(hudAtlas));
@@ -79,6 +85,17 @@ public class HudNodesCreator {
         putToNodeMap(HudNodes.GLOW_INDEX, createCardGlow(hudAtlas));
         putToNodeMap(HudNodes.ROOF_INDEX, createRoof(hudAtlas));
 
+    }
+
+    private YANTexturedNode createBgGradientImage(YANTextureAtlas hudAtlas) {
+        return new YANTexturedNode(hudAtlas.getTextureRegion("bg_gradient.png")) {
+            @Override
+            protected void onBeforeRendering(YANGLRenderer renderer) {
+                //This gradient requires multiply blending function
+                //instead of normal blending function
+                GLES20.glBlendFunc(GLES20.GL_DST_COLOR, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+            }
+        };
     }
 
     private YANButtonNode createVButton(YANTextureAtlas hudAtlas) {
