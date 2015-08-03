@@ -16,14 +16,15 @@ public class LocalGameServer {
     /**
      * Starts a local game server on another thread.
      */
-    public static void start() {
+    public static void start(final int playersAmount) {
 
         //we must recreate the message queue to make sure we are using a fresh queue
         SharedLocalMessageQueue.recreateInstance();
 
         //create remote clients array
-        final IRemoteClient[] clients = new IRemoteClient[]{
-                new LocalLsClient(SharedLocalMessageQueue.getInstance()),null,null};
+        final IRemoteClient[] clients = new IRemoteClient[playersAmount];
+
+        clients[0] = new LocalLsClient(SharedLocalMessageQueue.getInstance());
 
         //open local server on different thread
         gameThread = new Thread(new Runnable() {
