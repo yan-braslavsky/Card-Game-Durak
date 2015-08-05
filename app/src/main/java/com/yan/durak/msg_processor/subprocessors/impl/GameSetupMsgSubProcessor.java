@@ -58,7 +58,7 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
         //since all the piles are currently in the stock pile , we should lay it out
         StockPileLayouter stockPileLayouter = mPileLayouterManager.getPileLayouterForPile(mPileManager.getStockPile());
         //we need to hide top right player if there are only 2 players
-        if(totalPlayers == 2){
+        if (totalPlayers == 2) {
             ServiceLocator.locateService(HudManagementService.class).hidePlayerUI(GameInfo.Player.TOP_RIGHT_PLAYER);
             stockPileLayouter.placeAtRightTop();
             ServiceLocator.locateService(HudManagementService.class).placeTrumpIconAtRightTop();
@@ -121,11 +121,19 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
     private void placeAsTopRight(PlayerData joinedPlayer) {
         ServiceLocator.locateService(PileManagerService.class).setTopRightPlayerPileIndex(joinedPlayer.getPlayerPileIndex());
         ServiceLocator.locateService(GameInfo.class).setGameIndexForPlayer(GameInfo.Player.TOP_RIGHT_PLAYER, joinedPlayer.getPlayerIndexInGame());
+
+        //TODO : extract name from data
+        String name = "MadBull";
+        ServiceLocator.locateService(HudManagementService.class).setNameForPlayer(GameInfo.Player.TOP_RIGHT_PLAYER, name);
     }
 
     private void placeAsTopLeft(PlayerData joinedPlayer) {
         ServiceLocator.locateService(PileManagerService.class).setTopLeftPlayerPileIndex(joinedPlayer.getPlayerPileIndex());
         ServiceLocator.locateService(GameInfo.class).setGameIndexForPlayer(GameInfo.Player.TOP_LEFT_PLAYER, joinedPlayer.getPlayerIndexInGame());
+
+        //TODO : set name from data
+        String name = "SeriyV";
+        ServiceLocator.locateService(HudManagementService.class).setNameForPlayer(GameInfo.Player.TOP_LEFT_PLAYER, name);
     }
 
     private void extractTrumpCardData(CardData trumpCardData) {

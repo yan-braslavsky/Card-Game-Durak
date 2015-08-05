@@ -33,6 +33,20 @@ public class HudNodesPositioner {
         avatarBGTopRight.setSize(newWidth * topAvatarsScaleFactor, newHeight * topAvatarsScaleFactor);
         getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX).setSize(newWidth * topAvatarsScaleFactor, newHeight * topAvatarsScaleFactor);
 
+        //roof
+        YANTexturedNode roofImage = getNode(HudNodes.ROOF_INDEX);
+        aspectRatio = roofImage.getTextureRegion().getWidth() / roofImage.getTextureRegion().getHeight();
+        roofImage.setSize(sceneSize.getX(), sceneSize.getX() / aspectRatio);
+
+        //names background
+        YANTexturedNode nameBgTopLeft = getNode(HudNodes.NAME_BG_TOP_LEFT_INDEX);
+        YANTexturedNode nameBgTopRight = getNode(HudNodes.NAME_BG_TOP_RIGHT_INDEX);
+        aspectRatio = nameBgTopLeft.getTextureRegion().getWidth() / nameBgTopLeft.getTextureRegion().getHeight();
+        newWidth = sceneSize.getX() / 3f;
+        nameBgTopLeft.setSize(newWidth, newWidth / aspectRatio);
+        nameBgTopRight.setSize(nameBgTopLeft.getSize().getX(), nameBgTopLeft.getSize().getY());
+
+
         //speech bubbles
         YANTexturedNode bottomSpeechBubble = getNode(HudNodes.BOTTOM_SPEECH_BUBBLE_INDEX);
         aspectRatio = bottomSpeechBubble.getTextureRegion().getWidth() / bottomSpeechBubble.getTextureRegion().getHeight();
@@ -104,10 +118,6 @@ public class HudNodesPositioner {
         aspectRatio = fenceImage.getTextureRegion().getWidth() / fenceImage.getTextureRegion().getHeight();
         fenceImage.setSize(sceneSize.getX(), sceneSize.getX() / aspectRatio);
 
-        //rood
-        YANTexturedNode roofImage = getNode(HudNodes.ROOF_INDEX);
-        aspectRatio = roofImage.getTextureRegion().getWidth() / roofImage.getTextureRegion().getHeight();
-        roofImage.setSize(sceneSize.getX(), sceneSize.getX() / aspectRatio);
 
         //glade
         YANTexturedNode gladeImage = getNode(HudNodes.GLADE_INDEX);
@@ -222,7 +232,31 @@ public class HudNodesPositioner {
         getNode(HudNodes.FENCE_INDEX).setPosition(centerX, centerY);
 
         //roof
-        getNode(HudNodes.ROOF_INDEX).setSortingLayer(1000);
+        getNode(HudNodes.ROOF_INDEX).setSortingLayer(HudManagementService.HUD_SORTING_LAYER);
+
+        //names backgrounds
+        YANBaseNode topLeftNameBg = getNode(HudNodes.NAME_BG_TOP_LEFT_INDEX);
+        YANBaseNode topRightNameBG = getNode(HudNodes.NAME_BG_TOP_RIGHT_INDEX);
+        topLeftNameBg.setSortingLayer(getNode(HudNodes.ROOF_INDEX).getSortingLayer() + 1);
+        topRightNameBG.setSortingLayer(topLeftNameBg.getSortingLayer());
+        topRightNameBG.setRotationY(180);
+        float offsetFromScreenEdge = sceneSize.getY() * 0.007f;
+        topLeftNameBg.setPosition(
+                getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX).getPosition().getX(),
+                getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX).getPosition().getY()
+                        - topLeftNameBg.getSize().getY() - offsetFromScreenEdge);
+        topRightNameBG.setPosition(((sceneSize.getX() / 3f) * 2f) - offsetFromScreenEdge, topLeftNameBg.getPosition().getY());
+
+        //names texts
+        YANTextNode topLeftNameBgText = getNode(HudNodes.NAME_BG_TOP_LEFT_TEXT_INDEX);
+        YANTextNode topRightNameBGText = getNode(HudNodes.NAME_BG_TOP_RIGHT_TEXT_INDEX);
+        topLeftNameBgText.setSortingLayer(topLeftNameBg.getSortingLayer() + 1);
+        topRightNameBGText.setSortingLayer(topLeftNameBgText.getSortingLayer());
+
+        topLeftNameBgText.setPosition(topLeftNameBg.getPosition().getX() + topLeftNameBg.getSize().getX() * 0.1f
+                , topLeftNameBg.getPosition().getY() + topLeftNameBg.getSize().getY() * 0.01f);
+        topRightNameBGText.setPosition(topRightNameBG.getPosition().getX() + topLeftNameBg.getSize().getX() * 0.2f
+                , topLeftNameBgText.getPosition().getY());
 
         //glade
         centerX = (sceneSize.getX() - getNode(HudNodes.GLADE_INDEX).getSize().getX()) / 2;
@@ -232,7 +266,6 @@ public class HudNodesPositioner {
         //background gradient
         getNode(HudNodes.BG_GRADIENT_INDEX).setSize(sceneSize.getX(), sceneSize.getY());
         getNode(HudNodes.BG_GRADIENT_INDEX).setSortingLayer(getNode(HudNodes.GLADE_INDEX).getSortingLayer() + 1);
-
 
         //speech bubbles
         //bottom speech bubble

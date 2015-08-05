@@ -4,6 +4,7 @@ import com.yan.durak.gamelogic.communication.protocol.data.PlayerData;
 import com.yan.durak.gamelogic.communication.protocol.messages.PlayerJoinProtocolMessage;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
 import com.yan.durak.services.PileManagerService;
+import com.yan.durak.services.hud.HudManagementService;
 import com.yan.durak.session.GameInfo;
 
 import glengine.yan.glengine.service.ServiceLocator;
@@ -51,10 +52,18 @@ public class PlayerJoinSubProcessor extends BaseMsgSubProcessor<PlayerJoinProtoc
     private void placeAsTopRight(PlayerData joinedPlayer) {
         ServiceLocator.locateService(PileManagerService.class).setTopRightPlayerPileIndex(joinedPlayer.getPlayerPileIndex());
         ServiceLocator.locateService(GameInfo.class).setGameIndexForPlayer(GameInfo.Player.TOP_RIGHT_PLAYER, joinedPlayer.getPlayerIndexInGame());
+
+        //TODO : extract name from data
+        String name = "MadBull";
+        ServiceLocator.locateService(HudManagementService.class).setNameForPlayer(GameInfo.Player.TOP_RIGHT_PLAYER, name);
     }
 
     private void placeAsTopLeft(PlayerData joinedPlayer) {
         ServiceLocator.locateService(PileManagerService.class).setTopLeftPlayerPileIndex(joinedPlayer.getPlayerPileIndex());
         ServiceLocator.locateService(GameInfo.class).setGameIndexForPlayer(GameInfo.Player.TOP_LEFT_PLAYER, joinedPlayer.getPlayerIndexInGame());
+
+        //TODO : set name from data
+        String name = "SeriyV";
+        ServiceLocator.locateService(HudManagementService.class).setNameForPlayer(GameInfo.Player.TOP_LEFT_PLAYER, name);
     }
 }
