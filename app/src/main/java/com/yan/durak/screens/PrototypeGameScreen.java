@@ -1,5 +1,6 @@
 package com.yan.durak.screens;
 
+import com.yan.durak.activities.GameActivity;
 import com.yan.durak.communication.game_server.LocalGameServer;
 import com.yan.durak.communication.game_server.connector.IGameServerConnector;
 import com.yan.durak.communication.game_server.connector.SocketConnectionManager;
@@ -36,10 +37,14 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
     //updatables
     private final TweenManager mSharedTweenManager;
+    private final GameActivity.GameInitConfig mGameConfig;
 
 
-    public PrototypeGameScreen(YANGLRenderer renderer, IGameServerConnector gameServerConnector) {
+    public PrototypeGameScreen(YANGLRenderer renderer, IGameServerConnector gameServerConnector, GameActivity.GameInitConfig gameInitConfig) {
         super(renderer);
+
+        //we are caching this value for further usage
+        mGameConfig = gameInitConfig;
 
         //we received the connector that should be used
         mGameServerConnector = gameServerConnector;
@@ -99,7 +104,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
     @Override
     public void onSetActive() {
         super.onSetActive();
-        LocalGameServer.start();
+        LocalGameServer.start(mGameConfig.playersAmount);
         mGameServerConnector.connect();
     }
 
