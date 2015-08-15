@@ -3,13 +3,13 @@ package com.yan.durak.gamelogic.commands.custom;
 
 import com.yan.durak.gamelogic.cards.Pile;
 import com.yan.durak.gamelogic.commands.BaseSessionCommand;
+import com.yan.durak.gamelogic.game.IGameRules;
 import com.yan.durak.gamelogic.player.IPlayer;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.yan.durak.gamelogic.cards.Pile.PileTags;
 import static com.yan.durak.gamelogic.cards.Pile.PileTags.FIELD_PILE;
 
 /**
@@ -37,7 +37,7 @@ public class PlayerRetaliationRequestCommand extends BaseSessionCommand {
     }
 
     private List<Pile> retrievePilesPendingRetaliation() {
-        final List<Pile> pilesToRetaliate = new ArrayList<>();
+        final List<Pile> pilesToRetaliate = new ArrayList<>(IGameRules.MAX_PILES_ON_FIELD_AMOUNT);
         //we are choosing all field piles that are not covered yet (contain only one card)
         for (int i = 0; i < getGameSession().getPilesStack().size(); i++) {
             final Pile pile = getGameSession().getPilesStack().get(i);

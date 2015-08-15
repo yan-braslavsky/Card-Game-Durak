@@ -23,6 +23,8 @@ import glengine.yan.glengine.util.object_pool.YANObjectPool;
  */
 public class CardMoveBatchMessageFilter implements IGameServerMessageFilter {
 
+    //we are assume that there will be no more than certain amount of messages
+    private static final int MAX_BATCHED_MESSAGES = 20;
 
     private IGameServerConnector.IGameServerCommunicatorListener mWrappedServerListener;
     private ArrayList<CardMovedProtocolMessage> mBatchedMessages;
@@ -30,7 +32,7 @@ public class CardMoveBatchMessageFilter implements IGameServerMessageFilter {
     private IBatchFilterState mBatchFilterState;
 
     public CardMoveBatchMessageFilter() {
-        mBatchedMessages = new ArrayList<>();
+        mBatchedMessages = new ArrayList<>(MAX_BATCHED_MESSAGES);
         mIncomingMessagesQueue = new LinkedList<>();
 
         final BFInitState initState = YANObjectPool.getInstance().obtain(BFInitState.class);

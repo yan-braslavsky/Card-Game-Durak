@@ -3,11 +3,11 @@ package com.yan.durak.gamelogic.commands.custom;
 
 import com.yan.durak.gamelogic.cards.Pile;
 import com.yan.durak.gamelogic.commands.BaseSessionCommand;
+import com.yan.durak.gamelogic.game.IGameRules;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.yan.durak.gamelogic.cards.Pile.PileTags;
 import static com.yan.durak.gamelogic.cards.Pile.PileTags.FIELD_PILE;
 
 /**
@@ -27,8 +27,8 @@ public class CheckFieldPilesStatusCommand extends BaseSessionCommand {
     public void execute() {
 
         //allocating new list
-        mUncoveredPiles = new ArrayList<>();
-        mCoveredPiles = new ArrayList<>();
+        mUncoveredPiles = new ArrayList<>(IGameRules.MAX_PILES_ON_FIELD_AMOUNT);
+        mCoveredPiles = new ArrayList<>(IGameRules.MAX_PILES_ON_FIELD_AMOUNT);
 
         //depending on field piles status , decide what to do next
         mEveryFieldPileCovered = true;

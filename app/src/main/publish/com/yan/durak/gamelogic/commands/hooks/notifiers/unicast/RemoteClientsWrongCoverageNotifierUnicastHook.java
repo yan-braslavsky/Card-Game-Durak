@@ -7,6 +7,7 @@ import com.yan.durak.gamelogic.communication.connection.IRemoteClient;
 import com.yan.durak.gamelogic.communication.protocol.data.CardData;
 import com.yan.durak.gamelogic.communication.protocol.data.RetaliationSetData;
 import com.yan.durak.gamelogic.communication.protocol.messages.RetaliationInvalidProtocolMessage;
+import com.yan.durak.gamelogic.game.IGameRules;
 import com.yan.durak.gamelogic.player.IPlayer;
 import com.yan.durak.gamelogic.player.RemotePlayer;
 
@@ -43,7 +44,7 @@ public class RemoteClientsWrongCoverageNotifierUnicastHook implements CommandHoo
         }
 
         //adapt data to protocol message
-        final List<RetaliationSetData> retaliationSetDataList = new ArrayList<>();
+        final List<RetaliationSetData> retaliationSetDataList = new ArrayList<>(IGameRules.MAX_PILES_ON_FIELD_AMOUNT);
         for (final RetaliationValidationControlCommand.ValidationDetails validationDetails : hookCommand.getFailedValidationsList()) {
 
             //add validation data to the array list

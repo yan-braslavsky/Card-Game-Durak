@@ -21,7 +21,7 @@ public class Pile {
 
     public Pile() {
         mTags = new ArrayList<>();
-        mCardsInPile = new ArrayList<>();
+        mCardsInPile = new ArrayList<>(CardsHelper.MAX_CARDS_IN_DECK);
     }
 
     public void addTag(final String tag) {

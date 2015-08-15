@@ -2,6 +2,7 @@ package com.yan.durak.gamelogic.commands.core;
 
 
 import com.yan.durak.gamelogic.cards.Card;
+import com.yan.durak.gamelogic.cards.CardsHelper;
 import com.yan.durak.gamelogic.cards.Pile;
 import com.yan.durak.gamelogic.commands.BaseSessionCommand;
 import com.yan.durak.gamelogic.commands.custom.AddPileCommand;
@@ -37,7 +38,7 @@ public class AddBotPlayerCommand extends BaseSessionCommand {
         pile.addTag(Pile.PileTags.PLAYER_PILE_TAG);
 
         addPileCommand.setPile(pile);
-        addPileCommand.setCards(new ArrayList<Card>());
+        addPileCommand.setCards(new ArrayList<Card>(CardsHelper.MAX_CARDS_IN_DECK));
         getGameSession().executeCommand(addPileCommand);
     }
 

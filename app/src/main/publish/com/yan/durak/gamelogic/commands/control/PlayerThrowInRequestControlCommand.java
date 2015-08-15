@@ -2,6 +2,7 @@ package com.yan.durak.gamelogic.commands.control;
 
 
 import com.yan.durak.gamelogic.cards.Card;
+import com.yan.durak.gamelogic.cards.CardsHelper;
 import com.yan.durak.gamelogic.cards.Pile;
 import com.yan.durak.gamelogic.commands.core.MoveCardFromPileToPileCommand;
 import com.yan.durak.gamelogic.commands.custom.AddPileCommand;
@@ -30,7 +31,7 @@ public class PlayerThrowInRequestControlCommand extends BaseControlCommand<Playe
 
             //create a pile that will be used as an additional pile on the field
             final AddPileCommand addPileCommand = new AddPileCommand();
-            addPileCommand.setCards(new ArrayList<Card>());
+            addPileCommand.setCards(new ArrayList<Card>(CardsHelper.MAX_CARDS_IN_DECK));
 
             //create pile and tag it as field pile
             final Pile pile = new Pile();

@@ -66,7 +66,7 @@ public class CardsHelper {
     }
 
     private static Collection<? extends Card> createSuit(final String suit) {
-        final ArrayList<Card> suitCards = new ArrayList<>();
+        final ArrayList<Card> suitCards = new ArrayList<>(9);
         suitCards.add(new Card(Card.Rank.SIX, suit));
         suitCards.add(new Card(Card.Rank.SEVEN, suit));
         suitCards.add(new Card(Card.Rank.EIGHT, suit));
@@ -93,7 +93,7 @@ public class CardsHelper {
      * @return list of cards
      */
     public static List<Card> filterCardsBySuit(final Pile pile, final String suit) {
-        final ArrayList<Card> filteredCards = new ArrayList<>();
+        final ArrayList<Card> filteredCards = new ArrayList<>(pile.getCardsInPile().size());
         for (int i = 0; i < pile.getCardsInPile().size(); i++) {
             final Card card = pile.getCardsInPile().get(i);
             if (card.getSuit().equals(suit)) {

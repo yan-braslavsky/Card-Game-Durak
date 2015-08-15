@@ -41,7 +41,7 @@ public class PrepareGameSessionCommand extends BaseSessionCommand {
         final Pile pile = new Pile();
         pile.addTag(Pile.PileTags.DISCARD_PILE_TAG);
         addDiscardPileCommand.setPile(pile);
-        addDiscardPileCommand.setCards(new ArrayList<Card>());
+        addDiscardPileCommand.setCards(new ArrayList<Card>(CardsHelper.MAX_CARDS_IN_DECK));
 
         //add discard pile
         getGameSession().executeCommand(addDiscardPileCommand);
