@@ -49,11 +49,6 @@ public class HudNodes {
             YOU_WIN_IMAGE_INDEX,
             YOU_LOOSE_IMAGE_INDEX,
             V_BUTTON_INDEX,
-            /**
-             * We don't want to show all the cards in a stock pile.
-             * Instead we are showing only one, which is this node.
-             * Underneath this node there is a trump card.
-             */
             MASK_CARD_INDEX,
             FENCE_INDEX,
             GLADE_INDEX,
@@ -67,7 +62,12 @@ public class HudNodes {
             TOP_LEFT_SPEECH_BUBBLE_INDEX,
             BOTTOM_SPEECH_BUBBLE_TEXT_INDEX,
             TOP_RIGHT_SPEECH_BUBBLE_TEXT_INDEX,
-            TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX
+            TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX,
+            BG_GRADIENT_INDEX,
+            NAME_BG_TOP_LEFT_INDEX,
+            NAME_BG_TOP_RIGHT_INDEX,
+            NAME_BG_TOP_LEFT_TEXT_INDEX,
+            NAME_BG_TOP_RIGHT_TEXT_INDEX
     })
 
 
@@ -109,4 +109,11 @@ public class HudNodes {
     public static final int BOTTOM_SPEECH_BUBBLE_TEXT_INDEX = 23;
     public static final int TOP_RIGHT_SPEECH_BUBBLE_TEXT_INDEX = 24;
     public static final int TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX = 25;
+    public static final int BG_GRADIENT_INDEX = 26;
+
+    //opponents names backgrounds
+    public static final int NAME_BG_TOP_LEFT_INDEX = 27;
+    public static final int NAME_BG_TOP_RIGHT_INDEX = 28;
+    public static final int NAME_BG_TOP_LEFT_TEXT_INDEX = 29;
+    public static final int NAME_BG_TOP_RIGHT_TEXT_INDEX = 30;
 }

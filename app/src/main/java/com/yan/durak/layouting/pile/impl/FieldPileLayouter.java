@@ -54,9 +54,8 @@ public class FieldPileLayouter extends BasePileLayouter {
 
     @Override
     public void layout() {
-
         //before we layouting this pile , we will layout previous piles on field recursively
-        if (mBoundpile.getPileIndex() > PileManagerService.FIRST_FIELD_PILE_INDEX) {
+        if (mBoundpile.getPileIndex() > ServiceLocator.locateService(PileManagerService.class).getFirstFiledPileindex()) {
             PileModel previousFieldPile = ServiceLocator.locateService(PileManagerService.class).getPileWithIndex(mBoundpile.getPileIndex() - 1);
             ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(previousFieldPile).layout();
         }

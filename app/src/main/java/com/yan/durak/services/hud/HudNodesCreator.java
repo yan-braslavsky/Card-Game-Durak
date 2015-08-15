@@ -1,5 +1,7 @@
 package com.yan.durak.services.hud;
 
+import android.opengl.GLES20;
+
 import com.yan.durak.screens.BaseGameScreen;
 
 import glengine.yan.glengine.assets.YANAssetManager;
@@ -9,6 +11,7 @@ import glengine.yan.glengine.nodes.YANButtonNode;
 import glengine.yan.glengine.nodes.YANCircleNode;
 import glengine.yan.glengine.nodes.YANTextNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
+import glengine.yan.glengine.renderer.YANGLRenderer;
 import glengine.yan.glengine.service.ServiceLocator;
 import glengine.yan.glengine.util.colors.YANColor;
 import glengine.yan.glengine.util.loggers.YANLogger;
@@ -19,6 +22,7 @@ import glengine.yan.glengine.util.loggers.YANLogger;
 public class HudNodesCreator {
 
     private static final YANColor SPEECH_BUBBLE_TEXT_COLOR = YANColor.createFromHexColor(0x4F3723);
+    private static final YANColor PLAYER_NAMES_TEXT_COLOR = YANColor.createFromHexColor(0x4F3723);
 
     private final HudManagementService mHudManagementService;
 
@@ -29,6 +33,9 @@ public class HudNodesCreator {
     public void createNodes(YANTextureAtlas hudAtlas) {
         //add image of glade
         putToNodeMap(HudNodes.GLADE_INDEX, createGladeImage(hudAtlas));
+
+        //add background gradient
+        putToNodeMap(HudNodes.BG_GRADIENT_INDEX, createBgGradientImage(hudAtlas));
 
         //add image of fence
         putToNodeMap(HudNodes.FENCE_INDEX, createFenceImage(hudAtlas));
@@ -41,15 +48,23 @@ public class HudNodesCreator {
         putToNodeMap(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX, createAvatar(hudAtlas));
         putToNodeMap(HudNodes.AVATAR_BG_TOP_LEFT_INDEX, createAvatar(hudAtlas));
 
+        //create name backgrounds
+        putToNodeMap(HudNodes.NAME_BG_TOP_RIGHT_INDEX, createNameBackground(hudAtlas));
+        putToNodeMap(HudNodes.NAME_BG_TOP_LEFT_INDEX, createNameBackground(hudAtlas));
+
+        //create name background texts
+        putToNodeMap(HudNodes.NAME_BG_TOP_RIGHT_TEXT_INDEX, createPlayerNameText());
+        putToNodeMap(HudNodes.NAME_BG_TOP_LEFT_TEXT_INDEX, createPlayerNameText());
+
         //speech bubbles
         putToNodeMap(HudNodes.BOTTOM_SPEECH_BUBBLE_INDEX, createSpeechBubble(hudAtlas));
         putToNodeMap(HudNodes.TOP_RIGHT_SPEECH_BUBBLE_INDEX, createSpeechBubble(hudAtlas));
         putToNodeMap(HudNodes.TOP_LEFT_SPEECH_BUBBLE_INDEX, createSpeechBubble(hudAtlas));
 
         //speechBubble text
-        putToNodeMap(HudNodes.BOTTOM_SPEECH_BUBBLE_TEXT_INDEX, createSpeechBubbleText(hudAtlas));
-        putToNodeMap(HudNodes.TOP_RIGHT_SPEECH_BUBBLE_TEXT_INDEX, createSpeechBubbleText(hudAtlas));
-        putToNodeMap(HudNodes.TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX, createSpeechBubbleText(hudAtlas));
+        putToNodeMap(HudNodes.BOTTOM_SPEECH_BUBBLE_TEXT_INDEX, createSpeechBubbleText());
+        putToNodeMap(HudNodes.TOP_RIGHT_SPEECH_BUBBLE_TEXT_INDEX, createSpeechBubbleText());
+        putToNodeMap(HudNodes.TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX, createSpeechBubbleText());
 
         //create avatar_1 icons
         putToNodeMap(HudNodes.AVATAR_ICON_BOTTOM_RIGHT_INDEX, createAvatarIcon(hudAtlas, "avatar_1.png"));
@@ -79,6 +94,23 @@ public class HudNodesCreator {
         putToNodeMap(HudNodes.GLOW_INDEX, createCardGlow(hudAtlas));
         putToNodeMap(HudNodes.ROOF_INDEX, createRoof(hudAtlas));
 
+    }
+
+    private YANBaseNode createNameBackground(YANTextureAtlas hudAtlas) {
+        YANTexturedNode nameBg = new YANTexturedNode(hudAtlas.getTextureRegion("name_bg.png"));
+        nameBg.setSortingLayer(HudManagementService.HUD_SORTING_LAYER);
+        return nameBg;
+    }
+
+    private YANTexturedNode createBgGradientImage(YANTextureAtlas hudAtlas) {
+        return new YANTexturedNode(hudAtlas.getTextureRegion("bg_gradient.png")) {
+            @Override
+            protected void onBeforeRendering(YANGLRenderer renderer) {
+                //This gradient requires multiply blending function
+                //instead of normal blending function
+                GLES20.glBlendFunc(GLES20.GL_DST_COLOR, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+            }
+        };
     }
 
     private YANButtonNode createVButton(YANTextureAtlas hudAtlas) {
@@ -135,13 +167,21 @@ public class HudNodesCreator {
         return new YANButtonNode(hudAtlas.getTextureRegion("btn_done.png"), hudAtlas.getTextureRegion("btn_done.png"));
     }
 
-    private YANBaseNode createSpeechBubbleText(YANTextureAtlas hudAtlas) {
+    private YANBaseNode createSpeechBubbleText() {
         YANTextNode yanTextNode = new YANTextNode(ServiceLocator.locateService(YANAssetManager.class).getLoadedFont(BaseGameScreen.SPEECH_BUBBLES_FONT_NAME), "I will Take This !".length());
         yanTextNode.setTextColor(SPEECH_BUBBLE_TEXT_COLOR.getR(), SPEECH_BUBBLE_TEXT_COLOR.getG(), SPEECH_BUBBLE_TEXT_COLOR.getB());
 
         //we are setting the longest text that will be used
         yanTextNode.setText(HudNodes.SPEECH_BUBBLE_TAKING_TEXT);
         return yanTextNode;
+    }
+
+    private YANBaseNode createPlayerNameText() {
+        YANTextNode textNode = new YANTextNode(ServiceLocator.locateService(YANAssetManager.class).getLoadedFont(BaseGameScreen.PLAYERS_NAMES_FONT_NAME), "*********".length());
+        textNode.setTextColor(PLAYER_NAMES_TEXT_COLOR.getR(), PLAYER_NAMES_TEXT_COLOR.getG(), PLAYER_NAMES_TEXT_COLOR.getB());
+        //we are setting the longest text that will be used
+        textNode.setText("");
+        return textNode;
     }
 
     private YANBaseNode createSpeechBubble(YANTextureAtlas hudAtlas) {

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <RadioGroup
+        android:id="@+id/onlineRadioGroup"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView4"
+        android:checkedButton="@+id/radioButtonOffline"
+        android:showDividers="beginning|none|middle|end">
+
+        <RadioButton
+            android:id="@+id/radioButtonOnline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Online" />
+
+        <RadioButton
+            android:id="@+id/radioButtonOffline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Offline" />
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/playerCountRadioGroup"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView5"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignStart="@+id/textView5"
+        android:layout_below="@+id/textView5"
+        android:checkedButton="@+id/radioButtonTwoPlayers"
+        android:showDividers="beginning|none|middle|end">
+
+        <RadioButton
+            android:id="@+id/radioButtonTwoPlayers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2" />
+
+        <RadioButton
+            android:id="@+id/radioButtonThreePlayers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3" />
+
+    </RadioGroup>
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/onlineRadioGroup"
+        android:layout_toRightOf="@+id/onlineRadioGroup"
+        android:entries="@array/avatars_array"
+        android:spinnerMode="dropdown" />
+
+    <EditText
+        android:id="@+id/nickname_edit_text"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/spinner"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_toEndOf="@+id/onlineRadioGroup"
+        android:layout_toRightOf="@+id/onlineRadioGroup"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Akhmed" />
+
+    <Button
+        android:id="@+id/btn_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/playerCountRadioGroup"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/playerCountRadioGroup"
+        android:layout_below="@+id/playerCountRadioGroup"
+        android:onClick="onStartButtonClicked"
+        android:text="START!" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/nickname_edit_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="63dp"
+        android:text="Select your game settings"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/spinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView"
+        android:layout_toLeftOf="@+id/nickname_edit_text"
+        android:layout_toStartOf="@+id/nickname_edit_text"
+        android:gravity="center|start"
+        android:text="NICK NAME"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/spinner"
+        android:text="Game Mode"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/spinner"
+        android:layout_alignLeft="@+id/spinner"
+        android:layout_alignRight="@+id/spinner"
+        android:layout_alignStart="@+id/spinner"
+        android:layout_below="@+id/spinner"
+        android:text="Players"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textView4"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/spinner"
+        android:layout_toLeftOf="@+id/spinner"
+        android:layout_toStartOf="@+id/spinner"
+        android:gravity="center|start"
+
+        android:text="AVATAR"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</RelativeLayout>

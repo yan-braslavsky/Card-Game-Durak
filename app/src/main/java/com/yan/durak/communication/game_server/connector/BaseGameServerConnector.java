@@ -12,6 +12,7 @@ import com.yan.durak.gamelogic.communication.protocol.messages.RequestCardForAtt
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestRetaliatePilesMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestThrowInsMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.RetaliationInvalidProtocolMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.PlayerJoinProtocolMessage;
 import com.yan.durak.protocol.messages.BlankProtocolMessage;
 
 import java.util.HashMap;
@@ -55,6 +56,7 @@ public abstract class BaseGameServerConnector implements IGameServerConnector {
         mNamesToClassMap.put(RetaliationInvalidProtocolMessage.MESSAGE_NAME, RetaliationInvalidProtocolMessage.class);
         mNamesToClassMap.put(RequestThrowInsMessage.MESSAGE_NAME, RequestThrowInsMessage.class);
         mNamesToClassMap.put(GameOverProtocolMessage.MESSAGE_NAME, GameOverProtocolMessage.class);
+        mNamesToClassMap.put(PlayerJoinProtocolMessage.MESSAGE_NAME, PlayerJoinProtocolMessage.class);
         //TODO : add more protocol message classes as they will be added...
     }
 

@@ -1,5 +1,6 @@
 package com.yan.durak.screens;
 
+import com.yan.durak.activities.GameActivity;
 import com.yan.durak.communication.game_server.LocalGameServer;
 import com.yan.durak.communication.game_server.connector.IGameServerConnector;
 import com.yan.durak.communication.game_server.connector.SocketConnectionManager;
@@ -38,7 +39,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
     private final TweenManager mSharedTweenManager;
 
 
-    public PrototypeGameScreen(YANGLRenderer renderer, IGameServerConnector gameServerConnector) {
+    public PrototypeGameScreen(YANGLRenderer renderer, IGameServerConnector gameServerConnector, GameActivity.GameInitConfig gameInitConfig) {
         super(renderer);
 
         //we received the connector that should be used
@@ -66,7 +67,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         ServiceLocator.addService(new CardsTouchProcessorService(new CardsTouchProcessor(new PlayerCardsTouchProcessorListener(), ServiceLocator.locateService(PileManagerService.class).getBottomPlayerPile())));
 
         //game session will store the game state and related info
-        ServiceLocator.addService(new GameInfo());
+        ServiceLocator.addService(new GameInfo(gameInitConfig));
 
         //layouters manager
         ServiceLocator.addService(new PileLayouterManagerService(mSharedTweenManager));
@@ -99,15 +100,14 @@ public class PrototypeGameScreen extends BaseGameScreen {
     @Override
     public void onSetActive() {
         super.onSetActive();
-        LocalGameServer.start();
         mGameServerConnector.connect();
     }
 
     @Override
     public void onSetNotActive() {
         super.onSetNotActive();
-        LocalGameServer.shutDown();
         mGameServerConnector.disconnect();
+        LocalGameServer.shutDown();
     }
 
     @Override
@@ -152,15 +152,15 @@ public class PrototypeGameScreen extends BaseGameScreen {
         super.onLayoutNodes();
         ServiceLocator.locateService(HudManagementService.class).layoutNodes(getSceneSize());
         ServiceLocator.locateService(DialogManagerService.class).layoutNodes(getSceneSize());
-        //we also need to initialize the pile manager
-        ServiceLocator.locateService(PileLayouterManagerService.class).init(getSceneSize().getX(), getSceneSize().getY());
 
         //if we are coming from background we must relayout piles
         relayoutPiles();
-
     }
 
     private void relayoutPiles() {
+        //we also need to initialize the pile layouter manager
+        ServiceLocator.locateService(PileLayouterManagerService.class).init(getSceneSize().getX(), getSceneSize().getY());
+
         //if we are coming from background we must relayout piles
         PileModel topRightPlayerPile = ServiceLocator.locateService(PileManagerService.class).getTopRightPlayerPile();
         PileModel topLeftPlayerPile = ServiceLocator.locateService(PileManagerService.class).getTopLeftPlayerPile();

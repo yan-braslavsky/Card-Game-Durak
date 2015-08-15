@@ -25,6 +25,7 @@ public abstract class BaseGameScreen extends YANNodeScreen {
     public static final String DIALOGS_ATLAS_NAME = "dialogs_atlas";
     public static final String STANDARD_FONT_NAME = "standard_font";
     public static final String SPEECH_BUBBLES_FONT_NAME = "chunkfive";
+    public static final String PLAYERS_NAMES_FONT_NAME = "Izhitsa";
 
     //texture atlases
     protected final YANTextureAtlas mUiAtlas;
@@ -87,6 +88,7 @@ public abstract class BaseGameScreen extends YANNodeScreen {
         //load font atlas into a memory
         ServiceLocator.locateService(YANAssetManager.class).loadTexture(ServiceLocator.locateService(YANAssetManager.class).getLoadedFont(STANDARD_FONT_NAME).getGlyphImageFilePath());
         ServiceLocator.locateService(YANAssetManager.class).loadTexture(ServiceLocator.locateService(YANAssetManager.class).getLoadedFont(SPEECH_BUBBLES_FONT_NAME).getGlyphImageFilePath());
+        ServiceLocator.locateService(YANAssetManager.class).loadTexture(ServiceLocator.locateService(YANAssetManager.class).getLoadedFont(PLAYERS_NAMES_FONT_NAME).getGlyphImageFilePath());
     }
 
     @Override
@@ -101,6 +103,7 @@ public abstract class BaseGameScreen extends YANNodeScreen {
         //release atlas font from a memory
         ServiceLocator.locateService(YANAssetManager.class).unloadTexture(ServiceLocator.locateService(YANAssetManager.class).getLoadedFont(STANDARD_FONT_NAME).getGlyphImageFilePath());
         ServiceLocator.locateService(YANAssetManager.class).unloadTexture(ServiceLocator.locateService(YANAssetManager.class).getLoadedFont(SPEECH_BUBBLES_FONT_NAME).getGlyphImageFilePath());
+        ServiceLocator.locateService(YANAssetManager.class).unloadTexture(ServiceLocator.locateService(YANAssetManager.class).getLoadedFont(PLAYERS_NAMES_FONT_NAME).getGlyphImageFilePath());
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.models.PileModel;
 import com.yan.durak.nodes.CardNode;
 import com.yan.durak.services.hud.HudManagementService;
+import com.yan.durak.services.hud.HudNodes;
 import com.yan.durak.session.GameInfo;
 import com.yan.durak.session.states.IActivePlayerState;
 import com.yan.durak.session.states.impl.OtherPlayerTurnState;
@@ -31,6 +32,9 @@ public class PlayerMoveService implements IService {
      * Depending on the state performs an auto move for a player.
      */
     public void makeAutoMoveForState(IActivePlayerState.ActivePlayerStateDefinition stateDefinition) {
+        //first of all we need to disable card that user is possibly dragging
+        preventCardDragging();
+
         switch (stateDefinition) {
             case REQUEST_CARD_FOR_ATTACK:
                 throwRandomCardToTheField();
@@ -48,6 +52,20 @@ public class PlayerMoveService implements IService {
                 //Do nothing
                 break;
         }
+    }
+
+    private void preventCardDragging() {
+        //we need to return dragged card back to the bottom pile
+        CardNode draggedCardNode = ServiceLocator.locateService(CardsTouchProcessorService.class).getDraggedCardNode();
+        if(draggedCardNode == null)
+            return;
+
+        //we also need to disable glow in case it is showing
+        ServiceLocator.locateService(HudManagementService.class).getNode(HudNodes.GLOW_INDEX).setOpacity(0f);
+
+        //layout the bottom player pile
+        PileModel bottomPlayerPile = ServiceLocator.locateService(PileManagerService.class).getBottomPlayerPile();
+        bottomPlayerPile.addCard(draggedCardNode.getCard());
     }
 
     /**

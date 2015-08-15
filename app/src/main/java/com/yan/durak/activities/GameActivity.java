@@ -7,6 +7,7 @@ import com.yan.durak.communication.game_server.connector.IGameServerConnector;
 import com.yan.durak.screens.PrototypeGameScreen;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import glengine.yan.glengine.EngineActivity;
@@ -30,6 +31,7 @@ public class GameActivity extends EngineActivity {
         assets.add(new YANAssetDescriptor(YANAssetDescriptor.YANAssetType.TEXTURE_ATLAS, "texture_atlases" + File.separator, "dialogs_atlas", "json"));
         assets.add(new YANAssetDescriptor(YANAssetDescriptor.YANAssetType.FONT, "fonts" + File.separator, "standard_font", "fnt"));
         assets.add(new YANAssetDescriptor(YANAssetDescriptor.YANAssetType.FONT, "fonts" + File.separator, "chunkfive", "fnt"));
+        assets.add(new YANAssetDescriptor(YANAssetDescriptor.YANAssetType.FONT, "fonts" + File.separator, "Izhitsa", "fnt"));
         return assets;
     }
 
@@ -37,7 +39,6 @@ public class GameActivity extends EngineActivity {
     protected YANIScreen onCreateStartScreen(YANGLRenderer renderer) {
 
         Class<? extends IGameServerConnector> clazz = (Class<? extends IGameServerConnector>) getIntent().getExtras().getSerializable(MainMenuActivity.EXTRA_CONNECTOR_CLASS_KEY);
-
         IGameServerConnector connector = null;
         try {
             connector = clazz.newInstance();
@@ -47,11 +48,24 @@ public class GameActivity extends EngineActivity {
             e.printStackTrace();
         }
 
-        return new PrototypeGameScreen(renderer, connector);
+        GameInitConfig gameConf = (GameInitConfig) getIntent().getExtras().getSerializable(MainMenuActivity.EXTRA_GAME_CONFIG_KEY);
+        return new PrototypeGameScreen(renderer, connector,gameConf);
     }
 
     @Override
     protected boolean isUsingAntiAliasing() {
         return (BuildConfig.FLAVOR.equals("device"));
+    }
+
+    public static class GameInitConfig implements Serializable{
+        public final String nickname;
+        public final String avatarResource;
+        public final int playersAmount;
+
+        public GameInitConfig(String nickname, String avatarResource, int playersAmount) {
+            this.nickname = nickname;
+            this.avatarResource = avatarResource;
+            this.playersAmount = playersAmount;
+        }
     }
 }

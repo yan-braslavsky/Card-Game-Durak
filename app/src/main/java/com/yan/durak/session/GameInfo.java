@@ -1,5 +1,6 @@
 package com.yan.durak.session;
 
+import com.yan.durak.activities.GameActivity;
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.communication.protocol.data.CardData;
 import com.yan.durak.session.states.IActivePlayerState;
@@ -20,8 +21,11 @@ import glengine.yan.glengine.util.object_pool.YANObjectPool;
  */
 public class GameInfo implements IService {
 
-    public enum Player {
-        BOTTOM_PLAYER, TOP_RIGHT_PLAYER, TOP_LEFT_PLAYER;
+    /**
+     * A representation of player location in the game
+     */
+    public enum PlayerLocation {
+        BOTTOM_PLAYER, TOP_RIGHT_PLAYER, TOP_LEFT_PLAYER
     }
 
     /**
@@ -34,24 +38,42 @@ public class GameInfo implements IService {
      */
     private ArrayList<Card> mSelectedThrowInCards;
 
+    /**
+     * Used to map between player and info related to player
+     */
+    private final HashMap<PlayerLocation, PlayerInfo> mPlayerToPlayerInfoMap;
 
-    private final Map<Integer, Player> mIndexToPlayerMap;
+    /**
+     * Used to map between index of the player to player enum
+     */
+    private final Map<Integer, PlayerLocation> mIndexToPlayerMap;
 
     /**
      * Active player can be in several states
      */
     private IActivePlayerState mActivePlayerState;
 
+    /**
+     * The trump card used in the game
+     */
     private Card mTrumpCard;
 
-    public GameInfo() {
+    /**
+     * TODO : shouldn't be here...
+     */
+    private final GameActivity.GameInitConfig mGameConfig;
+
+    public GameInfo(GameActivity.GameInitConfig gameInitConfig) {
+
+        mGameConfig = gameInitConfig;
 
         mSelectedThrowInCards = new ArrayList<>();
         mThrowInPossibleCards = new ArrayList<>();
 
         //by default player is not active unless the state changes
         mActivePlayerState = YANObjectPool.getInstance().obtain(OtherPlayerTurnState.class);
-        mIndexToPlayerMap = new HashMap<>();
+        mIndexToPlayerMap = new HashMap<>(3);
+        mPlayerToPlayerInfoMap = new HashMap<>(3);
     }
 
 
@@ -63,10 +85,8 @@ public class GameInfo implements IService {
         return mTrumpCard;
     }
 
-    public void setPlayerIndexes(int bottomPlayerIndex, int topRightPlayerIndex, int topLeftPlayerIndex) {
-        mIndexToPlayerMap.put(bottomPlayerIndex, Player.BOTTOM_PLAYER);
-        mIndexToPlayerMap.put(topRightPlayerIndex, Player.TOP_RIGHT_PLAYER);
-        mIndexToPlayerMap.put(topLeftPlayerIndex, Player.TOP_LEFT_PLAYER);
+    public void setGameIndexForPlayer(final PlayerLocation player, final int indexInGame) {
+        mIndexToPlayerMap.put(indexInGame, player);
     }
 
     public IActivePlayerState getActivePlayerState() {
@@ -78,7 +98,7 @@ public class GameInfo implements IService {
         YANObjectPool.getInstance().offer(mActivePlayerState);
         activePlayerState.resetState();
 
-        if(mActivePlayerState.getStateDefinition().equals(activePlayerState.getStateDefinition())){
+        if (mActivePlayerState.getStateDefinition().equals(activePlayerState.getStateDefinition())) {
             //We don't want to set the same state over and over again
             return;
         }
@@ -87,13 +107,21 @@ public class GameInfo implements IService {
         mActivePlayerState.applyState();
     }
 
-    public Player getPlayerForIndex(int playerIndex) {
+    public PlayerLocation getPlayerForIndex(int playerIndex) {
         return mIndexToPlayerMap.get(playerIndex);
     }
 
-    public int getPlayerIndex(Player player) {
+    public PlayerInfo getPlayerInfoForPlayer(PlayerLocation player) {
+        return mPlayerToPlayerInfoMap.get(player);
+    }
 
-        for (Map.Entry<Integer, Player> entry : mIndexToPlayerMap.entrySet()) {
+    public void setPlayerInfoForPlayer(final PlayerLocation player, final PlayerInfo playerInfo) {
+        mPlayerToPlayerInfoMap.put(player, playerInfo);
+    }
+
+    public int getPlayerIndex(PlayerLocation player) {
+
+        for (Map.Entry<Integer, PlayerLocation> entry : mIndexToPlayerMap.entrySet()) {
             if (player == entry.getValue())
                 return entry.getKey();
         }
@@ -106,4 +134,29 @@ public class GameInfo implements IService {
         //Does Nothing
     }
 
+    /**
+     * Represents a meta data for the player.
+     * His stats , name , avatars etc.
+     */
+    public static class PlayerInfo {
+        private final String mAvatarImageName;
+        private final String mPlayerName;
+
+        public PlayerInfo(String avatarImageName, String playerName) {
+            mAvatarImageName = avatarImageName;
+            mPlayerName = playerName;
+        }
+
+        public String getAvatarImageResource() {
+            return mAvatarImageName;
+        }
+
+        public String getPlayerName() {
+            return mPlayerName;
+        }
+    }
+
+    public GameActivity.GameInitConfig getGameConfig() {
+        return mGameConfig;
+    }
 }

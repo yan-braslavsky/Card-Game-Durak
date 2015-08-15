@@ -16,9 +16,8 @@ import glengine.yan.glengine.service.IService;
  */
 public class PileManagerService implements IService {
 
-    public static final int FIRST_FIELD_PILE_INDEX = 5;
-    public static final int MAX_PILES_ON_FIELD = 12;
-    private static final int TOTAL_PILES_AMOUNT = FIRST_FIELD_PILE_INDEX + MAX_PILES_ON_FIELD;
+    public static final int FIELD_PILES_AMOUNT = 6;
+    public static final int MAX_PILES_IN_GAME = FIELD_PILES_AMOUNT + 2 + 3;
     private static final int STOCK_PILE_INDEX = 0;
     private static final int DISCARD_PILE_INDEX = 1;
     private static final int LOWEST_PLAYER_PILE_INDEX = 2;
@@ -36,6 +35,7 @@ public class PileManagerService implements IService {
 
     //mapping between pile index and actual pile
     private final Map<Integer, PileModel> mIndexToPileMap;
+    private int mFirstFiledPileindex;
 
 
     public PileManagerService() {
@@ -46,8 +46,8 @@ public class PileManagerService implements IService {
         this.mTopLeftPlayerPile = new PileModel(LOWEST_PLAYER_PILE_INDEX + 2);
         this.mStockPile = new PileModel(STOCK_PILE_INDEX);
         this.mDiscardPile = new PileModel(DISCARD_PILE_INDEX);
-        this.mIndexToPileMap = new HashMap<>(TOTAL_PILES_AMOUNT);
-        this.mFieldPiles = new ArrayList<>(MAX_PILES_ON_FIELD);
+        this.mIndexToPileMap = new HashMap<>(MAX_PILES_IN_GAME);
+        this.mFieldPiles = new ArrayList<>(FIELD_PILES_AMOUNT);
 
         init();
     }
@@ -66,25 +66,29 @@ public class PileManagerService implements IService {
         this.mIndexToPileMap.put(LOWEST_PLAYER_PILE_INDEX + 1, mTopRightPlayerPile);
         this.mIndexToPileMap.put(LOWEST_PLAYER_PILE_INDEX + 2, mTopLeftPlayerPile);
 
-        //init field piles
-        for (int pileIndex = PileManagerService.FIRST_FIELD_PILE_INDEX; pileIndex < TOTAL_PILES_AMOUNT; pileIndex++) {
+    }
+
+    public void initFieldPiles(final int firstFieldPileIndex){
+        final int lastFieldPileIndex = firstFieldPileIndex + FIELD_PILES_AMOUNT;
+        for (int pileIndex = firstFieldPileIndex; pileIndex < lastFieldPileIndex; pileIndex++) {
             PileModel fieldPile = new PileModel(pileIndex);
             this.mFieldPiles.add(fieldPile);
             this.mIndexToPileMap.put(pileIndex, fieldPile);
         }
     }
 
-    public void setPlayersPilesIndexes(int bottomPlayerPileIndex, int topRightPlayerPileIndex, int topLeftPlayerPileIndex) {
+    public void setBottomPlayerPileIndex(int playerPileIndex) {
+        mBottomPlayerPile.setPileIndex(playerPileIndex);
+        mIndexToPileMap.put(playerPileIndex, mBottomPlayerPile);
+    }
+    public void setTopRightPlayerPileIndex(int playerPileIndex) {
+        mTopRightPlayerPile.setPileIndex(playerPileIndex);
+        mIndexToPileMap.put(playerPileIndex, mTopRightPlayerPile);
+    }
 
-        //update pile indexes
-        mBottomPlayerPile.setPileIndex(bottomPlayerPileIndex);
-        mTopRightPlayerPile.setPileIndex(topRightPlayerPileIndex);
-        mTopLeftPlayerPile.setPileIndex(topLeftPlayerPileIndex);
-
-        //update mapping
-        this.mIndexToPileMap.put(bottomPlayerPileIndex, mBottomPlayerPile);
-        this.mIndexToPileMap.put(topRightPlayerPileIndex, mTopRightPlayerPile);
-        this.mIndexToPileMap.put(topLeftPlayerPileIndex, mTopLeftPlayerPile);
+    public void setTopLeftPlayerPileIndex(int playerPileIndex) {
+        mTopLeftPlayerPile.setPileIndex(playerPileIndex);
+        mIndexToPileMap.put(playerPileIndex, mTopLeftPlayerPile);
     }
 
     /**
@@ -165,5 +169,15 @@ public class PileManagerService implements IService {
     @Override
     public void clearServiceData() {
         //Does Nothing
+    }
+
+
+    public void setFirstFiledPileindex(int firstFiledPileIndex) {
+        mFirstFiledPileindex = firstFiledPileIndex;
+        initFieldPiles(firstFiledPileIndex);
+    }
+
+    public int getFirstFiledPileindex() {
+        return mFirstFiledPileindex;
     }
 }

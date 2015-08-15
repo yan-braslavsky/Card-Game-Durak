@@ -89,7 +89,7 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
 
     private void updateActivePlayerState(PlayerTakesActionMessage.ProtocolMessageData messageData) {
 
-        if (messageData.getPlayerIndex() == mGameInfo.getPlayerIndex(GameInfo.Player.BOTTOM_PLAYER)) {
+        if (messageData.getPlayerIndex() == mGameInfo.getPlayerIndex(GameInfo.PlayerLocation.BOTTOM_PLAYER)) {
 
             PlayerTakesActionMessage.PlayerAction action = PlayerTakesActionMessage.PlayerAction.valueOf(messageData.getAction());
 

@@ -2,7 +2,7 @@
 
 {
 	"filename": "avatar_1.png",
-	"frame": {"x":754,"y":687,"w":162,"h":162},
+	"frame": {"x":1366,"y":1335,"w":162,"h":162},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":162,"h":162},
@@ -10,7 +10,7 @@
 },
 {
 	"filename": "avatar_2.png",
-	"frame": {"x":963,"y":425,"w":162,"h":162},
+	"frame": {"x":1366,"y":1171,"w":162,"h":162},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":162,"h":162},
@@ -18,15 +18,23 @@
 },
 {
 	"filename": "avatar_3.png",
-	"frame": {"x":918,"y":687,"w":162,"h":161},
+	"frame": {"x":1366,"y":1499,"w":162,"h":161},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":162,"h":161},
 	"sourceSize": {"w":162,"h":161}
 },
 {
+	"filename": "bg_gradient.png",
+	"frame": {"x":2,"y":2,"w":801,"h":1280},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":801,"h":1280},
+	"sourceSize": {"w":801,"h":1280}
+},
+{
 	"filename": "btn_done.png",
-	"frame": {"x":1163,"y":405,"w":162,"h":162},
+	"frame": {"x":1245,"y":1007,"w":162,"h":162},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":162,"h":162},
@@ -34,7 +42,7 @@
 },
 {
 	"filename": "btn_take.png",
-	"frame": {"x":1163,"y":241,"w":162,"h":162},
+	"frame": {"x":1168,"y":2,"w":162,"h":162},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":162,"h":162},
@@ -42,7 +50,7 @@
 },
 {
 	"filename": "card_glow.png",
-	"frame": {"x":754,"y":423,"w":207,"h":262},
+	"frame": {"x":805,"y":1007,"w":207,"h":262},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":207,"h":262},
@@ -50,23 +58,15 @@
 },
 {
 	"filename": "cards_back.png",
-	"frame": {"x":1169,"y":2,"w":183,"h":237},
+	"frame": {"x":1366,"y":2,"w":183,"h":237},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":1,"w":183,"h":237},
 	"sourceSize": {"w":185,"h":239}
 },
 {
-	"filename": "cards_spades_ten.png",
-	"frame": {"x":985,"y":192,"w":176,"h":231},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":176,"h":231},
-	"sourceSize": {"w":176,"h":231}
-},
-{
 	"filename": "fence.png",
-	"frame": {"x":2,"y":98,"w":800,"h":58},
+	"frame": {"x":2,"y":1958,"w":800,"h":58},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":8,"w":800,"h":58},
@@ -74,15 +74,23 @@
 },
 {
 	"filename": "glade.png",
-	"frame": {"x":2,"y":158,"w":750,"h":764},
+	"frame": {"x":805,"y":241,"w":750,"h":764},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":750,"h":764},
 	"sourceSize": {"w":750,"h":764}
 },
 {
+	"filename": "name_bg.png",
+	"frame": {"x":806,"y":1862,"w":252,"h":61},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":1,"w":252,"h":61},
+	"sourceSize": {"w":254,"h":63}
+},
+{
 	"filename": "roof.png",
-	"frame": {"x":2,"y":2,"w":802,"h":94},
+	"frame": {"x":2,"y":1862,"w":802,"h":94},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":802,"h":94},
@@ -90,7 +98,7 @@
 },
 {
 	"filename": "speech_bubble.png",
-	"frame": {"x":806,"y":2,"w":361,"h":188},
+	"frame": {"x":805,"y":2,"w":361,"h":188},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":2,"w":361,"h":188},
@@ -98,7 +106,7 @@
 },
 {
 	"filename": "stump_bg.png",
-	"frame": {"x":754,"y":192,"w":229,"h":229},
+	"frame": {"x":1014,"y":1007,"w":229,"h":229},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":229,"h":229},
@@ -106,7 +114,7 @@
 },
 {
 	"filename": "trump_marker_clubs.png",
-	"frame": {"x":754,"y":851,"w":62,"h":62},
+	"frame": {"x":933,"y":1925,"w":62,"h":62},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":62,"h":62},
@@ -114,7 +122,7 @@
 },
 {
 	"filename": "trump_marker_diamonds.png",
-	"frame": {"x":963,"y":589,"w":64,"h":80},
+	"frame": {"x":867,"y":1925,"w":64,"h":80},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":80},
@@ -122,7 +130,7 @@
 },
 {
 	"filename": "trump_marker_hearts.png",
-	"frame": {"x":880,"y":851,"w":61,"h":53},
+	"frame": {"x":804,"y":1958,"w":61,"h":53},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":61,"h":53},
@@ -130,7 +138,7 @@
 },
 {
 	"filename": "trump_marker_spades.png",
-	"frame": {"x":818,"y":851,"w":60,"h":60},
+	"frame": {"x":997,"y":1925,"w":60,"h":60},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":60,"h":60},
@@ -138,7 +146,7 @@
 },
 {
 	"filename": "v_btn.png",
-	"frame": {"x":1127,"y":569,"w":136,"h":112},
+	"frame": {"x":1060,"y":1862,"w":136,"h":112},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":136,"h":112},
@@ -146,7 +154,7 @@
 },
 {
 	"filename": "v_btn_clicked.png",
-	"frame": {"x":1082,"y":683,"w":125,"h":103},
+	"frame": {"x":1198,"y":1862,"w":125,"h":103},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":125,"h":103},
@@ -154,7 +162,7 @@
 },
 {
 	"filename": "you_lose.png",
-	"frame": {"x":684,"y":924,"w":680,"h":576},
+	"frame": {"x":684,"y":1284,"w":680,"h":576},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":680,"h":576},
@@ -162,7 +170,7 @@
 },
 {
 	"filename": "you_won.png",
-	"frame": {"x":2,"y":924,"w":680,"h":576},
+	"frame": {"x":2,"y":1284,"w":680,"h":576},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":680,"h":576},
@@ -173,8 +181,8 @@
 	"version": "1.0",
 	"image": "ui_atlas.png",
 	"format": "RGBA8888",
-	"size": {"w":1366,"h":1502},
+	"size": {"w":1557,"h":2018},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:75bcc39c27bfa23339502a26a31dd31c$"
+	"smartupdate": "$TexturePacker:SmartUpdate:a9034cd5309259ebd6afb7c127e4fda3$"
 }
 }

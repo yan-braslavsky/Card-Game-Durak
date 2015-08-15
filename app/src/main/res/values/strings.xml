@@ -3,4 +3,10 @@
     <string name="app_name">Durak</string>
     <string name="title_activity_game">GameActivity</string>
     <string name="title_activity_main_menu">MainMenuActivity</string>
+
+    <string-array name="avatars_array">
+        <item>avatar_1.png</item>
+        <item>avatar_2.png</item>
+        <item>avatar_3.png</item>
+    </string-array>
 </resources>

@@ -35,9 +35,11 @@ public class PileLayouterManagerService implements IService {
 
     //map
     final Map<PileModel, IPileLayouter> mPileToLayouterMap;
+    private final TweenManager mTweenManager;
 
     public PileLayouterManagerService(final TweenManager tweenManager) {
 
+        mTweenManager = tweenManager;
         GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
         CardNodesManagerService cardNodesManager = ServiceLocator.locateService(CardNodesManagerService.class);
         PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
@@ -61,14 +63,23 @@ public class PileLayouterManagerService implements IService {
         this.mDiscardPileLayouter = new DiscardPileLayouter(cardNodesManager, tweenManager, pileManager.getDiscardPile());
 
         //init field piles list
-        this.mFieldPileLayouterList = new ArrayList<>(pileManager.getFieldPiles().size());
+        this.mFieldPileLayouterList = new ArrayList<>(PileManagerService.FIELD_PILES_AMOUNT);
+
+        initMap();
+    }
+
+    public void initFieldPileLayouters() {
+        PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
+        CardNodesManagerService cardNodesManager = ServiceLocator.locateService(CardNodesManagerService.class);
+        SceneSizeProviderService screenSize = ServiceLocator.locateService(SceneSizeProviderService.class);
 
         //init list of field layouters
         for (PileModel pileModel : pileManager.getFieldPiles()) {
-            this.mFieldPileLayouterList.add(new FieldPileLayouter(cardNodesManager, tweenManager, pileModel));
+            FieldPileLayouter fieldPileLayouter = new FieldPileLayouter(cardNodesManager, mTweenManager, pileModel);
+            fieldPileLayouter.init(screenSize.getSceneWidth(), screenSize.getSceneHeight());
+            mPileToLayouterMap.put(fieldPileLayouter.getBoundpile(), fieldPileLayouter);
+            mFieldPileLayouterList.add(fieldPileLayouter);
         }
-
-        initMap();
     }
 
     private void initMap() {
@@ -81,11 +92,6 @@ public class PileLayouterManagerService implements IService {
         mPileToLayouterMap.put(mBottomPlayerPileLayouter.getBoundpile(), mBottomPlayerPileLayouter);
         mPileToLayouterMap.put(mTopRightPlayerPileLayouter.getBoundpile(), mTopRightPlayerPileLayouter);
         mPileToLayouterMap.put(mTopLeftPlayerPileLayouter.getBoundpile(), mTopLeftPlayerPileLayouter);
-
-        //mpa field piles
-        for (FieldPileLayouter fieldPileLayouter : mFieldPileLayouterList) {
-            mPileToLayouterMap.put(fieldPileLayouter.getBoundpile(), fieldPileLayouter);
-        }
     }
 
 
@@ -114,8 +120,8 @@ public class PileLayouterManagerService implements IService {
      *
      * @return layouter or null if layouter is not found
      */
-    public IPileLayouter getPileLayouterForPile(PileModel pile) {
-        return mPileToLayouterMap.get(pile);
+    public <T extends IPileLayouter> T getPileLayouterForPile(PileModel pile) {
+        return (T) mPileToLayouterMap.get(pile);
     }
 
     @Override
