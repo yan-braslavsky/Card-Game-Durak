@@ -100,16 +100,14 @@ public class PrototypeGameScreen extends BaseGameScreen {
     @Override
     public void onSetActive() {
         super.onSetActive();
-        //FIXME : why we always starting local server ? what if the game is online ?
-        LocalGameServer.start(ServiceLocator.locateService(GameInfo.class).getGameConfig().playersAmount);
         mGameServerConnector.connect();
     }
 
     @Override
     public void onSetNotActive() {
         super.onSetNotActive();
-        LocalGameServer.shutDown();
         mGameServerConnector.disconnect();
+        LocalGameServer.shutDown();
     }
 
     @Override

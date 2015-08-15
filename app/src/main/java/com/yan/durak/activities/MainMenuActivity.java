@@ -9,6 +9,7 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import com.yan.durak.R;
+import com.yan.durak.communication.game_server.LocalGameServer;
 import com.yan.durak.communication.game_server.connector.IGameServerConnector;
 import com.yan.durak.communication.game_server.connector.LocalGameServerConnector;
 import com.yan.durak.communication.game_server.connector.RemoteGameServerConnector;
@@ -46,13 +47,15 @@ public class MainMenuActivity extends Activity {
     }
 
 
-
     private void startOnlineGame(GameActivity.GameInitConfig gameInitConf) {
         Class<? extends IGameServerConnector> connectorClass = RemoteGameServerConnector.class;
         startGameActivity(connectorClass, gameInitConf);
     }
 
     private void startLocalGame(GameActivity.GameInitConfig gameInitConf) {
+        //start local server
+        LocalGameServer.start(gameInitConf.playersAmount);
+
         Class<? extends IGameServerConnector> connectorClass = LocalGameServerConnector.class;
         startGameActivity(connectorClass, gameInitConf);
     }
