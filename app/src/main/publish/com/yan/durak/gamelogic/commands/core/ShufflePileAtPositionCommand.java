@@ -14,13 +14,13 @@ public class ShufflePileAtPositionCommand extends BaseSessionCommand {
     private int mPilePosition;
 
 
-    public void setPilePosition(int pilePosition) {
+    public void setPilePosition(final int pilePosition) {
         mPilePosition = pilePosition;
     }
 
     @Override
     public void execute() {
-        Pile pile = getGameSession().getPilesStack().get(mPilePosition);
+        final Pile pile = getGameSession().getPilesStack().get(mPilePosition);
         if (pile == null) {
             throw new RuntimeException("pile at index " + mPilePosition + " is not found");
         }

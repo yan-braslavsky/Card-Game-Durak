@@ -5,7 +5,7 @@ import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.cards.Pile;
 import com.yan.durak.gamelogic.commands.BaseSessionCommand;
 import com.yan.durak.gamelogic.game.GameSession;
-import com.yan.durak.gamelogic.player.Player;
+import com.yan.durak.gamelogic.player.IPlayer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,16 +28,16 @@ public class PlayerThrowInRequestCommand extends BaseSessionCommand {
 
     @Override
     public void execute() {
-        Player player = getGameSession().getPlayers().get(mThrowingInPlayer);
+        final IPlayer player = getGameSession().getPlayers().get(mThrowingInPlayer);
         mThrowInCards = player.getThrowInCards(mAllowedRanksToThrowIn, mThrowInAmount);
     }
 
-    public static Collection<String> findAllowedRanksToThrowIn(GameSession gameSession) {
+    public static Collection<String> findAllowedRanksToThrowIn(final GameSession gameSession) {
 
-        Collection<String> retList = new HashSet<>();
-        for (Pile pile : gameSession.getPilesStack()) {
+        final Collection<String> retList = new HashSet<>();
+        for (final Pile pile : gameSession.getPilesStack()) {
             if (pile.hasTag(Pile.PileTags.FIELD_PILE)) {
-                for (Card card : pile.getCardsInPile()) {
+                for (final Card card : pile.getCardsInPile()) {
                     retList.add(card.getRank());
                 }
             }
@@ -47,9 +47,9 @@ public class PlayerThrowInRequestCommand extends BaseSessionCommand {
     }
 
     private List<Pile> retrieveAllCardsInField() {
-        List<Pile> pilesToRetaliate = new ArrayList<>();
+        final List<Pile> pilesToRetaliate = new ArrayList<>();
         //we are choosing all field piles that are not covered yet (contain only one card)
-        for (Pile pile : getGameSession().getPilesStack()) {
+        for (final Pile pile : getGameSession().getPilesStack()) {
             if (pile.hasTag(Pile.PileTags.FIELD_PILE) && (pile.getCardsInPile().size() == 1)) {
                 pilesToRetaliate.add(pile);
             }
@@ -57,11 +57,11 @@ public class PlayerThrowInRequestCommand extends BaseSessionCommand {
         return pilesToRetaliate;
     }
 
-    public void setThrowingInPlayer(int throwingInPlayer) {
+    public void setThrowingInPlayer(final int throwingInPlayer) {
         mThrowingInPlayer = throwingInPlayer;
     }
 
-    public void setThrowInAmount(int throwInAmount) {
+    public void setThrowInAmount(final int throwInAmount) {
         mThrowInAmount = throwInAmount;
     }
 
@@ -81,7 +81,7 @@ public class PlayerThrowInRequestCommand extends BaseSessionCommand {
         return mAllowedRanksToThrowIn;
     }
 
-    public void setAllowedRanksToThrowIn(Collection<String> allowedRanksToThrowIn) {
+    public void setAllowedRanksToThrowIn(final Collection<String> allowedRanksToThrowIn) {
         mAllowedRanksToThrowIn = allowedRanksToThrowIn;
     }
 }

@@ -4,6 +4,7 @@ package com.yan.durak.gamelogic.player;
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.cards.CardsHelper;
 import com.yan.durak.gamelogic.cards.Pile;
+import com.yan.durak.gamelogic.communication.protocol.data.PlayerMetaData;
 import com.yan.durak.gamelogic.game.GameSession;
 import com.yan.durak.gamelogic.utils.math.MathHelper;
 
@@ -19,13 +20,14 @@ public class BotPlayer extends BasePlayer {
     public static final int MIN_THINKING_MILLISECONDS = 1500;
     public static final int MAX_THINKING_MILLISECONDS = 3500;
 
-    public BotPlayer(int indexInGame, GameSession gameSession, int pileIndex) {
-        super(indexInGame, gameSession, pileIndex);
+    public BotPlayer(final int indexInGame, final GameSession gameSession
+            , final int pileIndex, final PlayerMetaData playerMetaData) {
+        super(indexInGame, gameSession, pileIndex, playerMetaData);
     }
 
     @Override
     public Card getCardForAttack() {
-        Pile playerPile = mGameSession.getPilesStack().get(getPileIndex());
+        final Pile playerPile = mGameSession.getPilesStack().get(getPileIndex());
 
         if (playerPile.getCardsInPile().isEmpty())
             return null;
@@ -34,29 +36,29 @@ public class BotPlayer extends BasePlayer {
         simulateThinking();
 
         //just pick a random card , since this bot is not very smart
-        Card cardForAttack = playerPile.getCardsInPile().get(MathHelper.randomInRange(0, playerPile.getCardsInPile().size() - 1));
+        final Card cardForAttack = playerPile.getCardsInPile().get(MathHelper.randomInRange(0, playerPile.getCardsInPile().size() - 1));
         return cardForAttack;
     }
 
 
     @Override
-    public List<Pile> retaliatePiles(List<Pile> pilesToRetaliate) {
+    public List<Pile> retaliatePiles(final List<Pile> pilesToRetaliate) {
 
         //TODO : simulate thinking
         simulateThinking();
 
         //create a deep copy of original piles
-        List<Pile> pilesAfterRetaliation = createDeepCopyOfPiles(pilesToRetaliate);
+        final List<Pile> pilesAfterRetaliation = createDeepCopyOfPiles(pilesToRetaliate);
 
         //we creating player pile for temporary use
-        Pile playerHandPileCopy = createPileDeepCopy(obtainPlayerPile());
+        final Pile playerHandPileCopy = createPileDeepCopy(obtainPlayerPile());
 
         //try to retaliate using non trump cards
-        for (Pile pile : pilesAfterRetaliation) {
-            Card cardToRetaliate = pile.getCardsInPile().get(0);
-            List<Card> filteredCards = CardsHelper.filterCardsBySuit(playerHandPileCopy, cardToRetaliate.getSuit());
+        for (final Pile pile : pilesAfterRetaliation) {
+            final Card cardToRetaliate = pile.getCardsInPile().get(0);
+            final List<Card> filteredCards = CardsHelper.filterCardsBySuit(playerHandPileCopy, cardToRetaliate.getSuit());
 
-            for (Card filteredCard : filteredCards) {
+            for (final Card filteredCard : filteredCards) {
                 //if current card is bigger than card that needs to be retaliated , then use it for retaliation
                 if (CardsHelper.compareCards(cardToRetaliate, filteredCard, mGameSession.getTrumpSuit()) > 0) {
                     //add card to field pile
@@ -70,16 +72,16 @@ public class BotPlayer extends BasePlayer {
 
 
         //try to retaliate using trumps from the remaining cards in hand
-        for (Pile pile : pilesAfterRetaliation) {
+        for (final Pile pile : pilesAfterRetaliation) {
 
             //we trying only on not retaliated piles
             if (pile.getCardsInPile().size() > 1)
                 continue;
 
-            Card cardToRetaliate = pile.getCardsInPile().get(0);
-            List<Card> filteredTrumpCards = CardsHelper.filterCardsBySuit(playerHandPileCopy, mGameSession.getTrumpSuit());
+            final Card cardToRetaliate = pile.getCardsInPile().get(0);
+            final List<Card> filteredTrumpCards = CardsHelper.filterCardsBySuit(playerHandPileCopy, mGameSession.getTrumpSuit());
 
-            for (Card filteredCard : filteredTrumpCards) {
+            for (final Card filteredCard : filteredTrumpCards) {
                 //if current card is bigger than card that need to retaliate , then use it for retaliation
                 if (CardsHelper.compareCards(cardToRetaliate, filteredCard, mGameSession.getTrumpSuit()) > 0) {
                     //add card to field pile
@@ -97,13 +99,13 @@ public class BotPlayer extends BasePlayer {
     private void simulateThinking() {
         try {
             Thread.sleep(MathHelper.randomInRange(MIN_THINKING_MILLISECONDS, MAX_THINKING_MILLISECONDS));
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public List<Card> getThrowInCards(Collection<String> allowedRanksToThrowIn, int allowedAmountOfCardsToThrowIn) {
+    public List<Card> getThrowInCards(final Collection<String> allowedRanksToThrowIn, final int allowedAmountOfCardsToThrowIn) {
 
         //TODO : simulate thinking
         simulateThinking();
@@ -112,23 +114,23 @@ public class BotPlayer extends BasePlayer {
         if (MathHelper.randomInRange(0, 500) > 250)
             return new ArrayList<>();
 
-        List<Card> retList = getPossibleThrowInCards(allowedRanksToThrowIn);
+        final List<Card> retList = getPossibleThrowInCards(allowedRanksToThrowIn);
         return (retList.size() > allowedAmountOfCardsToThrowIn) ? retList.subList(0, allowedAmountOfCardsToThrowIn) : retList;
     }
 
-    private List<Pile> createDeepCopyOfPiles(List<Pile> pilesToRetaliate) {
-        List<Pile> pilesAfterRetaliation = new ArrayList<>();
+    private List<Pile> createDeepCopyOfPiles(final List<Pile> pilesToRetaliate) {
+        final List<Pile> pilesAfterRetaliation = new ArrayList<>();
 
-        for (Pile pile : pilesToRetaliate) {
-            Pile pileCopy = createPileDeepCopy(pile);
+        for (final Pile pile : pilesToRetaliate) {
+            final Pile pileCopy = createPileDeepCopy(pile);
             pilesAfterRetaliation.add(pileCopy);
         }
         return pilesAfterRetaliation;
     }
 
-    private Pile createPileDeepCopy(Pile pile) {
-        Pile pileCopy = new Pile();
-        for (Card card : pile.getCardsInPile()) {
+    private Pile createPileDeepCopy(final Pile pile) {
+        final Pile pileCopy = new Pile();
+        for (final Card card : pile.getCardsInPile()) {
             pileCopy.addCardToPile(card);
         }
         return pileCopy;

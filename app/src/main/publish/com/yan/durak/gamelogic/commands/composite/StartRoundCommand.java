@@ -10,7 +10,7 @@ import com.yan.durak.gamelogic.commands.control.RetaliationExecutionControlComma
 import com.yan.durak.gamelogic.commands.control.RetaliationValidationControlCommand;
 import com.yan.durak.gamelogic.commands.custom.*;
 import com.yan.durak.gamelogic.game.IGameRules;
-import com.yan.durak.gamelogic.player.Player;
+import com.yan.durak.gamelogic.player.IPlayer;
 
 import java.util.Collection;
 
@@ -41,13 +41,13 @@ public class StartRoundCommand extends BaseSessionCommand {
         performRetaliationLoop();
 
         //check for end game conditions
-        CheckWinningConditionCommand winningConditionCommand = new CheckWinningConditionCommand();
+        final CheckWinningConditionCommand winningConditionCommand = new CheckWinningConditionCommand();
         getGameSession().executeCommand(winningConditionCommand);
 
         if (winningConditionCommand.isGameOver()) {
 
             //Finish the game
-            FinishGameCommand finishGameCommand = new FinishGameCommand();
+            final FinishGameCommand finishGameCommand = new FinishGameCommand();
             finishGameCommand.setLoosingPlayerIndex(winningConditionCommand.getLoosingPlayerIndex());
             getGameSession().executeCommand(finishGameCommand);
         } else {
@@ -92,22 +92,22 @@ public class StartRoundCommand extends BaseSessionCommand {
      * @param throwingInPlayer
      * @return amount of throwed in cards
      */
-    private int letPlayerThrowInCards(int amountOfCardsAllowedToThrowIn, int throwingInPlayer) {
+    private int letPlayerThrowInCards(final int amountOfCardsAllowedToThrowIn, final int throwingInPlayer) {
 
         if (amountOfCardsAllowedToThrowIn < 1)
             return 0;
 
         //If player don't have cards that he can throw in , than skip this step
-        Collection<String> allowedRanksToThrowIn = PlayerThrowInRequestCommand.findAllowedRanksToThrowIn(getGameSession());
+        final Collection<String> allowedRanksToThrowIn = PlayerThrowInRequestCommand.findAllowedRanksToThrowIn(getGameSession());
 
         //find pile of player that is requested to throw in
-        Pile pile = getGameSession().getPilesStack().get(getGameSession().getPlayers().get(throwingInPlayer).getPileIndex());
+        final Pile pile = getGameSession().getPilesStack().get(getGameSession().getPlayers().get(throwingInPlayer).getPileIndex());
 
         //when player does not have any card that he can possibly throw in , just skip this request
         if (!CardsHelper.isOneOfTheRanksInPile(allowedRanksToThrowIn, pile.getCardsInPile()))
             return 0;
 
-        PlayerThrowInRequestCommand throwInRequestCommand = new PlayerThrowInRequestCommand();
+        final PlayerThrowInRequestCommand throwInRequestCommand = new PlayerThrowInRequestCommand();
         throwInRequestCommand.setThrowingInPlayer(throwingInPlayer);
         throwInRequestCommand.setThrowInAmount(amountOfCardsAllowedToThrowIn);
         throwInRequestCommand.setAllowedRanksToThrowIn(allowedRanksToThrowIn);
@@ -126,7 +126,7 @@ public class StartRoundCommand extends BaseSessionCommand {
     private void performRetaliationLoop() {
 
         //we need to analyze current field status to know how to proceed
-        CheckFieldPilesStatusCommand fieldPilesStatus = new CheckFieldPilesStatusCommand();
+        final CheckFieldPilesStatusCommand fieldPilesStatus = new CheckFieldPilesStatusCommand();
         getGameSession().executeCommand(fieldPilesStatus);
 
         if (fieldPilesStatus.isEveryFieldPileCovered()) {
@@ -147,10 +147,10 @@ public class StartRoundCommand extends BaseSessionCommand {
     private void onNotSuccessfulRetaliation() {
 
         //get the defending player
-        Player defendingPlayer = getGameSession().getPlayers().get(mRoundDefendingPlayerIndex);
+        final IPlayer defendingPlayer = getGameSession().getPlayers().get(mRoundDefendingPlayerIndex);
 
         //Defending player did not cover all the cards ,he states his intention to take cards, no actual cards movement will be done in this command
-        PlayerTakesCardsFromFieldCommand playerTakesCardsFromFieldCommand = new PlayerTakesCardsFromFieldCommand();
+        final PlayerTakesCardsFromFieldCommand playerTakesCardsFromFieldCommand = new PlayerTakesCardsFromFieldCommand();
         playerTakesCardsFromFieldCommand.setTakingPlayer(defendingPlayer);
         getGameSession().executeCommand(playerTakesCardsFromFieldCommand);
 
@@ -159,7 +159,7 @@ public class StartRoundCommand extends BaseSessionCommand {
         performThrowIn();
 
         // all field cards will go to user hand .
-        MoveAllFieldPilesCardsCommand moveAllFieldPilesCardsCommand = new MoveAllFieldPilesCardsCommand();
+        final MoveAllFieldPilesCardsCommand moveAllFieldPilesCardsCommand = new MoveAllFieldPilesCardsCommand();
         moveAllFieldPilesCardsCommand.setToPileIndex(defendingPlayer.getPileIndex());
         getGameSession().executeCommand(moveAllFieldPilesCardsCommand);
     }
@@ -176,7 +176,7 @@ public class StartRoundCommand extends BaseSessionCommand {
         }
 
         //players will throw in some cards
-        int totalTrowedInCards = performThrowIn();
+        final int totalTrowedInCards = performThrowIn();
 
         if (totalTrowedInCards < 1) {
             //means nobody didn't throw in any cards
@@ -199,7 +199,7 @@ public class StartRoundCommand extends BaseSessionCommand {
      * removes the field piles.
      */
     private void moveAllFieldCardsToDiscardPile() {
-        MoveAllFieldPilesCardsCommand moveAllFieldPilesCardsCommand = new MoveAllFieldPilesCardsCommand();
+        final MoveAllFieldPilesCardsCommand moveAllFieldPilesCardsCommand = new MoveAllFieldPilesCardsCommand();
         moveAllFieldPilesCardsCommand.setToPileIndex(getGameSession().getPilesStack().indexOf(getGameSession().findPileByTag(Pile.PileTags.DISCARD_PILE_TAG)));
         getGameSession().executeCommand(moveAllFieldPilesCardsCommand);
     }
@@ -209,14 +209,14 @@ public class StartRoundCommand extends BaseSessionCommand {
      * Returns the amount of cards that is allowed to throw in to the player for retaliation
      */
     private int findAmountOfCardsAllowedToThrowIn() {
-        CheckFieldPilesStatusCommand fieldPilesStatus = new CheckFieldPilesStatusCommand();
+        final CheckFieldPilesStatusCommand fieldPilesStatus = new CheckFieldPilesStatusCommand();
         getGameSession().executeCommand(fieldPilesStatus);
-        int retaliatorPileCardsInHand = getGameSession().getPilesStack().get(getGameSession().getPlayers().get(mRoundDefendingPlayerIndex).getPileIndex()).getCardsInPile().size();
+        final int retaliatorPileCardsInHand = getGameSession().getPilesStack().get(getGameSession().getPlayers().get(mRoundDefendingPlayerIndex).getPileIndex()).getCardsInPile().size();
 
         //get field piles status
-        int uncoveredFieldPilesAmount = fieldPilesStatus.getUncoveredPiles().size();
-        int coveredFieldPilesAmount = fieldPilesStatus.getCoveredPiles().size();
-        int totalPilesOnField = uncoveredFieldPilesAmount + coveredFieldPilesAmount;
+        final int uncoveredFieldPilesAmount = fieldPilesStatus.getUncoveredPiles().size();
+        final int coveredFieldPilesAmount = fieldPilesStatus.getCoveredPiles().size();
+        final int totalPilesOnField = uncoveredFieldPilesAmount + coveredFieldPilesAmount;
 
         //calculate the amount that is allowed to be throwed in
         return Math.min(IGameRules.MAX_PILES_ON_FIELD_AMOUNT - totalPilesOnField, retaliatorPileCardsInHand - uncoveredFieldPilesAmount);
@@ -228,11 +228,11 @@ public class StartRoundCommand extends BaseSessionCommand {
      */
     private void startNextRound() {
         //identify next round attackers and defenders
-        IdentifyNextRoundPlayersCommand identifyCommand = new IdentifyNextRoundPlayersCommand();
+        final IdentifyNextRoundPlayersCommand identifyCommand = new IdentifyNextRoundPlayersCommand();
         getGameSession().executeCommand(identifyCommand);
 
         //Start a new round
-        StartRoundCommand startRoundCommand = new StartRoundCommand();
+        final StartRoundCommand startRoundCommand = new StartRoundCommand();
         startRoundCommand.setRoundAttackingPlayerIndex(identifyCommand.getNextRoundAttackerPlayerIndex());
         startRoundCommand.setRoundDefendingPlayerIndex(identifyCommand.getNextRoundDefenderPlayerIndex());
 
@@ -246,12 +246,12 @@ public class StartRoundCommand extends BaseSessionCommand {
      */
     private void performRetaliation() {
         //request player retaliation
-        PlayerRetaliationRequestCommand playerRetaliationRequest = new PlayerRetaliationRequestCommand();
+        final PlayerRetaliationRequestCommand playerRetaliationRequest = new PlayerRetaliationRequestCommand();
         playerRetaliationRequest.setPlayerIndex(mRoundDefendingPlayerIndex);
         getGameSession().executeCommand(playerRetaliationRequest);
 
         //we need validate the retaliation response from the player
-        RetaliationValidationControlCommand retaliationValidationCommand = new RetaliationValidationControlCommand();
+        final RetaliationValidationControlCommand retaliationValidationCommand = new RetaliationValidationControlCommand();
         getGameSession().executeCommand(retaliationValidationCommand);
 
         //now we need to make sure the response from the player is according to the rules
@@ -274,7 +274,7 @@ public class StartRoundCommand extends BaseSessionCommand {
 
     private void performFirstAttack() {
         //let starting player walk on nearest player
-        PlayerAttackRequestCommand letPlayerWalkOnOtherPlayer = new PlayerAttackRequestCommand();
+        final PlayerAttackRequestCommand letPlayerWalkOnOtherPlayer = new PlayerAttackRequestCommand();
         letPlayerWalkOnOtherPlayer.setAttackingPlayerIndex(mRoundAttackingPlayerIndex);
         letPlayerWalkOnOtherPlayer.setDefendingPlayerIndex(mRoundDefendingPlayerIndex);
         getGameSession().executeCommand(letPlayerWalkOnOtherPlayer);
@@ -290,8 +290,8 @@ public class StartRoundCommand extends BaseSessionCommand {
      * Each player will fill his hand until it is full or the stack pile is empty
      */
     private void dealCardsToPlayers() {
-        for (Player player : getGameSession().getPlayers()) {
-            CompletePlayerHandCommand completePlayerHandCommand = new CompletePlayerHandCommand();
+        for (final IPlayer player : getGameSession().getPlayers()) {
+            final CompletePlayerHandCommand completePlayerHandCommand = new CompletePlayerHandCommand();
             completePlayerHandCommand.setPlayerIndex(player.getGameIndex());
             getGameSession().executeCommand(completePlayerHandCommand);
         }
@@ -301,7 +301,7 @@ public class StartRoundCommand extends BaseSessionCommand {
         return mRoundAttackingPlayerIndex;
     }
 
-    public void setRoundAttackingPlayerIndex(int roundAttackingPlayerIndex) {
+    public void setRoundAttackingPlayerIndex(final int roundAttackingPlayerIndex) {
         mRoundAttackingPlayerIndex = roundAttackingPlayerIndex;
     }
 
@@ -309,7 +309,7 @@ public class StartRoundCommand extends BaseSessionCommand {
         return mRoundDefendingPlayerIndex;
     }
 
-    public void setRoundDefendingPlayerIndex(int roundDefendingPlayerIndex) {
+    public void setRoundDefendingPlayerIndex(final int roundDefendingPlayerIndex) {
         mRoundDefendingPlayerIndex = roundDefendingPlayerIndex;
     }
 }

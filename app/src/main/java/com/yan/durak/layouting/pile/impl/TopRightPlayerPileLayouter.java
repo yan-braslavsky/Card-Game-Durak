@@ -36,20 +36,20 @@ public class TopRightPlayerPileLayouter extends BasePileLayouter {
     }
 
     @Override
-    public void init(float sceneWidth, float sceneHeight) {
+    public void init(final float sceneWidth, final float sceneHeight) {
 
         //layout avatars
-        float offsetX = sceneWidth * 0.02f;
-        float topOffset = sceneHeight * 0.09f;
-        YANVector2 avatarSize = new YANVector2(sceneWidth * 0.25f, sceneWidth * 0.25f);
+        final float offsetX = sceneWidth * 0.02f;
+        final float topOffset = sceneHeight * 0.09f;
+        final YANVector2 avatarSize = new YANVector2(sceneWidth * 0.25f, sceneWidth * 0.25f);
 
         //setup 3 points for player at right top
-        float fanDistance = sceneWidth * 0.1f;
+        final float fanDistance = sceneWidth * 0.1f;
 
-        YANVector2 pos = new YANVector2(sceneWidth + offsetX, topOffset);
-        YANVector2 origin = new YANVector2(pos.getX() - avatarSize.getX(), pos.getY());
-        YANVector2 leftBasis = new YANVector2(origin.getX(), origin.getY() + fanDistance);
-        YANVector2 rightBasis = new YANVector2(origin.getX() - fanDistance, origin.getY());
+        final YANVector2 pos = new YANVector2(sceneWidth + offsetX, topOffset);
+        final YANVector2 origin = new YANVector2(pos.getX() - avatarSize.getX(), pos.getY());
+        final YANVector2 leftBasis = new YANVector2(origin.getX(), origin.getY() + fanDistance);
+        final YANVector2 rightBasis = new YANVector2(origin.getX() - fanDistance, origin.getY());
 
         mThreePointFanLayouterTopRightPlayer.setThreePoints(origin, leftBasis, rightBasis);
         mThreePointFanLayouterTopRightPlayer.setDirection(ThreePointLayouter.LayoutDirection.LTR);
@@ -65,12 +65,12 @@ public class TopRightPlayerPileLayouter extends BasePileLayouter {
     public void layout() {
 
         //offer to pool everything that was in list
-        for (CardsLayouterSlotImpl cardsLayouterSlot : mSlotsList) {
+        for (final CardsLayouterSlotImpl cardsLayouterSlot : mSlotsList) {
             YANObjectPool.getInstance().offer(cardsLayouterSlot);
         }
 
         mSlotsList.clear();
-        for (Card card : mBoundpile.getCardsInPile()) {
+        for (final Card card : mBoundpile.getCardsInPile()) {
             mSlotsList.add(YANObjectPool.getInstance().obtain(CardsLayouterSlotImpl.class));
         }
 
@@ -81,7 +81,7 @@ public class TopRightPlayerPileLayouter extends BasePileLayouter {
         CardsLayouterSlotImpl slot;
         CardNode cardNode;
         final Timeline tl = Timeline.createSequence().beginParallel();
-        for (Card card : mBoundpile.getCardsInPile()) {
+        for (final Card card : mBoundpile.getCardsInPile()) {
             cardNode = mCardNodesManager.getCardNodeForCard(card);
             slot = mSlotsList.get(slotPosition);
 

@@ -31,7 +31,7 @@ public class CheckFieldPilesStatusCommand extends BaseSessionCommand {
         mEveryFieldPileCovered = true;
 
         //filter all field piles
-        for (Pile pile : getGameSession().getPilesStack()) {
+        for (final Pile pile : getGameSession().getPilesStack()) {
             if (pile.hasTag(Pile.PileTags.FIELD_PILE)) {
 
                 //check if the pile is uncovered (has 1 cards)

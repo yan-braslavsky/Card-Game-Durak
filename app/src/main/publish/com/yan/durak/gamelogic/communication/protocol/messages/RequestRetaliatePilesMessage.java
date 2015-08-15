@@ -16,18 +16,18 @@ public class RequestRetaliatePilesMessage extends BaseProtocolMessage<RequestRet
 
     public static final String MESSAGE_NAME = "requestRetaliatePiles";
 
-    public RequestRetaliatePilesMessage(List<List<Card>> pilesBeforeRetaliation) {
+    public RequestRetaliatePilesMessage(final List<List<Card>> pilesBeforeRetaliation) {
         super();
         setMessageName(MESSAGE_NAME);
-        List<List<CardData>> piles = convertCardDataList(pilesBeforeRetaliation);
+        final List<List<CardData>> piles = convertCardDataList(pilesBeforeRetaliation);
         setMessageData(new ProtocolMessageData(piles));
     }
 
-    private List<List<CardData>> convertCardDataList(List<List<Card>> pilesBeforeRetaliation) {
-        List<List<CardData>> retList = new ArrayList<>();
-        for (List<Card> pile : pilesBeforeRetaliation) {
-            List<CardData> cardDataList = new ArrayList<>();
-            for (Card card : pile) {
+    private List<List<CardData>> convertCardDataList(final List<List<Card>> pilesBeforeRetaliation) {
+        final List<List<CardData>> retList = new ArrayList<>();
+        for (final List<Card> pile : pilesBeforeRetaliation) {
+            final List<CardData> cardDataList = new ArrayList<>();
+            for (final Card card : pile) {
                 cardDataList.add(new CardData(card.getRank(), card.getSuit()));
             }
             retList.add(cardDataList);
@@ -41,7 +41,7 @@ public class RequestRetaliatePilesMessage extends BaseProtocolMessage<RequestRet
         @SerializedName("pilesBeforeRetaliation")
         List<List<CardData>> mPilesBeforeRetaliation;
 
-        public ProtocolMessageData(List<List<CardData>> piles) {
+        public ProtocolMessageData(final List<List<CardData>> piles) {
             mPilesBeforeRetaliation = piles;
         }
 

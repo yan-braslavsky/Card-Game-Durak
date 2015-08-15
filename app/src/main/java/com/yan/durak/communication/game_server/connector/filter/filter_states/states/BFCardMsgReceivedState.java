@@ -20,7 +20,7 @@ public class BFCardMsgReceivedState extends BFBaseState {
     public void processNextMessageInQueue() {
 
         //peek at current message
-        BaseProtocolMessage currentMessage = mBatchFilter.getIncomingMessagesQueue().peek();
+        final BaseProtocolMessage currentMessage = mBatchFilter.getIncomingMessagesQueue().peek();
 
         if (currentMessage == null)
             return;
@@ -29,7 +29,7 @@ public class BFCardMsgReceivedState extends BFBaseState {
 
             //card message received
             //get previous card message
-            CardMovedProtocolMessage previousCardMessage = mBatchFilter.getBatchedMessages().get(mBatchFilter.getBatchedMessages().size() - 1);
+            final CardMovedProtocolMessage previousCardMessage = mBatchFilter.getBatchedMessages().get(mBatchFilter.getBatchedMessages().size() - 1);
 
             //pool message and handle
             handleCardMessageReceived(previousCardMessage, (CardMovedProtocolMessage) currentMessage);
@@ -39,16 +39,16 @@ public class BFCardMsgReceivedState extends BFBaseState {
         }
     }
 
-    private void handleCardMessageReceived(CardMovedProtocolMessage previousMessage, CardMovedProtocolMessage currentMessage) {
+    private void handleCardMessageReceived(final CardMovedProtocolMessage previousMessage, final CardMovedProtocolMessage currentMessage) {
 
         //cache previous values
-        int previousToIndex = previousMessage.getMessageData().getToPileIndex();
+        final int previousToIndex = previousMessage.getMessageData().getToPileIndex();
 
         //cache current values
-        int currentToIndex = currentMessage.getMessageData().getToPileIndex();
+        final int currentToIndex = currentMessage.getMessageData().getToPileIndex();
 
         //cache equality
-        boolean sameDestination = (previousToIndex == currentToIndex);
+        final boolean sameDestination = (previousToIndex == currentToIndex);
 
         //decide what state to go next
         if (sameDestination) {

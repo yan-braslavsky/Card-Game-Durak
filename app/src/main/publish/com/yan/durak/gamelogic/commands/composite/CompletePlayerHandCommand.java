@@ -14,15 +14,15 @@ public class CompletePlayerHandCommand extends BaseSessionCommand {
 
     @Override
     public void execute() {
-        int indexOfStockPile = getGameSession().getPilesStack().indexOf(getGameSession().findPileByTag(Pile.PileTags.STOCK_PILE_TAG));
-        CompletePileToAmountOfCards moveTopCardsFromPileToPilePlayerOne = new CompletePileToAmountOfCards();
+        final int indexOfStockPile = getGameSession().getPilesStack().indexOf(getGameSession().findPileByTag(Pile.PileTags.STOCK_PILE_TAG));
+        final CompletePileToAmountOfCards moveTopCardsFromPileToPilePlayerOne = new CompletePileToAmountOfCards();
         moveTopCardsFromPileToPilePlayerOne.setFromPileIndex(indexOfStockPile);
         moveTopCardsFromPileToPilePlayerOne.setToPileIndex(getGameSession().getPlayers().get(mPlayerIndex).getPileIndex());
         moveTopCardsFromPileToPilePlayerOne.setCardsAmount(IGameRules.AMOUNT_OF_CARDS_IN_PLAYER_HANDS);
         getGameSession().executeCommand(moveTopCardsFromPileToPilePlayerOne);
     }
 
-    public void setPlayerIndex(int playerIndex) {
+    public void setPlayerIndex(final int playerIndex) {
         mPlayerIndex = playerIndex;
     }
 }

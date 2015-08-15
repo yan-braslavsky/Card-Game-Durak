@@ -31,7 +31,7 @@ public class PlayerMoveService implements IService {
     /**
      * Depending on the state performs an auto move for a player.
      */
-    public void makeAutoMoveForState(IActivePlayerState.ActivePlayerStateDefinition stateDefinition) {
+    public void makeAutoMoveForState(final IActivePlayerState.ActivePlayerStateDefinition stateDefinition) {
         //first of all we need to disable card that user is possibly dragging
         preventCardDragging();
 
@@ -56,7 +56,7 @@ public class PlayerMoveService implements IService {
 
     private void preventCardDragging() {
         //we need to return dragged card back to the bottom pile
-        CardNode draggedCardNode = ServiceLocator.locateService(CardsTouchProcessorService.class).getDraggedCardNode();
+        final CardNode draggedCardNode = ServiceLocator.locateService(CardsTouchProcessorService.class).getDraggedCardNode();
         if(draggedCardNode == null)
             return;
 
@@ -64,7 +64,7 @@ public class PlayerMoveService implements IService {
         ServiceLocator.locateService(HudManagementService.class).getNode(HudNodes.GLOW_INDEX).setOpacity(0f);
 
         //layout the bottom player pile
-        PileModel bottomPlayerPile = ServiceLocator.locateService(PileManagerService.class).getBottomPlayerPile();
+        final PileModel bottomPlayerPile = ServiceLocator.locateService(PileManagerService.class).getBottomPlayerPile();
         bottomPlayerPile.addCard(draggedCardNode.getCard());
     }
 
@@ -78,19 +78,19 @@ public class PlayerMoveService implements IService {
         ServiceLocator.locateService(HudManagementService.class).hideFinishButton();
 
         //cache services
-        PileManagerService pileManagerService = ServiceLocator.locateService(PileManagerService.class);
-        CardNodesManagerService cardNodesManagerService = ServiceLocator.locateService(CardNodesManagerService.class);
+        final PileManagerService pileManagerService = ServiceLocator.locateService(PileManagerService.class);
+        final CardNodesManagerService cardNodesManagerService = ServiceLocator.locateService(CardNodesManagerService.class);
 
         //get throw in state
-        ThrowInState throwInState = (ThrowInState) ServiceLocator.locateService(GameInfo.class).getActivePlayerState();
+        final ThrowInState throwInState = (ThrowInState) ServiceLocator.locateService(GameInfo.class).getActivePlayerState();
 
         //enable all disabled cards
-        ArrayList<Card> allowedCardsToThrowIn = throwInState.getAllowedCardsToThrowIn();
-        for (Card cardInPile : pileManagerService.getBottomPlayerPile().getCardsInPile()) {
+        final ArrayList<Card> allowedCardsToThrowIn = throwInState.getAllowedCardsToThrowIn();
+        for (final Card cardInPile : pileManagerService.getBottomPlayerPile().getCardsInPile()) {
             //in case this cards is not allowed currently to be thrown in
             if (!allowedCardsToThrowIn.contains(cardInPile)) {
                 //enable the node back
-                CardNode cardNode = cardNodesManagerService.getCardNodeForCard(cardInPile);
+                final CardNode cardNode = cardNodesManagerService.getCardNodeForCard(cardInPile);
                 cardNodesManagerService.enableCardNode(cardNode);
             }
         }
@@ -118,16 +118,16 @@ public class PlayerMoveService implements IService {
         //hide the take button
         ServiceLocator.locateService(HudManagementService.class).hideTakeButton();
 
-        PileManagerService pileManagerService = ServiceLocator.locateService(PileManagerService.class);
+        final PileManagerService pileManagerService = ServiceLocator.locateService(PileManagerService.class);
 
         //TODO : allocate once !
         _cardsToRemoveCachedList = new ArrayList<>();
 
         //return all field pile cards to player hands
-        for (PileModel pileModel : pileManagerService.getFieldPiles()) {
+        for (final PileModel pileModel : pileManagerService.getFieldPiles()) {
 
             _cardsToRemoveCachedList.clear();
-            for (Card cardInFieldPile : pileModel.getCardsInPile()) {
+            for (final Card cardInFieldPile : pileModel.getCardsInPile()) {
 
                 //add this card to player pile
                 pileManagerService.getBottomPlayerPile().addCard(cardInFieldPile);
@@ -136,7 +136,7 @@ public class PlayerMoveService implements IService {
             }
 
             //remove all the cards that we moved to player hands from this pile
-            for (Card card : _cardsToRemoveCachedList) {
+            for (final Card card : _cardsToRemoveCachedList) {
                 pileModel.removeCard(card);
             }
         }
@@ -158,13 +158,13 @@ public class PlayerMoveService implements IService {
      *
      * @param card selected card for attack
      */
-    public void makeCardForAttackMove(Card card) {
+    public void makeCardForAttackMove(final Card card) {
 
         //cache services
-        GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
+        final GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
 
         //add card to the first field pile
-        PileModel firstFieldPile = ServiceLocator.locateService(PileManagerService.class).getFieldPiles().get(0);
+        final PileModel firstFieldPile = ServiceLocator.locateService(PileManagerService.class).getFieldPiles().get(0);
         firstFieldPile.addCard(card);
 
         //layout the field pile
@@ -183,8 +183,8 @@ public class PlayerMoveService implements IService {
     private void throwRandomCardToTheField() {
         //we are selecting a random card from player hand and throwing it to the field as if
         //he was selecting it for himself
-        List<Card> cardsInBottomPile = ServiceLocator.locateService(PileManagerService.class).getBottomPlayerPile().getCardsInPile();
-        Card randomCard = cardsInBottomPile.get((int) YANMathUtils.randomInRange(0, cardsInBottomPile.size() - 1));
+        final List<Card> cardsInBottomPile = ServiceLocator.locateService(PileManagerService.class).getBottomPlayerPile().getCardsInPile();
+        final Card randomCard = cardsInBottomPile.get((int) YANMathUtils.randomInRange(0, cardsInBottomPile.size() - 1));
         makeCardForAttackMove(randomCard);
     }
 

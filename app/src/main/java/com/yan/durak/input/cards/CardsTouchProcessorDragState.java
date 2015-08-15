@@ -31,7 +31,7 @@ public class CardsTouchProcessorDragState extends CardsTouchProcessorState {
 
 
     @Override
-    protected boolean onTouchUp(float normalizedX, float normalizedY) {
+    protected boolean onTouchUp(final float normalizedX, final float normalizedY) {
 
         //if there was a short time between touch down and touch up then it is a tap
         if ((System.currentTimeMillis() - touchTime) < 70) {
@@ -46,17 +46,17 @@ public class CardsTouchProcessorDragState extends CardsTouchProcessorState {
             }
         }
 
-        CardsTouchProcessorDefaultState defaultState = YANObjectPool.getInstance().obtain(CardsTouchProcessorDefaultState.class);
+        final CardsTouchProcessorDefaultState defaultState = YANObjectPool.getInstance().obtain(CardsTouchProcessorDefaultState.class);
         defaultState.setCardsTouchProcessor(mCardsTouchProcessor);
         mCardsTouchProcessor.setCardsTouchProcessorState(defaultState);
         return true;
     }
 
     @Override
-    protected boolean onTouchDrag(float normalizedX, float normalizedY) {
+    protected boolean onTouchDrag(final float normalizedX, final float normalizedY) {
 
         //get the world position
-        YANVector2 touchToWorldPoint = YANInputManager.touchToWorld(normalizedX, normalizedY,
+        final YANVector2 touchToWorldPoint = YANInputManager.touchToWorld(normalizedX, normalizedY,
                 mScreenSize.getX(), mScreenSize.getY());
 
         //change position of dragged card
@@ -73,23 +73,23 @@ public class CardsTouchProcessorDragState extends CardsTouchProcessorState {
     }
 
     @Override
-    protected boolean onTouchDown(float normalizedX, float normalizedY) {
+    protected boolean onTouchDown(final float normalizedX, final float normalizedY) {
         //Not supposed to be reachable
         return false;
     }
 
 
-    protected void setDraggedCard(CardNode draggedCard) {
+    protected void setDraggedCard(final CardNode draggedCard) {
         mDraggedCard = draggedCard;
     }
 
-    protected void setTouchPositionOffset(float xOffset, float yOffset) {
+    protected void setTouchPositionOffset(final float xOffset, final float yOffset) {
         mTouchPositionOffset.setX(xOffset);
         mTouchPositionOffset.setY(yOffset);
     }
 
 
-    public void setTouchTime(long touchTime) {
+    public void setTouchTime(final long touchTime) {
         this.touchTime = touchTime;
     }
 }

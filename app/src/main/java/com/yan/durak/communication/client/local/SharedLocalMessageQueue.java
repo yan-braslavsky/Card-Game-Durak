@@ -33,19 +33,19 @@ public class SharedLocalMessageQueue {
         return getMessageFromQueue(mForServerMessageQueue);
     }
 
-    public void insertMessageForClientQueue(String msg) {
+    public void insertMessageForClientQueue(final String msg) {
         mForClientMessageQueue.add(msg);
     }
 
-    public void insertMessageForServerQueue(String msg) {
+    public void insertMessageForServerQueue(final String msg) {
         mForServerMessageQueue.add(msg);
     }
 
-    private String getMessageFromQueue(Queue<String> queue) {
+    private String getMessageFromQueue(final Queue<String> queue) {
         while (queue.isEmpty()) {
             try {
                 Thread.sleep(300);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 e.printStackTrace();
             }
         }

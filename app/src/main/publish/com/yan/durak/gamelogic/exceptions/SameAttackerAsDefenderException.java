@@ -6,7 +6,7 @@ package com.yan.durak.gamelogic.exceptions;
 public class SameAttackerAsDefenderException extends RuntimeException {
 
 
-    public SameAttackerAsDefenderException(int attackerIndex, int defenderIndex) {
+    public SameAttackerAsDefenderException(final int attackerIndex, final int defenderIndex) {
         super("index of attacker is " + attackerIndex + " the same as index of defender " + defenderIndex);
     }
 }

@@ -12,7 +12,7 @@ public class CardMovedProtocolMessage extends BaseProtocolMessage<CardMovedProto
 
     public static final String MESSAGE_NAME = "cardMoved";
 
-    public CardMovedProtocolMessage(String cardRank, String cardSuit, int movedFromPile, int movedToPile) {
+    public CardMovedProtocolMessage(final String cardRank, final String cardSuit, final int movedFromPile, final int movedToPile) {
         super();
         setMessageName(MESSAGE_NAME);
         setMessageData(new ProtocolMessageData(new CardData(cardRank, cardSuit), movedFromPile, movedToPile));
@@ -27,7 +27,7 @@ public class CardMovedProtocolMessage extends BaseProtocolMessage<CardMovedProto
         @SerializedName("toPileIndex")
         int mToPileIndex;
 
-        public ProtocolMessageData(CardData movedCard, int fromPileIndex, int toPileIndex) {
+        public ProtocolMessageData(final CardData movedCard, final int fromPileIndex, final int toPileIndex) {
             mMovedCard = movedCard;
             mFromPileIndex = fromPileIndex;
             mToPileIndex = toPileIndex;

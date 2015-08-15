@@ -32,12 +32,12 @@ public class CardsHelper {
      * @param trumpSuite
      * @return positive integer if right card bigger than left , negative integer otherwise. zero if cards are not comparable.
      */
-    public static int compareCards(Card leftCard, Card rightCard, String trumpSuite) {
+    public static int compareCards(final Card leftCard, final Card rightCard, final String trumpSuite) {
 
         //suits are equal case
         if (leftCard.getSuit().equals(rightCard.getSuit())) {
-            int card1Index = ORDERED_36_DECK_RANKS.indexOf(leftCard.getRank());
-            int card2Index = ORDERED_36_DECK_RANKS.indexOf(rightCard.getRank());
+            final int card1Index = ORDERED_36_DECK_RANKS.indexOf(leftCard.getRank());
+            final int card2Index = ORDERED_36_DECK_RANKS.indexOf(rightCard.getRank());
             return card2Index - card1Index;
         }
         //suits are not equal , but left one is trump
@@ -55,7 +55,7 @@ public class CardsHelper {
     }
 
     public static ArrayList<Card> create36Deck() {
-        ArrayList<Card> deck = new ArrayList<>(36);
+        final ArrayList<Card> deck = new ArrayList<>(36);
         deck.addAll(createSuit(Card.Suit.CLUBS));
         deck.addAll(createSuit(Card.Suit.DIAMONDS));
         deck.addAll(createSuit(Card.Suit.HEARTS));
@@ -63,8 +63,8 @@ public class CardsHelper {
         return deck;
     }
 
-    private static Collection<? extends Card> createSuit(String suit) {
-        ArrayList<Card> suitCards = new ArrayList<>();
+    private static Collection<? extends Card> createSuit(final String suit) {
+        final ArrayList<Card> suitCards = new ArrayList<>();
         suitCards.add(new Card(Card.Rank.SIX, suit));
         suitCards.add(new Card(Card.Rank.SEVEN, suit));
         suitCards.add(new Card(Card.Rank.EIGHT, suit));
@@ -77,8 +77,8 @@ public class CardsHelper {
         return suitCards;
     }
 
-    public static List<Card> createNumberOfCards(int cardsAmount) {
-        ArrayList<Card> deck = create36Deck();
+    public static List<Card> createNumberOfCards(final int cardsAmount) {
+        final ArrayList<Card> deck = create36Deck();
         return deck.subList(0, cardsAmount);
     }
 
@@ -90,9 +90,9 @@ public class CardsHelper {
      * @param suit to filter by
      * @return list of cards
      */
-    public static List<Card> filterCardsBySuit(Pile pile, String suit) {
-        ArrayList<Card> filteredCards = new ArrayList<>();
-        for (Card card : pile.getCardsInPile()) {
+    public static List<Card> filterCardsBySuit(final Pile pile, final String suit) {
+        final ArrayList<Card> filteredCards = new ArrayList<>();
+        for (final Card card : pile.getCardsInPile()) {
             if (card.getSuit().equals(suit)) {
                 filteredCards.add(card);
             }
@@ -107,9 +107,9 @@ public class CardsHelper {
      * @param cards collection of cards to be checked
      * @return true if one or more ranks found among the provided collection of cards
      */
-    public static boolean isOneOfTheRanksInPile(Collection<String> ranks, Collection<Card> cards) {
-        for (Card cardInPlayerPile : cards) {
-            for (String allowedRank : ranks) {
+    public static boolean isOneOfTheRanksInPile(final Collection<String> ranks, final Collection<Card> cards) {
+        for (final Card cardInPlayerPile : cards) {
+            for (final String allowedRank : ranks) {
                 if (cardInPlayerPile.getRank().equals(allowedRank)) {
                     return true;
                 }

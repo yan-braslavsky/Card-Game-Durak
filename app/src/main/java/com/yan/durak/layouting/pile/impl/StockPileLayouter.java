@@ -41,12 +41,12 @@ public class StockPileLayouter extends BasePileLayouter {
     }
 
     @Override
-    public void init(float sceneWidth, float sceneHeight) {
+    public void init(final float sceneWidth, final float sceneHeight) {
 
         //place directly at the middle of the screen on top and then offset to the right
-        float offset = sceneWidth * 0.04f;
-        float stockPilePositionX = ((sceneWidth - mCardNodesManager.getCardNodeOriginalWidth()) / 2) + offset;
-        float stockPilePositionY = sceneHeight * STOCK_PILE_TOP_OFFSET;
+        final float offset = sceneWidth * 0.04f;
+        final float stockPilePositionX = ((sceneWidth - mCardNodesManager.getCardNodeOriginalWidth()) / 2) + offset;
+        final float stockPilePositionY = sceneHeight * STOCK_PILE_TOP_OFFSET;
 
         //cache trump card offset
         mTrumpCardPositionY = sceneHeight * TRUMP_CARD_TOP_OFFSET;
@@ -54,14 +54,14 @@ public class StockPileLayouter extends BasePileLayouter {
         initRelativeToPosition(stockPilePositionX, stockPilePositionY);
     }
 
-    private void initRelativeToPosition(float stockPilePositionX, float stockPilePositionY) {
-        for (Card card : mBoundpile.getCardsInPile()) {
+    private void initRelativeToPosition(final float stockPilePositionX, final float stockPilePositionY) {
+        for (final Card card : mBoundpile.getCardsInPile()) {
             //get card node representing this pile and layout it
             layoutCardInPile(stockPilePositionX, stockPilePositionY, mCardNodesManager.getCardNodeForCard(card));
         }
 
         //now position the mask
-        YANTexturedNode maskCardNode = mHudManagementService.getNode(HudNodes.MASK_CARD_INDEX);
+        final YANTexturedNode maskCardNode = mHudManagementService.getNode(HudNodes.MASK_CARD_INDEX);
         layoutCardInPile(stockPilePositionX, stockPilePositionY, maskCardNode);
 
         //only difference is that mask is visible and above other card nodes
@@ -70,7 +70,7 @@ public class StockPileLayouter extends BasePileLayouter {
         maskCardNode.setOpacity(1f);
     }
 
-    private void layoutCardInPile(float stockPilePositionX, float stockPilePositionY, YANTexturedNode cardNode) {
+    private void layoutCardInPile(final float stockPilePositionX, final float stockPilePositionY, final YANTexturedNode cardNode) {
         cardNode.setPosition(stockPilePositionX, stockPilePositionY);
         cardNode.setRotationZ(STOCK_PILE_CARDS_ROTATION);
         cardNode.setSize(mCardNodesManager.getCardNodeOriginalWidth() * STOCK_PILE_SIZE_SCALE, mCardNodesManager.getCardNodeOriginalHeight() * STOCK_PILE_SIZE_SCALE);
@@ -93,7 +93,7 @@ public class StockPileLayouter extends BasePileLayouter {
             return;
 
         //layout the trump card
-        CardNode trumpCardNode = mCardNodesManager.getCardNodeForCard(mGameInfo.getTrumpCard());
+        final CardNode trumpCardNode = mCardNodesManager.getCardNodeForCard(mGameInfo.getTrumpCard());
         trumpCardNode.setPosition(trumpCardNode.getPosition().getX(), mTrumpCardPositionY);
         trumpCardNode.setOpacity(1f);
         trumpCardNode.setSortingLayer(0);
@@ -102,10 +102,10 @@ public class StockPileLayouter extends BasePileLayouter {
     }
 
     public void placeAtRightTop() {
-        SceneSizeProviderService screenSize = ServiceLocator.locateService(SceneSizeProviderService.class);
-        float offsetX = screenSize.getSceneWidth() * 0.06f;
-        float stockPilePositionX = ((screenSize.getSceneWidth() - mCardNodesManager.getCardNodeOriginalWidth())) - offsetX;
-        float stockPilePositionY = screenSize.getSceneHeight() * STOCK_PILE_TOP_OFFSET;
+        final SceneSizeProviderService screenSize = ServiceLocator.locateService(SceneSizeProviderService.class);
+        final float offsetX = screenSize.getSceneWidth() * 0.06f;
+        final float stockPilePositionX = ((screenSize.getSceneWidth() - mCardNodesManager.getCardNodeOriginalWidth())) - offsetX;
+        final float stockPilePositionY = screenSize.getSceneHeight() * STOCK_PILE_TOP_OFFSET;
         initRelativeToPosition(stockPilePositionX, stockPilePositionY);
     }
 }

@@ -13,11 +13,11 @@ public abstract class BaseProtocolMessage<T> {
     @SerializedName("data")
     private T mMessageData;
 
-    public void setMessageName(String messageName) {
+    public void setMessageName(final String messageName) {
         mMessageName = messageName;
     }
 
-    public void setMessageData(T messageData) {
+    public void setMessageData(final T messageData) {
         mMessageData = messageData;
     }
 

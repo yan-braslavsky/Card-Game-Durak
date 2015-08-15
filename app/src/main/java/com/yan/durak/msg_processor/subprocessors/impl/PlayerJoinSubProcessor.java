@@ -19,8 +19,8 @@ public class PlayerJoinSubProcessor extends BaseMsgSubProcessor<PlayerJoinProtoc
     }
 
     @Override
-    public void processMessage(PlayerJoinProtocolMessage serverMessage) {
-        GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
+    public void processMessage(final PlayerJoinProtocolMessage serverMessage) {
+        final GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
 
         //find out what index bottom player has
         final int bottomPlayerIndex = gameInfo.getPlayerIndex(GameInfo.PlayerLocation.BOTTOM_PLAYER);
@@ -29,7 +29,7 @@ public class PlayerJoinSubProcessor extends BaseMsgSubProcessor<PlayerJoinProtoc
         placePlayer(bottomPlayerIndex,serverMessage.getMessageData().getJoinedPlayerData(),totalPlayersInGame);
     }
 
-    private void placePlayer(int bottomPlayerIndex, PlayerData joinedPlayer,
+    private void placePlayer(final int bottomPlayerIndex, final PlayerData joinedPlayer,
                              final int totalPlayersInGame) {
         int topLeftPlayerIndex = bottomPlayerIndex + 1;
         int topRightPlayerIndex = bottomPlayerIndex + 2;
@@ -49,21 +49,21 @@ public class PlayerJoinSubProcessor extends BaseMsgSubProcessor<PlayerJoinProtoc
             throw new IllegalStateException("Couldn't identify player position");
     }
 
-    private void placeAsTopRight(PlayerData joinedPlayer) {
+    private void placeAsTopRight(final PlayerData joinedPlayer) {
         ServiceLocator.locateService(PileManagerService.class).setTopRightPlayerPileIndex(joinedPlayer.getPlayerPileIndex());
         ServiceLocator.locateService(GameInfo.class).setGameIndexForPlayer(GameInfo.PlayerLocation.TOP_RIGHT_PLAYER, joinedPlayer.getPlayerIndexInGame());
 
-        //TODO : extract name from data
-        String name = "MadBull";
-        ServiceLocator.locateService(HudManagementService.class).setNameForPlayer(GameInfo.PlayerLocation.TOP_RIGHT_PLAYER, name);
+        //set the name and avatar icon for player
+        ServiceLocator.locateService(HudManagementService.class).setNameForPlayer(GameInfo.PlayerLocation.TOP_RIGHT_PLAYER, joinedPlayer.getPlayerMetaData().getPlayerNickname());
+        ServiceLocator.locateService(HudManagementService.class).setIconForPlayer(GameInfo.PlayerLocation.TOP_RIGHT_PLAYER, joinedPlayer.getPlayerMetaData().getPlayerAvatarResource());
     }
 
-    private void placeAsTopLeft(PlayerData joinedPlayer) {
+    private void placeAsTopLeft(final PlayerData joinedPlayer) {
         ServiceLocator.locateService(PileManagerService.class).setTopLeftPlayerPileIndex(joinedPlayer.getPlayerPileIndex());
         ServiceLocator.locateService(GameInfo.class).setGameIndexForPlayer(GameInfo.PlayerLocation.TOP_LEFT_PLAYER, joinedPlayer.getPlayerIndexInGame());
 
-        //TODO : set name from data
-        String name = "SeriyV";
-        ServiceLocator.locateService(HudManagementService.class).setNameForPlayer(GameInfo.PlayerLocation.TOP_LEFT_PLAYER, name);
+        //set the name and avatar icon for player
+        ServiceLocator.locateService(HudManagementService.class).setNameForPlayer(GameInfo.PlayerLocation.TOP_LEFT_PLAYER, joinedPlayer.getPlayerMetaData().getPlayerNickname());
+        ServiceLocator.locateService(HudManagementService.class).setIconForPlayer(GameInfo.PlayerLocation.TOP_LEFT_PLAYER, joinedPlayer.getPlayerMetaData().getPlayerAvatarResource());
     }
 }

@@ -33,14 +33,14 @@ public class CardMoveBatchMessageFilter implements IGameServerMessageFilter {
         mBatchedMessages = new ArrayList<>();
         mIncomingMessagesQueue = new LinkedList<>();
 
-        BFInitState initState = YANObjectPool.getInstance().obtain(BFInitState.class);
+        final BFInitState initState = YANObjectPool.getInstance().obtain(BFInitState.class);
         initState.resetState();
         initState.setBatchFilter(this);
         setBatchFilterState(initState);
     }
 
     public void releaseBatchedMessages() {
-        for (CardMovedProtocolMessage batchedMessage : mBatchedMessages) {
+        for (final CardMovedProtocolMessage batchedMessage : mBatchedMessages) {
             //release message to the client
             sendMessageToClient(batchedMessage);
         }
@@ -48,29 +48,29 @@ public class CardMoveBatchMessageFilter implements IGameServerMessageFilter {
         mBatchedMessages.clear();
     }
 
-    public void sendMessageToClient(BaseProtocolMessage batchedMessage) {
+    public void sendMessageToClient(final BaseProtocolMessage batchedMessage) {
         if (mWrappedServerListener != null) {
             mWrappedServerListener.handleServerMessage(batchedMessage);
         }
     }
 
     @Override
-    public void handleServerMessage(BaseProtocolMessage serverMessage) {
+    public void handleServerMessage(final BaseProtocolMessage serverMessage) {
         //put in the queue for later processing
         mIncomingMessagesQueue.add(serverMessage);
     }
 
     @Override
-    public void setWrappedServerListener(IGameServerConnector.IGameServerCommunicatorListener wrappedServerListener) {
+    public void setWrappedServerListener(final IGameServerConnector.IGameServerCommunicatorListener wrappedServerListener) {
         mWrappedServerListener = wrappedServerListener;
     }
 
     @Override
-    public void update(float deltaTimeSeconds) {
+    public void update(final float deltaTimeSeconds) {
         mBatchFilterState.processNextMessageInQueue();
     }
 
-    public void setBatchFilterState(IBatchFilterState batchFilterState) {
+    public void setBatchFilterState(final IBatchFilterState batchFilterState) {
         mBatchFilterState = batchFilterState;
         mBatchFilterState.applyState();
     }

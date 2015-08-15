@@ -48,35 +48,35 @@ public class RequestThrowInsMsgSubProcessor extends BaseMsgSubProcessor<RequestT
     }
 
     @Override
-    public void processMessage(RequestThrowInsMessage serverMessage) {
+    public void processMessage(final RequestThrowInsMessage serverMessage) {
 
         //Set the state to throw in
         ServiceLocator.locateService(GameInfo.class).setActivePlayerState(YANObjectPool.getInstance().obtain(ThrowInState.class));
 
-        PileManagerService pileManagerService = ServiceLocator.locateService(PileManagerService.class);
-        ThrowInState throwInState = (ThrowInState) ServiceLocator.locateService(GameInfo.class).getActivePlayerState();
-        CardNodesManagerService cardNodesManager = ServiceLocator.locateService(CardNodesManagerService.class);
+        final PileManagerService pileManagerService = ServiceLocator.locateService(PileManagerService.class);
+        final ThrowInState throwInState = (ThrowInState) ServiceLocator.locateService(GameInfo.class).getActivePlayerState();
+        final CardNodesManagerService cardNodesManager = ServiceLocator.locateService(CardNodesManagerService.class);
 
         //cache state cards array
-        ArrayList<Card> allowedCardsToThrowIn = throwInState.getAllowedCardsToThrowIn();
+        final ArrayList<Card> allowedCardsToThrowIn = throwInState.getAllowedCardsToThrowIn();
 
         //set max cards to throw in
         throwInState.setMaxCardsToThrowInAmount(serverMessage.getMessageData().getMaxThrowInCardsAmount());
 
         //fill allowed cards for throw in state
-        for (CardData cardData : serverMessage.getMessageData().getPossibleThrowInCards()) {
-            Card card = pileManagerService.getBottomPlayerPile().findCardByRankAndSuit(cardData.getRank(), cardData.getSuit());
+        for (final CardData cardData : serverMessage.getMessageData().getPossibleThrowInCards()) {
+            final Card card = pileManagerService.getBottomPlayerPile().findCardByRankAndSuit(cardData.getRank(), cardData.getSuit());
             allowedCardsToThrowIn.add(card);
         }
 
         //deactivate node cards that are not allowed to be thrown in
-        for (Card cardInPile : pileManagerService.getBottomPlayerPile().getCardsInPile()) {
+        for (final Card cardInPile : pileManagerService.getBottomPlayerPile().getCardsInPile()) {
 
             //in case this cards is not allowed currently to be thrown in
             if (!allowedCardsToThrowIn.contains(cardInPile)) {
 
                 //disable the node
-                CardNode cardNode = cardNodesManager.getCardNodeForCard(cardInPile);
+                final CardNode cardNode = cardNodesManager.getCardNodeForCard(cardInPile);
                 cardNodesManager.disableCardNode(cardNode);
             }
         }

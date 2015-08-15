@@ -35,17 +35,17 @@ public class TopLeftPlayerPileLayouter extends BasePileLayouter {
     }
 
     @Override
-    public void init(float sceneWidth, float sceneHeight) {
+    public void init(final float sceneWidth, final float sceneHeight) {
 
         //offset from the beginning of the screen left
-        float offsetX = sceneWidth * 0.02f;
-        float topOffset = sceneHeight * 0.09f;
-        float fanDistance = sceneWidth * 0.1f;
+        final float offsetX = sceneWidth * 0.02f;
+        final float topOffset = sceneHeight * 0.09f;
+        final float fanDistance = sceneWidth * 0.1f;
 
-        YANVector2 pos = new YANVector2(offsetX, topOffset);
-        YANVector2 origin = new YANVector2(pos.getX() * 4, pos.getY());
-        YANVector2 leftBasis = new YANVector2(origin.getX() + fanDistance, origin.getY());
-        YANVector2 rightBasis = new YANVector2(origin.getX(), origin.getY() + fanDistance);
+        final YANVector2 pos = new YANVector2(offsetX, topOffset);
+        final YANVector2 origin = new YANVector2(pos.getX() * 4, pos.getY());
+        final YANVector2 leftBasis = new YANVector2(origin.getX() + fanDistance, origin.getY());
+        final YANVector2 rightBasis = new YANVector2(origin.getX(), origin.getY() + fanDistance);
 
         //set three points
         mThreePointFanLayouterTopLeft.setThreePoints(origin, leftBasis, rightBasis);
@@ -64,12 +64,12 @@ public class TopLeftPlayerPileLayouter extends BasePileLayouter {
     public void layout() {
 
         //offer to pool everything that was in list
-        for (CardsLayouterSlotImpl cardsLayouterSlot : mSlotsList) {
+        for (final CardsLayouterSlotImpl cardsLayouterSlot : mSlotsList) {
             YANObjectPool.getInstance().offer(cardsLayouterSlot);
         }
 
         mSlotsList.clear();
-        for (Card card : mBoundpile.getCardsInPile()) {
+        for (final Card card : mBoundpile.getCardsInPile()) {
             mSlotsList.add(YANObjectPool.getInstance().obtain(CardsLayouterSlotImpl.class));
         }
 
@@ -80,7 +80,7 @@ public class TopLeftPlayerPileLayouter extends BasePileLayouter {
         CardsLayouterSlotImpl slot;
         CardNode cardNode;
         final Timeline tl = Timeline.createSequence().beginParallel();
-        for (Card card : mBoundpile.getCardsInPile()) {
+        for (final Card card : mBoundpile.getCardsInPile()) {
             cardNode = mCardNodesManager.getCardNodeForCard(card);
             slot = mSlotsList.get(slotPosition);
 

@@ -22,7 +22,7 @@ public class GameServerMessageSender implements IService {
 
     private IGameServerConnector mConnector;
 
-    public GameServerMessageSender(IGameServerConnector gameServerConnector) {
+    public GameServerMessageSender(final IGameServerConnector gameServerConnector) {
         mConnector = gameServerConnector;
     }
 
@@ -31,7 +31,7 @@ public class GameServerMessageSender implements IService {
      *
      * @param cards list of cards that player selected to throw in
      */
-    public void sendThrowInResponse(List<Card> cards) {
+    public void sendThrowInResponse(final List<Card> cards) {
         sendMessage(new ResponseThrowInsMessage(cards));
     }
 
@@ -53,12 +53,12 @@ public class GameServerMessageSender implements IService {
      *
      * @param attackCard card that player have choosen to start the attack with
      */
-    public void sendCardForAttackResponse(Card attackCard) {
+    public void sendCardForAttackResponse(final Card attackCard) {
         sendMessage(new ResponseCardForAttackMessage(attackCard));
     }
 
 
-    private void sendMessage(BaseProtocolMessage message) {
+    private void sendMessage(final BaseProtocolMessage message) {
         mConnector.sentMessageToServer(message);
     }
 

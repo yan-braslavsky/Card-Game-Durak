@@ -5,7 +5,7 @@ import com.yan.durak.gamelogic.commands.custom.PlayerAttackRequestCommand;
 import com.yan.durak.gamelogic.commands.hooks.CommandHook;
 import com.yan.durak.gamelogic.communication.connection.IRemoteClient;
 import com.yan.durak.gamelogic.communication.protocol.messages.PlayerTakesActionMessage;
-import com.yan.durak.gamelogic.player.Player;
+import com.yan.durak.gamelogic.player.IPlayer;
 import com.yan.durak.gamelogic.player.RemotePlayer;
 
 /**
@@ -20,15 +20,15 @@ public class PlayerActionAttackBroadcastHook implements CommandHook<PlayerAttack
     }
 
     @Override
-    public void onHookTrigger(PlayerAttackRequestCommand hookCommand) {
+    public void onHookTrigger(final PlayerAttackRequestCommand hookCommand) {
 
         //create json string from the message
-        String jsonMsg = new PlayerTakesActionMessage(hookCommand.getAttackingPlayerIndex(), PlayerTakesActionMessage.PlayerAction.ATTACK_START).toJsonString();
+        final String jsonMsg = new PlayerTakesActionMessage(hookCommand.getAttackingPlayerIndex(), PlayerTakesActionMessage.PlayerAction.ATTACK_START).toJsonString();
 
-        for (Player player : hookCommand.getGameSession().getPlayers()) {
+        for (final IPlayer player : hookCommand.getGameSession().getPlayers()) {
             if (player instanceof RemotePlayer) {
-                RemotePlayer remotePlayer = (RemotePlayer) player;
-                IRemoteClient client = remotePlayer.getSocketClient();
+                final RemotePlayer remotePlayer = (RemotePlayer) player;
+                final IRemoteClient client = remotePlayer.getSocketClient();
                 client.sendMessage(jsonMsg);
             }
         }

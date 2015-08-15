@@ -16,17 +16,17 @@ public class RequestCardForAttackMessage extends BaseProtocolMessage<RequestCard
 
     public static final String MESSAGE_NAME = "requestCardForAttack";
 
-    public RequestCardForAttackMessage(List<Card> cardsInHand) {
+    public RequestCardForAttackMessage(final List<Card> cardsInHand) {
         super();
         setMessageName(MESSAGE_NAME);
-        List<CardData> cardsInHandDataList = convertCardDataList(cardsInHand);
+        final List<CardData> cardsInHandDataList = convertCardDataList(cardsInHand);
         setMessageData(new ProtocolMessageData(cardsInHandDataList));
     }
 
-    private List<CardData> convertCardDataList(List<Card> cardsInHand) {
-        List<CardData> ret = new ArrayList<>();
+    private List<CardData> convertCardDataList(final List<Card> cardsInHand) {
+        final List<CardData> ret = new ArrayList<>();
 
-        for (Card card : cardsInHand) {
+        for (final Card card : cardsInHand) {
             ret.add(new CardData(card.getRank(), card.getSuit()));
         }
         return ret;
@@ -37,7 +37,7 @@ public class RequestCardForAttackMessage extends BaseProtocolMessage<RequestCard
         @SerializedName("cardsInHand")
         List<CardData> mCardsInHand;
 
-        public ProtocolMessageData(List<CardData> cardsInHand) {
+        public ProtocolMessageData(final List<CardData> cardsInHand) {
             mCardsInHand = cardsInHand;
         }
 

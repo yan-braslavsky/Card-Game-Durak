@@ -16,7 +16,7 @@ public class GameSessionValidations {
      * @param gameSession game session to validate pile index in
      * @return true if pile exists , false otherwise
      */
-    public static boolean validatePilesExist(int pileIndex, GameSession gameSession) {
+    public static boolean validatePilesExist(final int pileIndex, final GameSession gameSession) {
         return (pileIndex < 0 || pileIndex >= gameSession.getPilesStack().size()) ? false : true;
     }
 

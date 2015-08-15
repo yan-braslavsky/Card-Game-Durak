@@ -42,7 +42,7 @@ public class PlayerTakesActionMessage extends BaseProtocolMessage<PlayerTakesAct
         PLAYER_TAKES_CARDS
     }
 
-    public PlayerTakesActionMessage(int playerIndex, PlayerAction action) {
+    public PlayerTakesActionMessage(final int playerIndex, final PlayerAction action) {
         super();
         setMessageName(MESSAGE_NAME);
         setMessageData(new ProtocolMessageData(playerIndex, action.name()));
@@ -55,7 +55,7 @@ public class PlayerTakesActionMessage extends BaseProtocolMessage<PlayerTakesAct
         @SerializedName("action")
         String mAction;
 
-        public ProtocolMessageData(int playerIndex, String action) {
+        public ProtocolMessageData(final int playerIndex, final String action) {
             mPlayerIndex = playerIndex;
             mAction = action;
         }

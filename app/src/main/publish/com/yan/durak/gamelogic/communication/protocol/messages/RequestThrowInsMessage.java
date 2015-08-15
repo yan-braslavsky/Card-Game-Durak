@@ -16,16 +16,16 @@ public class RequestThrowInsMessage extends BaseProtocolMessage<RequestThrowInsM
 
     public static final String MESSAGE_NAME = "requestThrowIns";
 
-    public RequestThrowInsMessage(List<Card> possibleThrowInCards,int maxThrowInCardsAmount) {
+    public RequestThrowInsMessage(final List<Card> possibleThrowInCards, final int maxThrowInCardsAmount) {
         super();
         setMessageName(MESSAGE_NAME);
-        List<CardData> cardDataList = convertCardDataList(possibleThrowInCards);
+        final List<CardData> cardDataList = convertCardDataList(possibleThrowInCards);
         setMessageData(new ProtocolMessageData(cardDataList,maxThrowInCardsAmount));
     }
 
-    private List<CardData> convertCardDataList(List<Card> possibleThrowInCards) {
-        List<CardData> retList = new ArrayList<>();
-        for (Card card : possibleThrowInCards) {
+    private List<CardData> convertCardDataList(final List<Card> possibleThrowInCards) {
+        final List<CardData> retList = new ArrayList<>();
+        for (final Card card : possibleThrowInCards) {
             retList.add(new CardData(card.getRank(), card.getSuit()));
         }
         return retList;
@@ -41,7 +41,7 @@ public class RequestThrowInsMessage extends BaseProtocolMessage<RequestThrowInsM
         int mMaxThrowInCardsAmount;
 
 
-        public ProtocolMessageData(List<CardData> possibleThrowInCards, int maxThrowInCardsAmount) {
+        public ProtocolMessageData(final List<CardData> possibleThrowInCards, final int maxThrowInCardsAmount) {
             mPossibleThrowInCards = possibleThrowInCards;
             mMaxThrowInCardsAmount = maxThrowInCardsAmount;
         }

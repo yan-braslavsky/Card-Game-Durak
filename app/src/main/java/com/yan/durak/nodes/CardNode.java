@@ -22,7 +22,7 @@ public class CardNode extends YANTexturedNode {
     private Card mCard;
     private HashSet<String> mTags;
 
-    public CardNode(@NonNull YANAtlasTextureRegion frontTextureRegion, @NonNull YANAtlasTextureRegion backTextureRegion, @NonNull Card card) {
+    public CardNode(@NonNull final YANAtlasTextureRegion frontTextureRegion, @NonNull final YANAtlasTextureRegion backTextureRegion, @NonNull final Card card) {
         super(frontTextureRegion);
         mFrontTextureRegion = frontTextureRegion;
         mBackTextureRegion = backTextureRegion;
@@ -43,15 +43,15 @@ public class CardNode extends YANTexturedNode {
         setTextureRegion(mBackTextureRegion);
     }
 
-    public boolean containsTag(String tag) {
+    public boolean containsTag(final String tag) {
         return mTags.contains(tag);
     }
 
-    public void addTag(String tag) {
+    public void addTag(final String tag) {
         mTags.add(tag);
     }
 
-    public void removeTag(String tag) {
+    public void removeTag(final String tag) {
         mTags.remove(tag);
     }
 

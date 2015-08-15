@@ -21,18 +21,18 @@ public class RemoteSocketClient implements IRemoteClient {
     private BufferedReader mInputReader;
     private boolean mDisconnected;
 
-    public RemoteSocketClient(Socket socket) {
+    public RemoteSocketClient(final Socket socket) {
         mSocket = socket;
         try {
             mOutputWriter = new PrintWriter(socket.getOutputStream(), true);
             mInputReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void sendMessage(String msg) {
+    public void sendMessage(final String msg) {
         mOutputWriter.println(msg);
     }
 
@@ -40,7 +40,7 @@ public class RemoteSocketClient implements IRemoteClient {
     public String readMessage() {
         try {
             return mInputReader.readLine();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -51,7 +51,7 @@ public class RemoteSocketClient implements IRemoteClient {
         mDisconnected = true;
         try {
             mSocket.close();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }

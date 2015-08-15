@@ -49,41 +49,41 @@ public class RequestRetaliatePilesMsgSubProcessor extends BaseMsgSubProcessor<Re
     }
 
     @Override
-    public void processMessage(RequestRetaliatePilesMessage serverMessage) {
+    public void processMessage(final RequestRetaliatePilesMessage serverMessage) {
 
         if (!(mGameInfo.getActivePlayerState() instanceof RetaliationState))
             throw new IllegalStateException("Currently game must be at Retaliation state , but was at " + mGameInfo.getActivePlayerState());
 
-        PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
+        final PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
 
-        RetaliationState retaliationState = (RetaliationState) mGameInfo.getActivePlayerState();
+        final RetaliationState retaliationState = (RetaliationState) mGameInfo.getActivePlayerState();
         retaliationState.resetState();
 
         //retaliation set should be clean at this point
-        List<RetaliationState.RetaliationSet> pendingRetaliationSets = retaliationState.getPendingRetaliationCardSets();
-        List<RetaliationState.RetaliationSet> alreadyRetaliatedSets = retaliationState.getRetaliatedCardSets();
+        final List<RetaliationState.RetaliationSet> pendingRetaliationSets = retaliationState.getPendingRetaliationCardSets();
+        final List<RetaliationState.RetaliationSet> alreadyRetaliatedSets = retaliationState.getRetaliatedCardSets();
 
         //each list/pile should contain only one card that is pending retaliation
-        for (List<CardData> cardDatas : serverMessage.getMessageData().getPilesBeforeRetaliation()) {
+        for (final List<CardData> cardDatas : serverMessage.getMessageData().getPilesBeforeRetaliation()) {
 
             //find the relevant field card
-            PileModel fieldPile = pileManager.findFieldPileWithCardByRankAndSuit(cardDatas.get(0).getRank(), cardDatas.get(0).getSuit());
+            final PileModel fieldPile = pileManager.findFieldPileWithCardByRankAndSuit(cardDatas.get(0).getRank(), cardDatas.get(0).getSuit());
 
             //obtain retaliation set
-            RetaliationState.RetaliationSet retSet = YANObjectPool.getInstance().obtain(RetaliationState.RetaliationSet.class);
+            final RetaliationState.RetaliationSet retSet = YANObjectPool.getInstance().obtain(RetaliationState.RetaliationSet.class);
 
             //server returns us all the piles that are on the field currently.
             //but in case we have already retaliated some piles , and getting this request due to invalid retaliation
             //we need to add this retaliated pile to already retaliated set
             if (fieldPile.getCardsInPile().size() == 2) {
-                Iterator<Card> iterator = fieldPile.getCardsInPile().iterator();
+                final Iterator<Card> iterator = fieldPile.getCardsInPile().iterator();
                 retSet.setCoveredCard(iterator.next());
                 retSet.setCoveringCard(iterator.next());
                 alreadyRetaliatedSets.add(retSet);
                 continue;
             }
 
-            Card pendingCard = fieldPile
+            final Card pendingCard = fieldPile
                     .findCardByRankAndSuit(cardDatas.get(0).getRank(), cardDatas.get(0).getSuit());
 
             //add the card as a covered that waiting retaliation

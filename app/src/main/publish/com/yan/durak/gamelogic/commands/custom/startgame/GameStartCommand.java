@@ -7,10 +7,18 @@ import com.yan.durak.gamelogic.commands.composite.StartRoundCommand;
 import com.yan.durak.gamelogic.commands.core.AddBotPlayerCommand;
 import com.yan.durak.gamelogic.commands.core.AddRemotePlayerCommand;
 import com.yan.durak.gamelogic.commands.custom.IdentifyNextRoundPlayersCommand;
-import com.yan.durak.gamelogic.commands.hooks.notifiers.broadcast.*;
+import com.yan.durak.gamelogic.commands.hooks.notifiers.broadcast.BotJoinsGameBroadcastHook;
+import com.yan.durak.gamelogic.commands.hooks.notifiers.broadcast.GameOverBroadcastHook;
+import com.yan.durak.gamelogic.commands.hooks.notifiers.broadcast.PlayerActionAttackBroadcastHook;
+import com.yan.durak.gamelogic.commands.hooks.notifiers.broadcast.PlayerActionRetaliateBroadcastHook;
+import com.yan.durak.gamelogic.commands.hooks.notifiers.broadcast.PlayerActionTakeCardsBroadcastHook;
+import com.yan.durak.gamelogic.commands.hooks.notifiers.broadcast.PlayerActionThrowInBroadcastPostHook;
+import com.yan.durak.gamelogic.commands.hooks.notifiers.broadcast.PlayerActionThrowInBroadcastPreHook;
+import com.yan.durak.gamelogic.commands.hooks.notifiers.broadcast.RemoteClientJoinsGameBroadcastHook;
+import com.yan.durak.gamelogic.commands.hooks.notifiers.broadcast.RemoteClientsCardsMoveBroadcastHook;
 import com.yan.durak.gamelogic.commands.hooks.notifiers.unicast.RemoteClientsGameSetupUnicastHook;
 import com.yan.durak.gamelogic.commands.hooks.notifiers.unicast.RemoteClientsWrongCoverageNotifierUnicastHook;
-import com.yan.durak.gamelogic.communication.connection.IRemoteClient;
+import com.yan.durak.gamelogic.communication.connection.ConnectedPlayer;
 import com.yan.durak.gamelogic.validation.GameSessionValidations;
 
 /**
@@ -20,7 +28,7 @@ import com.yan.durak.gamelogic.validation.GameSessionValidations;
  */
 public class GameStartCommand extends BaseSessionCommand {
 
-    private IRemoteClient[] mRemoteClients;
+    private ConnectedPlayer[] mConnectedPlayers;
 
     @Override
     public void execute() {
@@ -37,36 +45,38 @@ public class GameStartCommand extends BaseSessionCommand {
         addPlayers();
 
         //define who attacks and who defends
-        IdentifyNextRoundPlayersCommand identifyCommand = new IdentifyNextRoundPlayersCommand();
+        final IdentifyNextRoundPlayersCommand identifyCommand = new IdentifyNextRoundPlayersCommand();
         getGameSession().executeCommand(identifyCommand);
 
         //let player attack and the next player by it to defend
-        StartRoundCommand startRoundCommand = new StartRoundCommand();
+        final StartRoundCommand startRoundCommand = new StartRoundCommand();
         startRoundCommand.setRoundAttackingPlayerIndex(identifyCommand.getNextRoundAttackerPlayerIndex());
         startRoundCommand.setRoundDefendingPlayerIndex(identifyCommand.getNextRoundDefenderPlayerIndex());
         getGameSession().executeCommand(startRoundCommand);
     }
 
     private void addPlayers() {
-        GameSessionValidations.validateAmountOfPlayersInGame(mRemoteClients.length, getGameSession().getGameRules());
+        GameSessionValidations.validateAmountOfPlayersInGame(mConnectedPlayers.length, getGameSession().getGameRules());
 
-        for (int i = 0; i < mRemoteClients.length; i++) {
-            addPlayer(mRemoteClients[i]);
+        for (int i = 0; i < mConnectedPlayers.length; i++) {
+            addPlayer(mConnectedPlayers[i]);
         }
     }
 
-    private void addPlayer(IRemoteClient playerClient) {
+    private void addPlayer(final ConnectedPlayer connectedPlayer) {
 
         //if there is no remote client for the player
         //add a bot player instead
-        if (playerClient == null) {
-            getGameSession().executeCommand(new AddBotPlayerCommand());
+        if (connectedPlayer.getRemoteClient() == null) {
+            final AddBotPlayerCommand addBotPlayerCommand = new AddBotPlayerCommand();
+            addBotPlayerCommand.setPlayerMetaData(connectedPlayer.getPlayerMetaData());
+            getGameSession().executeCommand(addBotPlayerCommand);
             return;
         }
 
         //add remote client player
-        AddRemotePlayerCommand addRemotePlayerCommand = new AddRemotePlayerCommand();
-        addRemotePlayerCommand.setRemoteClient(playerClient);
+        final AddRemotePlayerCommand addRemotePlayerCommand = new AddRemotePlayerCommand();
+        addRemotePlayerCommand.setConnectedPlayer(connectedPlayer);
         getGameSession().executeCommand(addRemotePlayerCommand);
     }
 
@@ -103,8 +113,8 @@ public class GameStartCommand extends BaseSessionCommand {
 
     }
 
-    public void setRemotePlayers(final IRemoteClient... remoteClients) {
-        this.mRemoteClients = remoteClients;
+    public void setConnectedPlayers(final ConnectedPlayer... remoteClients) {
+        this.mConnectedPlayers = remoteClients;
     }
 
 }

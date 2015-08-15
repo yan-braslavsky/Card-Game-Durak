@@ -20,17 +20,17 @@ public class AddPileCommand extends BaseSessionCommand {
     private Pile mPile;
     private Collection<Card> mCardsCollection;
 
-    public void setPile(Pile pile) {
+    public void setPile(final Pile pile) {
         mPile = pile;
     }
 
-    public void setCards(Collection<Card> cardsCollection) {
+    public void setCards(final Collection<Card> cardsCollection) {
         mCardsCollection = cardsCollection;
     }
 
     @Override
     public void execute() {
-        for (Card card : mCardsCollection) {
+        for (final Card card : mCardsCollection) {
             mPile.addCardToPile(card);
         }
 

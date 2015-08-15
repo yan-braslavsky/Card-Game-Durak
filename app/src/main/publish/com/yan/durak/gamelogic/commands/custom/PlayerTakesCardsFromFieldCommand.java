@@ -2,7 +2,7 @@ package com.yan.durak.gamelogic.commands.custom;
 
 
 import com.yan.durak.gamelogic.commands.BaseSessionCommand;
-import com.yan.durak.gamelogic.player.Player;
+import com.yan.durak.gamelogic.player.IPlayer;
 
 /**
  * Created by Yan-Home on 12/23/2014.
@@ -11,7 +11,7 @@ import com.yan.durak.gamelogic.player.Player;
  */
 public class PlayerTakesCardsFromFieldCommand extends BaseSessionCommand {
 
-    private Player mTakingPlayer;
+    private IPlayer mTakingPlayer;
 
     @Override
     public void execute() {
@@ -19,11 +19,11 @@ public class PlayerTakesCardsFromFieldCommand extends BaseSessionCommand {
     }
 
 
-    public void setTakingPlayer(Player takingPlayer) {
+    public void setTakingPlayer(final IPlayer takingPlayer) {
         mTakingPlayer = takingPlayer;
     }
 
-    public Player getTakingPlayer() {
+    public IPlayer getTakingPlayer() {
         return mTakingPlayer;
     }
 }

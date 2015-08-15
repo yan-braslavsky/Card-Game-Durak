@@ -47,7 +47,7 @@ public class MsgProcessor implements IGameServerConnector.IGameServerCommunicato
      * Require a direct reference to prototype screen in order
      * to manipulate its nodes and fragments
      */
-    public MsgProcessor(PrototypeGameScreen prototypeGameScreen) {
+    public MsgProcessor(final PrototypeGameScreen prototypeGameScreen) {
         this.mPrototypeGameScreen = prototypeGameScreen;
         this.mProcessorsMap = new HashMap<>();
 
@@ -57,10 +57,10 @@ public class MsgProcessor implements IGameServerConnector.IGameServerCommunicato
 
     private void fillProcessorsMap() {
 
-        PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
-        GameServerMessageSender messageSender = ServiceLocator.locateService(GameServerMessageSender.class);
-        GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
-        PileLayouterManagerService pileLayouterManager = ServiceLocator.locateService(PileLayouterManagerService.class);
+        final PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
+        final GameServerMessageSender messageSender = ServiceLocator.locateService(GameServerMessageSender.class);
+        final GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
+        final PileLayouterManagerService pileLayouterManager = ServiceLocator.locateService(PileLayouterManagerService.class);
 
         //Card Moved
         mProcessorsMap.put(CardMovedProtocolMessage.class, new CardMovedMsgSubProcessor(pileManager, pileLayouterManager));
@@ -94,7 +94,7 @@ public class MsgProcessor implements IGameServerConnector.IGameServerCommunicato
     }
 
     @Override
-    public void handleServerMessage(BaseProtocolMessage serverMessage) {
+    public void handleServerMessage(final BaseProtocolMessage serverMessage) {
         //delegate the processing to concrete processor
         mProcessorsMap.get(serverMessage.getClass()).processMessage(serverMessage);
     }

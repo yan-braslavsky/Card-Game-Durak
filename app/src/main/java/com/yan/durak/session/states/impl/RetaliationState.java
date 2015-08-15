@@ -44,13 +44,13 @@ public class RetaliationState extends BaseDraggableState {
         super.resetState();
 
         //put back to pool
-        for (RetaliationSet retaliationSet : mPendingRetaliationCardSets) {
+        for (final RetaliationSet retaliationSet : mPendingRetaliationCardSets) {
             retaliationSet.resetState();
             YANObjectPool.getInstance().offer(retaliationSet);
         }
 
         //put back to pool
-        for (RetaliationSet rset : mRetaliatedCardSets) {
+        for (final RetaliationSet rset : mRetaliatedCardSets) {
             rset.resetState();
             YANObjectPool.getInstance().offer(rset);
         }
@@ -75,7 +75,7 @@ public class RetaliationState extends BaseDraggableState {
             return mCoveredCard;
         }
 
-        public void setCoveredCard(Card coveredCard) {
+        public void setCoveredCard(final Card coveredCard) {
             mCoveredCard = coveredCard;
         }
 
@@ -83,7 +83,7 @@ public class RetaliationState extends BaseDraggableState {
             return mCoveringCard;
         }
 
-        public void setCoveringCard(Card coveringCard) {
+        public void setCoveringCard(final Card coveringCard) {
             mCoveringCard = coveringCard;
         }
 

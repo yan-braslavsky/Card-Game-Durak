@@ -7,7 +7,7 @@ import com.yan.durak.gamelogic.communication.connection.IRemoteClient;
 import com.yan.durak.gamelogic.communication.protocol.data.PlayerData;
 import com.yan.durak.gamelogic.communication.protocol.messages.PlayerJoinProtocolMessage;
 import com.yan.durak.gamelogic.player.BotPlayer;
-import com.yan.durak.gamelogic.player.Player;
+import com.yan.durak.gamelogic.player.IPlayer;
 import com.yan.durak.gamelogic.player.RemotePlayer;
 
 import java.util.List;
@@ -23,20 +23,21 @@ public class BotJoinsGameBroadcastHook implements CommandHook<AddBotPlayerComman
     }
 
     @Override
-    public void onHookTrigger(AddBotPlayerCommand hookCommand) {
+    public void onHookTrigger(final AddBotPlayerCommand hookCommand) {
 
         //get player that joined
-        BotPlayer joinedPlayer = hookCommand.getAddedBotPlayer();
+        final BotPlayer joinedPlayer = hookCommand.getAddedBotPlayer();
 
         //create player data for joined player
-        PlayerData joinedPlayerData = new PlayerData(joinedPlayer.getGameIndex(), joinedPlayer.getPileIndex());
+        final PlayerData joinedPlayerData = new PlayerData(joinedPlayer.getGameIndex(),
+                joinedPlayer.getPileIndex(),joinedPlayer.getPlayerMetaData());
 
         //get all other players that have been already in the game
-        List<Player> otherPlayers = hookCommand.getGameSession().getPlayers();
+        final List<IPlayer> otherPlayers = hookCommand.getGameSession().getPlayers();
 
         //notify other players that are already in the game that
         //new remote player have joined the game
-        for (Player otherPlayer : otherPlayers) {
+        for (final IPlayer otherPlayer : otherPlayers) {
             //we don't need to notify bots , only remote players
             //that are different from the one that have joined
             if (!(otherPlayer instanceof RemotePlayer) ||
@@ -44,10 +45,10 @@ public class BotJoinsGameBroadcastHook implements CommandHook<AddBotPlayerComman
                 continue;
 
             //obtain remote client from the added player
-            IRemoteClient client = ((RemotePlayer) otherPlayer).getSocketClient();
+            final IRemoteClient client = ((RemotePlayer) otherPlayer).getSocketClient();
 
             //prepare game player joined message
-            String jsonMsg = new PlayerJoinProtocolMessage(joinedPlayerData,
+            final String jsonMsg = new PlayerJoinProtocolMessage(joinedPlayerData,
                     hookCommand.getGameSession().getGameRules().getTotalPlayersInGameAmount()).toJsonString();
 
             //send game setup message to client

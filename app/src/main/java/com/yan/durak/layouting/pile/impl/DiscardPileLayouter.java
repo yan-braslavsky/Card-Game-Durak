@@ -24,7 +24,7 @@ public class DiscardPileLayouter extends BasePileLayouter {
     }
 
     @Override
-    public void init(float sceneWidth, float sceneHeight) {
+    public void init(final float sceneWidth, final float sceneHeight) {
         mPilePositionOnField = new YANVector2(-(sceneWidth / 2f), sceneHeight / 2f);
     }
 
@@ -32,8 +32,8 @@ public class DiscardPileLayouter extends BasePileLayouter {
     public void layout() {
 
         final Timeline tl = Timeline.createSequence().beginParallel();
-        for (Card card : mBoundpile.getCardsInPile()) {
-            CardNode cardNode = mCardNodesManager.getCardNodeForCard(card);
+        for (final Card card : mBoundpile.getCardsInPile()) {
+            final CardNode cardNode = mCardNodesManager.getCardNodeForCard(card);
 
             //animate card to its place with new transform values
             addAnimationToTimelineForCardNode(tl, cardNode, mPilePositionOnField.getX(), mPilePositionOnField.getY(),

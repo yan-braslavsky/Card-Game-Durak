@@ -6,7 +6,7 @@ import com.yan.durak.gamelogic.cards.Pile;
 import com.yan.durak.gamelogic.commands.core.MoveCardFromPileToPileCommand;
 import com.yan.durak.gamelogic.commands.custom.AddPileCommand;
 import com.yan.durak.gamelogic.commands.custom.PlayerThrowInRequestCommand;
-import com.yan.durak.gamelogic.player.Player;
+import com.yan.durak.gamelogic.player.IPlayer;
 
 import java.util.ArrayList;
 
@@ -21,19 +21,19 @@ public class PlayerThrowInRequestControlCommand extends BaseControlCommand<Playe
     public void execute() {
 
         //find recent controlled command in the stack
-        PlayerThrowInRequestCommand throwInRequestCommand = searchForRecentControlledCommand();
+        final PlayerThrowInRequestCommand throwInRequestCommand = searchForRecentControlledCommand();
 
         //find attacking player by index
-        Player throwingPlayer = getGameSession().getPlayers().get(throwInRequestCommand.getThrowingInPlayerIndex());
+        final IPlayer throwingPlayer = getGameSession().getPlayers().get(throwInRequestCommand.getThrowingInPlayerIndex());
 
-        for (Card throwInCard : throwInRequestCommand.getThrowInCards()) {
+        for (final Card throwInCard : throwInRequestCommand.getThrowInCards()) {
 
             //create a pile that will be used as an additional pile on the field
-            AddPileCommand addPileCommand = new AddPileCommand();
+            final AddPileCommand addPileCommand = new AddPileCommand();
             addPileCommand.setCards(new ArrayList<Card>());
 
             //create pile and tag it as field pile
-            Pile pile = new Pile();
+            final Pile pile = new Pile();
             pile.addTag(Pile.PileTags.FIELD_PILE);
             addPileCommand.setPile(pile);
             getGameSession().executeCommand(addPileCommand);
@@ -44,8 +44,8 @@ public class PlayerThrowInRequestControlCommand extends BaseControlCommand<Playe
 
     }
 
-    private void moveCard(Pile toPile, int fromPile, Card card) {
-        MoveCardFromPileToPileCommand moveCardFromPileToPileCommand = new MoveCardFromPileToPileCommand();
+    private void moveCard(final Pile toPile, final int fromPile, final Card card) {
+        final MoveCardFromPileToPileCommand moveCardFromPileToPileCommand = new MoveCardFromPileToPileCommand();
         moveCardFromPileToPileCommand.setCardToMove(card);
         moveCardFromPileToPileCommand.setFromPileIndex(fromPile);
         moveCardFromPileToPileCommand.setToPileIndex(getGameSession().getPilesStack().indexOf(toPile));

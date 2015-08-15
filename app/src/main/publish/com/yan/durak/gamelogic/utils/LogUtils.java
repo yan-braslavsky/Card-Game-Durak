@@ -7,7 +7,7 @@ public class LogUtils {
 
     public static final boolean LOGGING_ENABLED = false;
 
-    public static final void log(String msg) {
+    public static final void log(final String msg) {
         if (!LOGGING_ENABLED)
             return;
         System.out.println(msg);

@@ -13,7 +13,7 @@ public class ResponseCardForAttackMessage extends BaseProtocolMessage<ResponseCa
 
     public static final String MESSAGE_NAME = "responseCardForAttack";
 
-    public ResponseCardForAttackMessage(Card cardForAttack) {
+    public ResponseCardForAttackMessage(final Card cardForAttack) {
         super();
         setMessageName(MESSAGE_NAME);
         setMessageData(new ProtocolMessageData(new CardData(cardForAttack.getRank(), cardForAttack.getSuit())));
@@ -22,7 +22,7 @@ public class ResponseCardForAttackMessage extends BaseProtocolMessage<ResponseCa
     public static class ProtocolMessageData {
         @SerializedName("cardForAttack")
         CardData mCardForAttack;
-        public ProtocolMessageData(CardData cardForAttack) {
+        public ProtocolMessageData(final CardData cardForAttack) {
             mCardForAttack = cardForAttack;
         }
 

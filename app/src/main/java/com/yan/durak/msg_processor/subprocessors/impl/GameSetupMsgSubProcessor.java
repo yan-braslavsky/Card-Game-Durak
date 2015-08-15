@@ -24,7 +24,7 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
     private final PileLayouterManagerService mPileLayouterManager;
     private final PileManagerService mPileManager;
 
-    public GameSetupMsgSubProcessor(final GameInfo gameInfo, final PileLayouterManagerService pileLayouterManager, PileManagerService pileManager) {
+    public GameSetupMsgSubProcessor(final GameInfo gameInfo, final PileLayouterManagerService pileLayouterManager, final PileManagerService pileManager) {
         super();
 
         mGameInfo = gameInfo;
@@ -33,7 +33,7 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
     }
 
     @Override
-    public void processMessage(GameSetupProtocolMessage serverMessage) {
+    public void processMessage(final GameSetupProtocolMessage serverMessage) {
 
         //We need to initialize piles according to amount of players in game
         initializePilesServices(serverMessage.getMessageData().getTotalPlayersInGame());
@@ -49,35 +49,32 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
                 serverMessage.getMessageData().getTotalPlayersInGame());
 
         //we need to adapt UI to amount of players in game
-        initUI(serverMessage.getMessageData().getTotalPlayersInGame());
+        initUI(serverMessage.getMessageData());
 
     }
 
-    private void initUI(final int totalPlayers) {
+    private void initUI(final GameSetupProtocolMessage.ProtocolMessageData data) {
         //since all the piles are currently in the stock pile , we should lay it out
-        StockPileLayouter stockPileLayouter = mPileLayouterManager.getPileLayouterForPile(mPileManager.getStockPile());
+        final StockPileLayouter stockPileLayouter = mPileLayouterManager.getPileLayouterForPile(mPileManager.getStockPile());
         //we need to hide top right player if there are only 2 players
-        if (totalPlayers == 2) {
+        if (data.getTotalPlayersInGame() == 2) {
             ServiceLocator.locateService(HudManagementService.class).hidePlayerUI(GameInfo.PlayerLocation.TOP_RIGHT_PLAYER);
             stockPileLayouter.placeAtRightTop();
             ServiceLocator.locateService(HudManagementService.class).placeTrumpIconAtRightTop();
         }
 
-        //FIXME : avatar resource should come from game setup message
         ServiceLocator.locateService(HudManagementService.class).setIconForPlayer(
-                GameInfo.PlayerLocation.BOTTOM_PLAYER,
-                ServiceLocator.locateService(GameInfo.class)
-                        .getPlayerInfoForPlayer(GameInfo.PlayerLocation.BOTTOM_PLAYER).getAvatarImageResource());
-        //TODO : set bottom player name when designs will be available, currently player name is not displayed ?
+                GameInfo.PlayerLocation.BOTTOM_PLAYER, data.getMyPlayerData().getPlayerMetaData().getPlayerAvatarResource());
 
+        //TODO : set bottom player name when designs will be available, currently player name is not displayed ?
         stockPileLayouter.layout();
     }
 
-    private void initializePilesServices(int totalPlayersInGame) {
+    private void initializePilesServices(final int totalPlayersInGame) {
 
         //first player pile comes after stock and discard piles
         //then we calculate first field pile index
-        int firsFieldPileIndex = (2 + totalPlayersInGame);
+        final int firsFieldPileIndex = (2 + totalPlayersInGame);
         ServiceLocator.locateService(PileManagerService.class).setFirstFiledPileindex(firsFieldPileIndex);
 
         //now when field piles correctly initialized , we can initialize
@@ -85,23 +82,21 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
         ServiceLocator.locateService(PileLayouterManagerService.class).initFieldPileLayouters();
     }
 
-    private void extractCurrentPlayer(PlayerData playerData) {
+    private void extractCurrentPlayer(final PlayerData playerData) {
         //current player is a bottom player so we are extracting his pile index and assigning to pile manager
         mPileManager.setBottomPlayerPileIndex(playerData.getPlayerPileIndex());
         //set index in game for bottom player
         mGameInfo.setGameIndexForPlayer(GameInfo.PlayerLocation.BOTTOM_PLAYER, playerData.getPlayerIndexInGame());
 
-        //TODO : player data should come from game setup message
-        String currentPlayerName = ServiceLocator.locateService(GameInfo.class).getGameConfig().nickname;
-        String currentPlayerAvatar = ServiceLocator.locateService(GameInfo.class).getGameConfig().avatarResource;
-
         //init player info for current player
         ServiceLocator.locateService(GameInfo.class).setPlayerInfoForPlayer(
-                GameInfo.PlayerLocation.BOTTOM_PLAYER, new GameInfo.PlayerInfo(currentPlayerAvatar, currentPlayerName));
+                GameInfo.PlayerLocation.BOTTOM_PLAYER, new GameInfo.PlayerInfo(
+                        playerData.getPlayerMetaData().getPlayerAvatarResource(),
+                        playerData.getPlayerMetaData().getPlayerNickname()));
 
     }
 
-    private void extractAlreadyJoinedPlayers(List<PlayerData> alreadyJoinedPlayers, final int totalPlayersInGame) {
+    private void extractAlreadyJoinedPlayers(final List<PlayerData> alreadyJoinedPlayers, final int totalPlayersInGame) {
 
         //maybe there are no joined players yet
         if (alreadyJoinedPlayers.isEmpty())
@@ -113,7 +108,7 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
         }
     }
 
-    private void placePlayer(int bottomPlayerIndex, PlayerData joinedPlayer,
+    private void placePlayer(final int bottomPlayerIndex, final PlayerData joinedPlayer,
                              final int totalPlayersInGame) {
         int topLeftPlayerIndex = bottomPlayerIndex + 1;
         int topRightPlayerIndex = bottomPlayerIndex + 2;
@@ -133,25 +128,25 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
             throw new IllegalStateException("Couldn't identify player position");
     }
 
-    private void placeAsTopRight(PlayerData joinedPlayer) {
+    private void placeAsTopRight(final PlayerData joinedPlayer) {
         ServiceLocator.locateService(PileManagerService.class).setTopRightPlayerPileIndex(joinedPlayer.getPlayerPileIndex());
         ServiceLocator.locateService(GameInfo.class).setGameIndexForPlayer(GameInfo.PlayerLocation.TOP_RIGHT_PLAYER, joinedPlayer.getPlayerIndexInGame());
 
-        //TODO : extract name from data
-        String name = "MadBull";
-        ServiceLocator.locateService(HudManagementService.class).setNameForPlayer(GameInfo.PlayerLocation.TOP_RIGHT_PLAYER, name);
+        //set the name and avatar icon for player
+        ServiceLocator.locateService(HudManagementService.class).setNameForPlayer(GameInfo.PlayerLocation.TOP_RIGHT_PLAYER, joinedPlayer.getPlayerMetaData().getPlayerNickname());
+        ServiceLocator.locateService(HudManagementService.class).setIconForPlayer(GameInfo.PlayerLocation.TOP_RIGHT_PLAYER, joinedPlayer.getPlayerMetaData().getPlayerAvatarResource());
     }
 
-    private void placeAsTopLeft(PlayerData joinedPlayer) {
+    private void placeAsTopLeft(final PlayerData joinedPlayer) {
         ServiceLocator.locateService(PileManagerService.class).setTopLeftPlayerPileIndex(joinedPlayer.getPlayerPileIndex());
         ServiceLocator.locateService(GameInfo.class).setGameIndexForPlayer(GameInfo.PlayerLocation.TOP_LEFT_PLAYER, joinedPlayer.getPlayerIndexInGame());
 
-        //TODO : set name from data
-        String name = "SeriyV";
-        ServiceLocator.locateService(HudManagementService.class).setNameForPlayer(GameInfo.PlayerLocation.TOP_LEFT_PLAYER, name);
+        //set the name and avatar icon for player
+        ServiceLocator.locateService(HudManagementService.class).setNameForPlayer(GameInfo.PlayerLocation.TOP_LEFT_PLAYER, joinedPlayer.getPlayerMetaData().getPlayerNickname());
+        ServiceLocator.locateService(HudManagementService.class).setIconForPlayer(GameInfo.PlayerLocation.TOP_LEFT_PLAYER, joinedPlayer.getPlayerMetaData().getPlayerAvatarResource());
     }
 
-    private void extractTrumpCardData(CardData trumpCardData) {
+    private void extractTrumpCardData(final CardData trumpCardData) {
         //extract trump card and save it in game session
         mGameInfo.setTrumpCard(new Card(trumpCardData.getRank(), trumpCardData.getSuit()));
 

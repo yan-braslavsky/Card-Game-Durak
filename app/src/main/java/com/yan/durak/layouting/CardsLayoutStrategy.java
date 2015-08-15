@@ -15,7 +15,7 @@ public abstract class CardsLayoutStrategy {
     protected float mSlotWidth;
     protected float mSlotHeight;
 
-    public void init(float xPosition, float yPosition, float maxAvailableWidth, float slotWidth, float slotHeight) {
+    public void init(final float xPosition, final float yPosition, final float maxAvailableWidth, final float slotWidth, final float slotHeight) {
         mNormalizedBaseXPosition = xPosition;
         mNormalizedBaseYPosition = yPosition;
         mMaxWidth = maxAvailableWidth;

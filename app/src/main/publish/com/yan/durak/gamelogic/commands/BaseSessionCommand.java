@@ -12,7 +12,7 @@ public abstract class BaseSessionCommand implements SessionCommand {
     private GameSession mGameSession;
 
     @Override
-    public void setGameSession(GameSession gameSession)
+    public void setGameSession(final GameSession gameSession)
     {
         mGameSession = gameSession;
     }

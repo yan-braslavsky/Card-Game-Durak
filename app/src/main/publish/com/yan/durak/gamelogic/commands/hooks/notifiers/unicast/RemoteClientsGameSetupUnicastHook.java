@@ -10,7 +10,7 @@ import com.yan.durak.gamelogic.communication.protocol.data.CardData;
 import com.yan.durak.gamelogic.communication.protocol.data.PlayerData;
 import com.yan.durak.gamelogic.communication.protocol.messages.GameSetupProtocolMessage;
 import com.yan.durak.gamelogic.game.IGameRules;
-import com.yan.durak.gamelogic.player.Player;
+import com.yan.durak.gamelogic.player.IPlayer;
 import com.yan.durak.gamelogic.player.RemotePlayer;
 
 import java.util.ArrayList;
@@ -27,32 +27,34 @@ public class RemoteClientsGameSetupUnicastHook implements CommandHook<AddRemoteP
     }
 
     @Override
-    public void onHookTrigger(AddRemotePlayerCommand hookCommand) {
+    public void onHookTrigger(final AddRemotePlayerCommand hookCommand) {
 
-        RemotePlayer addedPlayer = hookCommand.getAddedPlayer();
+        final RemotePlayer addedPlayer = hookCommand.getAddedPlayer();
 
         //obtain remote client from the added player
-        IRemoteClient client = addedPlayer.getSocketClient();
+        final IRemoteClient client = addedPlayer.getSocketClient();
 
         //obtain trump card
-        List<Card> cardsInStockPile = hookCommand.getGameSession().findPileByTag(Pile.PileTags.STOCK_PILE_TAG).getCardsInPile();
+        final List<Card> cardsInStockPile = hookCommand.getGameSession().findPileByTag(Pile.PileTags.STOCK_PILE_TAG).getCardsInPile();
 
         //get the trump card
-        Card trumpCard = cardsInStockPile.get(0);
+        final Card trumpCard = cardsInStockPile.get(0);
 
         //creating list of all other players that already joined
-        List<PlayerData> alreadyJoinedPlayers = new ArrayList<>(IGameRules.MAX_PLAYERS_IN_GAME);
-        for (Player player : hookCommand.getGameSession().getPlayers()) {
+        final List<PlayerData> alreadyJoinedPlayers = new ArrayList<>(IGameRules.MAX_PLAYERS_IN_GAME);
+        for (final IPlayer player : hookCommand.getGameSession().getPlayers()) {
             if (player.getGameIndex() != addedPlayer.getGameIndex()) {
-                alreadyJoinedPlayers.add(new PlayerData(player.getGameIndex(), player.getPileIndex()));
+                alreadyJoinedPlayers.add(new PlayerData(player.getGameIndex(),
+                        player.getPileIndex(), player.getPlayerMetaData()));
             }
         }
 
         //create my player data
-        PlayerData myPlayerData = new PlayerData(addedPlayer.getGameIndex(), addedPlayer.getPileIndex());
+        final PlayerData myPlayerData = new PlayerData(addedPlayer.getGameIndex(),
+                addedPlayer.getPileIndex(),addedPlayer.getPlayerMetaData());
 
         //prepare game setup message
-        String jsonMsg = new GameSetupProtocolMessage(
+        final String jsonMsg = new GameSetupProtocolMessage(
                 myPlayerData, new CardData(trumpCard.getRank(),
                 trumpCard.getSuit()), alreadyJoinedPlayers,
                 hookCommand.getGameSession().getGameRules().getTotalPlayersInGameAmount()).toJsonString();

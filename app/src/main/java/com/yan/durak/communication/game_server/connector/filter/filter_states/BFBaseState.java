@@ -12,7 +12,7 @@ public abstract class BFBaseState implements IBatchFilterState, YANIPoolableObje
 
     protected CardMoveBatchMessageFilter mBatchFilter;
 
-    public void setBatchFilter(CardMoveBatchMessageFilter batchFilter) {
+    public void setBatchFilter(final CardMoveBatchMessageFilter batchFilter) {
         mBatchFilter = batchFilter;
     }
 
@@ -29,11 +29,11 @@ public abstract class BFBaseState implements IBatchFilterState, YANIPoolableObje
     /**
      * Goes to next state and pools the current
      */
-    protected <T extends BFBaseState> void goToNextState(Class<T> nextStateClazz) {
-        CardMoveBatchMessageFilter cachedBatchFilter = mBatchFilter;
+    protected <T extends BFBaseState> void goToNextState(final Class<T> nextStateClazz) {
+        final CardMoveBatchMessageFilter cachedBatchFilter = mBatchFilter;
 
         //obtain the next state from pool
-        T nextState = YANObjectPool.getInstance().obtain(nextStateClazz);
+        final T nextState = YANObjectPool.getInstance().obtain(nextStateClazz);
         nextState.setBatchFilter(cachedBatchFilter);
 
         //reset this state and offer it to pool

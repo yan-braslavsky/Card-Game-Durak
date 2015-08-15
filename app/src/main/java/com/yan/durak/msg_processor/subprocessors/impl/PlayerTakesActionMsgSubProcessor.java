@@ -33,12 +33,12 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
     }
 
     @Override
-    public void processMessage(PlayerTakesActionMessage serverMessage) {
+    public void processMessage(final PlayerTakesActionMessage serverMessage) {
 
         updateActivePlayerState(serverMessage.getMessageData());
 
         @HudNodes.SpeechBubbleText String speechBubbleText = null;
-        PlayerTakesActionMessage.PlayerAction playerAction = PlayerTakesActionMessage.PlayerAction.valueOf(serverMessage.getMessageData().getAction());
+        final PlayerTakesActionMessage.PlayerAction playerAction = PlayerTakesActionMessage.PlayerAction.valueOf(serverMessage.getMessageData().getAction());
 
         switch (playerAction) {
             case ATTACK_START:
@@ -87,11 +87,11 @@ public class PlayerTakesActionMsgSubProcessor extends BaseMsgSubProcessor<Player
 
     }
 
-    private void updateActivePlayerState(PlayerTakesActionMessage.ProtocolMessageData messageData) {
+    private void updateActivePlayerState(final PlayerTakesActionMessage.ProtocolMessageData messageData) {
 
         if (messageData.getPlayerIndex() == mGameInfo.getPlayerIndex(GameInfo.PlayerLocation.BOTTOM_PLAYER)) {
 
-            PlayerTakesActionMessage.PlayerAction action = PlayerTakesActionMessage.PlayerAction.valueOf(messageData.getAction());
+            final PlayerTakesActionMessage.PlayerAction action = PlayerTakesActionMessage.PlayerAction.valueOf(messageData.getAction());
 
             //TODO : make those updates in specific subprocessors
             if (action == PlayerTakesActionMessage.PlayerAction.ATTACK_START) {

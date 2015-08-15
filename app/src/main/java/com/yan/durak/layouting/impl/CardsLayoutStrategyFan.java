@@ -21,26 +21,26 @@ public class CardsLayoutStrategyFan extends CardsLayoutStrategy {
         super();
         mSlotsByIndexComparator = new Comparator<CardsLayouterSlotImpl>() {
             @Override
-            public int compare(CardsLayouterSlotImpl lhs, CardsLayouterSlotImpl rhs) {
+            public int compare(final CardsLayouterSlotImpl lhs, final CardsLayouterSlotImpl rhs) {
                 return rhs.getSortingIndex() - lhs.getSortingIndex();
             }
         };
     }
 
-    public void layoutRowOfSlots(List<CardsLayouterSlotImpl> slots) {
+    public void layoutRowOfSlots(final List<CardsLayouterSlotImpl> slots) {
 
-        boolean isEvenAmountOfSlots = slots.size() % 2 == 0;
+        final boolean isEvenAmountOfSlots = slots.size() % 2 == 0;
 
-        float xCenterPosition = mNormalizedBaseXPosition;
-        float yStartPosition = mNormalizedBaseYPosition - mSlotHeight;
+        final float xCenterPosition = mNormalizedBaseXPosition;
+        final float yStartPosition = mNormalizedBaseYPosition - mSlotHeight;
 
-        float yRotationPoint = mNormalizedBaseYPosition * 3;
-        float halfAvailableWidth = (mMaxWidth / 2);
-        double tanHalfAngle = halfAvailableWidth / (yRotationPoint - yStartPosition);
-        double halfAngleInRadians = Math.atan(tanHalfAngle);
+        final float yRotationPoint = mNormalizedBaseYPosition * 3;
+        final float halfAvailableWidth = (mMaxWidth / 2);
+        final double tanHalfAngle = halfAvailableWidth / (yRotationPoint - yStartPosition);
+        final double halfAngleInRadians = Math.atan(tanHalfAngle);
 
-        float halfAngleInDegrees = (float) (Math.toDegrees(halfAngleInRadians));
-        float fullAngleInDegrees = halfAngleInDegrees * 2;
+        final float halfAngleInDegrees = (float) (Math.toDegrees(halfAngleInRadians));
+        final float fullAngleInDegrees = halfAngleInDegrees * 2;
         float angleStep = fullAngleInDegrees / slots.size();
 
         //adjust the step , to leave it inside the bounds of the screen
@@ -48,17 +48,17 @@ public class CardsLayoutStrategyFan extends CardsLayoutStrategy {
 
         float currentRotation;
         int currentDistanceFromOrigin = 0;
-        YANVector2 rotationOrigin = new YANVector2(xCenterPosition, yRotationPoint);
+        final YANVector2 rotationOrigin = new YANVector2(xCenterPosition, yRotationPoint);
 
-        int halfArraySize = slots.size() / 2;
+        final int halfArraySize = slots.size() / 2;
         int currentSortingIndex = halfArraySize;
 
         for (int i = 0; i < slots.size(); i++) {
             //slot that will be repositioned
-            CardsLayouterSlotImpl slot = slots.get(i);
+            final CardsLayouterSlotImpl slot = slots.get(i);
 
             //side represents left or right from the origin
-            int side = ((i % 2) == 0) ? -1 : 1;
+            final int side = ((i % 2) == 0) ? -1 : 1;
 
             //set sorting index that will help reorder slots
             //after reposition

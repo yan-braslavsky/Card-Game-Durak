@@ -3,7 +3,7 @@ package com.yan.durak.gamelogic.commands.custom;
 
 import com.yan.durak.gamelogic.commands.BaseSessionCommand;
 import com.yan.durak.gamelogic.exceptions.SameAttackerAsDefenderException;
-import com.yan.durak.gamelogic.player.Player;
+import com.yan.durak.gamelogic.player.IPlayer;
 import com.yan.durak.gamelogic.utils.math.MathHelper;
 
 /**
@@ -18,18 +18,18 @@ public class IdentifyNextRoundPlayersCommand extends BaseSessionCommand {
     public void execute() {
 
         //if no retaliation command , then randomly set attacker , defender should be the one next to it
-        PlayerAttackRequestCommand attackCommand = getGameSession().searchForRecentCommand(PlayerAttackRequestCommand.class);
+        final PlayerAttackRequestCommand attackCommand = getGameSession().searchForRecentCommand(PlayerAttackRequestCommand.class);
         if (attackCommand == null) {
             randomlySetAttackerAndDefender();
             return;
         }
 
         //get previous defending player
-        Player previousDefender = getGameSession().getPlayers().get(attackCommand.getDefendingPlayerIndex());
+        final IPlayer previousDefender = getGameSession().getPlayers().get(attackCommand.getDefendingPlayerIndex());
 
         //identify if previous defender took all cards or he actually covered everything
-        MoveAllFieldPilesCardsCommand movePilesCommand = getGameSession().searchForRecentCommand(MoveAllFieldPilesCardsCommand.class);
-        boolean playerTookTheCards = previousDefender.getPileIndex() == movePilesCommand.getToPileIndex();
+        final MoveAllFieldPilesCardsCommand movePilesCommand = getGameSession().searchForRecentCommand(MoveAllFieldPilesCardsCommand.class);
+        final boolean playerTookTheCards = previousDefender.getPileIndex() == movePilesCommand.getToPileIndex();
 
         if (playerTookTheCards) {
             // took all cards , next attacker is the player after the defender (defender + 1)
@@ -40,7 +40,7 @@ public class IdentifyNextRoundPlayersCommand extends BaseSessionCommand {
         }
 
         //get the next attacker player
-        Player nextAttacker = getGameSession().getPlayers().get(mNextRoundAttackerPlayerIndex);
+        IPlayer nextAttacker = getGameSession().getPlayers().get(mNextRoundAttackerPlayerIndex);
 
         //if the new attacker has no cards (shift attacker to the next player with cards)
         while (isPlayerHasNoCards(nextAttacker)) {
@@ -50,7 +50,7 @@ public class IdentifyNextRoundPlayersCommand extends BaseSessionCommand {
 
         //the new defender is the player next to attacker that has cards (and he is not the attacker)
         mNextRoundDefenderPlayerIndex = getGameSession().retrieveNextPlayerIndex(mNextRoundAttackerPlayerIndex);
-        Player nextDefender = getGameSession().getPlayers().get(mNextRoundDefenderPlayerIndex);
+        IPlayer nextDefender = getGameSession().getPlayers().get(mNextRoundDefenderPlayerIndex);
         while (isPlayerHasNoCards(nextDefender)) {
             mNextRoundDefenderPlayerIndex = getGameSession().retrieveNextPlayerIndex(mNextRoundDefenderPlayerIndex);
             nextDefender = getGameSession().getPlayers().get(mNextRoundAttackerPlayerIndex);
@@ -63,7 +63,7 @@ public class IdentifyNextRoundPlayersCommand extends BaseSessionCommand {
 
     }
 
-    private boolean isPlayerHasNoCards(Player nextDefender) {
+    private boolean isPlayerHasNoCards(final IPlayer nextDefender) {
         return getGameSession().getPilesStack().get(nextDefender.getPileIndex()).getCardsInPile().isEmpty();
     }
 

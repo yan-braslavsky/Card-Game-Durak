@@ -21,7 +21,7 @@ public class CardsLayouterSlotImpl implements CardsLayoutSlot, YANIPoolableObjec
         return mSortingIndex;
     }
 
-    public void setSortingIndex(int sortingIndex) {
+    public void setSortingIndex(final int sortingIndex) {
         mSortingIndex = sortingIndex;
     }
 
@@ -34,12 +34,12 @@ public class CardsLayouterSlotImpl implements CardsLayoutSlot, YANIPoolableObjec
         return mPosition;
     }
 
-    public void setPosition(float x, float y) {
+    public void setPosition(final float x, final float y) {
         mPosition.setX(x);
         mPosition.setY(y);
     }
 
-    public void setRotation(float rotation) {
+    public void setRotation(final float rotation) {
         mRotation = rotation;
     }
 
@@ -53,7 +53,7 @@ public class CardsLayouterSlotImpl implements CardsLayoutSlot, YANIPoolableObjec
         return mSortingLayer;
     }
 
-    public void setSortingLayer(int sortingLayer) {
+    public void setSortingLayer(final int sortingLayer) {
         mSortingLayer = sortingLayer;
     }
 

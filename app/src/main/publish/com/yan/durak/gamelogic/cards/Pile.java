@@ -24,19 +24,19 @@ public class Pile {
         mCardsInPile = new ArrayList<>();
     }
 
-    public void addTag(String tag) {
+    public void addTag(final String tag) {
         mTags.add(tag);
     }
 
-    public void removeTag(String tag) {
+    public void removeTag(final String tag) {
         mTags.remove(tag);
     }
 
-    public void addCardToPile(Card card) {
+    public void addCardToPile(final Card card) {
         mCardsInPile.add(card);
     }
 
-    public void removeCardFromPile(Card card) {
+    public void removeCardFromPile(final Card card) {
         mCardsInPile.remove(card);
     }
 
@@ -44,7 +44,7 @@ public class Pile {
         return mCardsInPile;
     }
 
-    public boolean hasTag(String tag) {
+    public boolean hasTag(final String tag) {
         return mTags.contains(tag);
     }
 
@@ -58,7 +58,7 @@ public class Pile {
     @Override
     public String toString() {
         String str = "";
-        for (String tag : mTags) {
+        for (final String tag : mTags) {
             str +=tag;
         }
         return str;

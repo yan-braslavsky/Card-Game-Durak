@@ -21,12 +21,12 @@ public class CompletePileToAmountOfCards extends BaseSessionCommand {
     @Override
     public void execute() {
 
-        List<Card> cardsInPile = getGameSession().getPilesStack().get(mToPileIndex).getCardsInPile();
+        final List<Card> cardsInPile = getGameSession().getPilesStack().get(mToPileIndex).getCardsInPile();
         if (cardsInPile.size() < mCardsAmount) {
 
-            int cardsToAdd = mCardsAmount - cardsInPile.size();
+            final int cardsToAdd = mCardsAmount - cardsInPile.size();
 
-            MoveTopCardsFromPileToPile moveTopCardsFromPileToPile = new MoveTopCardsFromPileToPile();
+            final MoveTopCardsFromPileToPile moveTopCardsFromPileToPile = new MoveTopCardsFromPileToPile();
             moveTopCardsFromPileToPile.setFromPileIndex(mFromPileIndex);
             moveTopCardsFromPileToPile.setToPileIndex(mToPileIndex);
             moveTopCardsFromPileToPile.setCardsAmount(cardsToAdd);
@@ -35,15 +35,15 @@ public class CompletePileToAmountOfCards extends BaseSessionCommand {
 
     }
 
-    public void setFromPileIndex(int fromPileIndex) {
+    public void setFromPileIndex(final int fromPileIndex) {
         mFromPileIndex = fromPileIndex;
     }
 
-    public void setToPileIndex(int toPileIndex) {
+    public void setToPileIndex(final int toPileIndex) {
         mToPileIndex = toPileIndex;
     }
 
-    public void setCardsAmount(int cardAmount) {
+    public void setCardsAmount(final int cardAmount) {
         mCardsAmount = cardAmount;
     }
 }

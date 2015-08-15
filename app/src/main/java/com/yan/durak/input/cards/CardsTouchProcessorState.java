@@ -16,11 +16,11 @@ public abstract class CardsTouchProcessorState implements YANIPoolableObject {
         mScreenSize = new YANVector2();
     }
 
-    protected void setCardsTouchProcessor(CardsTouchProcessor cardsTouchProcessor) {
+    protected void setCardsTouchProcessor(final CardsTouchProcessor cardsTouchProcessor) {
         mCardsTouchProcessor = cardsTouchProcessor;
     }
 
-    protected void applyState(float screenWidth, float screenHeight) {
+    protected void applyState(final float screenWidth, final float screenHeight) {
         mScreenSize.setXY(screenWidth, screenHeight);
     }
 

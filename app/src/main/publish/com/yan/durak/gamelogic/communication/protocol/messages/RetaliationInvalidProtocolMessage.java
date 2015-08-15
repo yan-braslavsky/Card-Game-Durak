@@ -15,7 +15,7 @@ public class RetaliationInvalidProtocolMessage extends BaseProtocolMessage<Retal
 
     public static final String MESSAGE_NAME = "retaliationInvalid";
 
-    public RetaliationInvalidProtocolMessage(List<RetaliationSetData> retaliationSetDataList) {
+    public RetaliationInvalidProtocolMessage(final List<RetaliationSetData> retaliationSetDataList) {
         super();
         setMessageName(MESSAGE_NAME);
         setMessageData(new ProtocolMessageData(retaliationSetDataList));
@@ -26,7 +26,7 @@ public class RetaliationInvalidProtocolMessage extends BaseProtocolMessage<Retal
         @SerializedName("invalidRetaliationsList")
         List<RetaliationSetData> mInvalidRetaliationsList;
 
-        public ProtocolMessageData(List<RetaliationSetData> invalidRetaliationsList) {
+        public ProtocolMessageData(final List<RetaliationSetData> invalidRetaliationsList) {
             mInvalidRetaliationsList = invalidRetaliationsList;
         }
 

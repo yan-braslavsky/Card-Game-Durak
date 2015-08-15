@@ -33,38 +33,38 @@ public class CardsTouchProcessorDefaultState extends CardsTouchProcessorState {
 
 
     @Override
-    protected boolean onTouchUp(float normalizedX, float normalizedY) {
+    protected boolean onTouchUp(final float normalizedX, final float normalizedY) {
         return false;
     }
 
     @Override
-    protected boolean onTouchDrag(float normalizedX, float normalizedY) {
+    protected boolean onTouchDrag(final float normalizedX, final float normalizedY) {
         return false;
     }
 
     @Override
-    protected boolean onTouchDown(float normalizedX, float normalizedY) {
+    protected boolean onTouchDown(final float normalizedX, final float normalizedY) {
 
         //load the player card nodes
         mPlayerCardNodes.clear();
-        for (Card card : mCardsTouchProcessor.getPlayerPile().getCardsInPile()) {
+        for (final Card card : mCardsTouchProcessor.getPlayerPile().getCardsInPile()) {
             mPlayerCardNodes.add(mCardsTouchProcessor.getCardNodesManager().getCardNodeForCard(card));
         }
 
         //adapt to world touch point
-        YANVector2 touchToWorldPoint = YANInputManager.touchToWorld(normalizedX, normalizedY,
+        final YANVector2 touchToWorldPoint = YANInputManager.touchToWorld(normalizedX, normalizedY,
                 mScreenSize.getX(), mScreenSize.getY());
 
         //find touched card under the touch point
-        CardNode touchedCard = (CardNode) YANCollisionDetector.findClosestNodeToWorldTouchPoint(touchToWorldPoint.getX(), touchToWorldPoint.getY(), mPlayerCardNodes);
+        final CardNode touchedCard = (CardNode) YANCollisionDetector.findClosestNodeToWorldTouchPoint(touchToWorldPoint.getX(), touchToWorldPoint.getY(), mPlayerCardNodes);
         if (touchedCard == null || touchedCard.containsTag(CardNode.TAG_TOUCH_DISABLED))
             return false;
 
         //we need to identify touch time to process tap later
-        long touchTime = System.currentTimeMillis();
+        final long touchTime = System.currentTimeMillis();
 
         //move to drag state
-        CardsTouchProcessorDragState dragState = YANObjectPool.getInstance().obtain(CardsTouchProcessorDragState.class);
+        final CardsTouchProcessorDragState dragState = YANObjectPool.getInstance().obtain(CardsTouchProcessorDragState.class);
         dragState.setCardsTouchProcessor(mCardsTouchProcessor);
         dragState.setDraggedCard(touchedCard);
         dragState.setTouchPositionOffset(touchToWorldPoint.getX() - touchedCard.getPosition().getX(), touchToWorldPoint.getY() - touchedCard.getPosition().getY());

@@ -18,15 +18,15 @@ public class MoveCardFromPileToPileCommand extends BaseSessionCommand {
     private int mFromPileIndex = -1;
     private int mToPileIndex = -1;
 
-    public void setCardToMove(Card mCardToMove) {
+    public void setCardToMove(final Card mCardToMove) {
         this.mCardToMove = mCardToMove;
     }
 
-    public void setFromPileIndex(int mFromPileIndex) {
+    public void setFromPileIndex(final int mFromPileIndex) {
         this.mFromPileIndex = mFromPileIndex;
     }
 
-    public void setToPileIndex(int mToPileIndex) {
+    public void setToPileIndex(final int mToPileIndex) {
         this.mToPileIndex = mToPileIndex;
     }
 
@@ -35,10 +35,10 @@ public class MoveCardFromPileToPileCommand extends BaseSessionCommand {
         validatePilesExist();
 
 
-        Pile fromPile = getGameSession().getPilesStack().get(mFromPileIndex);
-        Pile toPile = getGameSession().getPilesStack().get(mToPileIndex);
+        final Pile fromPile = getGameSession().getPilesStack().get(mFromPileIndex);
+        final Pile toPile = getGameSession().getPilesStack().get(mToPileIndex);
 
-        for (Card card : fromPile.getCardsInPile()) {
+        for (final Card card : fromPile.getCardsInPile()) {
             if (mCardToMove.equals(card)) {
                 fromPile.removeCardFromPile(card);
                 toPile.addCardToPile(card);

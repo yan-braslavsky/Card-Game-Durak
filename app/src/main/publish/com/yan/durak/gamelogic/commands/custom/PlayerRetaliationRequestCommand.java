@@ -3,7 +3,7 @@ package com.yan.durak.gamelogic.commands.custom;
 
 import com.yan.durak.gamelogic.cards.Pile;
 import com.yan.durak.gamelogic.commands.BaseSessionCommand;
-import com.yan.durak.gamelogic.player.Player;
+import com.yan.durak.gamelogic.player.IPlayer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +24,7 @@ public class PlayerRetaliationRequestCommand extends BaseSessionCommand {
 
     @Override
     public void execute() {
-        Player retaliator = getGameSession().getPlayers().get(mPlayerIndex);
+        final IPlayer retaliator = getGameSession().getPlayers().get(mPlayerIndex);
 
         //get field piles that are pending retaliation
         mPilesPendingRetaliation = retrievePilesPendingRetaliation();
@@ -34,9 +34,9 @@ public class PlayerRetaliationRequestCommand extends BaseSessionCommand {
     }
 
     private List<Pile> retrievePilesPendingRetaliation() {
-        List<Pile> pilesToRetaliate = new ArrayList<>();
+        final List<Pile> pilesToRetaliate = new ArrayList<>();
         //we are choosing all field piles that are not covered yet (contain only one card)
-        for (Pile pile : getGameSession().getPilesStack()) {
+        for (final Pile pile : getGameSession().getPilesStack()) {
             if (pile.hasTag(Pile.PileTags.FIELD_PILE) && (pile.getCardsInPile().size() == 1)) {
                 pilesToRetaliate.add(pile);
             }
@@ -44,7 +44,7 @@ public class PlayerRetaliationRequestCommand extends BaseSessionCommand {
         return pilesToRetaliate;
     }
 
-    public void setPlayerIndex(int playerIndex) {
+    public void setPlayerIndex(final int playerIndex) {
         mPlayerIndex = playerIndex;
     }
 

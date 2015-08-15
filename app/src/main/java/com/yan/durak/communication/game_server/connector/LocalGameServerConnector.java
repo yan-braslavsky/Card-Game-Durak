@@ -26,7 +26,7 @@ public class LocalGameServerConnector extends BaseGameServerConnector {
     }
 
     @Override
-    public void sentMessageToServer(BaseProtocolMessage message) {
+    public void sentMessageToServer(final BaseProtocolMessage message) {
         ServiceLocator.locateService(SocketConnectionManager.class).sendMessageToRemoteServer(message.toJsonString());
     }
 }

@@ -16,16 +16,16 @@ public class ResponseThrowInsMessage extends BaseProtocolMessage<ResponseThrowIn
 
     public static final String MESSAGE_NAME = "responseThrowIns";
 
-    public ResponseThrowInsMessage(List<Card> selectedThrowInCards) {
+    public ResponseThrowInsMessage(final List<Card> selectedThrowInCards) {
         super();
         setMessageName(MESSAGE_NAME);
-        List<CardData> cardDataList = convertCardDataList(selectedThrowInCards);
+        final List<CardData> cardDataList = convertCardDataList(selectedThrowInCards);
         setMessageData(new ProtocolMessageData(cardDataList));
     }
 
-    private List<CardData> convertCardDataList(List<Card> possibleThrowInCards) {
-        List<CardData> retList = new ArrayList<>();
-        for (Card card : possibleThrowInCards) {
+    private List<CardData> convertCardDataList(final List<Card> possibleThrowInCards) {
+        final List<CardData> retList = new ArrayList<>();
+        for (final Card card : possibleThrowInCards) {
             retList.add(new CardData(card.getRank(), card.getSuit()));
         }
         return retList;
@@ -37,7 +37,7 @@ public class ResponseThrowInsMessage extends BaseProtocolMessage<ResponseThrowIn
         @SerializedName("selectedThrowInCards")
         List<CardData> mSelectedThrowInCards;
 
-        public ProtocolMessageData(List<CardData> selectedThrowInCards) {
+        public ProtocolMessageData(final List<CardData> selectedThrowInCards) {
             mSelectedThrowInCards = selectedThrowInCards;
         }
 

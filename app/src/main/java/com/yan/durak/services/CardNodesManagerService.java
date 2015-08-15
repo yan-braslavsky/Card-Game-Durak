@@ -40,7 +40,7 @@ public class CardNodesManagerService implements IService {
     private float mOriginalCardHeight;
 
     public CardNodesManagerService() {
-        PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
+        final PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
         this.mCardToCardNodesMap = new HashMap<>(pileManager.getAllCards().size());
         this.mPileManger = pileManager;
     }
@@ -51,7 +51,7 @@ public class CardNodesManagerService implements IService {
      * @param card card logical representation
      * @return card node or null if no such card found
      */
-    public CardNode getCardNodeForCard(Card card) {
+    public CardNode getCardNodeForCard(final Card card) {
         return mCardToCardNodesMap.get(card);
     }
 
@@ -63,12 +63,12 @@ public class CardNodesManagerService implements IService {
         return mOriginalCardHeight;
     }
 
-    public void createNodes(YANTextureAtlas cardAtlas) {
+    public void createNodes(final YANTextureAtlas cardAtlas) {
 
         //create card nodes and flip them face down
-        for (Card card : mPileManger.getAllCards()) {
-            String textureRegionName = "cards_" + card.getSuit() + "_" + card.getRank() + ".png";
-            CardNode cardNode = new CardNode(cardAtlas.getTextureRegion(textureRegionName), cardAtlas.getTextureRegion("cards_back.png"), card);
+        for (final Card card : mPileManger.getAllCards()) {
+            final String textureRegionName = "cards_" + card.getSuit() + "_" + card.getRank() + ".png";
+            final CardNode cardNode = new CardNode(cardAtlas.getTextureRegion(textureRegionName), cardAtlas.getTextureRegion("cards_back.png"), card);
             mCardToCardNodesMap.put(card, cardNode);
 
             //hide the card
@@ -79,17 +79,17 @@ public class CardNodesManagerService implements IService {
         this.mImmutableCardNodes = Collections.unmodifiableCollection(mCardToCardNodesMap.values());
     }
 
-    public void setNodesSizes(YANReadOnlyVector2 sceneSize) {
+    public void setNodesSizes(final YANReadOnlyVector2 sceneSize) {
 
-        CardNode sampleCardNode = getAllCardNodes().iterator().next();
-        float aspectRatio = sampleCardNode.getTextureRegion().getWidth() / sampleCardNode.getTextureRegion().getHeight();
+        final CardNode sampleCardNode = getAllCardNodes().iterator().next();
+        final float aspectRatio = sampleCardNode.getTextureRegion().getWidth() / sampleCardNode.getTextureRegion().getHeight();
 
         //cache original cards size
         mOriginalCardWidth = Math.min(sceneSize.getX(), sceneSize.getY()) / (float) ((MAX_CARDS_IN_LINE) / 2);
         mOriginalCardHeight = mOriginalCardWidth / aspectRatio;
 
         //set size for each card
-        for (YANTexturedNode cardNode : getAllCardNodes()) {
+        for (final YANTexturedNode cardNode : getAllCardNodes()) {
             cardNode.setSize(mOriginalCardWidth, mOriginalCardHeight);
         }
     }
@@ -101,12 +101,12 @@ public class CardNodesManagerService implements IService {
         return mImmutableCardNodes;
     }
 
-    public void disableCardNode(CardNode cardNode) {
+    public void disableCardNode(final CardNode cardNode) {
         cardNode.addTag(CardNode.TAG_TOUCH_DISABLED);
         cardNode.setOverlayColor(CARD_DISABLED_OVERLAY_COLOR.getR(), CARD_DISABLED_OVERLAY_COLOR.getG(), CARD_DISABLED_OVERLAY_COLOR.getB(), CARD_DISABLED_OVERLAY_COLOR.getA());
     }
 
-    public void enableCardNode(CardNode cardNode) {
+    public void enableCardNode(final CardNode cardNode) {
         cardNode.removeTag(CardNode.TAG_TOUCH_DISABLED);
         cardNode.setOverlayColor(0, 0, 0, 0);
     }

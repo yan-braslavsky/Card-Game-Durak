@@ -16,17 +16,17 @@ public class SelectTrumpCommand extends BaseSessionCommand {
 
     @Override
     public void execute() {
-        List<Card> pile = getGameSession().getPilesStack().get(mTrumpPileIndex).getCardsInPile();
+        final List<Card> pile = getGameSession().getPilesStack().get(mTrumpPileIndex).getCardsInPile();
         if (pile.isEmpty()) {
             throw new EmptyPileException(mTrumpPileIndex);
         }
 
         //set the suit of the bottom card (which is a first card)
-        String suit = pile.get(0).getSuit();
+        final String suit = pile.get(0).getSuit();
         getGameSession().setTrumpSuit(suit);
     }
 
-    public void setTrumpPileIndex(int trumpPileIndex) {
+    public void setTrumpPileIndex(final int trumpPileIndex) {
         mTrumpPileIndex = trumpPileIndex;
     }
 }

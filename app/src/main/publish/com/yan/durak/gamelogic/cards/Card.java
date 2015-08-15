@@ -29,7 +29,7 @@ public class Card {
     private String mRank;
     private String mSuit;
 
-    public Card(String rank, String suit) {
+    public Card(final String rank, final String suit) {
         mRank = rank;
         mSuit = suit;
     }
@@ -51,11 +51,11 @@ public class Card {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof Card)) return false;
 
-        Card card = (Card) o;
+        final Card card = (Card) o;
 
         if (!mRank.equals(card.mRank)) return false;
         if (!mSuit.equals(card.mSuit)) return false;

@@ -55,7 +55,7 @@ public class PileManagerService implements IService {
     private void init() {
 
         //initially all piles are placed in the stock pile
-        for (Card card : mCards) {
+        for (final Card card : mCards) {
             mStockPile.addCard(card);
         }
 
@@ -71,22 +71,22 @@ public class PileManagerService implements IService {
     public void initFieldPiles(final int firstFieldPileIndex){
         final int lastFieldPileIndex = firstFieldPileIndex + FIELD_PILES_AMOUNT;
         for (int pileIndex = firstFieldPileIndex; pileIndex < lastFieldPileIndex; pileIndex++) {
-            PileModel fieldPile = new PileModel(pileIndex);
+            final PileModel fieldPile = new PileModel(pileIndex);
             this.mFieldPiles.add(fieldPile);
             this.mIndexToPileMap.put(pileIndex, fieldPile);
         }
     }
 
-    public void setBottomPlayerPileIndex(int playerPileIndex) {
+    public void setBottomPlayerPileIndex(final int playerPileIndex) {
         mBottomPlayerPile.setPileIndex(playerPileIndex);
         mIndexToPileMap.put(playerPileIndex, mBottomPlayerPile);
     }
-    public void setTopRightPlayerPileIndex(int playerPileIndex) {
+    public void setTopRightPlayerPileIndex(final int playerPileIndex) {
         mTopRightPlayerPile.setPileIndex(playerPileIndex);
         mIndexToPileMap.put(playerPileIndex, mTopRightPlayerPile);
     }
 
-    public void setTopLeftPlayerPileIndex(int playerPileIndex) {
+    public void setTopLeftPlayerPileIndex(final int playerPileIndex) {
         mTopLeftPlayerPile.setPileIndex(playerPileIndex);
         mIndexToPileMap.put(playerPileIndex, mTopLeftPlayerPile);
     }
@@ -96,7 +96,7 @@ public class PileManagerService implements IService {
      *
      * @return pile or null if pile is not found
      */
-    public PileModel getPileWithIndex(int pileIndex) {
+    public PileModel getPileWithIndex(final int pileIndex) {
         return mIndexToPileMap.get(pileIndex);
     }
 
@@ -136,10 +136,10 @@ public class PileManagerService implements IService {
      * @param card card to look for
      * @return pile that contains provided card or null if no field pile contain such card.
      */
-    public PileModel getFieldPileWithCard(Card card) {
+    public PileModel getFieldPileWithCard(final Card card) {
 
-        for (PileModel fieldPile : mFieldPiles) {
-            for (Card cardInPile : fieldPile.getCardsInPile()) {
+        for (final PileModel fieldPile : mFieldPiles) {
+            for (final Card cardInPile : fieldPile.getCardsInPile()) {
                 if (card.equals(cardInPile)) {
                     return fieldPile;
                 }
@@ -154,10 +154,10 @@ public class PileManagerService implements IService {
      *
      * @return pile that contains provided card or null if no field pile contain such card.
      */
-    public PileModel findFieldPileWithCardByRankAndSuit(String rank, String suit) {
+    public PileModel findFieldPileWithCardByRankAndSuit(final String rank, final String suit) {
 
-        for (PileModel fieldPile : mFieldPiles) {
-            for (Card cardInPile : fieldPile.getCardsInPile()) {
+        for (final PileModel fieldPile : mFieldPiles) {
+            for (final Card cardInPile : fieldPile.getCardsInPile()) {
                 if (cardInPile.getRank().equals(rank) && cardInPile.getSuit().equals(suit)) {
                     return fieldPile;
                 }
@@ -172,7 +172,7 @@ public class PileManagerService implements IService {
     }
 
 
-    public void setFirstFiledPileindex(int firstFiledPileIndex) {
+    public void setFirstFiledPileindex(final int firstFiledPileIndex) {
         mFirstFiledPileindex = firstFiledPileIndex;
         initFieldPiles(firstFiledPileIndex);
     }

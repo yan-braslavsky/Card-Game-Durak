@@ -61,7 +61,7 @@ public abstract class BaseGameServerConnector implements IGameServerConnector {
     }
 
     @Override
-    public void update(float deltaTimeSeconds) {
+    public void update(final float deltaTimeSeconds) {
         //read messages from remote socket server
         readMessageFromServer();
 
@@ -76,7 +76,7 @@ public abstract class BaseGameServerConnector implements IGameServerConnector {
             return;
 
         //try to obtain message from the connector
-        String msg = ServiceLocator.locateService(SocketConnectionManager.class).readMessageFromRemoteServer();
+        final String msg = ServiceLocator.locateService(SocketConnectionManager.class).readMessageFromRemoteServer();
 
         //in case there was no message or no listener to process it ,we will do nothing
         if (msg == null || mMessageFilter == null)
@@ -86,16 +86,16 @@ public abstract class BaseGameServerConnector implements IGameServerConnector {
         handleServerMessage(msg);
     }
 
-    private void handleServerMessage(String msg) {
+    private void handleServerMessage(final String msg) {
         //read the message as blank , to identify its name
-        BlankProtocolMessage message = mGson.fromJson(msg, BlankProtocolMessage.class);
+        final BlankProtocolMessage message = mGson.fromJson(msg, BlankProtocolMessage.class);
 
         //forward the actual message to listener
         mMessageFilter.handleServerMessage(mGson.fromJson(msg, mNamesToClassMap.get(message.getMessageName())));
     }
 
     @Override
-    public void setListener(IGameServerCommunicatorListener listener) {
+    public void setListener(final IGameServerCommunicatorListener listener) {
         mMessageFilter.setWrappedServerListener(listener);
     }
 }

@@ -15,7 +15,7 @@ public class RetaliationSetData {
     @SerializedName("coveringCard")
     CardData mCoveringCardData;
 
-    public RetaliationSetData(CardData coveredCardData, CardData coveringCardData) {
+    public RetaliationSetData(final CardData coveredCardData, final CardData coveringCardData) {
         mCoveredCardData = coveredCardData;
         mCoveringCardData = coveringCardData;
     }

@@ -6,7 +6,7 @@ import com.yan.durak.gamelogic.commands.hooks.CommandHook;
 import com.yan.durak.gamelogic.communication.connection.IRemoteClient;
 import com.yan.durak.gamelogic.communication.protocol.data.PlayerData;
 import com.yan.durak.gamelogic.communication.protocol.messages.GameOverProtocolMessage;
-import com.yan.durak.gamelogic.player.Player;
+import com.yan.durak.gamelogic.player.IPlayer;
 import com.yan.durak.gamelogic.player.RemotePlayer;
 
 /**
@@ -22,19 +22,21 @@ public class GameOverBroadcastHook implements CommandHook<FinishGameCommand> {
     }
 
     @Override
-    public void onHookTrigger(FinishGameCommand hookCommand) {
+    public void onHookTrigger(final FinishGameCommand hookCommand) {
 
         //get loosing player data
-        int loosingPlayerIndex = hookCommand.getLoosingPlayerIndex();
-        int loosingPlayerPileIndex = hookCommand.getGameSession().getPlayers().get(loosingPlayerIndex).getPileIndex();
+        final int loosingPlayerIndex = hookCommand.getLoosingPlayerIndex();
+        final IPlayer loosingPlayer = hookCommand.getGameSession().getPlayers().get(loosingPlayerIndex);
+        final int loosingPlayerPileIndex = loosingPlayer.getPileIndex();
 
         //create json string from the message
-        String jsonMsg = new GameOverProtocolMessage(new PlayerData(loosingPlayerIndex, loosingPlayerPileIndex)).toJsonString();
+        final String jsonMsg = new GameOverProtocolMessage(new PlayerData(loosingPlayerIndex, loosingPlayerPileIndex,
+                loosingPlayer.getPlayerMetaData())).toJsonString();
 
-        for (Player player : hookCommand.getGameSession().getPlayers()) {
+        for (final IPlayer player : hookCommand.getGameSession().getPlayers()) {
             if (player instanceof RemotePlayer) {
-                RemotePlayer remotePlayer = (RemotePlayer) player;
-                IRemoteClient client = remotePlayer.getSocketClient();
+                final RemotePlayer remotePlayer = (RemotePlayer) player;
+                final IRemoteClient client = remotePlayer.getSocketClient();
                 client.sendMessage(jsonMsg);
             }
         }

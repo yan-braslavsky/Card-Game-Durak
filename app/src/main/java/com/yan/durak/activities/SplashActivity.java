@@ -10,7 +10,7 @@ import com.yan.durak.R;
 public class SplashActivity extends Activity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
@@ -21,7 +21,7 @@ public class SplashActivity extends Activity {
                 System.gc();
 
                 //TODO : load assets here
-                Intent myIntent = new Intent(SplashActivity.this, MainMenuActivity.class);
+                final Intent myIntent = new Intent(SplashActivity.this, MainMenuActivity.class);
                 //Optional parameters
 //                myIntent.putExtra("key", value);
                 SplashActivity.this.startActivity(myIntent);

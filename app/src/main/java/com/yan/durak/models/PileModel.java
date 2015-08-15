@@ -16,7 +16,7 @@ public class PileModel {
     private final List<Card> mUnmodifiableCardsCollection;
     private int mPileIndex;
 
-    public PileModel(int pileIndex) {
+    public PileModel(final int pileIndex) {
         this.mCardsInPile = new ArrayList<>();
         this.mUnmodifiableCardsCollection = Collections.unmodifiableList(mCardsInPile);
         this.mPileIndex = pileIndex;
@@ -27,8 +27,8 @@ public class PileModel {
      *
      * @return card if it is in the pile or null otherwise
      */
-    public Card findCardByRankAndSuit(String rank, String suit) {
-        for (Card card : mCardsInPile) {
+    public Card findCardByRankAndSuit(final String rank, final String suit) {
+        for (final Card card : mCardsInPile) {
             if (card.getRank().equals(rank) && card.getSuit().equals(suit))
                 return card;
         }
@@ -36,7 +36,7 @@ public class PileModel {
         return null;
     }
 
-    public void addCard(Card card) {
+    public void addCard(final Card card) {
 
         //do not add the same card twice
         if(mCardsInPile.contains(card))
@@ -45,7 +45,7 @@ public class PileModel {
         mCardsInPile.add(card);
     }
 
-    public void removeCard(Card movedCard) {
+    public void removeCard(final Card movedCard) {
         mCardsInPile.remove(movedCard);
     }
 
@@ -53,7 +53,7 @@ public class PileModel {
         return mPileIndex;
     }
 
-    public void setPileIndex(int pileIndex) {
+    public void setPileIndex(final int pileIndex) {
         mPileIndex = pileIndex;
     }
 
@@ -61,11 +61,11 @@ public class PileModel {
         return mUnmodifiableCardsCollection;
     }
 
-    public boolean isCardInPile(Card card) {
+    public boolean isCardInPile(final Card card) {
         return mCardsInPile.contains(card);
     }
 
-    public void addCardAtIndex(Card card, int indexOfCard) {
+    public void addCardAtIndex(final Card card, final int indexOfCard) {
         //do not add the same card twice
         if(mCardsInPile.contains(card))
             return;

@@ -58,14 +58,9 @@ public class GameInfo implements IService {
      */
     private Card mTrumpCard;
 
-    /**
-     * TODO : shouldn't be here...
-     */
-    private final GameActivity.GameInitConfig mGameConfig;
 
-    public GameInfo(GameActivity.GameInitConfig gameInitConfig) {
 
-        mGameConfig = gameInitConfig;
+    public GameInfo() {
 
         mSelectedThrowInCards = new ArrayList<>();
         mThrowInPossibleCards = new ArrayList<>();
@@ -77,7 +72,7 @@ public class GameInfo implements IService {
     }
 
 
-    public void setTrumpCard(Card trumpCard) {
+    public void setTrumpCard(final Card trumpCard) {
         mTrumpCard = trumpCard;
     }
 
@@ -93,7 +88,7 @@ public class GameInfo implements IService {
         return mActivePlayerState;
     }
 
-    public void setActivePlayerState(IActivePlayerState activePlayerState) {
+    public void setActivePlayerState(final IActivePlayerState activePlayerState) {
         //return previous state to the pool
         YANObjectPool.getInstance().offer(mActivePlayerState);
         activePlayerState.resetState();
@@ -107,11 +102,11 @@ public class GameInfo implements IService {
         mActivePlayerState.applyState();
     }
 
-    public PlayerLocation getPlayerForIndex(int playerIndex) {
+    public PlayerLocation getPlayerForIndex(final int playerIndex) {
         return mIndexToPlayerMap.get(playerIndex);
     }
 
-    public PlayerInfo getPlayerInfoForPlayer(PlayerLocation player) {
+    public PlayerInfo getPlayerInfoForPlayer(final PlayerLocation player) {
         return mPlayerToPlayerInfoMap.get(player);
     }
 
@@ -119,9 +114,9 @@ public class GameInfo implements IService {
         mPlayerToPlayerInfoMap.put(player, playerInfo);
     }
 
-    public int getPlayerIndex(PlayerLocation player) {
+    public int getPlayerIndex(final PlayerLocation player) {
 
-        for (Map.Entry<Integer, PlayerLocation> entry : mIndexToPlayerMap.entrySet()) {
+        for (final Map.Entry<Integer, PlayerLocation> entry : mIndexToPlayerMap.entrySet()) {
             if (player == entry.getValue())
                 return entry.getKey();
         }
@@ -142,7 +137,7 @@ public class GameInfo implements IService {
         private final String mAvatarImageName;
         private final String mPlayerName;
 
-        public PlayerInfo(String avatarImageName, String playerName) {
+        public PlayerInfo(final String avatarImageName, final String playerName) {
             mAvatarImageName = avatarImageName;
             mPlayerName = playerName;
         }
@@ -154,9 +149,5 @@ public class GameInfo implements IService {
         public String getPlayerName() {
             return mPlayerName;
         }
-    }
-
-    public GameActivity.GameInitConfig getGameConfig() {
-        return mGameConfig;
     }
 }

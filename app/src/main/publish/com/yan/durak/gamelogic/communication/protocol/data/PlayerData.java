@@ -13,9 +13,13 @@ public class PlayerData {
     @SerializedName("playerPileIndex")
     private int mPlayerPileIndex;
 
-    public PlayerData(int playerIndexInGame, int playerPileIndex) {
+    @SerializedName("playerMetaData")
+    private PlayerMetaData mPlayerMetaData;
+
+    public PlayerData(final int playerIndexInGame, final int playerPileIndex, final PlayerMetaData playerMetaData) {
         mPlayerIndexInGame = playerIndexInGame;
         mPlayerPileIndex = playerPileIndex;
+        mPlayerMetaData = playerMetaData;
     }
 
     public int getPlayerIndexInGame() {
@@ -24,5 +28,9 @@ public class PlayerData {
 
     public int getPlayerPileIndex() {
         return mPlayerPileIndex;
+    }
+
+    public PlayerMetaData getPlayerMetaData() {
+        return mPlayerMetaData;
     }
 }

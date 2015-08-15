@@ -6,7 +6,13 @@ import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.cards.Pile;
 import com.yan.durak.gamelogic.communication.connection.IRemoteClient;
 import com.yan.durak.gamelogic.communication.protocol.data.CardData;
-import com.yan.durak.gamelogic.communication.protocol.messages.*;
+import com.yan.durak.gamelogic.communication.protocol.data.PlayerMetaData;
+import com.yan.durak.gamelogic.communication.protocol.messages.RequestCardForAttackMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.RequestRetaliatePilesMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.RequestThrowInsMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.ResponseCardForAttackMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.ResponseRetaliatePilesMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.ResponseThrowInsMessage;
 import com.yan.durak.gamelogic.game.GameSession;
 
 import java.util.ArrayList;
@@ -21,8 +27,10 @@ public class RemotePlayer extends BasePlayer {
     private IRemoteClient mSocketClient;
     private Gson mGson;
 
-    public RemotePlayer(int indexInGame, GameSession gameSession, int pileIndex, IRemoteClient remoteClient) {
-        super(indexInGame, gameSession, pileIndex);
+    public RemotePlayer(final int indexInGame, final GameSession gameSession,
+                        final int pileIndex, final IRemoteClient remoteClient,
+                        final PlayerMetaData playerMetaData) {
+        super(indexInGame, gameSession, pileIndex, playerMetaData);
         mSocketClient = remoteClient;
         mGson = new Gson();
     }
@@ -31,55 +39,55 @@ public class RemotePlayer extends BasePlayer {
     public Card getCardForAttack() {
 
         //send a message to remote client requesting a card for attack
-        List<Card> cardsInHand = mGameSession.getPilesStack().get(getPileIndex()).getCardsInPile();
-        RequestCardForAttackMessage request = new RequestCardForAttackMessage(cardsInHand);
+        final List<Card> cardsInHand = mGameSession.getPilesStack().get(getPileIndex()).getCardsInPile();
+        final RequestCardForAttackMessage request = new RequestCardForAttackMessage(cardsInHand);
         mSocketClient.sendMessage(request.toJsonString());
 
         //waiting for client response (blocking)
-        String response = mSocketClient.readMessage();
+        final String response = mSocketClient.readMessage();
 
         //get the card from the response
-        Card cardForAttack = extractCardForAttackFromResponse(response);
+        final Card cardForAttack = extractCardForAttackFromResponse(response);
 
         //TODO : validate that player has the card in hand ?
 
         return cardForAttack;
     }
 
-    private Card extractCardForAttackFromResponse(String response) {
-        ResponseCardForAttackMessage responseMessage = mGson.fromJson(response, ResponseCardForAttackMessage.class);
-        String rank = responseMessage.getMessageData().getCardForAttack().getRank();
-        String suit = responseMessage.getMessageData().getCardForAttack().getSuit();
+    private Card extractCardForAttackFromResponse(final String response) {
+        final ResponseCardForAttackMessage responseMessage = mGson.fromJson(response, ResponseCardForAttackMessage.class);
+        final String rank = responseMessage.getMessageData().getCardForAttack().getRank();
+        final String suit = responseMessage.getMessageData().getCardForAttack().getSuit();
         return new Card(rank, suit);
     }
 
     @Override
-    public List<Pile> retaliatePiles(List<Pile> pilesToRetaliate) {
+    public List<Pile> retaliatePiles(final List<Pile> pilesToRetaliate) {
 
-        List<List<Card>> pilesAsCardLists = convertToCardsList(pilesToRetaliate);
+        final List<List<Card>> pilesAsCardLists = convertToCardsList(pilesToRetaliate);
 
         //send a message to remote client requesting to cover piles
-        RequestRetaliatePilesMessage request = new RequestRetaliatePilesMessage(pilesAsCardLists);
+        final RequestRetaliatePilesMessage request = new RequestRetaliatePilesMessage(pilesAsCardLists);
         mSocketClient.sendMessage(request.toJsonString());
 
         //waiting for client response (blocking)
-        String response = mSocketClient.readMessage();
+        final String response = mSocketClient.readMessage();
 
         //TODO : use message to assemble the new piles list
-        List<Pile> retaliatedPiles = extractRetaliatedPilesFromResponse(response);
+        final List<Pile> retaliatedPiles = extractRetaliatedPilesFromResponse(response);
 
         //TODO : validate that player has the card in hand ?
 
         return retaliatedPiles;
     }
 
-    private List<List<Card>> convertToCardsList(List<Pile> pilesToRetaliate) {
+    private List<List<Card>> convertToCardsList(final List<Pile> pilesToRetaliate) {
 
-        ArrayList<List<Card>> ret = new ArrayList<>();
+        final ArrayList<List<Card>> ret = new ArrayList<>();
 
-        for (Pile pile : pilesToRetaliate) {
-            List<Card> cardList = new ArrayList<>();
-            for (Card card : pile.getCardsInPile()) {
+        for (final Pile pile : pilesToRetaliate) {
+            final List<Card> cardList = new ArrayList<>();
+            for (final Card card : pile.getCardsInPile()) {
                 cardList.add(card);
             }
             ret.add(cardList);
@@ -89,9 +97,9 @@ public class RemotePlayer extends BasePlayer {
     }
 
     @Override
-    public List<Card> getThrowInCards(Collection<String> allowedRanksToThrowIn, int allowedAmountOfCardsToThrowIn) {
+    public List<Card> getThrowInCards(final Collection<String> allowedRanksToThrowIn, final int allowedAmountOfCardsToThrowIn) {
 
-        List<Card> possibleThrowInCards = getPossibleThrowInCards(allowedRanksToThrowIn);
+        final List<Card> possibleThrowInCards = getPossibleThrowInCards(allowedRanksToThrowIn);
 
         //in case there is no cards that can be possibly throwed in
         //player will not be requested to throw in
@@ -99,27 +107,27 @@ public class RemotePlayer extends BasePlayer {
             return possibleThrowInCards;
 
         //send a message to remote client requesting to cover piles
-        RequestThrowInsMessage request = new RequestThrowInsMessage(possibleThrowInCards,allowedAmountOfCardsToThrowIn);
+        final RequestThrowInsMessage request = new RequestThrowInsMessage(possibleThrowInCards, allowedAmountOfCardsToThrowIn);
         mSocketClient.sendMessage(request.toJsonString());
 
         //waiting for client response (blocking)
-        String response = mSocketClient.readMessage();
+        final String response = mSocketClient.readMessage();
 
         return extractThrowInsFromResponse(response);
     }
 
-    private List<Card> extractThrowInsFromResponse(String response) {
+    private List<Card> extractThrowInsFromResponse(final String response) {
 
-        ResponseThrowInsMessage responseMessage = mGson.fromJson(response, ResponseThrowInsMessage.class);
+        final ResponseThrowInsMessage responseMessage = mGson.fromJson(response, ResponseThrowInsMessage.class);
         if (responseMessage == null) {
             //TODO : do something !
             //probably player had disconnected and must be substituted with bots
         }
 
-        List<CardData> selectedThrowIns = responseMessage.getMessageData().getSelectedThrowInCards();
-        List<Card> retList = new ArrayList<>();
+        final List<CardData> selectedThrowIns = responseMessage.getMessageData().getSelectedThrowInCards();
+        final List<Card> retList = new ArrayList<>();
 
-        for (CardData cardData : selectedThrowIns) {
+        for (final CardData cardData : selectedThrowIns) {
             retList.add(new Card(cardData.getRank(), cardData.getSuit()));
         }
 
@@ -127,19 +135,19 @@ public class RemotePlayer extends BasePlayer {
     }
 
 
-    private List<Pile> extractRetaliatedPilesFromResponse(String response) {
-        ResponseRetaliatePilesMessage responseMessage = mGson.fromJson(response, ResponseRetaliatePilesMessage.class);
+    private List<Pile> extractRetaliatedPilesFromResponse(final String response) {
+        final ResponseRetaliatePilesMessage responseMessage = mGson.fromJson(response, ResponseRetaliatePilesMessage.class);
         if (responseMessage == null) {
             //TODO : do something !
             //probably player had disconnected and must be substituted with bots
         }
 
-        List<List<CardData>> pilesAfterRetaliation = responseMessage.getMessageData().getPilesAfterRetaliation();
-        List<Pile> retList = new ArrayList<>();
+        final List<List<CardData>> pilesAfterRetaliation = responseMessage.getMessageData().getPilesAfterRetaliation();
+        final List<Pile> retList = new ArrayList<>();
 
-        for (List<CardData> cardDataList : pilesAfterRetaliation) {
-            Pile pile = new Pile();
-            for (CardData cardData : cardDataList) {
+        for (final List<CardData> cardDataList : pilesAfterRetaliation) {
+            final Pile pile = new Pile();
+            for (final CardData cardData : cardDataList) {
                 pile.addCardToPile(new Card(cardData.getRank(), cardData.getSuit()));
             }
             retList.add(pile);

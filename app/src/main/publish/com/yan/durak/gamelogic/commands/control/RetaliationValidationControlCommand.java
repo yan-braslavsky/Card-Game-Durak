@@ -5,7 +5,7 @@ import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.cards.CardsHelper;
 import com.yan.durak.gamelogic.cards.Pile;
 import com.yan.durak.gamelogic.commands.custom.PlayerRetaliationRequestCommand;
-import com.yan.durak.gamelogic.player.Player;
+import com.yan.durak.gamelogic.player.IPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class RetaliationValidationControlCommand extends BaseControlCommand<Play
         private Card mCoveringCard;
         private Card mCoveredCard;
 
-        public ValidationDetails(boolean valid, Card coveringCard, Card coveredCard) {
+        public ValidationDetails(final boolean valid, final Card coveringCard, final Card coveredCard) {
             mValid = valid;
             mCoveringCard = coveringCard;
             mCoveredCard = coveredCard;
@@ -48,7 +48,7 @@ public class RetaliationValidationControlCommand extends BaseControlCommand<Play
 
 
     private ArrayList<ValidationDetails> mFailedValidationsList;
-    private Player mRetaliatedPlayer;
+    private IPlayer mRetaliatedPlayer;
 
     public RetaliationValidationControlCommand() {
         super();
@@ -66,34 +66,34 @@ public class RetaliationValidationControlCommand extends BaseControlCommand<Play
         //clear the list
         mFailedValidationsList.clear();
 
-        PlayerRetaliationRequestCommand retaliationRequest = searchForRecentControlledCommand();
-        List<Pile> pilesBefore = retaliationRequest.getPilesPendingRetaliation();
-        List<Pile> pilesAfter = retaliationRequest.getRetaliatedPiles();
+        final PlayerRetaliationRequestCommand retaliationRequest = searchForRecentControlledCommand();
+        final List<Pile> pilesBefore = retaliationRequest.getPilesPendingRetaliation();
+        final List<Pile> pilesAfter = retaliationRequest.getRetaliatedPiles();
         mRetaliatedPlayer =  getGameSession().getPlayers().get(retaliationRequest.getPlayerIndex());
 
         //check what cards should be moved where
-        for (Pile pileAfter : pilesAfter) {
+        for (final Pile pileAfter : pilesAfter) {
 
             //the pile is covered
             if (pileAfter.getCardsInPile().size() > 1) {
                 //search for corresponding pile in before array
-                Pile pileBefore = searchPileBefore(pileAfter, pilesBefore);
+                final Pile pileBefore = searchPileBefore(pileAfter, pilesBefore);
 
                 //find the additional card that is added into the pile
                 //by removing the initial card from pile after
-                Card coveredCard = pileBefore.getCardsInPile().get(0);
+                final Card coveredCard = pileBefore.getCardsInPile().get(0);
 
                 //copy the cards in pile after to make sure we are not violating them
-                ArrayList<Card> cardsInPileAfter = new ArrayList<>(pileAfter.getCardsInPile());
+                final ArrayList<Card> cardsInPileAfter = new ArrayList<>(pileAfter.getCardsInPile());
 
                 //remove the card that was in the initial pile
                 cardsInPileAfter.remove(coveredCard);
 
                 //the card that remained is the one that was added (the covering card)
-                Card coveringCard = cardsInPileAfter.get(0);
+                final Card coveringCard = cardsInPileAfter.get(0);
 
                 //now we can validate if the covering card is actually can cover the underlying card
-                ValidationDetails validationDetails = validateCoverage(coveredCard, coveringCard);
+                final ValidationDetails validationDetails = validateCoverage(coveredCard, coveringCard);
 
                 //in case the coverage is not valid , we will store the details of the coverage
                 if (!validationDetails.isValid()) {
@@ -109,14 +109,14 @@ public class RetaliationValidationControlCommand extends BaseControlCommand<Play
      * @param bottomCard card that should be covered
      * @param topCard    card that is covering
      */
-    private ValidationDetails validateCoverage(Card bottomCard, Card topCard) {
+    private ValidationDetails validateCoverage(final Card bottomCard, final Card topCard) {
 
         //compare cards
-        int comparisonResult = CardsHelper.compareCards(bottomCard, topCard, getGameSession().getTrumpSuit());
+        final int comparisonResult = CardsHelper.compareCards(bottomCard, topCard, getGameSession().getTrumpSuit());
 
         //in case the top card is smaller than (or equal to) bottom card
         //validation is failed
-        boolean isValid = (comparisonResult > 0);
+        final boolean isValid = (comparisonResult > 0);
 
         //return validation details
         return new ValidationDetails(isValid, topCard, bottomCard);
@@ -125,9 +125,9 @@ public class RetaliationValidationControlCommand extends BaseControlCommand<Play
     /**
      * Searches pile in the before array that corresponds to the new pile
      */
-    private Pile searchPileBefore(Pile pile, List<Pile> pilesBefore) {
-        for (Pile pileBefore : pilesBefore) {
-            for (Card cardInPileAfter : pile.getCardsInPile()) {
+    private Pile searchPileBefore(final Pile pile, final List<Pile> pilesBefore) {
+        for (final Pile pileBefore : pilesBefore) {
+            for (final Card cardInPileAfter : pile.getCardsInPile()) {
                 if (pileBefore.getCardsInPile().contains(cardInPileAfter)) {
                     //we have found the pile
                     return pileBefore;
@@ -137,7 +137,7 @@ public class RetaliationValidationControlCommand extends BaseControlCommand<Play
         return null;
     }
 
-    public Player getRetaliatedPlayer() {
+    public IPlayer getRetaliatedPlayer() {
         return mRetaliatedPlayer;
     }
 

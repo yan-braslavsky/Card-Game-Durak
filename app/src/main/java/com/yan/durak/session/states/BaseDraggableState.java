@@ -13,7 +13,7 @@ public abstract class BaseDraggableState implements IActivePlayerState {
         mDragging = false;
     }
 
-    public void setDraggedCardDistanceFromPileField(float draggedCardDistanceFromPileField) {
+    public void setDraggedCardDistanceFromPileField(final float draggedCardDistanceFromPileField) {
         mDraggedCardDistanceFromPileField = draggedCardDistanceFromPileField;
     }
 
@@ -21,7 +21,7 @@ public abstract class BaseDraggableState implements IActivePlayerState {
         return mDraggedCardDistanceFromPileField;
     }
 
-    public void setDragging(boolean dragging) {
+    public void setDragging(final boolean dragging) {
         mDragging = dragging;
     }
 

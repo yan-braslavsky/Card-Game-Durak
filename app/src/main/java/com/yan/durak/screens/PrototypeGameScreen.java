@@ -39,7 +39,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
     private final TweenManager mSharedTweenManager;
 
 
-    public PrototypeGameScreen(YANGLRenderer renderer, IGameServerConnector gameServerConnector, GameActivity.GameInitConfig gameInitConfig) {
+    public PrototypeGameScreen(final YANGLRenderer renderer, final IGameServerConnector gameServerConnector) {
         super(renderer);
 
         //we received the connector that should be used
@@ -67,7 +67,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         ServiceLocator.addService(new CardsTouchProcessorService(new CardsTouchProcessor(new PlayerCardsTouchProcessorListener(), ServiceLocator.locateService(PileManagerService.class).getBottomPlayerPile())));
 
         //game session will store the game state and related info
-        ServiceLocator.addService(new GameInfo(gameInitConfig));
+        ServiceLocator.addService(new GameInfo());
 
         //layouters manager
         ServiceLocator.addService(new PileLayouterManagerService(mSharedTweenManager));
@@ -89,7 +89,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         //set timer listener
         ServiceLocator.locateService(HudManagementService.class).setTimerListener(new HudManagementService.TimerListener() {
             @Override
-            public void onTimerExpired(YANCircleNode activeTimerNode) {
+            public void onTimerExpired(final YANCircleNode activeTimerNode) {
                 ServiceLocator.locateService(PlayerMoveService.class)
                         .makeAutoMoveForState(ServiceLocator.locateService(GameInfo.class).getActivePlayerState().getStateDefinition());
             }
@@ -115,15 +115,15 @@ public class PrototypeGameScreen extends BaseGameScreen {
         super.onAddNodesToScene();
 
         //add card nodes
-        for (YANTexturedNode cardNode : ServiceLocator.locateService(CardNodesManagerService.class).getAllCardNodes()) {
+        for (final YANTexturedNode cardNode : ServiceLocator.locateService(CardNodesManagerService.class).getAllCardNodes()) {
             addNode(cardNode);
         }
 
-        for (YANBaseNode hudNode : ServiceLocator.locateService(HudManagementService.class).getNodes()) {
+        for (final YANBaseNode hudNode : ServiceLocator.locateService(HudManagementService.class).getNodes()) {
             addNode(hudNode);
         }
 
-        for (YANBaseNode hudNode : ServiceLocator.locateService(DialogManagerService.class).getNodes()) {
+        for (final YANBaseNode hudNode : ServiceLocator.locateService(DialogManagerService.class).getNodes()) {
             addNode(hudNode);
         }
 
@@ -162,14 +162,14 @@ public class PrototypeGameScreen extends BaseGameScreen {
         ServiceLocator.locateService(PileLayouterManagerService.class).init(getSceneSize().getX(), getSceneSize().getY());
 
         //if we are coming from background we must relayout piles
-        PileModel topRightPlayerPile = ServiceLocator.locateService(PileManagerService.class).getTopRightPlayerPile();
-        PileModel topLeftPlayerPile = ServiceLocator.locateService(PileManagerService.class).getTopLeftPlayerPile();
-        PileModel stockPile = ServiceLocator.locateService(PileManagerService.class).getStockPile();
+        final PileModel topRightPlayerPile = ServiceLocator.locateService(PileManagerService.class).getTopRightPlayerPile();
+        final PileModel topLeftPlayerPile = ServiceLocator.locateService(PileManagerService.class).getTopLeftPlayerPile();
+        final PileModel stockPile = ServiceLocator.locateService(PileManagerService.class).getStockPile();
         ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(topRightPlayerPile).layout();
         ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(topLeftPlayerPile).layout();
 
         //releayout also field piles
-        for (PileModel pileModel : ServiceLocator.locateService(PileManagerService.class).getFieldPiles()) {
+        for (final PileModel pileModel : ServiceLocator.locateService(PileManagerService.class).getFieldPiles()) {
             if (!pileModel.getCardsInPile().isEmpty())
                 ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(pileModel).layout();
         }
@@ -204,7 +204,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
     }
 
     @Override
-    public void onUpdate(float deltaTimeSeconds) {
+    public void onUpdate(final float deltaTimeSeconds) {
         super.onUpdate(deltaTimeSeconds);
 
         //TODO: Create some updatable interface where all those

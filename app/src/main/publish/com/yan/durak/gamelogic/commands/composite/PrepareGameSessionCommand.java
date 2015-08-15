@@ -27,8 +27,8 @@ public class PrepareGameSessionCommand extends BaseSessionCommand {
         getGameSession().executeCommand(new ResetGameDataCommand());
 
         //init stock pile
-        AddPileCommand addStockPileCommand = new AddPileCommand();
-        Pile stockPile = new Pile();
+        final AddPileCommand addStockPileCommand = new AddPileCommand();
+        final Pile stockPile = new Pile();
         stockPile.addTag(Pile.PileTags.STOCK_PILE_TAG);
         addStockPileCommand.setPile(stockPile);
         addStockPileCommand.setCards(CardsHelper.create36Deck());
@@ -37,8 +37,8 @@ public class PrepareGameSessionCommand extends BaseSessionCommand {
         getGameSession().executeCommand(addStockPileCommand);
 
         //init discard pile
-        AddPileCommand addDiscardPileCommand = new AddPileCommand();
-        Pile pile = new Pile();
+        final AddPileCommand addDiscardPileCommand = new AddPileCommand();
+        final Pile pile = new Pile();
         pile.addTag(Pile.PileTags.DISCARD_PILE_TAG);
         addDiscardPileCommand.setPile(pile);
         addDiscardPileCommand.setCards(new ArrayList<Card>());
@@ -46,15 +46,15 @@ public class PrepareGameSessionCommand extends BaseSessionCommand {
         //add discard pile
         getGameSession().executeCommand(addDiscardPileCommand);
 
-        int indexOfStockPile = getGameSession().getPilesStack().indexOf(getGameSession().findPileByTag(Pile.PileTags.STOCK_PILE_TAG));
+        final int indexOfStockPile = getGameSession().getPilesStack().indexOf(getGameSession().findPileByTag(Pile.PileTags.STOCK_PILE_TAG));
 
         //shuffle the stock pile
-        ShufflePileAtPositionCommand shufflePileCommand = new ShufflePileAtPositionCommand();
+        final ShufflePileAtPositionCommand shufflePileCommand = new ShufflePileAtPositionCommand();
         shufflePileCommand.setPilePosition(indexOfStockPile);
         getGameSession().executeCommand(shufflePileCommand);
 
         //set trump
-        SelectTrumpCommand selectTrumpCommand = new SelectTrumpCommand();
+        final SelectTrumpCommand selectTrumpCommand = new SelectTrumpCommand();
         selectTrumpCommand.setTrumpPileIndex(indexOfStockPile);
         getGameSession().executeCommand(selectTrumpCommand);
     }

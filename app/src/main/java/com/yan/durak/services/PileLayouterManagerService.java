@@ -40,10 +40,10 @@ public class PileLayouterManagerService implements IService {
     public PileLayouterManagerService(final TweenManager tweenManager) {
 
         mTweenManager = tweenManager;
-        GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
-        CardNodesManagerService cardNodesManager = ServiceLocator.locateService(CardNodesManagerService.class);
-        PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
-        HudManagementService hudManagementService = ServiceLocator.locateService(HudManagementService.class);
+        final GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
+        final CardNodesManagerService cardNodesManager = ServiceLocator.locateService(CardNodesManagerService.class);
+        final PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
+        final HudManagementService hudManagementService = ServiceLocator.locateService(HudManagementService.class);
 
         this.mPileToLayouterMap = new HashMap<>();
 
@@ -69,13 +69,13 @@ public class PileLayouterManagerService implements IService {
     }
 
     public void initFieldPileLayouters() {
-        PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
-        CardNodesManagerService cardNodesManager = ServiceLocator.locateService(CardNodesManagerService.class);
-        SceneSizeProviderService screenSize = ServiceLocator.locateService(SceneSizeProviderService.class);
+        final PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
+        final CardNodesManagerService cardNodesManager = ServiceLocator.locateService(CardNodesManagerService.class);
+        final SceneSizeProviderService screenSize = ServiceLocator.locateService(SceneSizeProviderService.class);
 
         //init list of field layouters
-        for (PileModel pileModel : pileManager.getFieldPiles()) {
-            FieldPileLayouter fieldPileLayouter = new FieldPileLayouter(cardNodesManager, mTweenManager, pileModel);
+        for (final PileModel pileModel : pileManager.getFieldPiles()) {
+            final FieldPileLayouter fieldPileLayouter = new FieldPileLayouter(cardNodesManager, mTweenManager, pileModel);
             fieldPileLayouter.init(screenSize.getSceneWidth(), screenSize.getSceneHeight());
             mPileToLayouterMap.put(fieldPileLayouter.getBoundpile(), fieldPileLayouter);
             mFieldPileLayouterList.add(fieldPileLayouter);
@@ -98,7 +98,7 @@ public class PileLayouterManagerService implements IService {
     /**
      * Initializes positions and all needed values for layouting
      */
-    public void init(float sceneWidth, float sceneHeight) {
+    public void init(final float sceneWidth, final float sceneHeight) {
 
         //init layouters for players
         mBottomPlayerPileLayouter.init(sceneWidth, sceneHeight);
@@ -110,7 +110,7 @@ public class PileLayouterManagerService implements IService {
         mDiscardPileLayouter.init(sceneWidth, sceneHeight);
 
         //init field piles layouters
-        for (FieldPileLayouter pileLayouter : mFieldPileLayouterList) {
+        for (final FieldPileLayouter pileLayouter : mFieldPileLayouterList) {
             pileLayouter.init(sceneWidth, sceneHeight);
         }
     }
@@ -120,7 +120,7 @@ public class PileLayouterManagerService implements IService {
      *
      * @return layouter or null if layouter is not found
      */
-    public <T extends IPileLayouter> T getPileLayouterForPile(PileModel pile) {
+    public <T extends IPileLayouter> T getPileLayouterForPile(final PileModel pile) {
         return (T) mPileToLayouterMap.get(pile);
     }
 

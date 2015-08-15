@@ -15,17 +15,14 @@ public class GameSetupProtocolMessage extends BaseProtocolMessage<GameSetupProto
 
     public static final String MESSAGE_NAME = "gameSetup";
 
-
-    public GameSetupProtocolMessage(PlayerData myPlayerData, CardData trumpCard,
-                                    List<PlayerData> alreadyJoinedPlayers, int totalPlayersInGame) {
+    public GameSetupProtocolMessage(final PlayerData myPlayerData, final CardData trumpCard,
+                                    final List<PlayerData> alreadyJoinedPlayers, final int totalPlayersInGame) {
         super();
         setMessageName(MESSAGE_NAME);
         setMessageData(new ProtocolMessageData(myPlayerData, trumpCard, alreadyJoinedPlayers, totalPlayersInGame));
     }
 
     public static class ProtocolMessageData {
-
-        //TODO : in future perhaps we will need more information
 
         @SerializedName("myPlayerData")
         PlayerData mMyPlayerData;
@@ -39,8 +36,8 @@ public class GameSetupProtocolMessage extends BaseProtocolMessage<GameSetupProto
         @SerializedName("totalPlayersInGame")
         int mTotalPlayersInGame;
 
-        public ProtocolMessageData(PlayerData myPlayerData, CardData trumpCard,
-                                   List<PlayerData> alreadyJoinedPlayers, int totalPlayersInGame) {
+        public ProtocolMessageData(final PlayerData myPlayerData, final CardData trumpCard,
+                                   final List<PlayerData> alreadyJoinedPlayers, final int totalPlayersInGame) {
             mMyPlayerData = myPlayerData;
             mTrumpCard = trumpCard;
             mAlreadyJoinedPlayers = alreadyJoinedPlayers;

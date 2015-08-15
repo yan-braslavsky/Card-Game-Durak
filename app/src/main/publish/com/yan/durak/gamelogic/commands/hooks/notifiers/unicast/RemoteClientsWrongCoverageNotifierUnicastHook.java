@@ -7,7 +7,7 @@ import com.yan.durak.gamelogic.communication.connection.IRemoteClient;
 import com.yan.durak.gamelogic.communication.protocol.data.CardData;
 import com.yan.durak.gamelogic.communication.protocol.data.RetaliationSetData;
 import com.yan.durak.gamelogic.communication.protocol.messages.RetaliationInvalidProtocolMessage;
-import com.yan.durak.gamelogic.player.Player;
+import com.yan.durak.gamelogic.player.IPlayer;
 import com.yan.durak.gamelogic.player.RemotePlayer;
 
 import java.util.ArrayList;
@@ -24,17 +24,17 @@ public class RemoteClientsWrongCoverageNotifierUnicastHook implements CommandHoo
     }
 
     @Override
-    public void onHookTrigger(RetaliationValidationControlCommand hookCommand) {
+    public void onHookTrigger(final RetaliationValidationControlCommand hookCommand) {
 
         //we don't want to send wrong retaliation if it is actually not wrong
         if(hookCommand.getFailedValidationsList().isEmpty())
             return;
 
         //obtain retaliated player
-        Player retaliatedPlayer = hookCommand.getRetaliatedPlayer();
+        final IPlayer retaliatedPlayer = hookCommand.getRetaliatedPlayer();
 
         //obtain remote client from the player
-        IRemoteClient client;
+        final IRemoteClient client;
         if (retaliatedPlayer instanceof RemotePlayer) {
             client = ((RemotePlayer) retaliatedPlayer).getSocketClient();
         } else {
@@ -43,8 +43,8 @@ public class RemoteClientsWrongCoverageNotifierUnicastHook implements CommandHoo
         }
 
         //adapt data to protocol message
-        List<RetaliationSetData> retaliationSetDataList = new ArrayList<>();
-        for (RetaliationValidationControlCommand.ValidationDetails validationDetails : hookCommand.getFailedValidationsList()) {
+        final List<RetaliationSetData> retaliationSetDataList = new ArrayList<>();
+        for (final RetaliationValidationControlCommand.ValidationDetails validationDetails : hookCommand.getFailedValidationsList()) {
 
             //add validation data to the array list
             retaliationSetDataList.add(new RetaliationSetData(new CardData(validationDetails.getCoveredCard().getRank(), validationDetails.getCoveredCard().getSuit()),
@@ -52,7 +52,7 @@ public class RemoteClientsWrongCoverageNotifierUnicastHook implements CommandHoo
         }
 
         //prepare json message
-        String jsonMsg = new RetaliationInvalidProtocolMessage(retaliationSetDataList).toJsonString();
+        final String jsonMsg = new RetaliationInvalidProtocolMessage(retaliationSetDataList).toJsonString();
 
         //send message to client
         client.sendMessage(jsonMsg);

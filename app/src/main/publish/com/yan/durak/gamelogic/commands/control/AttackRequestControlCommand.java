@@ -6,7 +6,7 @@ import com.yan.durak.gamelogic.cards.Pile;
 import com.yan.durak.gamelogic.commands.core.MoveCardFromPileToPileCommand;
 import com.yan.durak.gamelogic.commands.custom.AddPileCommand;
 import com.yan.durak.gamelogic.commands.custom.PlayerAttackRequestCommand;
-import com.yan.durak.gamelogic.player.Player;
+import com.yan.durak.gamelogic.player.IPlayer;
 
 import java.util.ArrayList;
 
@@ -21,22 +21,22 @@ public class AttackRequestControlCommand extends BaseControlCommand<PlayerAttack
     public void execute() {
 
         //find recent controlled command in the stack
-        PlayerAttackRequestCommand attackCommand = searchForRecentControlledCommand();
+        final PlayerAttackRequestCommand attackCommand = searchForRecentControlledCommand();
 
         //create a pile that will be used as an additional pile on the field
-        AddPileCommand addPileCommand = new AddPileCommand();
+        final AddPileCommand addPileCommand = new AddPileCommand();
         addPileCommand.setCards(new ArrayList<Card>());
         //create pile and tag it as field pile
-        Pile pile = new Pile();
+        final Pile pile = new Pile();
         pile.addTag(Pile.PileTags.FIELD_PILE);
         addPileCommand.setPile(pile);
         getGameSession().executeCommand(addPileCommand);
 
         //find attacking player by index
-        Player attackingPlayer = getGameSession().getPlayers().get(attackCommand.getAttackingPlayerIndex());
+        final IPlayer attackingPlayer = getGameSession().getPlayers().get(attackCommand.getAttackingPlayerIndex());
 
         //remove the card from attacking player pile and move it to relevant field pile
-        MoveCardFromPileToPileCommand moveCardFromPileToPileCommand = new MoveCardFromPileToPileCommand();
+        final MoveCardFromPileToPileCommand moveCardFromPileToPileCommand = new MoveCardFromPileToPileCommand();
         moveCardFromPileToPileCommand.setCardToMove(attackCommand.getChosenCardForAttack());
         moveCardFromPileToPileCommand.setFromPileIndex(attackingPlayer.getPileIndex());
         moveCardFromPileToPileCommand.setToPileIndex(getGameSession().getPilesStack().indexOf(pile));

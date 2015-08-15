@@ -12,7 +12,7 @@ public class CardData {
     @SerializedName("suit")
     private String mSuit;
 
-    public CardData(String rank, String suit) {
+    public CardData(final String rank, final String suit) {
         mRank = rank;
         mSuit = suit;
     }

@@ -18,30 +18,30 @@ import java.util.List;
 public class MoveAllFieldPilesCardsCommand extends BaseSessionCommand {
     private int toPileIndex;
 
-    public void setToPileIndex(int toPileIndex) {
+    public void setToPileIndex(final int toPileIndex) {
         this.toPileIndex = toPileIndex;
     }
 
     @Override
     public void execute() {
-        for (Pile pile : getGameSession().getPilesStack()) {
+        for (final Pile pile : getGameSession().getPilesStack()) {
             if (pile.hasTag(Pile.PileTags.FIELD_PILE)) {
                 issueMoveCardListCommand(pile.getCardsInPile(), toPileIndex, getGameSession().getPilesStack().indexOf(pile));
             }
         }
 
         //remove all field piles from game session
-        Iterator<Pile> iterator = getGameSession().getPilesStack().iterator();
+        final Iterator<Pile> iterator = getGameSession().getPilesStack().iterator();
         while (iterator.hasNext()) {
-            Pile pile = iterator.next();
+            final Pile pile = iterator.next();
             if (pile.hasTag(Pile.PileTags.FIELD_PILE)) {
                 iterator.remove();
             }
         }
     }
 
-    private void issueMoveCardListCommand(List<Card> cardListToBeMoved, int toPileIndex, int fromPileIndex) {
-        MoveCardsListFromPileToPile moveCardFromPileToPileCommand = new MoveCardsListFromPileToPile();
+    private void issueMoveCardListCommand(final List<Card> cardListToBeMoved, final int toPileIndex, final int fromPileIndex) {
+        final MoveCardsListFromPileToPile moveCardFromPileToPileCommand = new MoveCardsListFromPileToPile();
         moveCardFromPileToPileCommand.setCardList(cardListToBeMoved);
         moveCardFromPileToPileCommand.setToPileIndex(toPileIndex);
         moveCardFromPileToPileCommand.setFromPileIndex(fromPileIndex);

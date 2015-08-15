@@ -5,7 +5,7 @@ import com.yan.durak.gamelogic.cards.Pile;
 import com.yan.durak.gamelogic.commands.SessionCommand;
 import com.yan.durak.gamelogic.commands.hooks.CommandHook;
 import com.yan.durak.gamelogic.exceptions.NullCommandException;
-import com.yan.durak.gamelogic.player.Player;
+import com.yan.durak.gamelogic.player.IPlayer;
 
 import java.util.*;
 
@@ -29,7 +29,7 @@ public class GameSession {
 
     private String trumpSuit;
 
-    private List<Player> mPlayers;
+    private List<IPlayer> mPlayers;
 
     private IGameRules mGameRules;
 
@@ -51,7 +51,7 @@ public class GameSession {
      *
      * @throws NullCommandException in case added command is null.
      */
-    public void addCommand(SessionCommand command) {
+    public void addCommand(final SessionCommand command) {
         if (command == null)
             throw new NullCommandException();
 
@@ -71,7 +71,7 @@ public class GameSession {
      *
      * @throws NullCommandException in case executed command is null.
      */
-    public void executeCommand(SessionCommand command) {
+    public void executeCommand(final SessionCommand command) {
 
         if (command == null)
             throw new NullCommandException();
@@ -93,18 +93,18 @@ public class GameSession {
     /**
      * Adds a Hook that will be triggered before the execution of associated command.
      */
-    public void addPreHook(CommandHook commandHook) {
+    public void addPreHook(final CommandHook commandHook) {
         addHookToMap(commandHook, mPreHooksMap);
     }
 
     /**
      * Adds a Hook that will be triggered after the execution of associated command.
      */
-    public void addPostHook(CommandHook commandHook) {
+    public void addPostHook(final CommandHook commandHook) {
         addHookToMap(commandHook, mPostHooksMap);
     }
 
-    private void addHookToMap(CommandHook commandHook, Map<Class<? extends SessionCommand>, List<CommandHook>> hooksMap) {
+    private void addHookToMap(final CommandHook commandHook, final Map<Class<? extends SessionCommand>, List<CommandHook>> hooksMap) {
         //get the hooks list for provided hook
         List<CommandHook> hooksList = hooksMap.get(commandHook.getHookTriggerCommandClass());
         //lazy instantiate the list for given hook
@@ -120,9 +120,9 @@ public class GameSession {
      * Returns the first occurrence of the pile that contains provided tag.
      * If pile is not found returns null.
      */
-    public Pile findPileByTag(String tag) {
+    public Pile findPileByTag(final String tag) {
 
-        for (Pile pile : mPilesStack) {
+        for (final Pile pile : mPilesStack) {
             if (pile.hasTag(tag))
                 return pile;
         }
@@ -137,10 +137,10 @@ public class GameSession {
      * @param <T>                class of the command
      * @return the command if found , null otherwise.
      */
-    public <T extends SessionCommand> T searchForRecentCommand(Class<T> searchCommandClazz) {
+    public <T extends SessionCommand> T searchForRecentCommand(final Class<T> searchCommandClazz) {
         //iterate backwards and find the latest requested command
         for (int i = getExecutedCommandsStack().size() - 1; i >= 0; i--) {
-            SessionCommand sessionCommand = getExecutedCommandsStack().get(i);
+            final SessionCommand sessionCommand = getExecutedCommandsStack().get(i);
             if (sessionCommand.getClass().isAssignableFrom(searchCommandClazz)) {
                 return (T) sessionCommand;
             }
@@ -154,7 +154,7 @@ public class GameSession {
      * @param command the command that will be checked for hooks.
      * @param hookMap the map that will be used to search for hooks.
      */
-    private void checkForHooks(SessionCommand command, Map<Class<? extends SessionCommand>, List<CommandHook>> hookMap) {
+    private void checkForHooks(final SessionCommand command, final Map<Class<? extends SessionCommand>, List<CommandHook>> hookMap) {
 
         //if there are no hooks at all , there is nothing to search
         if (hookMap.isEmpty())
@@ -171,20 +171,20 @@ public class GameSession {
             if (hookMap.containsKey(clazz)) {
 
                 //trigger all hooks that are found for current class
-                List<CommandHook> hookList = hookMap.get(clazz);
-                for (CommandHook commandHook : hookList) {
+                final List<CommandHook> hookList = hookMap.get(clazz);
+                for (final CommandHook commandHook : hookList) {
                     commandHook.onHookTrigger(command);
                 }
                 return;
             }
 
             //check all interfaces for current class
-            for (Class<?> interfaze : clazz.getInterfaces()) {
+            for (final Class<?> interfaze : clazz.getInterfaces()) {
                 //check if there is a hook for current interface
                 if (hookMap.containsKey(interfaze)) {
                     //trigger all hooks that are found for current interface
-                    List<CommandHook> hookList = hookMap.get(interfaze);
-                    for (CommandHook commandHook : hookList) {
+                    final List<CommandHook> hookList = hookMap.get(interfaze);
+                    for (final CommandHook commandHook : hookList) {
                         commandHook.onHookTrigger(command);
                     }
                     return;
@@ -208,7 +208,7 @@ public class GameSession {
     /**
      * Helper method , returns index of the next player from provided index in circular manner.
      */
-    public int retrieveNextPlayerIndex(int currentPlayerIndex) {
+    public int retrieveNextPlayerIndex(final int currentPlayerIndex) {
         return (currentPlayerIndex + 1) % getPlayers().size();
     }
 
@@ -220,11 +220,11 @@ public class GameSession {
         return trumpSuit;
     }
 
-    public void setTrumpSuit(String trumpSuit) {
+    public void setTrumpSuit(final String trumpSuit) {
         this.trumpSuit = trumpSuit;
     }
 
-    public List<Player> getPlayers() {
+    public List<IPlayer> getPlayers() {
         return mPlayers;
     }
 
@@ -240,7 +240,7 @@ public class GameSession {
         return mGameRules;
     }
 
-    public void setGameRules(IGameRules gameRules) {
+    public void setGameRules(final IGameRules gameRules) {
         mGameRules = gameRules;
     }
 

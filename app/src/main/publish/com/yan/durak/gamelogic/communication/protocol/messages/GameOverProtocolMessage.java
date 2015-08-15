@@ -12,7 +12,7 @@ public class GameOverProtocolMessage extends BaseProtocolMessage<GameOverProtoco
 
     public static final String MESSAGE_NAME = "gameOver";
 
-    public GameOverProtocolMessage(PlayerData loosingPlayerData) {
+    public GameOverProtocolMessage(final PlayerData loosingPlayerData) {
         super();
         setMessageName(MESSAGE_NAME);
         setMessageData(new ProtocolMessageData(loosingPlayerData));
@@ -23,7 +23,7 @@ public class GameOverProtocolMessage extends BaseProtocolMessage<GameOverProtoco
         @SerializedName("loosingPlayer")
         PlayerData mLoosingPlayer;
 
-        public ProtocolMessageData(PlayerData loosingPlayer) {
+        public ProtocolMessageData(final PlayerData loosingPlayer) {
             mLoosingPlayer = loosingPlayer;
         }
 

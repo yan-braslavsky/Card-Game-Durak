@@ -20,7 +20,7 @@ public class FinishGameCommand extends BaseSessionCommand {
     }
 
 
-    public void setLoosingPlayerIndex(int loosingPlayerIndex) {
+    public void setLoosingPlayerIndex(final int loosingPlayerIndex) {
         mLoosingPlayerIndex = loosingPlayerIndex;
     }
 

@@ -15,7 +15,7 @@ public abstract class BaseControlCommand<T extends BaseSessionCommand> extends B
 
         //iterate backwards and find the latest controlled command
         for (int i = getGameSession().getExecutedCommandsStack().size() - 1; i >= 0; i--) {
-            SessionCommand sessionCommand = getGameSession().getExecutedCommandsStack().get(i);
+            final SessionCommand sessionCommand = getGameSession().getExecutedCommandsStack().get(i);
             if (sessionCommand.getClass().isAssignableFrom(getControlledCommandClass())) {
                 return (T) sessionCommand;
             }

@@ -40,7 +40,7 @@ public class PlayerCardsLayouter implements CardsLayouter {
     private List<List<CardsLayouterSlotImpl>> mLinesOfSlots;
 
     //external data that required
-    public PlayerCardsLayouter(int maxSlotsAmount) {
+    public PlayerCardsLayouter(final int maxSlotsAmount) {
         mFanStrategy = new CardsLayoutStrategyFan();
         mLineStrategy = new CardsLayoutStrategyLine();
         mSlots = new ArrayList<>(maxSlotsAmount);
@@ -54,7 +54,7 @@ public class PlayerCardsLayouter implements CardsLayouter {
     }
 
     @Override
-    public void setActiveSlotsAmount(int amount) {
+    public void setActiveSlotsAmount(final int amount) {
         mActiveSlotsAmount = amount;
         recalculateSlotsData();
     }
@@ -65,20 +65,20 @@ public class PlayerCardsLayouter implements CardsLayouter {
      *
      * @param level must be in range between 0 to 1
      */
-    public void adjustExpansionLevel(float level) {
+    public void adjustExpansionLevel(final float level) {
         if (level < 0 || level > 1f)
             throw new InvalidParameterException("Level must be between 0 and 1");
 
 
         //TODO : can be cached , no need to calculate every time
-        float maxYDeltaBetweenRows = mCardHeight / 2f;
-        float maxYPosition = mBaseYPosition;
+        final float maxYDeltaBetweenRows = mCardHeight / 2f;
+        final float maxYPosition = mBaseYPosition;
 
-        float minYDeltaBetweenRows = mCardHeight / 8f;
-        float minYPosition = mBaseYPosition * 1.15f;
+        final float minYDeltaBetweenRows = mCardHeight / 8f;
+        final float minYPosition = mBaseYPosition * 1.15f;
 
-        float deltaYDeltaBetweenRows = maxYDeltaBetweenRows - minYDeltaBetweenRows;
-        float deltaYPosition = maxYPosition - minYPosition;
+        final float deltaYDeltaBetweenRows = maxYDeltaBetweenRows - minYDeltaBetweenRows;
+        final float deltaYPosition = maxYPosition - minYPosition;
 
         mYPosition = minYPosition + (deltaYPosition * level);
         mYDeltaBetweenRows = minYDeltaBetweenRows + (deltaYDeltaBetweenRows * level);
@@ -87,7 +87,7 @@ public class PlayerCardsLayouter implements CardsLayouter {
     /**
      * Sets the expansion level of the pile according to predefined Preset.
      */
-    public void adjustExpansionLevel(ExpansionLevelPreset levelPreset) {
+    public void adjustExpansionLevel(final ExpansionLevelPreset levelPreset) {
         switch (levelPreset) {
             case DEFAULT:
                 adjustExpansionLevel(0.6f);
@@ -102,7 +102,7 @@ public class PlayerCardsLayouter implements CardsLayouter {
     }
 
     @Override
-    public void init(float cardWidth, float cardHeight, float maxAvailableWidth, float baseXPosition, float baseYPosition) {
+    public void init(final float cardWidth, final float cardHeight, final float maxAvailableWidth, final float baseXPosition, final float baseYPosition) {
         mCardWidth = cardWidth;
         mCardHeight = cardHeight;
         mMaxAvailableWidth = maxAvailableWidth;
@@ -117,23 +117,23 @@ public class PlayerCardsLayouter implements CardsLayouter {
         mLinesOfSlots.clear();
 
         //the step will change according to logic
-        int step = calculateStep();
+        final int step = calculateStep();
         int i = 0;
         CardsLayoutStrategy strategy;
         while (i < mActiveSlotsAmount) {
-            int start = i;
-            int end = Math.min(i + step, mActiveSlotsAmount);
+            final int start = i;
+            final int end = Math.min(i + step, mActiveSlotsAmount);
 
             //strategy will change depending on amount of cards in line
-            int cardsInLine = end - start;
-            boolean isLineStrategy = cardsInLine == 2;
+            final int cardsInLine = end - start;
+            final boolean isLineStrategy = cardsInLine == 2;
             if (isLineStrategy)
                 strategy = mLineStrategy;
             else
                 strategy = mFanStrategy;
 
             strategy.init(mBaseXPosition, mYPosition, mMaxAvailableWidth, mCardWidth, mCardHeight);
-            List<CardsLayouterSlotImpl> subList = mSlots.subList(start, end);
+            final List<CardsLayouterSlotImpl> subList = mSlots.subList(start, end);
             strategy.layoutRowOfSlots(subList);
 
             //add subList to list of lines of slots
@@ -151,8 +151,8 @@ public class PlayerCardsLayouter implements CardsLayouter {
         //used to order slots by z order
         int sortingLayer = BASE_SORTING_LAYER;
         for (int i = getLinesOfSlots().size() - 1; i >= 0; i--) {
-            List<CardsLayouterSlotImpl> currentLine = getLinesOfSlots().get(i);
-            for (CardsLayouterSlotImpl slot : currentLine) {
+            final List<CardsLayouterSlotImpl> currentLine = getLinesOfSlots().get(i);
+            for (final CardsLayouterSlotImpl slot : currentLine) {
                 slot.setSortingLayer(sortingLayer);
                 sortingLayer++;
             }
@@ -165,7 +165,7 @@ public class PlayerCardsLayouter implements CardsLayouter {
     }
 
     @Override
-    public CardsLayoutSlot getSlotAtPosition(int position) {
+    public CardsLayoutSlot getSlotAtPosition(final int position) {
         if (mActiveSlotsAmount < position) {
             throw new RuntimeException("There is only " + mActiveSlotsAmount + " active slots , cannot provide slot at position " + position);
         }

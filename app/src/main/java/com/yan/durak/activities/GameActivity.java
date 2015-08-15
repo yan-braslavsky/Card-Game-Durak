@@ -19,13 +19,13 @@ import glengine.yan.glengine.screens.YANIScreen;
 public class GameActivity extends EngineActivity {
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     @Override
     protected ArrayList<YANAssetDescriptor> onCreateAssets() {
-        ArrayList<YANAssetDescriptor> assets = new ArrayList<>();
+        final ArrayList<YANAssetDescriptor> assets = new ArrayList<>();
         assets.add(new YANAssetDescriptor(YANAssetDescriptor.YANAssetType.TEXTURE_ATLAS, "texture_atlases" + File.separator, "ui_atlas", "json"));
         assets.add(new YANAssetDescriptor(YANAssetDescriptor.YANAssetType.TEXTURE_ATLAS, "texture_atlases" + File.separator, "cards_atlas", "json"));
         assets.add(new YANAssetDescriptor(YANAssetDescriptor.YANAssetType.TEXTURE_ATLAS, "texture_atlases" + File.separator, "dialogs_atlas", "json"));
@@ -36,20 +36,19 @@ public class GameActivity extends EngineActivity {
     }
 
     @Override
-    protected YANIScreen onCreateStartScreen(YANGLRenderer renderer) {
+    protected YANIScreen onCreateStartScreen(final YANGLRenderer renderer) {
 
-        Class<? extends IGameServerConnector> clazz = (Class<? extends IGameServerConnector>) getIntent().getExtras().getSerializable(MainMenuActivity.EXTRA_CONNECTOR_CLASS_KEY);
+        final Class<? extends IGameServerConnector> clazz = (Class<? extends IGameServerConnector>) getIntent().getExtras().getSerializable(MainMenuActivity.EXTRA_CONNECTOR_CLASS_KEY);
         IGameServerConnector connector = null;
         try {
             connector = clazz.newInstance();
-        } catch (InstantiationException e) {
+        } catch (final InstantiationException e) {
             e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             e.printStackTrace();
         }
 
-        GameInitConfig gameConf = (GameInitConfig) getIntent().getExtras().getSerializable(MainMenuActivity.EXTRA_GAME_CONFIG_KEY);
-        return new PrototypeGameScreen(renderer, connector,gameConf);
+        return new PrototypeGameScreen(renderer, connector);
     }
 
     @Override
@@ -62,7 +61,7 @@ public class GameActivity extends EngineActivity {
         public final String avatarResource;
         public final int playersAmount;
 
-        public GameInitConfig(String nickname, String avatarResource, int playersAmount) {
+        public GameInitConfig(final String nickname, final String avatarResource, final int playersAmount) {
             this.nickname = nickname;
             this.avatarResource = avatarResource;
             this.playersAmount = playersAmount;
