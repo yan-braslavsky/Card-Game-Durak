@@ -26,7 +26,8 @@ public class RequestCardForAttackMessage extends BaseProtocolMessage<RequestCard
     private List<CardData> convertCardDataList(final List<Card> cardsInHand) {
         final List<CardData> ret = new ArrayList<>();
 
-        for (final Card card : cardsInHand) {
+        for (int i = 0; i < cardsInHand.size(); i++) {
+            final Card card = cardsInHand.get(i);
             ret.add(new CardData(card.getRank(), card.getSuit()));
         }
         return ret;

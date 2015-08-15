@@ -126,7 +126,8 @@ public class RetaliationValidationControlCommand extends BaseControlCommand<Play
      * Searches pile in the before array that corresponds to the new pile
      */
     private Pile searchPileBefore(final Pile pile, final List<Pile> pilesBefore) {
-        for (final Pile pileBefore : pilesBefore) {
+        for (int i = 0; i < pilesBefore.size(); i++) {
+            final Pile pileBefore = pilesBefore.get(i);
             for (final Card cardInPileAfter : pile.getCardsInPile()) {
                 if (pileBefore.getCardsInPile().contains(cardInPileAfter)) {
                     //we have found the pile

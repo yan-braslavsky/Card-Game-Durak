@@ -22,7 +22,8 @@ public class RemoteClientsCardsMoveBroadcastHook implements CommandHook<MoveCard
     public void onHookTrigger(final MoveCardFromPileToPileCommand hookCommand) {
         final String jsonMsg = new CardMovedProtocolMessage(hookCommand.getCardToMove().getRank(), hookCommand.getCardToMove().getSuit(), hookCommand.getFromPileIndex(), hookCommand.getToPileIndex()).toJsonString();
 
-        for (final IPlayer player : hookCommand.getGameSession().getPlayers()) {
+        for (int i = 0; i < hookCommand.getGameSession().getPlayers().size(); i++) {
+            final IPlayer player = hookCommand.getGameSession().getPlayers().get(i);
             if (player instanceof RemotePlayer) {
                 final RemotePlayer remotePlayer = (RemotePlayer) player;
                 final IRemoteClient client = remotePlayer.getSocketClient();

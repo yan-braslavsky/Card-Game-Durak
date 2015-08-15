@@ -136,7 +136,8 @@ public class PlayerMoveService implements IService {
             }
 
             //remove all the cards that we moved to player hands from this pile
-            for (final Card card : _cardsToRemoveCachedList) {
+            for (int i = 0; i < _cardsToRemoveCachedList.size(); i++) {
+                final Card card = _cardsToRemoveCachedList.get(i);
                 pileModel.removeCard(card);
             }
         }

@@ -1,6 +1,5 @@
 package com.yan.durak.session;
 
-import com.yan.durak.activities.GameActivity;
 import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.communication.protocol.data.CardData;
 import com.yan.durak.session.states.IActivePlayerState;

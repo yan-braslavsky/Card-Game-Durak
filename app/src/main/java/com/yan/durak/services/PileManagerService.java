@@ -55,7 +55,8 @@ public class PileManagerService implements IService {
     private void init() {
 
         //initially all piles are placed in the stock pile
-        for (final Card card : mCards) {
+        for (int i = 0; i < mCards.size(); i++) {
+            final Card card = mCards.get(i);
             mStockPile.addCard(card);
         }
 
@@ -138,7 +139,8 @@ public class PileManagerService implements IService {
      */
     public PileModel getFieldPileWithCard(final Card card) {
 
-        for (final PileModel fieldPile : mFieldPiles) {
+        for (int i = 0; i < mFieldPiles.size(); i++) {
+            final PileModel fieldPile = mFieldPiles.get(i);
             for (final Card cardInPile : fieldPile.getCardsInPile()) {
                 if (card.equals(cardInPile)) {
                     return fieldPile;
@@ -156,7 +158,8 @@ public class PileManagerService implements IService {
      */
     public PileModel findFieldPileWithCardByRankAndSuit(final String rank, final String suit) {
 
-        for (final PileModel fieldPile : mFieldPiles) {
+        for (int i = 0; i < mFieldPiles.size(); i++) {
+            final PileModel fieldPile = mFieldPiles.get(i);
             for (final Card cardInPile : fieldPile.getCardsInPile()) {
                 if (cardInPile.getRank().equals(rank) && cardInPile.getSuit().equals(suit)) {
                     return fieldPile;

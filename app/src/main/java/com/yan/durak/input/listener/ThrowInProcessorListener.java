@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import glengine.yan.glengine.service.ServiceLocator;
 import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
+import static glengine.yan.glengine.service.ServiceLocator.locateService;
+
 /**
  * Created by Yan-Home on 5/1/2015.
  */
@@ -100,7 +102,8 @@ public class ThrowInProcessorListener implements CardsTouchProcessor.CardsTouchP
     }
 
     private PileModel findFirstEmptyFieldPile() {
-        for (final PileModel pileModel : ServiceLocator.locateService(PileManagerService.class).getFieldPiles()) {
+        for (int i = 0; i < locateService(PileManagerService.class).getFieldPiles().size(); i++) {
+            final PileModel pileModel = locateService(PileManagerService.class).getFieldPiles().get(i);
             if (pileModel.getCardsInPile().isEmpty())
                 return pileModel;
         }

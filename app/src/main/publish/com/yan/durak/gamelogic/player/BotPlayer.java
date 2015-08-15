@@ -130,7 +130,8 @@ public class BotPlayer extends BasePlayer {
 
     private Pile createPileDeepCopy(final Pile pile) {
         final Pile pileCopy = new Pile();
-        for (final Card card : pile.getCardsInPile()) {
+        for (int i = 0; i < pile.getCardsInPile().size(); i++) {
+            final Card card = pile.getCardsInPile().get(i);
             pileCopy.addCardToPile(card);
         }
         return pileCopy;

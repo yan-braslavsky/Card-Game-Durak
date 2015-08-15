@@ -9,6 +9,9 @@ import com.yan.durak.gamelogic.commands.composite.MoveCardsListFromPileToPile;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.yan.durak.gamelogic.cards.Pile.PileTags;
+import static com.yan.durak.gamelogic.cards.Pile.PileTags.FIELD_PILE;
+
 /**
  * Created by Yan-Home on 12/23/2014.
  * <p/>
@@ -24,8 +27,9 @@ public class MoveAllFieldPilesCardsCommand extends BaseSessionCommand {
 
     @Override
     public void execute() {
-        for (final Pile pile : getGameSession().getPilesStack()) {
-            if (pile.hasTag(Pile.PileTags.FIELD_PILE)) {
+        for (int i = 0; i < getGameSession().getPilesStack().size(); i++) {
+            final Pile pile = getGameSession().getPilesStack().get(i);
+            if (pile.hasTag(FIELD_PILE)) {
                 issueMoveCardListCommand(pile.getCardsInPile(), toPileIndex, getGameSession().getPilesStack().indexOf(pile));
             }
         }
@@ -34,7 +38,7 @@ public class MoveAllFieldPilesCardsCommand extends BaseSessionCommand {
         final Iterator<Pile> iterator = getGameSession().getPilesStack().iterator();
         while (iterator.hasNext()) {
             final Pile pile = iterator.next();
-            if (pile.hasTag(Pile.PileTags.FIELD_PILE)) {
+            if (pile.hasTag(FIELD_PILE)) {
                 iterator.remove();
             }
         }

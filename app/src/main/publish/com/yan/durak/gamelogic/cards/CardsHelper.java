@@ -12,6 +12,8 @@ import java.util.List;
  */
 public class CardsHelper {
 
+    public static final int MAX_CARDS_IN_DECK = 36;
+
     private static List<String> ORDERED_36_DECK_RANKS = Arrays.asList(new String[]{
             Card.Rank.SIX,
             Card.Rank.SEVEN,
@@ -92,7 +94,8 @@ public class CardsHelper {
      */
     public static List<Card> filterCardsBySuit(final Pile pile, final String suit) {
         final ArrayList<Card> filteredCards = new ArrayList<>();
-        for (final Card card : pile.getCardsInPile()) {
+        for (int i = 0; i < pile.getCardsInPile().size(); i++) {
+            final Card card = pile.getCardsInPile().get(i);
             if (card.getSuit().equals(suit)) {
                 filteredCards.add(card);
             }
@@ -107,8 +110,9 @@ public class CardsHelper {
      * @param cards collection of cards to be checked
      * @return true if one or more ranks found among the provided collection of cards
      */
-    public static boolean isOneOfTheRanksInPile(final Collection<String> ranks, final Collection<Card> cards) {
-        for (final Card cardInPlayerPile : cards) {
+    public static boolean isOneOfTheRanksInPile(final Collection<String> ranks, final List<Card> cards) {
+        for (int i = 0; i < cards.size(); i++) {
+            final Card cardInPlayerPile = cards.get(i);
             for (final String allowedRank : ranks) {
                 if (cardInPlayerPile.getRank().equals(allowedRank)) {
                     return true;

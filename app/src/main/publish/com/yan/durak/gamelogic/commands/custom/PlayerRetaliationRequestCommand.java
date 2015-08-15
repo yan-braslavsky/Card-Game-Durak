@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.yan.durak.gamelogic.cards.Pile.PileTags;
+import static com.yan.durak.gamelogic.cards.Pile.PileTags.FIELD_PILE;
+
 /**
  * Created by Yan-Home on 12/21/2014.
  * <p/>
@@ -36,8 +39,9 @@ public class PlayerRetaliationRequestCommand extends BaseSessionCommand {
     private List<Pile> retrievePilesPendingRetaliation() {
         final List<Pile> pilesToRetaliate = new ArrayList<>();
         //we are choosing all field piles that are not covered yet (contain only one card)
-        for (final Pile pile : getGameSession().getPilesStack()) {
-            if (pile.hasTag(Pile.PileTags.FIELD_PILE) && (pile.getCardsInPile().size() == 1)) {
+        for (int i = 0; i < getGameSession().getPilesStack().size(); i++) {
+            final Pile pile = getGameSession().getPilesStack().get(i);
+            if (pile.hasTag(FIELD_PILE) && (pile.getCardsInPile().size() == 1)) {
                 pilesToRetaliate.add(pile);
             }
         }

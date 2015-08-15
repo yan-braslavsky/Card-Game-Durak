@@ -8,6 +8,9 @@ import com.yan.durak.gamelogic.communication.protocol.messages.PlayerTakesAction
 import com.yan.durak.gamelogic.player.IPlayer;
 import com.yan.durak.gamelogic.player.RemotePlayer;
 
+import static com.yan.durak.gamelogic.communication.protocol.messages.PlayerTakesActionMessage.PlayerAction;
+import static com.yan.durak.gamelogic.communication.protocol.messages.PlayerTakesActionMessage.PlayerAction.RETALIATION_START;
+
 /**
  * Created by Yan-Home on 12/24/2014.
  */
@@ -23,9 +26,10 @@ public class PlayerActionRetaliateBroadcastHook implements CommandHook<PlayerRet
     public void onHookTrigger(final PlayerRetaliationRequestCommand hookCommand) {
 
         //create json string from the message
-        final String jsonMsg = new PlayerTakesActionMessage(hookCommand.getPlayerIndex(), PlayerTakesActionMessage.PlayerAction.RETALIATION_START).toJsonString();
+        final String jsonMsg = new PlayerTakesActionMessage(hookCommand.getPlayerIndex(), RETALIATION_START).toJsonString();
 
-        for (final IPlayer player : hookCommand.getGameSession().getPlayers()) {
+        for (int i = 0; i < hookCommand.getGameSession().getPlayers().size(); i++) {
+            final IPlayer player = hookCommand.getGameSession().getPlayers().get(i);
             if (player instanceof RemotePlayer) {
                 final RemotePlayer remotePlayer = (RemotePlayer) player;
                 final IRemoteClient client = remotePlayer.getSocketClient();

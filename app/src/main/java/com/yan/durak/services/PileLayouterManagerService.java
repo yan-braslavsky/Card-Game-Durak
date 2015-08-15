@@ -110,7 +110,8 @@ public class PileLayouterManagerService implements IService {
         mDiscardPileLayouter.init(sceneWidth, sceneHeight);
 
         //init field piles layouters
-        for (final FieldPileLayouter pileLayouter : mFieldPileLayouterList) {
+        for (int i = 0; i < mFieldPileLayouterList.size(); i++) {
+            final FieldPileLayouter pileLayouter = mFieldPileLayouterList.get(i);
             pileLayouter.init(sceneWidth, sceneHeight);
         }
     }

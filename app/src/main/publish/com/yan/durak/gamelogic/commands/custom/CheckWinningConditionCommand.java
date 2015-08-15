@@ -5,6 +5,10 @@ import com.yan.durak.gamelogic.cards.Pile;
 import com.yan.durak.gamelogic.commands.BaseSessionCommand;
 import com.yan.durak.gamelogic.player.IPlayer;
 
+import static com.yan.durak.gamelogic.cards.Pile.PileTags;
+import static com.yan.durak.gamelogic.cards.Pile.PileTags.PLAYER_PILE_TAG;
+import static com.yan.durak.gamelogic.cards.Pile.PileTags.STOCK_PILE_TAG;
+
 /**
  * Created by Yan-Home on 12/25/2014.
  */
@@ -16,7 +20,7 @@ public class CheckWinningConditionCommand extends BaseSessionCommand {
     @Override
     public void execute() {
 
-        final boolean isStockPileEmpty = getGameSession().findPileByTag(Pile.PileTags.STOCK_PILE_TAG).getCardsInPile().size() == 0;
+        final boolean isStockPileEmpty = getGameSession().findPileByTag(STOCK_PILE_TAG).getCardsInPile().size() == 0;
 
         if (!isStockPileEmpty)
             return;
@@ -24,8 +28,9 @@ public class CheckWinningConditionCommand extends BaseSessionCommand {
         //count gow many player piles are empty.
         //in case there is only one not empty left , that is a game over
         int notEmptyPlayerPilesCount = getGameSession().getPlayers().size();
-        for (final Pile pile : getGameSession().getPilesStack()) {
-            if (pile.hasTag(Pile.PileTags.PLAYER_PILE_TAG)) {
+        for (int i = 0; i < getGameSession().getPilesStack().size(); i++) {
+            final Pile pile = getGameSession().getPilesStack().get(i);
+            if (pile.hasTag(PLAYER_PILE_TAG)) {
                 if (pile.getCardsInPile().size() == 0) {
                     notEmptyPlayerPilesCount--;
                 }

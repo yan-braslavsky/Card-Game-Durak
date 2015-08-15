@@ -33,7 +33,8 @@ public class GameOverBroadcastHook implements CommandHook<FinishGameCommand> {
         final String jsonMsg = new GameOverProtocolMessage(new PlayerData(loosingPlayerIndex, loosingPlayerPileIndex,
                 loosingPlayer.getPlayerMetaData())).toJsonString();
 
-        for (final IPlayer player : hookCommand.getGameSession().getPlayers()) {
+        for (int i = 0; i < hookCommand.getGameSession().getPlayers().size(); i++) {
+            final IPlayer player = hookCommand.getGameSession().getPlayers().get(i);
             if (player instanceof RemotePlayer) {
                 final RemotePlayer remotePlayer = (RemotePlayer) player;
                 final IRemoteClient client = remotePlayer.getSocketClient();

@@ -15,6 +15,8 @@ import glengine.yan.glengine.service.ServiceLocator;
 import glengine.yan.glengine.util.colors.YANColor;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
 
+import static java.lang.Math.min;
+
 /**
  * Created by ybra on 20/04/15.
  */
@@ -85,7 +87,7 @@ public class CardNodesManagerService implements IService {
         final float aspectRatio = sampleCardNode.getTextureRegion().getWidth() / sampleCardNode.getTextureRegion().getHeight();
 
         //cache original cards size
-        mOriginalCardWidth = Math.min(sceneSize.getX(), sceneSize.getY()) / (float) ((MAX_CARDS_IN_LINE) / 2);
+        mOriginalCardWidth = min(sceneSize.getX(), sceneSize.getY()) / (float) ((MAX_CARDS_IN_LINE) / 2);
         mOriginalCardHeight = mOriginalCardWidth / aspectRatio;
 
         //set size for each card

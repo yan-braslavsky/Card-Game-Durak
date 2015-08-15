@@ -122,7 +122,8 @@ public class GameSession {
      */
     public Pile findPileByTag(final String tag) {
 
-        for (final Pile pile : mPilesStack) {
+        for (int i = 0; i < mPilesStack.size(); i++) {
+            final Pile pile = mPilesStack.get(i);
             if (pile.hasTag(tag))
                 return pile;
         }
@@ -172,7 +173,8 @@ public class GameSession {
 
                 //trigger all hooks that are found for current class
                 final List<CommandHook> hookList = hookMap.get(clazz);
-                for (final CommandHook commandHook : hookList) {
+                for (int i = 0; i < hookList.size(); i++) {
+                    final CommandHook commandHook = hookList.get(i);
                     commandHook.onHookTrigger(command);
                 }
                 return;
@@ -184,7 +186,8 @@ public class GameSession {
                 if (hookMap.containsKey(interfaze)) {
                     //trigger all hooks that are found for current interface
                     final List<CommandHook> hookList = hookMap.get(interfaze);
-                    for (final CommandHook commandHook : hookList) {
+                    for (int i = 0; i < hookList.size(); i++) {
+                        final CommandHook commandHook = hookList.get(i);
                         commandHook.onHookTrigger(command);
                     }
                     return;

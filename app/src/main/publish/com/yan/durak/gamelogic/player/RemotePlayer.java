@@ -87,7 +87,8 @@ public class RemotePlayer extends BasePlayer {
 
         for (final Pile pile : pilesToRetaliate) {
             final List<Card> cardList = new ArrayList<>();
-            for (final Card card : pile.getCardsInPile()) {
+            for (int i = 0; i < pile.getCardsInPile().size(); i++) {
+                final Card card = pile.getCardsInPile().get(i);
                 cardList.add(card);
             }
             ret.add(cardList);
@@ -127,7 +128,8 @@ public class RemotePlayer extends BasePlayer {
         final List<CardData> selectedThrowIns = responseMessage.getMessageData().getSelectedThrowInCards();
         final List<Card> retList = new ArrayList<>();
 
-        for (final CardData cardData : selectedThrowIns) {
+        for (int i = 0; i < selectedThrowIns.size(); i++) {
+            final CardData cardData = selectedThrowIns.get(i);
             retList.add(new Card(cardData.getRank(), cardData.getSuit()));
         }
 
@@ -147,7 +149,8 @@ public class RemotePlayer extends BasePlayer {
 
         for (final List<CardData> cardDataList : pilesAfterRetaliation) {
             final Pile pile = new Pile();
-            for (final CardData cardData : cardDataList) {
+            for (int i = 0; i < cardDataList.size(); i++) {
+                final CardData cardData = cardDataList.get(i);
                 pile.addCardToPile(new Card(cardData.getRank(), cardData.getSuit()));
             }
             retList.add(pile);

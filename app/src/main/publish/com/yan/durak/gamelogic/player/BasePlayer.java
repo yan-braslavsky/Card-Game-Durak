@@ -50,7 +50,8 @@ public abstract class BasePlayer implements IPlayer {
         final Pile playerPile = mGameSession.getPilesStack().get(getPileIndex());
 
         //just simply add every possible rank
-        for (final Card cardInHand : playerPile.getCardsInPile()) {
+        for (int i = 0; i < playerPile.getCardsInPile().size(); i++) {
+            final Card cardInHand = playerPile.getCardsInPile().get(i);
             if (allowedRanksToThrowIn.contains(cardInHand.getRank())) {
                 retList.add(cardInHand);
             }

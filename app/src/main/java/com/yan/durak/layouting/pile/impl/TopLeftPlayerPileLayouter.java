@@ -16,6 +16,9 @@ import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.util.geometry.YANVector2;
 import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
+import static aurelienribon.tweenengine.Timeline.createSequence;
+import static glengine.yan.glengine.util.object_pool.YANObjectPool.getInstance;
+
 /**
  * Created by ybra on 20/04/15.
  */
@@ -64,13 +67,15 @@ public class TopLeftPlayerPileLayouter extends BasePileLayouter {
     public void layout() {
 
         //offer to pool everything that was in list
-        for (final CardsLayouterSlotImpl cardsLayouterSlot : mSlotsList) {
-            YANObjectPool.getInstance().offer(cardsLayouterSlot);
+        for (int i = 0; i < mSlotsList.size(); i++) {
+            final CardsLayouterSlotImpl cardsLayouterSlot = mSlotsList.get(i);
+            getInstance().offer(cardsLayouterSlot);
         }
 
         mSlotsList.clear();
-        for (final Card card : mBoundpile.getCardsInPile()) {
-            mSlotsList.add(YANObjectPool.getInstance().obtain(CardsLayouterSlotImpl.class));
+        for (int i = 0; i < mBoundpile.getCardsInPile().size(); i++) {
+            final Card card = mBoundpile.getCardsInPile().get(i);
+            mSlotsList.add(getInstance().obtain(CardsLayouterSlotImpl.class));
         }
 
         //layout the slots
@@ -79,7 +84,7 @@ public class TopLeftPlayerPileLayouter extends BasePileLayouter {
         int slotPosition = 0;
         CardsLayouterSlotImpl slot;
         CardNode cardNode;
-        final Timeline tl = Timeline.createSequence().beginParallel();
+        final Timeline tl = createSequence().beginParallel();
         for (final Card card : mBoundpile.getCardsInPile()) {
             cardNode = mCardNodesManager.getCardNodeForCard(card);
             slot = mSlotsList.get(slotPosition);
@@ -91,8 +96,8 @@ public class TopLeftPlayerPileLayouter extends BasePileLayouter {
             cardNode.useBackTextureRegion();
 
             //animate card to its place with new transform values
-            addAnimationToTimelineForCardNode(tl,cardNode, slot.getPosition().getX(), slot.getPosition().getY(),
-                    slot.getRotation(), mCardWidhtForPile, mCardHeightForPile, 1f,CARD_MOVEMENT_ANIMATION_DURATION);
+            addAnimationToTimelineForCardNode(tl, cardNode, slot.getPosition().getX(), slot.getPosition().getY(),
+                    slot.getRotation(), mCardWidhtForPile, mCardHeightForPile, 1f, CARD_MOVEMENT_ANIMATION_DURATION);
 
             slotPosition++;
         }

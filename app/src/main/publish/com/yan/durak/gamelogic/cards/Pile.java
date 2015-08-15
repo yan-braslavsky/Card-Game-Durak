@@ -58,8 +58,9 @@ public class Pile {
     @Override
     public String toString() {
         String str = "";
-        for (final String tag : mTags) {
-            str +=tag;
+        for (int i = 0; i < mTags.size(); i++) {
+            final String tag = mTags.get(i);
+            str += tag;
         }
         return str;
     }

@@ -12,6 +12,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import static com.yan.durak.gamelogic.cards.Pile.PileTags;
+import static com.yan.durak.gamelogic.cards.Pile.PileTags.FIELD_PILE;
+
 /**
  * Created by Yan-Home on 12/21/2014.
  * <p/>
@@ -35,22 +38,24 @@ public class PlayerThrowInRequestCommand extends BaseSessionCommand {
     public static Collection<String> findAllowedRanksToThrowIn(final GameSession gameSession) {
 
         final Collection<String> retList = new HashSet<>();
-        for (final Pile pile : gameSession.getPilesStack()) {
-            if (pile.hasTag(Pile.PileTags.FIELD_PILE)) {
+        for (int i = 0; i < gameSession.getPilesStack().size(); i++) {
+            final Pile pile = gameSession.getPilesStack().get(i);
+            if (pile.hasTag(FIELD_PILE)) {
                 for (final Card card : pile.getCardsInPile()) {
                     retList.add(card.getRank());
                 }
             }
         }
-        
+
         return retList;
     }
 
     private List<Pile> retrieveAllCardsInField() {
         final List<Pile> pilesToRetaliate = new ArrayList<>();
         //we are choosing all field piles that are not covered yet (contain only one card)
-        for (final Pile pile : getGameSession().getPilesStack()) {
-            if (pile.hasTag(Pile.PileTags.FIELD_PILE) && (pile.getCardsInPile().size() == 1)) {
+        for (int i = 0; i < getGameSession().getPilesStack().size(); i++) {
+            final Pile pile = getGameSession().getPilesStack().get(i);
+            if (pile.hasTag(FIELD_PILE) && (pile.getCardsInPile().size() == 1)) {
                 pilesToRetaliate.add(pile);
             }
         }

@@ -28,7 +28,8 @@ public class PileModel {
      * @return card if it is in the pile or null otherwise
      */
     public Card findCardByRankAndSuit(final String rank, final String suit) {
-        for (final Card card : mCardsInPile) {
+        for (int i = 0; i < mCardsInPile.size(); i++) {
+            final Card card = mCardsInPile.get(i);
             if (card.getRank().equals(rank) && card.getSuit().equals(suit))
                 return card;
         }

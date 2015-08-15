@@ -25,7 +25,8 @@ public class ResponseThrowInsMessage extends BaseProtocolMessage<ResponseThrowIn
 
     private List<CardData> convertCardDataList(final List<Card> possibleThrowInCards) {
         final List<CardData> retList = new ArrayList<>();
-        for (final Card card : possibleThrowInCards) {
+        for (int i = 0; i < possibleThrowInCards.size(); i++) {
+            final Card card = possibleThrowInCards.get(i);
             retList.add(new CardData(card.getRank(), card.getSuit()));
         }
         return retList;

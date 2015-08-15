@@ -5,7 +5,7 @@ import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.cards.Pile;
 import com.yan.durak.gamelogic.commands.BaseSessionCommand;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by ybra on 19.12.2014.
@@ -18,19 +18,20 @@ import java.util.Collection;
 public class AddPileCommand extends BaseSessionCommand {
 
     private Pile mPile;
-    private Collection<Card> mCardsCollection;
+    private List<Card> mCardsCollection;
 
     public void setPile(final Pile pile) {
         mPile = pile;
     }
 
-    public void setCards(final Collection<Card> cardsCollection) {
+    public void setCards(final List<Card> cardsCollection) {
         mCardsCollection = cardsCollection;
     }
 
     @Override
     public void execute() {
-        for (final Card card : mCardsCollection) {
+        for (int i = 0; i < mCardsCollection.size(); i++) {
+            final Card card = mCardsCollection.get(i);
             mPile.addCardToPile(card);
         }
 

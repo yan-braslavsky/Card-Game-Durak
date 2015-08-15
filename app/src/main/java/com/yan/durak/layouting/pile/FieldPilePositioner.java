@@ -10,6 +10,8 @@ import glengine.yan.glengine.service.ServiceLocator;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
 import glengine.yan.glengine.util.geometry.YANVector2;
 
+import static glengine.yan.glengine.service.ServiceLocator.locateService;
+
 /**
  * Created by Yan-Home on 5/3/2015.
  */
@@ -39,7 +41,8 @@ public class FieldPilePositioner {
 
     private int calculateActivePilesAmount() {
         int activePilesAmount = 0;
-        for (final PileModel fieldPile : ServiceLocator.locateService(PileManagerService.class).getFieldPiles()) {
+        for (int i = 0; i < locateService(PileManagerService.class).getFieldPiles().size(); i++) {
+            final PileModel fieldPile = locateService(PileManagerService.class).getFieldPiles().get(i);
             if (!fieldPile.getCardsInPile().isEmpty())
                 activePilesAmount++;
         }
@@ -55,11 +58,12 @@ public class FieldPilePositioner {
         final float halfCardWidth = cardWidth / 2;
 
         //get reference to field piles
-        final List<PileModel> fieldPiles = ServiceLocator.locateService(PileManagerService.class).getFieldPiles();
+        final List<PileModel> fieldPiles = locateService(PileManagerService.class).getFieldPiles();
 
         //zero piles
         final HashMap<PileModel, YANReadOnlyVector2> zeroCardsOnFieldMap = new HashMap<>();
-        for (final PileModel fieldPile : fieldPiles) {
+        for (int i = 0; i < fieldPiles.size(); i++) {
+            final PileModel fieldPile = fieldPiles.get(i);
             zeroCardsOnFieldMap.put(fieldPile, new YANVector2());
         }
 

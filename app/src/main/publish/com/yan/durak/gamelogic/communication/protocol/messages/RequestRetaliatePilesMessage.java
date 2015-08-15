@@ -27,7 +27,8 @@ public class RequestRetaliatePilesMessage extends BaseProtocolMessage<RequestRet
         final List<List<CardData>> retList = new ArrayList<>();
         for (final List<Card> pile : pilesBeforeRetaliation) {
             final List<CardData> cardDataList = new ArrayList<>();
-            for (final Card card : pile) {
+            for (int i = 0; i < pile.size(); i++) {
+                final Card card = pile.get(i);
                 cardDataList.add(new CardData(card.getRank(), card.getSuit()));
             }
             retList.add(cardDataList);

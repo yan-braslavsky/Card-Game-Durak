@@ -7,6 +7,9 @@ import com.yan.durak.gamelogic.commands.BaseSessionCommand;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.yan.durak.gamelogic.cards.Pile.PileTags;
+import static com.yan.durak.gamelogic.cards.Pile.PileTags.FIELD_PILE;
+
 /**
  * Created by Yan-Home on 12/25/2014.
  * <p/>
@@ -31,8 +34,9 @@ public class CheckFieldPilesStatusCommand extends BaseSessionCommand {
         mEveryFieldPileCovered = true;
 
         //filter all field piles
-        for (final Pile pile : getGameSession().getPilesStack()) {
-            if (pile.hasTag(Pile.PileTags.FIELD_PILE)) {
+        for (int i = 0; i < getGameSession().getPilesStack().size(); i++) {
+            final Pile pile = getGameSession().getPilesStack().get(i);
+            if (pile.hasTag(FIELD_PILE)) {
 
                 //check if the pile is uncovered (has 1 cards)
                 if (pile.getCardsInPile().size() == 1) {

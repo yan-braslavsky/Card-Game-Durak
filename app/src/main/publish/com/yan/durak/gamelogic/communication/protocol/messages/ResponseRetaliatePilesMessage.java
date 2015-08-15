@@ -27,8 +27,9 @@ public class ResponseRetaliatePilesMessage extends BaseProtocolMessage<ResponseR
         final List<List<CardData>> ret = new ArrayList<>();
         for (final List<Card> list : pilesAfterRetaliation) {
             final List<CardData> dataList = new ArrayList<>();
-            for (final Card card : list) {
-                dataList.add(new CardData(card.getRank(),card.getSuit()));
+            for (int i = 0; i < list.size(); i++) {
+                final Card card = list.get(i);
+                dataList.add(new CardData(card.getRank(), card.getSuit()));
             }
             ret.add(dataList);
         }

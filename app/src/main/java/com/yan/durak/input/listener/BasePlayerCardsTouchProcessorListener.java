@@ -21,6 +21,9 @@ import glengine.yan.glengine.nodes.YANBaseNode;
 import glengine.yan.glengine.service.ServiceLocator;
 import glengine.yan.glengine.util.math.YANMathUtils;
 
+import static com.yan.durak.physics.YANCollisionDetector.findAllNodesThatCollideWithGivenNode;
+import static glengine.yan.glengine.service.ServiceLocator.locateService;
+
 /**
  * Created by Yan-Home on 5/1/2015.
  */
@@ -134,18 +137,19 @@ public abstract class BasePlayerCardsTouchProcessorListener implements CardsTouc
         //TODO : beautify this code !
 
         //cache services
-        final CardNodesManagerService cardNodesManager = ServiceLocator.locateService(CardNodesManagerService.class);
-        final PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
+        final CardNodesManagerService cardNodesManager = locateService(CardNodesManagerService.class);
+        final PileManagerService pileManager = locateService(PileManagerService.class);
 
         //TODO : cache not allocate
         final List<YANBaseNode> bottomPlayerCardNodes = new ArrayList<>();
 
-        for (final Card card : pileManager.getBottomPlayerPile().getCardsInPile()) {
+        for (int i = 0; i < pileManager.getBottomPlayerPile().getCardsInPile().size(); i++) {
+            final Card card = pileManager.getBottomPlayerPile().getCardsInPile().get(i);
             bottomPlayerCardNodes.add(cardNodesManager.getCardNodeForCard(card));
         }
 
         //TODO : This detector also allocates array every time , this is not efficient
-        final List<CardNode> allCollidedNodes = YANCollisionDetector.findAllNodesThatCollideWithGivenNode(cardNode, bottomPlayerCardNodes);
+        final List<CardNode> allCollidedNodes = findAllNodesThatCollideWithGivenNode(cardNode, bottomPlayerCardNodes);
 
         if (allCollidedNodes.isEmpty())
             return false;
@@ -173,7 +177,7 @@ public abstract class BasePlayerCardsTouchProcessorListener implements CardsTouc
         pileManager.getBottomPlayerPile().addCardAtIndex(cardNode.getCard(), repositionIndex);
 
         //layout player cards
-        ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(pileManager.getBottomPlayerPile()).layout();
+        locateService(PileLayouterManagerService.class).getPileLayouterForPile(pileManager.getBottomPlayerPile()).layout();
         return true;
     }
 

@@ -38,7 +38,8 @@ public class MoveCardFromPileToPileCommand extends BaseSessionCommand {
         final Pile fromPile = getGameSession().getPilesStack().get(mFromPileIndex);
         final Pile toPile = getGameSession().getPilesStack().get(mToPileIndex);
 
-        for (final Card card : fromPile.getCardsInPile()) {
+        for (int i = 0; i < fromPile.getCardsInPile().size(); i++) {
+            final Card card = fromPile.getCardsInPile().get(i);
             if (mCardToMove.equals(card)) {
                 fromPile.removeCardFromPile(card);
                 toPile.addCardToPile(card);

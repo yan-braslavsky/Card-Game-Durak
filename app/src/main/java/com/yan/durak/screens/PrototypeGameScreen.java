@@ -1,6 +1,5 @@
 package com.yan.durak.screens;
 
-import com.yan.durak.activities.GameActivity;
 import com.yan.durak.communication.game_server.LocalGameServer;
 import com.yan.durak.communication.game_server.connector.IGameServerConnector;
 import com.yan.durak.communication.game_server.connector.SocketConnectionManager;
@@ -21,11 +20,13 @@ import com.yan.durak.session.GameInfo;
 
 import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.nodes.YANBaseNode;
-import glengine.yan.glengine.nodes.YANButtonNode;
 import glengine.yan.glengine.nodes.YANCircleNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.renderer.YANGLRenderer;
 import glengine.yan.glengine.service.ServiceLocator;
+
+import static glengine.yan.glengine.nodes.YANButtonNode.YanButtonNodeClickListener;
+import static glengine.yan.glengine.service.ServiceLocator.locateService;
 
 /**
  * Created by Yan-Home on 10/3/2014.
@@ -128,20 +129,20 @@ public class PrototypeGameScreen extends BaseGameScreen {
         }
 
         //TODO : should be created as hidden by default
-        ServiceLocator.locateService(HudManagementService.class).hideFinishButton();
-        ServiceLocator.locateService(HudManagementService.class).hideTakeButton();
-        ServiceLocator.locateService(DialogManagerService.class).hideExitDialog();
-        ServiceLocator.locateService(DialogManagerService.class).setExitDialogClickListeners(new YANButtonNode.YanButtonNodeClickListener() {
+        locateService(HudManagementService.class).hideFinishButton();
+        locateService(HudManagementService.class).hideTakeButton();
+        locateService(DialogManagerService.class).hideExitDialog();
+        locateService(DialogManagerService.class).setExitDialogClickListeners(new YanButtonNodeClickListener() {
             @Override
             public void onButtonClick() {
                 //when confirm button clicked we are closing the game
                 getRenderer().shutDown();
             }
-        }, new YANButtonNode.YanButtonNodeClickListener() {
+        }, new YanButtonNodeClickListener() {
             @Override
             public void onButtonClick() {
                 //When decline button hit , we are simply closing the dialog
-                ServiceLocator.locateService(DialogManagerService.class).hideExitDialog();
+                locateService(DialogManagerService.class).hideExitDialog();
             }
         });
     }
@@ -159,23 +160,24 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
     private void relayoutPiles() {
         //we also need to initialize the pile layouter manager
-        ServiceLocator.locateService(PileLayouterManagerService.class).init(getSceneSize().getX(), getSceneSize().getY());
+        locateService(PileLayouterManagerService.class).init(getSceneSize().getX(), getSceneSize().getY());
 
         //if we are coming from background we must relayout piles
-        final PileModel topRightPlayerPile = ServiceLocator.locateService(PileManagerService.class).getTopRightPlayerPile();
-        final PileModel topLeftPlayerPile = ServiceLocator.locateService(PileManagerService.class).getTopLeftPlayerPile();
-        final PileModel stockPile = ServiceLocator.locateService(PileManagerService.class).getStockPile();
-        ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(topRightPlayerPile).layout();
-        ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(topLeftPlayerPile).layout();
+        final PileModel topRightPlayerPile = locateService(PileManagerService.class).getTopRightPlayerPile();
+        final PileModel topLeftPlayerPile = locateService(PileManagerService.class).getTopLeftPlayerPile();
+        final PileModel stockPile = locateService(PileManagerService.class).getStockPile();
+        locateService(PileLayouterManagerService.class).getPileLayouterForPile(topRightPlayerPile).layout();
+        locateService(PileLayouterManagerService.class).getPileLayouterForPile(topLeftPlayerPile).layout();
 
         //releayout also field piles
-        for (final PileModel pileModel : ServiceLocator.locateService(PileManagerService.class).getFieldPiles()) {
+        for (int i = 0; i < locateService(PileManagerService.class).getFieldPiles().size(); i++) {
+            final PileModel pileModel = locateService(PileManagerService.class).getFieldPiles().get(i);
             if (!pileModel.getCardsInPile().isEmpty())
-                ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(pileModel).layout();
+                locateService(PileLayouterManagerService.class).getPileLayouterForPile(pileModel).layout();
         }
 
         //layout stock pile
-        ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(stockPile).layout();
+        locateService(PileLayouterManagerService.class).getPileLayouterForPile(stockPile).layout();
     }
 
 
