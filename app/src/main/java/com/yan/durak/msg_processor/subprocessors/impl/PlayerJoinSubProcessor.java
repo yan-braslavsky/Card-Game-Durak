@@ -23,7 +23,7 @@ public class PlayerJoinSubProcessor extends BaseMsgSubProcessor<PlayerJoinProtoc
         GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
 
         //find out what index bottom player has
-        final int bottomPlayerIndex = gameInfo.getPlayerIndex(GameInfo.Player.BOTTOM_PLAYER);
+        final int bottomPlayerIndex = gameInfo.getPlayerIndex(GameInfo.PlayerLocation.BOTTOM_PLAYER);
         final int totalPlayersInGame = serverMessage.getMessageData().getTotalPlayersInGame();
 
         placePlayer(bottomPlayerIndex,serverMessage.getMessageData().getJoinedPlayerData(),totalPlayersInGame);
@@ -51,19 +51,19 @@ public class PlayerJoinSubProcessor extends BaseMsgSubProcessor<PlayerJoinProtoc
 
     private void placeAsTopRight(PlayerData joinedPlayer) {
         ServiceLocator.locateService(PileManagerService.class).setTopRightPlayerPileIndex(joinedPlayer.getPlayerPileIndex());
-        ServiceLocator.locateService(GameInfo.class).setGameIndexForPlayer(GameInfo.Player.TOP_RIGHT_PLAYER, joinedPlayer.getPlayerIndexInGame());
+        ServiceLocator.locateService(GameInfo.class).setGameIndexForPlayer(GameInfo.PlayerLocation.TOP_RIGHT_PLAYER, joinedPlayer.getPlayerIndexInGame());
 
         //TODO : extract name from data
         String name = "MadBull";
-        ServiceLocator.locateService(HudManagementService.class).setNameForPlayer(GameInfo.Player.TOP_RIGHT_PLAYER, name);
+        ServiceLocator.locateService(HudManagementService.class).setNameForPlayer(GameInfo.PlayerLocation.TOP_RIGHT_PLAYER, name);
     }
 
     private void placeAsTopLeft(PlayerData joinedPlayer) {
         ServiceLocator.locateService(PileManagerService.class).setTopLeftPlayerPileIndex(joinedPlayer.getPlayerPileIndex());
-        ServiceLocator.locateService(GameInfo.class).setGameIndexForPlayer(GameInfo.Player.TOP_LEFT_PLAYER, joinedPlayer.getPlayerIndexInGame());
+        ServiceLocator.locateService(GameInfo.class).setGameIndexForPlayer(GameInfo.PlayerLocation.TOP_LEFT_PLAYER, joinedPlayer.getPlayerIndexInGame());
 
         //TODO : set name from data
         String name = "SeriyV";
-        ServiceLocator.locateService(HudManagementService.class).setNameForPlayer(GameInfo.Player.TOP_LEFT_PLAYER, name);
+        ServiceLocator.locateService(HudManagementService.class).setNameForPlayer(GameInfo.PlayerLocation.TOP_LEFT_PLAYER, name);
     }
 }

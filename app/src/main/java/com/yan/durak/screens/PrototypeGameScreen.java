@@ -37,14 +37,10 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
     //updatables
     private final TweenManager mSharedTweenManager;
-    private final GameActivity.GameInitConfig mGameConfig;
 
 
     public PrototypeGameScreen(YANGLRenderer renderer, IGameServerConnector gameServerConnector, GameActivity.GameInitConfig gameInitConfig) {
         super(renderer);
-
-        //we are caching this value for further usage
-        mGameConfig = gameInitConfig;
 
         //we received the connector that should be used
         mGameServerConnector = gameServerConnector;
@@ -71,7 +67,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         ServiceLocator.addService(new CardsTouchProcessorService(new CardsTouchProcessor(new PlayerCardsTouchProcessorListener(), ServiceLocator.locateService(PileManagerService.class).getBottomPlayerPile())));
 
         //game session will store the game state and related info
-        ServiceLocator.addService(new GameInfo());
+        ServiceLocator.addService(new GameInfo(gameInitConfig));
 
         //layouters manager
         ServiceLocator.addService(new PileLayouterManagerService(mSharedTweenManager));
@@ -104,7 +100,8 @@ public class PrototypeGameScreen extends BaseGameScreen {
     @Override
     public void onSetActive() {
         super.onSetActive();
-        LocalGameServer.start(mGameConfig.playersAmount);
+        //FIXME : why we always starting local server ? what if the game is online ?
+        LocalGameServer.start(ServiceLocator.locateService(GameInfo.class).getGameConfig().playersAmount);
         mGameServerConnector.connect();
     }
 

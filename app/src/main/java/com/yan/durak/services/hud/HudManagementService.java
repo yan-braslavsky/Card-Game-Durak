@@ -130,7 +130,7 @@ public class HudManagementService implements IService {
     /**
      * Hides all related UI for given player
      */
-    public void hidePlayerUI(GameInfo.Player player) {
+    public void hidePlayerUI(GameInfo.PlayerLocation player) {
         getSpeechBubbleTextNodeForPlayer(player).setOpacity(0);
         getBGAvatarForPlayer(player).setOpacity(0);
         getIconForPlayer(player).setOpacity(0);
@@ -139,7 +139,7 @@ public class HudManagementService implements IService {
         getNameTextNodeForPlayer(player).setOpacity(0);
     }
 
-    private YANTexturedNode getNameBgForPlayer(GameInfo.Player player) {
+    private YANTexturedNode getNameBgForPlayer(GameInfo.PlayerLocation player) {
         switch (player) {
             case BOTTOM_PLAYER:
                 throw new IllegalStateException("There is no name for bottom player");
@@ -152,7 +152,7 @@ public class HudManagementService implements IService {
         }
     }
 
-    private YANTextNode getNameTextNodeForPlayer(GameInfo.Player player) {
+    private YANTextNode getNameTextNodeForPlayer(GameInfo.PlayerLocation player) {
         switch (player) {
             case BOTTOM_PLAYER:
                 throw new IllegalStateException("There is no name for bottom player");
@@ -177,7 +177,7 @@ public class HudManagementService implements IService {
 
     }
 
-    public void setNameForPlayer(@NonNull final GameInfo.Player player, @NonNull final String name) {
+    public void setNameForPlayer(@NonNull final GameInfo.PlayerLocation player, @NonNull final String name) {
         YANTexturedNode nameBgForPlayer = getNameBgForPlayer(player);
         YANTextNode nameTextNodeForPlayer = getNameTextNodeForPlayer(player);
         adjustTextScaleToFitBounds(name,
@@ -362,7 +362,7 @@ public class HudManagementService implements IService {
     }
 
 
-    public void animateScaleUpPlayerAvatar(@NonNull GameInfo.Player player) {
+    public void animateScaleUpPlayerAvatar(@NonNull GameInfo.PlayerLocation player) {
 
         final YANBaseNode avatarIconNode = getIconForPlayer(player);
         final int originalSortingLayer = avatarIconNode.getSortingLayer();
@@ -393,7 +393,7 @@ public class HudManagementService implements IService {
         sequence.start(mTweenManager);
     }
 
-    private YANBaseNode getIconForPlayer(GameInfo.Player player) {
+    private YANTexturedNode getIconForPlayer(GameInfo.PlayerLocation player) {
         switch (player) {
             case BOTTOM_PLAYER:
                 return getNode(HudNodes.AVATAR_ICON_BOTTOM_RIGHT_INDEX);
@@ -406,7 +406,18 @@ public class HudManagementService implements IService {
         }
     }
 
-    public void showSpeechBubbleWithText(@NonNull @HudNodes.SpeechBubbleText String text, @NonNull GameInfo.Player player) {
+    /**
+     * Sets icon avatar for given playerLocation location
+     *
+     * @param playerLocation
+     * @param avatarResource
+     * @throws NullPointerException if texture resource is not found !
+     */
+    public void setIconForPlayer(GameInfo.PlayerLocation playerLocation, String avatarResource) {
+        getIconForPlayer(playerLocation).setTextureRegion(mHudAtlas.getTextureRegion(avatarResource));
+    }
+
+    public void showSpeechBubbleWithText(@NonNull @HudNodes.SpeechBubbleText String text, @NonNull GameInfo.PlayerLocation player) {
         YANBaseNode speechBubbleNode = getSpeechBubbleForPlayer(player);
         YANTextNode textNode = getSpeechBubbleTextNodeForPlayer(player);
 
@@ -437,7 +448,7 @@ public class HudManagementService implements IService {
     }
 
 
-    private YANTextNode getSpeechBubbleTextNodeForPlayer(@NonNull GameInfo.Player player) {
+    private YANTextNode getSpeechBubbleTextNodeForPlayer(@NonNull GameInfo.PlayerLocation player) {
         switch (player) {
             case BOTTOM_PLAYER:
                 return getNode(HudNodes.BOTTOM_SPEECH_BUBBLE_TEXT_INDEX);
@@ -449,7 +460,7 @@ public class HudManagementService implements IService {
         throw new IllegalStateException("cannot find a node for give player");
     }
 
-    private YANTexturedNode getBGAvatarForPlayer(GameInfo.Player player) {
+    private YANTexturedNode getBGAvatarForPlayer(GameInfo.PlayerLocation player) {
         switch (player) {
             case BOTTOM_PLAYER:
                 return getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX);
@@ -461,7 +472,7 @@ public class HudManagementService implements IService {
         throw new IllegalStateException("cannot find a node for give player");
     }
 
-    private YANBaseNode getSpeechBubbleForPlayer(@NonNull GameInfo.Player player) {
+    private YANBaseNode getSpeechBubbleForPlayer(@NonNull GameInfo.PlayerLocation player) {
         switch (player) {
             case BOTTOM_PLAYER:
                 return getNode(HudNodes.BOTTOM_SPEECH_BUBBLE_INDEX);
@@ -476,7 +487,7 @@ public class HudManagementService implements IService {
     /**
      * Starts the animation of timer attached to player.
      */
-    public void startTimerForPlayer(@NonNull GameInfo.Player player, YANColor timerColor) {
+    public void startTimerForPlayer(@NonNull GameInfo.PlayerLocation player, YANColor timerColor) {
 
         //stop active timer
         stopActiveTimer();
@@ -499,7 +510,7 @@ public class HudManagementService implements IService {
         mActiveTimerNode.setOpacity(0f);
     }
 
-    private YANCircleNode getTimerNodeForPlayer(GameInfo.Player player) {
+    private YANCircleNode getTimerNodeForPlayer(GameInfo.PlayerLocation player) {
         switch (player) {
             case BOTTOM_PLAYER:
                 return getNode(HudNodes.CIRCLE_TIMER_BOTTOM_RIGHT_INDEX);

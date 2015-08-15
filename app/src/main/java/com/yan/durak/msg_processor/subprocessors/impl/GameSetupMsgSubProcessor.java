@@ -4,7 +4,6 @@ import com.yan.durak.gamelogic.cards.Card;
 import com.yan.durak.gamelogic.communication.protocol.data.CardData;
 import com.yan.durak.gamelogic.communication.protocol.data.PlayerData;
 import com.yan.durak.gamelogic.communication.protocol.messages.GameSetupProtocolMessage;
-import com.yan.durak.layouting.pile.IPileLayouter;
 import com.yan.durak.layouting.pile.impl.StockPileLayouter;
 import com.yan.durak.msg_processor.subprocessors.BaseMsgSubProcessor;
 import com.yan.durak.services.PileLayouterManagerService;
@@ -59,10 +58,17 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
         StockPileLayouter stockPileLayouter = mPileLayouterManager.getPileLayouterForPile(mPileManager.getStockPile());
         //we need to hide top right player if there are only 2 players
         if (totalPlayers == 2) {
-            ServiceLocator.locateService(HudManagementService.class).hidePlayerUI(GameInfo.Player.TOP_RIGHT_PLAYER);
+            ServiceLocator.locateService(HudManagementService.class).hidePlayerUI(GameInfo.PlayerLocation.TOP_RIGHT_PLAYER);
             stockPileLayouter.placeAtRightTop();
             ServiceLocator.locateService(HudManagementService.class).placeTrumpIconAtRightTop();
         }
+
+        //FIXME : avatar resource should come from game setup message
+        ServiceLocator.locateService(HudManagementService.class).setIconForPlayer(
+                GameInfo.PlayerLocation.BOTTOM_PLAYER,
+                ServiceLocator.locateService(GameInfo.class)
+                        .getPlayerInfoForPlayer(GameInfo.PlayerLocation.BOTTOM_PLAYER).getAvatarImageResource());
+        //TODO : set bottom player name when designs will be available, currently player name is not displayed ?
 
         stockPileLayouter.layout();
     }
@@ -83,7 +89,16 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
         //current player is a bottom player so we are extracting his pile index and assigning to pile manager
         mPileManager.setBottomPlayerPileIndex(playerData.getPlayerPileIndex());
         //set index in game for bottom player
-        mGameInfo.setGameIndexForPlayer(GameInfo.Player.BOTTOM_PLAYER, playerData.getPlayerIndexInGame());
+        mGameInfo.setGameIndexForPlayer(GameInfo.PlayerLocation.BOTTOM_PLAYER, playerData.getPlayerIndexInGame());
+
+        //TODO : player data should come from game setup message
+        String currentPlayerName = ServiceLocator.locateService(GameInfo.class).getGameConfig().nickname;
+        String currentPlayerAvatar = ServiceLocator.locateService(GameInfo.class).getGameConfig().avatarResource;
+
+        //init player info for current player
+        ServiceLocator.locateService(GameInfo.class).setPlayerInfoForPlayer(
+                GameInfo.PlayerLocation.BOTTOM_PLAYER, new GameInfo.PlayerInfo(currentPlayerAvatar, currentPlayerName));
+
     }
 
     private void extractAlreadyJoinedPlayers(List<PlayerData> alreadyJoinedPlayers, final int totalPlayersInGame) {
@@ -93,7 +108,7 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
             return;
 
         for (int i = 0; i < alreadyJoinedPlayers.size(); i++) {
-            placePlayer(mGameInfo.getPlayerIndex(GameInfo.Player.BOTTOM_PLAYER),
+            placePlayer(mGameInfo.getPlayerIndex(GameInfo.PlayerLocation.BOTTOM_PLAYER),
                     alreadyJoinedPlayers.get(i), totalPlayersInGame);
         }
     }
@@ -120,20 +135,20 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
 
     private void placeAsTopRight(PlayerData joinedPlayer) {
         ServiceLocator.locateService(PileManagerService.class).setTopRightPlayerPileIndex(joinedPlayer.getPlayerPileIndex());
-        ServiceLocator.locateService(GameInfo.class).setGameIndexForPlayer(GameInfo.Player.TOP_RIGHT_PLAYER, joinedPlayer.getPlayerIndexInGame());
+        ServiceLocator.locateService(GameInfo.class).setGameIndexForPlayer(GameInfo.PlayerLocation.TOP_RIGHT_PLAYER, joinedPlayer.getPlayerIndexInGame());
 
         //TODO : extract name from data
         String name = "MadBull";
-        ServiceLocator.locateService(HudManagementService.class).setNameForPlayer(GameInfo.Player.TOP_RIGHT_PLAYER, name);
+        ServiceLocator.locateService(HudManagementService.class).setNameForPlayer(GameInfo.PlayerLocation.TOP_RIGHT_PLAYER, name);
     }
 
     private void placeAsTopLeft(PlayerData joinedPlayer) {
         ServiceLocator.locateService(PileManagerService.class).setTopLeftPlayerPileIndex(joinedPlayer.getPlayerPileIndex());
-        ServiceLocator.locateService(GameInfo.class).setGameIndexForPlayer(GameInfo.Player.TOP_LEFT_PLAYER, joinedPlayer.getPlayerIndexInGame());
+        ServiceLocator.locateService(GameInfo.class).setGameIndexForPlayer(GameInfo.PlayerLocation.TOP_LEFT_PLAYER, joinedPlayer.getPlayerIndexInGame());
 
         //TODO : set name from data
         String name = "SeriyV";
-        ServiceLocator.locateService(HudManagementService.class).setNameForPlayer(GameInfo.Player.TOP_LEFT_PLAYER, name);
+        ServiceLocator.locateService(HudManagementService.class).setNameForPlayer(GameInfo.PlayerLocation.TOP_LEFT_PLAYER, name);
     }
 
     private void extractTrumpCardData(CardData trumpCardData) {
