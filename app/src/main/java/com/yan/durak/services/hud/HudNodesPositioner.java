@@ -1,6 +1,9 @@
 package com.yan.durak.services.hud;
 
+import com.yan.durak.animation.AnimationHelper;
+
 import glengine.yan.glengine.nodes.YANBaseNode;
+import glengine.yan.glengine.nodes.YANButtonNode;
 import glengine.yan.glengine.nodes.YANTextNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
@@ -59,12 +62,12 @@ public class HudNodesPositioner {
 
         //set avatar_1 icons
         //check how much the icon smaller than background
-        final YANTexturedNode bottomRightAvatarIcon = getNode(HudNodes.AVATAR_ICON_BOTTOM_RIGHT_INDEX);
+        final YANTexturedNode bottomRightAvatarIcon = getNode(HudNodes.AVATAR_ICON_TOP_RIGHT_INDEX);
         final float avatarIconToAvatarBgScaleFactor = bottomRightAvatarIcon.getTextureRegion().getWidth() / avatarBGTopRight.getTextureRegion().getWidth();
-
+//
         final float bottomIconSize = getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX).getSize().getX() * avatarIconToAvatarBgScaleFactor;
-        //set bottom avatar_1 icon
-        bottomRightAvatarIcon.setSize(bottomIconSize, bottomIconSize);
+//        //set bottom avatar_1 icon
+//        bottomRightAvatarIcon.setSize(bottomIconSize, bottomIconSize);
 
         //setup bottom timer size
         //calculate timer scale factor
@@ -86,6 +89,10 @@ public class HudNodesPositioner {
         //set action buttons size
         getNode(HudNodes.DONE_BUTTON_INDEX).setSize(bottomIconSize, bottomIconSize);
         getNode(HudNodes.TAKE_BUTTON_INDEX).setSize(bottomIconSize, bottomIconSize);
+
+        //setup animation for button nodes
+        AnimationHelper.setupButtonNodeClickAnimation(this.<YANButtonNode>getNode(HudNodes.DONE_BUTTON_INDEX), mHudManagementService.getTweenManager());
+        AnimationHelper.setupButtonNodeClickAnimation(this.<YANButtonNode>getNode(HudNodes.TAKE_BUTTON_INDEX), mHudManagementService.getTweenManager());
 
         //set trump image size
         final YANTexturedNode trumpImage = getNode(HudNodes.TRUMP_IMAGE_INDEX);
@@ -135,24 +142,28 @@ public class HudNodesPositioner {
 
         //setup avatarBg for bottom player
         YANTexturedNode avatarBg = getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX);
-        avatarBg.setAnchorPoint(1f, 1f);
+        avatarBg.setAnchorPoint(0.5f, 0.5f);
         avatarBg.setSortingLayer(HudManagementService.HUD_SORTING_LAYER + 1);
-        avatarBg.setPosition(sceneSize.getX() - offsetX, sceneSize.getY() - offsetX);
+        avatarBg.setPosition(sceneSize.getX() - offsetX - avatarBg.getSize().getX() / 2,
+                sceneSize.getY() - offsetX - avatarBg.getSize().getY() / 2);
+
+        AnimationHelper.createInfiniteBreathingAnimation(avatarBg,mHudManagementService.getTweenManager());
 
         //setup bottom timer
         final YANBaseNode bottomTimer = getNode(HudNodes.CIRCLE_TIMER_BOTTOM_RIGHT_INDEX);
         float offsetSize = (avatarBg.getSize().getX() - bottomTimer.getSize().getX()) / 2;
         bottomTimer.setSortingLayer(avatarBg.getSortingLayer() + 1);
-        bottomTimer.setAnchorPoint(1f, 1f);
-        bottomTimer.setPosition(avatarBg.getPosition().getX() - offsetSize, avatarBg.getPosition().getY() - offsetSize);
+        bottomTimer.setAnchorPoint(0.5f, 0.5f);
+//        bottomTimer.setPosition(avatarBg.getPosition().getX() - offsetSize, avatarBg.getPosition().getY() - offsetSize);
+        bottomTimer.setPosition(avatarBg.getPosition().getX(),avatarBg.getPosition().getY());
 
         //setup bottom avatar_1 icon
-        final YANTexturedNode bottomAvatarIcon = getNode(HudNodes.AVATAR_ICON_BOTTOM_RIGHT_INDEX);
-        final float bottomAvatarIconHalfSize = bottomAvatarIcon.getSize().getX() / 2;
-        bottomAvatarIcon.setAnchorPoint(0.5f, 0.5f);
-        bottomAvatarIcon.setSortingLayer(bottomTimer.getSortingLayer() + 1);
-        offsetSize = (avatarBg.getSize().getX() - bottomAvatarIcon.getSize().getX()) / 2;
-        bottomAvatarIcon.setPosition(avatarBg.getPosition().getX() - offsetSize - bottomAvatarIconHalfSize, avatarBg.getPosition().getY() - offsetSize - bottomAvatarIconHalfSize);
+        final YANTexturedNode bottomAvatarIcon = getNode(HudNodes.AVATAR_ICON_TOP_RIGHT_INDEX);
+//        final float bottomAvatarIconHalfSize = bottomAvatarIcon.getSize().getX() / 2;
+//        bottomAvatarIcon.setAnchorPoint(0.5f, 0.5f);
+//        bottomAvatarIcon.setSortingLayer(bottomTimer.getSortingLayer() + 1);
+//        offsetSize = (avatarBg.getSize().getX() - bottomAvatarIcon.getSize().getX()) / 2;
+//        bottomAvatarIcon.setPosition(avatarBg.getPosition().getX() - offsetSize - bottomAvatarIconHalfSize, avatarBg.getPosition().getY() - offsetSize - bottomAvatarIconHalfSize);
 
         //take action is at the same place as bottom avatarBg
         final YANTexturedNode takeButton = getNode(HudNodes.TAKE_BUTTON_INDEX);

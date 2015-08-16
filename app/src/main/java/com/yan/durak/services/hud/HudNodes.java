@@ -40,7 +40,7 @@ public class HudNodes {
             AVATAR_BG_BOTTOM_RIGHT_INDEX,
             AVATAR_BG_TOP_RIGHT_INDEX,
             AVATAR_BG_TOP_LEFT_INDEX,
-            AVATAR_ICON_BOTTOM_RIGHT_INDEX,
+//            AVATAR_ICON_BOTTOM_RIGHT_INDEX,
             AVATAR_ICON_TOP_RIGHT_INDEX,
             AVATAR_ICON_TOP_LEFT_INDEX,
             DONE_BUTTON_INDEX,
@@ -79,7 +79,7 @@ public class HudNodes {
     public static final int AVATAR_BG_TOP_LEFT_INDEX = 2;
 
     //Avatar icons
-    public static final int AVATAR_ICON_BOTTOM_RIGHT_INDEX = 3;
+//    public static final int AVATAR_ICON_BOTTOM_RIGHT_INDEX = 3;
     public static final int AVATAR_ICON_TOP_RIGHT_INDEX = 4;
     public static final int AVATAR_ICON_TOP_LEFT_INDEX = 5;
     public static final int TRUMP_IMAGE_INDEX = 6;

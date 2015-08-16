@@ -1,6 +1,7 @@
 package com.yan.durak.services.hud;
 
 import android.opengl.GLES20;
+import android.support.annotation.NonNull;
 
 import com.yan.durak.screens.BaseGameScreen;
 
@@ -9,6 +10,7 @@ import glengine.yan.glengine.assets.atlas.YANTextureAtlas;
 import glengine.yan.glengine.nodes.YANBaseNode;
 import glengine.yan.glengine.nodes.YANButtonNode;
 import glengine.yan.glengine.nodes.YANCircleNode;
+import glengine.yan.glengine.nodes.YANIParentNode;
 import glengine.yan.glengine.nodes.YANTextNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.renderer.YANGLRenderer;
@@ -44,7 +46,7 @@ public class HudNodesCreator {
         putToNodeMap(HudNodes.TRUMP_IMAGE_INDEX, createTrumpImage(hudAtlas));
 
         //create avatars
-        putToNodeMap(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX, createAvatar(hudAtlas));
+        putToNodeMap(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX, createBottomRightAvatar(hudAtlas));
         putToNodeMap(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX, createAvatar(hudAtlas));
         putToNodeMap(HudNodes.AVATAR_BG_TOP_LEFT_INDEX, createAvatar(hudAtlas));
 
@@ -67,7 +69,7 @@ public class HudNodesCreator {
         putToNodeMap(HudNodes.TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX, createSpeechBubbleText());
 
         //create avatar_1 icons
-        putToNodeMap(HudNodes.AVATAR_ICON_BOTTOM_RIGHT_INDEX, createAvatarIcon(hudAtlas, "avatar_1.png"));
+//        putToNodeMap(HudNodes.AVATAR_ICON_BOTTOM_RIGHT_INDEX, createAvatarIcon(hudAtlas, "avatar_1.png"));
         putToNodeMap(HudNodes.AVATAR_ICON_TOP_RIGHT_INDEX, createAvatarIcon(hudAtlas, "avatar_2.png"));
         putToNodeMap(HudNodes.AVATAR_ICON_TOP_LEFT_INDEX, createAvatarIcon(hudAtlas, "avatar_3.png"));
 
@@ -94,7 +96,9 @@ public class HudNodesCreator {
         putToNodeMap(HudNodes.GLOW_INDEX, createCardGlow(hudAtlas));
         putToNodeMap(HudNodes.ROOF_INDEX, createRoof(hudAtlas));
 
+
     }
+
 
     private YANBaseNode createNameBackground(final YANTextureAtlas hudAtlas) {
         final YANTexturedNode nameBg = new YANTexturedNode(hudAtlas.getTextureRegion("name_bg.png"));
@@ -205,6 +209,77 @@ public class HudNodesCreator {
     private YANTexturedNode createAvatar(final YANTextureAtlas hudAtlas) {
         final YANTexturedNode avatar = new YANTexturedNode(hudAtlas.getTextureRegion("stump_bg.png"));
         avatar.setSortingLayer(HudManagementService.HUD_SORTING_LAYER);
+        return avatar;
+    }
+
+    private YANTexturedNode createBottomRightAvatar(final YANTextureAtlas hudAtlas) {
+        final YANTexturedNode avatar = new YANTexturedNode(hudAtlas.getTextureRegion("stump_bg.png"));
+        avatar.setSortingLayer(HudManagementService.HUD_SORTING_LAYER);
+
+        //avatar icon will be a child of the background
+        final YANTexturedNode avatarIcon = new YANTexturedNode(hudAtlas.getTextureRegion("avatar_1.png")) {
+            @Override
+            public void onParentAttributeChanged(@NonNull final YANIParentNode parentNode, @NonNull final Attribute attribute) {
+                super.onParentAttributeChanged(parentNode, attribute);
+
+                switch (attribute) {
+                    case SIZE:
+                        scaleWithParent(parentNode);
+                        break;
+                    case SORTING_LAYER:
+                        adjustSortingLayerToParent(parentNode);
+                        break;
+                    case POSITION:
+                        adjustPositionInParent(parentNode);
+                        break;
+                    case ROTATION_Y:
+                    case ROTATION_Z:
+                        adjustRotationToParent(parentNode);
+                        break;
+                }
+            }
+
+            @Override
+            public void onAttachedToParentNode(@NonNull final YANIParentNode parentNode) {
+                super.onAttachedToParentNode(parentNode);
+
+                //adjust sorting layer to be always on top of the parent
+                adjustSortingLayerToParent(parentNode);
+
+                //scale uniformly with parent
+                scaleWithParent(parentNode);
+
+                //adjust position to be in parent bounds
+                adjustPositionInParent(parentNode);
+
+                //setRotation according to parent
+                adjustRotationToParent(parentNode);
+
+            }
+
+            private void adjustRotationToParent(final @NonNull YANIParentNode parentNode) {
+                this.setRotationY(parentNode.getRotationY());
+                this.setRotationZ(parentNode.getRotationZ());
+            }
+
+            private void adjustPositionInParent(final @NonNull YANIParentNode parentNode) {
+                //both nodes have anchor to the center , so their position should be the same
+                this.setPosition(parentNode.getPosition().getX(), parentNode.getPosition().getY());
+            }
+
+            private void adjustSortingLayerToParent(final @NonNull YANIParentNode parentNode) {
+                this.setSortingLayer(parentNode.getSortingLayer() + 1);
+            }
+
+            private void scaleWithParent(final @NonNull YANIParentNode parentNode) {
+                final float ar = getTextureRegion().getWidth() / getTextureRegion().getHeight();
+                final float height =parentNode.getSize().getY() * 0.72f;
+                final float width = height * ar;
+                this.setSize(width, height);
+            }
+        };
+        avatarIcon.setAnchorPoint(0.5f,0.5f);
+        avatar.addChildNode(avatarIcon);
         return avatar;
     }
 

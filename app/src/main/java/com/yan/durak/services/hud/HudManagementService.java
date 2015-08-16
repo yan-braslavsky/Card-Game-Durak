@@ -3,6 +3,7 @@ package com.yan.durak.services.hud;
 
 import android.support.annotation.NonNull;
 
+import com.yan.durak.gamelogic.utils.math.MathHelper;
 import com.yan.durak.services.SceneSizeProviderService;
 import com.yan.durak.session.GameInfo;
 import com.yan.durak.session.states.IActivePlayerState;
@@ -94,16 +95,13 @@ public class HudManagementService implements IService {
         final float rangeDelta = 5f;
         float neededScale = 1.0f;
         textNode.calculateSizeForString(text, neededScale, _cachedVector);
-        if (!isFloatInRange(_cachedVector.getX(), maxAllowedTextWidth - rangeDelta, maxAllowedTextWidth + rangeDelta)) {
+        if (!MathHelper.isFloatInRange(_cachedVector.getX(), maxAllowedTextWidth - rangeDelta, maxAllowedTextWidth + rangeDelta)) {
             neededScale = maxAllowedTextWidth / _cachedVector.getX();
         }
         textNode.setTextScale(neededScale);
         textNode.setText(text);
     }
 
-    private static boolean isFloatInRange(final float num, final float min, final float max) {
-        return num < max && num > min;
-    }
 
     private YANTextureAtlas mHudAtlas;
     private TweenCallback showVButtonTweenCallback = new TweenCallback() {
@@ -396,7 +394,7 @@ public class HudManagementService implements IService {
     private YANTexturedNode getIconForPlayer(final GameInfo.PlayerLocation player) {
         switch (player) {
             case BOTTOM_PLAYER:
-                return getNode(HudNodes.AVATAR_ICON_BOTTOM_RIGHT_INDEX);
+                return (YANTexturedNode) getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX).getChildNodes().iterator().next();
             case TOP_RIGHT_PLAYER:
                 return getNode(HudNodes.AVATAR_ICON_TOP_RIGHT_INDEX);
             case TOP_LEFT_PLAYER:
@@ -530,5 +528,9 @@ public class HudManagementService implements IService {
 
     public void setTimerListener(final TimerListener timerListener) {
         mTimerListener = timerListener;
+    }
+
+    protected TweenManager getTweenManager() {
+        return mTweenManager;
     }
 }
