@@ -3,6 +3,8 @@ package com.yan.durak.services.hud;
 import android.opengl.GLES20;
 import android.support.annotation.NonNull;
 
+import com.yan.durak.nodes.uniform.ChildCircularNode;
+import com.yan.durak.nodes.uniform.ChildTexturedNode;
 import com.yan.durak.screens.BaseGameScreen;
 
 import glengine.yan.glengine.assets.YANAssetManager;
@@ -46,7 +48,7 @@ public class HudNodesCreator {
         putToNodeMap(HudNodes.TRUMP_IMAGE_INDEX, createTrumpImage(hudAtlas));
 
         //create avatars
-        putToNodeMap(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX, createBottomRightAvatar(hudAtlas));
+        putToNodeMap(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX, createAvatarBgWithTimerAndIcon(hudAtlas));
         putToNodeMap(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX, createAvatar(hudAtlas));
         putToNodeMap(HudNodes.AVATAR_BG_TOP_LEFT_INDEX, createAvatar(hudAtlas));
 
@@ -74,7 +76,7 @@ public class HudNodesCreator {
         putToNodeMap(HudNodes.AVATAR_ICON_TOP_LEFT_INDEX, createAvatarIcon(hudAtlas, "avatar_3.png"));
 
         //create timers
-        putToNodeMap(HudNodes.CIRCLE_TIMER_BOTTOM_RIGHT_INDEX, createCircleTimer());
+//        putToNodeMap(HudNodes.CIRCLE_TIMER_BOTTOM_RIGHT_INDEX, createCircleTimer());
         putToNodeMap(HudNodes.CIRCLE_TIMER_TOP_RIGHT_INDEX, createCircleTimer());
         putToNodeMap(HudNodes.CIRCLE_TIMER_TOP_LEFT_INDEX, createCircleTimer());
 
@@ -212,75 +214,43 @@ public class HudNodesCreator {
         return avatar;
     }
 
-    private YANTexturedNode createBottomRightAvatar(final YANTextureAtlas hudAtlas) {
+    private YANTexturedNode createAvatarBgWithTimerAndIcon(final YANTextureAtlas hudAtlas) {
         final YANTexturedNode avatar = new YANTexturedNode(hudAtlas.getTextureRegion("stump_bg.png"));
         avatar.setSortingLayer(HudManagementService.HUD_SORTING_LAYER);
 
-        //avatar icon will be a child of the background
-        final YANTexturedNode avatarIcon = new YANTexturedNode(hudAtlas.getTextureRegion("avatar_1.png")) {
+        //we creating a circle timer
+        YANCircleNode circleTimer = createChildCircleTimer();
+        final YANTexturedNode avatarIcon = createChildIcon(hudAtlas);
+
+        //parenting
+        avatar.addChildNode(circleTimer);
+        circleTimer.addChildNode(avatarIcon);
+
+        //TODO : make buttons children of icon
+
+        return avatar;
+    }
+
+    private YANCircleNode createChildCircleTimer() {
+        final YANCircleNode yanCircleNode = new ChildCircularNode();
+        yanCircleNode.setColor(HudManagementService.TIMER_RETALIATION_COLOR.getR(),
+                HudManagementService.TIMER_RETALIATION_COLOR.getG(),
+                HudManagementService.TIMER_RETALIATION_COLOR.getB());
+        yanCircleNode.setClockWiseDraw(false);
+        yanCircleNode.setPieCirclePercentage(1f);
+        yanCircleNode.setAnchorPoint(0.5f, 0.5f);
+        return yanCircleNode;
+    }
+
+    @NonNull
+    private YANTexturedNode createChildIcon(final YANTextureAtlas hudAtlas) {
+        final YANTexturedNode avatarIcon = new ChildTexturedNode(hudAtlas.getTextureRegion("avatar_1.png")){
             @Override
-            public void onParentAttributeChanged(@NonNull final YANIParentNode parentNode, @NonNull final Attribute attribute) {
-                super.onParentAttributeChanged(parentNode, attribute);
-
-                switch (attribute) {
-                    case SIZE:
-                        scaleWithParent(parentNode);
-                        break;
-                    case SORTING_LAYER:
-                        adjustSortingLayerToParent(parentNode);
-                        break;
-                    case POSITION:
-                        adjustPositionInParent(parentNode);
-                        break;
-                    case ROTATION_Y:
-                    case ROTATION_Z:
-                        adjustRotationToParent(parentNode);
-                        break;
-                }
-            }
-
-            @Override
-            public void onAttachedToParentNode(@NonNull final YANIParentNode parentNode) {
-                super.onAttachedToParentNode(parentNode);
-
-                //adjust sorting layer to be always on top of the parent
-                adjustSortingLayerToParent(parentNode);
-
-                //scale uniformly with parent
-                scaleWithParent(parentNode);
-
-                //adjust position to be in parent bounds
-                adjustPositionInParent(parentNode);
-
-                //setRotation according to parent
-                adjustRotationToParent(parentNode);
-
-            }
-
-            private void adjustRotationToParent(final @NonNull YANIParentNode parentNode) {
-                this.setRotationY(parentNode.getRotationY());
-                this.setRotationZ(parentNode.getRotationZ());
-            }
-
-            private void adjustPositionInParent(final @NonNull YANIParentNode parentNode) {
-                //both nodes have anchor to the center , so their position should be the same
-                this.setPosition(parentNode.getPosition().getX(), parentNode.getPosition().getY());
-            }
-
-            private void adjustSortingLayerToParent(final @NonNull YANIParentNode parentNode) {
-                this.setSortingLayer(parentNode.getSortingLayer() + 1);
-            }
-
-            private void scaleWithParent(final @NonNull YANIParentNode parentNode) {
-                final float ar = getTextureRegion().getWidth() / getTextureRegion().getHeight();
-                final float height =parentNode.getSize().getY() * 0.72f;
-                final float width = height * ar;
-                this.setSize(width, height);
+            public void scaleWithParent(@NonNull YANIParentNode parentNode) {
+                this.setSize(parentNode.getSize().getX() * 0.85f, parentNode.getSize().getY() * 0.85f);
             }
         };
-        avatarIcon.setAnchorPoint(0.5f,0.5f);
-        avatar.addChildNode(avatarIcon);
-        return avatar;
+        return avatarIcon;
     }
 
     private YANTexturedNode createAvatarIcon(final YANTextureAtlas hudAtlas, final String avatarTextureName) {

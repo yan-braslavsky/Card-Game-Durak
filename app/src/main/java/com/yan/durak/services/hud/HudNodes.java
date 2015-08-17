@@ -53,7 +53,7 @@ public class HudNodes {
             FENCE_INDEX,
             GLADE_INDEX,
             GLOW_INDEX,
-            CIRCLE_TIMER_BOTTOM_RIGHT_INDEX,
+//            CIRCLE_TIMER_BOTTOM_RIGHT_INDEX,
             CIRCLE_TIMER_TOP_RIGHT_INDEX,
             CIRCLE_TIMER_TOP_LEFT_INDEX,
             ROOF_INDEX,
@@ -99,7 +99,7 @@ public class HudNodes {
     public static final int MASK_CARD_INDEX = 13;
     public static final int FENCE_INDEX = 14;
     public static final int GLADE_INDEX = 15;
-    public static final int CIRCLE_TIMER_BOTTOM_RIGHT_INDEX = 16;
+//    public static final int CIRCLE_TIMER_BOTTOM_RIGHT_INDEX = 16;
     public static final int CIRCLE_TIMER_TOP_RIGHT_INDEX = 17;
     public static final int CIRCLE_TIMER_TOP_LEFT_INDEX = 18;
     public static final int ROOF_INDEX = 19;

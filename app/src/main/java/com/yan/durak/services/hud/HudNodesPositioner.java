@@ -73,7 +73,7 @@ public class HudNodesPositioner {
         //calculate timer scale factor
         float timerToIconScaleFactor = avatarIconToAvatarBgScaleFactor + 0.105f;
         final float bottomTimerSize = getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX).getSize().getX() * timerToIconScaleFactor;
-        getNode(HudNodes.CIRCLE_TIMER_BOTTOM_RIGHT_INDEX).setSize(bottomTimerSize, bottomTimerSize);
+//        getNode(HudNodes.CIRCLE_TIMER_BOTTOM_RIGHT_INDEX).setSize(bottomTimerSize, bottomTimerSize);
 
         //set top avatar_1 icons
         final float topIconsSize = avatarBGTopRight.getSize().getX() * avatarIconToAvatarBgScaleFactor;
@@ -150,12 +150,13 @@ public class HudNodesPositioner {
         AnimationHelper.createInfiniteBreathingAnimation(avatarBg,mHudManagementService.getTweenManager());
 
         //setup bottom timer
-        final YANBaseNode bottomTimer = getNode(HudNodes.CIRCLE_TIMER_BOTTOM_RIGHT_INDEX);
-        float offsetSize = (avatarBg.getSize().getX() - bottomTimer.getSize().getX()) / 2;
-        bottomTimer.setSortingLayer(avatarBg.getSortingLayer() + 1);
-        bottomTimer.setAnchorPoint(0.5f, 0.5f);
+//        final YANBaseNode bottomTimer = getNode(HudNodes.CIRCLE_TIMER_BOTTOM_RIGHT_INDEX);
+        final float bottomTimerSize = getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX).getSize().getX() * 0.8f;
+        float offsetSize = (avatarBg.getSize().getX() - bottomTimerSize) / 2;
+//        bottomTimer.setSortingLayer(avatarBg.getSortingLayer() + 1);
+//        bottomTimer.setAnchorPoint(0.5f, 0.5f);
 //        bottomTimer.setPosition(avatarBg.getPosition().getX() - offsetSize, avatarBg.getPosition().getY() - offsetSize);
-        bottomTimer.setPosition(avatarBg.getPosition().getX(),avatarBg.getPosition().getY());
+//        bottomTimer.setPosition(avatarBg.getPosition().getX(),avatarBg.getPosition().getY());
 
         //setup bottom avatar_1 icon
         final YANTexturedNode bottomAvatarIcon = getNode(HudNodes.AVATAR_ICON_TOP_RIGHT_INDEX);

@@ -214,7 +214,10 @@ public class HudManagementService implements IService {
         getNode(HudNodes.YOU_LOOSE_IMAGE_INDEX).setOpacity(0);
 
         //timers are invisible
-        getNode(HudNodes.CIRCLE_TIMER_BOTTOM_RIGHT_INDEX).setOpacity(0);
+//        getNode(HudNodes.CIRCLE_TIMER_BOTTOM_RIGHT_INDEX).setOpacity(0);
+//        Object timerNode = getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX).getChildNodes().iterator().next();
+//        ((YANBaseNode) timerNode).setOpacity(0);
+
         getNode(HudNodes.CIRCLE_TIMER_TOP_RIGHT_INDEX).setOpacity(0);
         getNode(HudNodes.CIRCLE_TIMER_TOP_LEFT_INDEX).setOpacity(0);
 
@@ -394,7 +397,9 @@ public class HudManagementService implements IService {
     private YANTexturedNode getIconForPlayer(final GameInfo.PlayerLocation player) {
         switch (player) {
             case BOTTOM_PLAYER:
-                return (YANTexturedNode) getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX).getChildNodes().iterator().next();
+
+                //FIXME : is this what we want to return ?
+                return getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX);
             case TOP_RIGHT_PLAYER:
                 return getNode(HudNodes.AVATAR_ICON_TOP_RIGHT_INDEX);
             case TOP_LEFT_PLAYER:
@@ -412,7 +417,8 @@ public class HudManagementService implements IService {
      * @throws NullPointerException if texture resource is not found !
      */
     public void setIconForPlayer(final GameInfo.PlayerLocation playerLocation, final String avatarResource) {
-        getIconForPlayer(playerLocation).setTextureRegion(mHudAtlas.getTextureRegion(avatarResource));
+        //FIXME : Uncomment
+//        getIconForPlayer(playerLocation).setTextureRegion(mHudAtlas.getTextureRegion(avatarResource));
     }
 
     public void showSpeechBubbleWithText(@NonNull @HudNodes.SpeechBubbleText final String text, @NonNull final GameInfo.PlayerLocation player) {
@@ -511,7 +517,11 @@ public class HudManagementService implements IService {
     private YANCircleNode getTimerNodeForPlayer(final GameInfo.PlayerLocation player) {
         switch (player) {
             case BOTTOM_PLAYER:
-                return getNode(HudNodes.CIRCLE_TIMER_BOTTOM_RIGHT_INDEX);
+
+                //TODO : make it sane
+//                YANBaseNode icon = (YANBaseNode) getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX).getChildNodes().iterator().next();
+//                return (YANCircleNode) icon.getChildNodes().iterator().next();
+                return (YANCircleNode) getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX).getChildNodes().iterator().next();
             case TOP_RIGHT_PLAYER:
                 return getNode(HudNodes.CIRCLE_TIMER_TOP_RIGHT_INDEX);
             case TOP_LEFT_PLAYER:
