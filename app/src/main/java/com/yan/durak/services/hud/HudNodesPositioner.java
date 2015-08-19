@@ -3,7 +3,6 @@ package com.yan.durak.services.hud;
 import com.yan.durak.animation.AnimationHelper;
 
 import glengine.yan.glengine.nodes.YANBaseNode;
-import glengine.yan.glengine.nodes.YANButtonNode;
 import glengine.yan.glengine.nodes.YANTextNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
@@ -164,12 +163,13 @@ public class HudNodesPositioner {
         topLeftNameBg.setSortingLayer(getNode(HudNodes.ROOF_INDEX).getSortingLayer() + 1);
         topRightNameBG.setSortingLayer(topLeftNameBg.getSortingLayer());
         topRightNameBG.setRotationY(180);
-        final float offsetFromScreenEdge = sceneSize.getY() * 0.007f;
+        final float offsetFromTopScreenEdge = sceneSize.getY() * 0.009f;
         topLeftNameBg.setPosition(
-                getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX).getPosition().getX(),
+                getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX).getPosition().getX() - (getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX).getSize().getX() / 2),
                 getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX).getPosition().getY()
-                        - topLeftNameBg.getSize().getY() - offsetFromScreenEdge);
-        topRightNameBG.setPosition(((sceneSize.getX() / 3f) * 2f) - offsetFromScreenEdge, topLeftNameBg.getPosition().getY());
+                        - (getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX).getSize().getY() / 2)
+                        - topLeftNameBg.getSize().getY() - offsetFromTopScreenEdge);
+        topRightNameBG.setPosition(((sceneSize.getX() / 3f) * 2f) - offsetFromTopScreenEdge, topLeftNameBg.getPosition().getY());
 
         //names texts
         final YANTextNode topLeftNameBgText = getNode(HudNodes.NAME_BG_TOP_LEFT_TEXT_INDEX);
