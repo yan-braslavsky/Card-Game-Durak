@@ -58,7 +58,7 @@ public class GameSetupMsgSubProcessor extends BaseMsgSubProcessor<GameSetupProto
         final StockPileLayouter stockPileLayouter = mPileLayouterManager.getPileLayouterForPile(mPileManager.getStockPile());
         //we need to hide top right player if there are only 2 players
         if (data.getTotalPlayersInGame() == 2) {
-            ServiceLocator.locateService(HudManagementService.class).hidePlayerUI(GameInfo.PlayerLocation.TOP_RIGHT_PLAYER);
+            ServiceLocator.locateService(HudManagementService.class).removePlayerUI(GameInfo.PlayerLocation.TOP_RIGHT_PLAYER);
             stockPileLayouter.placeAtRightTop();
             ServiceLocator.locateService(HudManagementService.class).placeTrumpIconAtRightTop();
         }

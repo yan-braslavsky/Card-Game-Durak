@@ -60,18 +60,9 @@ public class HudNodesPositioner {
         getNode(HudNodes.TOP_RIGHT_SPEECH_BUBBLE_INDEX).setSize(newWidth, newHeight);
         getNode(HudNodes.TOP_LEFT_SPEECH_BUBBLE_INDEX).setSize(newWidth, newHeight);
 
-        //set avatar_1 icons
-        final float avatarIconToAvatarBgScaleFactor = 0.9f;
-        final float bottomIconSize = getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX).getSize().getX() * avatarIconToAvatarBgScaleFactor;
-
-        //TODO : put into icon node
-        //set action buttons size
-        getNode(HudNodes.DONE_BUTTON_INDEX).setSize(bottomIconSize, bottomIconSize);
-        getNode(HudNodes.TAKE_BUTTON_INDEX).setSize(bottomIconSize, bottomIconSize);
-
-        //setup animation for button nodes
-        AnimationHelper.setupButtonNodeClickAnimation(this.<YANButtonNode>getNode(HudNodes.DONE_BUTTON_INDEX), mHudManagementService.getTweenManager());
-        AnimationHelper.setupButtonNodeClickAnimation(this.<YANButtonNode>getNode(HudNodes.TAKE_BUTTON_INDEX), mHudManagementService.getTweenManager());
+        //TODO : setup animation for button nodes
+//        AnimationHelper.setupButtonNodeClickAnimation(this.<YANButtonNode>getNode(HudNodes.DONE_BUTTON_INDEX), mHudManagementService.getTweenManager());
+//        AnimationHelper.setupButtonNodeClickAnimation(this.<YANButtonNode>getNode(HudNodes.TAKE_BUTTON_INDEX), mHudManagementService.getTweenManager());
 
         //set trump image size
         final YANTexturedNode trumpImage = getNode(HudNodes.TRUMP_IMAGE_INDEX);
@@ -127,10 +118,6 @@ public class HudNodesPositioner {
 
         //TODO : remove , enable only when needed
         AnimationHelper.createInfiniteBreathingAnimation(avatarBg, mHudManagementService.getTweenManager());
-
-        //take action is at the same place as bottom avatarBg
-        final YANTexturedNode takeButton = getNode(HudNodes.TAKE_BUTTON_INDEX);
-        takeButton.setAnchorPoint(0.5f, 0.5f);
 
         //setup avatarBg for top right player
         final float topOffset = sceneSize.getY() * 0.07f;

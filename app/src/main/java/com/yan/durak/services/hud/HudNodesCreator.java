@@ -44,7 +44,7 @@ public class HudNodesCreator {
         putToNodeMap(HudNodes.TRUMP_IMAGE_INDEX, createTrumpImage(hudAtlas));
 
         //create full avatars with background and icon
-        putToNodeMap(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX, NodeCreatorHelper.createAvatarBgWithTimerAndIcon(hudAtlas.getTextureRegion("stump_bg.png"), hudAtlas.getTextureRegion("avatar_1.png")));
+        putToNodeMap(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX, createBottomAvatar(hudAtlas));
         putToNodeMap(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX, NodeCreatorHelper.createAvatarBgWithTimerAndIcon(hudAtlas.getTextureRegion("stump_bg.png"), hudAtlas.getTextureRegion("avatar_2.png")));
         putToNodeMap(HudNodes.AVATAR_BG_TOP_LEFT_INDEX, NodeCreatorHelper.createAvatarBgWithTimerAndIcon(hudAtlas.getTextureRegion("stump_bg.png"), hudAtlas.getTextureRegion("avatar_3.png")));
 
@@ -66,10 +66,6 @@ public class HudNodesCreator {
         putToNodeMap(HudNodes.TOP_RIGHT_SPEECH_BUBBLE_TEXT_INDEX, createSpeechBubbleText());
         putToNodeMap(HudNodes.TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX, createSpeechBubbleText());
 
-        //create action buttons
-        putToNodeMap(HudNodes.DONE_BUTTON_INDEX, createDoneButton(hudAtlas));
-        putToNodeMap(HudNodes.TAKE_BUTTON_INDEX, createTakeButton(hudAtlas));
-
         //end game popups
         putToNodeMap(HudNodes.YOU_WIN_IMAGE_INDEX, createYouWonImage(hudAtlas));
         putToNodeMap(HudNodes.YOU_LOOSE_IMAGE_INDEX, createYouLooseImage(hudAtlas));
@@ -81,6 +77,11 @@ public class HudNodesCreator {
         putToNodeMap(HudNodes.MASK_CARD_INDEX, createMaskCard(hudAtlas));
         putToNodeMap(HudNodes.GLOW_INDEX, createCardGlow(hudAtlas));
         putToNodeMap(HudNodes.ROOF_INDEX, createRoof(hudAtlas));
+    }
+
+    private YANTexturedNode createBottomAvatar(YANTextureAtlas hudAtlas) {
+        YANTexturedNode avatar = NodeCreatorHelper.createAvatarBgWithTimerAndIcon(hudAtlas.getTextureRegion("stump_bg.png"), hudAtlas.getTextureRegion("avatar_1.png"));
+        return avatar;
     }
 
 
@@ -151,9 +152,6 @@ public class HudNodesCreator {
         return new YANButtonNode(hudAtlas.getTextureRegion("btn_take.png"), hudAtlas.getTextureRegion("btn_take.png"));
     }
 
-    private YANButtonNode createDoneButton(final YANTextureAtlas hudAtlas) {
-        return new YANButtonNode(hudAtlas.getTextureRegion("btn_done.png"), hudAtlas.getTextureRegion("btn_done.png"));
-    }
 
     private YANBaseNode createSpeechBubbleText() {
         final YANTextNode yanTextNode = new YANTextNode(ServiceLocator.locateService(YANAssetManager.class).getLoadedFont(BaseGameScreen.SPEECH_BUBBLES_FONT_NAME), "I will Take This !".length());

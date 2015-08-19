@@ -43,8 +43,8 @@ public class HudNodes {
 //            AVATAR_ICON_BOTTOM_RIGHT_INDEX,
 //            AVATAR_ICON_TOP_RIGHT_INDEX,
 //            AVATAR_ICON_TOP_LEFT_INDEX,
-            DONE_BUTTON_INDEX,
-            TAKE_BUTTON_INDEX,
+//            DONE_BUTTON_INDEX,
+//            TAKE_BUTTON_INDEX,
             TRUMP_IMAGE_INDEX,
             YOU_WIN_IMAGE_INDEX,
             YOU_LOOSE_IMAGE_INDEX,
@@ -85,8 +85,8 @@ public class HudNodes {
     public static final int TRUMP_IMAGE_INDEX = 6;
 
     //Action buttons
-    public static final int DONE_BUTTON_INDEX = 7;
-    public static final int TAKE_BUTTON_INDEX = 8;
+//    public static final int DONE_BUTTON_INDEX = 7;
+//    public static final int TAKE_BUTTON_INDEX = 8;
 
     public static final int GLOW_INDEX = 9;
 

@@ -2,11 +2,13 @@ package com.yan.durak.services.hud.creator;
 
 import android.support.annotation.NonNull;
 
+import com.yan.durak.nodes.uniform.ChildButtonNode;
 import com.yan.durak.nodes.uniform.ChildCircularNode;
 import com.yan.durak.nodes.uniform.ChildTexturedNode;
 import com.yan.durak.services.hud.HudManagementService;
 
 import glengine.yan.glengine.assets.atlas.YANAtlasTextureRegion;
+import glengine.yan.glengine.nodes.YANButtonNode;
 import glengine.yan.glengine.nodes.YANCircleNode;
 import glengine.yan.glengine.nodes.YANIParentNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
@@ -38,11 +40,34 @@ public class NodeCreatorHelper {
         return avatarBG;
     }
 
+    /**
+     * Create a child button node with percentage of it's parent
+     */
+    public static YANButtonNode createChildButtonNode(final YANAtlasTextureRegion defaultTextureRegion,
+                                                      final YANAtlasTextureRegion pressedTextureRegion,
+                                                      final float parentXSizePercentage,
+                                                      final float parentYSizePercentage) {
+        YANButtonNode buttonNode = new ChildButtonNode(defaultTextureRegion, pressedTextureRegion) {
+            @Override
+            public void scaleWithParent(@NonNull YANIParentNode parentNode) {
+                this.setSize(
+                        parentNode.getSize().getX() * parentXSizePercentage,
+                        parentNode.getSize().getY() * parentYSizePercentage);
+            }
+        };
+        return buttonNode;
+    }
+
     private static YANTexturedNode createChildIcon(final YANAtlasTextureRegion iconTextureRegion) {
         final YANTexturedNode avatarIcon = new ChildTexturedNode(iconTextureRegion) {
             @Override
             public void scaleWithParent(@NonNull YANIParentNode parentNode) {
                 this.setSize(parentNode.getSize().getX() * 0.85f, parentNode.getSize().getY() * 0.85f);
+            }
+
+            @Override
+            public void adjustOpacityInParent(YANIParentNode parentNode) {
+                //parent opacity is not influencing icon
             }
         };
         avatarIcon.setAnchorPoint(0.5f, 0.5f);
