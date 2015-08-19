@@ -3,6 +3,7 @@ package com.yan.durak.nodes.uniform;
 import android.support.annotation.NonNull;
 
 import glengine.yan.glengine.assets.atlas.YANAtlasTextureRegion;
+import glengine.yan.glengine.nodes.YANBaseNode;
 import glengine.yan.glengine.nodes.YANButtonNode;
 import glengine.yan.glengine.nodes.YANIParentNode;
 
@@ -19,7 +20,7 @@ public class ChildButtonNode extends YANButtonNode {
     }
 
     @Override
-    public void onParentAttributeChanged(@NonNull final YANIParentNode parentNode,
+    public void onParentAttributeChanged(@NonNull final YANBaseNode parentNode,
                                          @NonNull final Attribute attribute) {
         switch (attribute) {
             case SIZE:
@@ -42,7 +43,7 @@ public class ChildButtonNode extends YANButtonNode {
     }
 
     @Override
-    public void onAttachedToParentNode(@NonNull final YANIParentNode parentNode) {
+    public void onAttachedToParentNode(@NonNull final YANBaseNode parentNode) {
         //adjust sorting layer to be always on top of the parent
         adjustSortingLayerToParent(parentNode);
 

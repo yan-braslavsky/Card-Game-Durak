@@ -131,7 +131,7 @@ public class HudManagementService implements IService {
     public void hidePlayerUI(final GameInfo.PlayerLocation player) {
         getSpeechBubbleTextNodeForPlayer(player).setOpacity(0);
         getBGAvatarForPlayer(player).setOpacity(0);
-        getIconForPlayer(player).setOpacity(0);
+        getAvatarForPlayer(player).setOpacity(0);
         getTimerNodeForPlayer(player).setOpacity(0);
         getNameBgForPlayer(player).setOpacity(0);
         getNameTextNodeForPlayer(player).setOpacity(0);
@@ -218,8 +218,8 @@ public class HudManagementService implements IService {
 //        Object timerNode = getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX).getChildNodes().iterator().next();
 //        ((YANBaseNode) timerNode).setOpacity(0);
 
-        getNode(HudNodes.CIRCLE_TIMER_TOP_RIGHT_INDEX).setOpacity(0);
-        getNode(HudNodes.CIRCLE_TIMER_TOP_LEFT_INDEX).setOpacity(0);
+//        getNode(HudNodes.CIRCLE_TIMER_TOP_RIGHT_INDEX).setOpacity(0);
+//        getNode(HudNodes.CIRCLE_TIMER_TOP_LEFT_INDEX).setOpacity(0);
 
         //popups anchor is at the middle
         getNode(HudNodes.YOU_WIN_IMAGE_INDEX).setAnchorPoint(0.5f, 0.5f);
@@ -365,7 +365,7 @@ public class HudManagementService implements IService {
 
     public void animateScaleUpPlayerAvatar(@NonNull final GameInfo.PlayerLocation player) {
 
-        final YANBaseNode avatarIconNode = getIconForPlayer(player);
+        final YANBaseNode avatarIconNode = getAvatarForPlayer(player);
         final int originalSortingLayer = avatarIconNode.getSortingLayer();
         avatarIconNode.setSortingLayer(HUD_SORTING_LAYER + 1000);
 
@@ -394,16 +394,16 @@ public class HudManagementService implements IService {
         sequence.start(mTweenManager);
     }
 
-    private YANTexturedNode getIconForPlayer(final GameInfo.PlayerLocation player) {
+    private YANTexturedNode getAvatarForPlayer(final GameInfo.PlayerLocation player) {
         switch (player) {
             case BOTTOM_PLAYER:
 
                 //FIXME : is this what we want to return ?
                 return getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX);
             case TOP_RIGHT_PLAYER:
-                return getNode(HudNodes.AVATAR_ICON_TOP_RIGHT_INDEX);
+                return getNode(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX);
             case TOP_LEFT_PLAYER:
-                return getNode(HudNodes.AVATAR_ICON_TOP_LEFT_INDEX);
+                return getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX);
             default:
                 return null;
         }
@@ -418,7 +418,7 @@ public class HudManagementService implements IService {
      */
     public void setIconForPlayer(final GameInfo.PlayerLocation playerLocation, final String avatarResource) {
         //FIXME : Uncomment
-//        getIconForPlayer(playerLocation).setTextureRegion(mHudAtlas.getTextureRegion(avatarResource));
+//        getAvatarForPlayer(playerLocation).setTextureRegion(mHudAtlas.getTextureRegion(avatarResource));
     }
 
     public void showSpeechBubbleWithText(@NonNull @HudNodes.SpeechBubbleText final String text, @NonNull final GameInfo.PlayerLocation player) {
@@ -523,9 +523,9 @@ public class HudManagementService implements IService {
 //                return (YANCircleNode) icon.getChildNodes().iterator().next();
                 return (YANCircleNode) getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX).getChildNodes().iterator().next();
             case TOP_RIGHT_PLAYER:
-                return getNode(HudNodes.CIRCLE_TIMER_TOP_RIGHT_INDEX);
+                return (YANCircleNode) getNode(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX).getChildNodes().iterator().next();
             case TOP_LEFT_PLAYER:
-                return getNode(HudNodes.CIRCLE_TIMER_TOP_LEFT_INDEX);
+                return (YANCircleNode) getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX).getChildNodes().iterator().next();
             default:
                 return null;
         }

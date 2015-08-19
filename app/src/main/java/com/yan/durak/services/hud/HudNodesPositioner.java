@@ -61,31 +61,10 @@ public class HudNodesPositioner {
         getNode(HudNodes.TOP_LEFT_SPEECH_BUBBLE_INDEX).setSize(newWidth, newHeight);
 
         //set avatar_1 icons
-        //check how much the icon smaller than background
-        final YANTexturedNode bottomRightAvatarIcon = getNode(HudNodes.AVATAR_ICON_TOP_RIGHT_INDEX);
-        final float avatarIconToAvatarBgScaleFactor = bottomRightAvatarIcon.getTextureRegion().getWidth() / avatarBGTopRight.getTextureRegion().getWidth();
-//
+        final float avatarIconToAvatarBgScaleFactor = 0.9f;
         final float bottomIconSize = getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX).getSize().getX() * avatarIconToAvatarBgScaleFactor;
-//        //set bottom avatar_1 icon
-//        bottomRightAvatarIcon.setSize(bottomIconSize, bottomIconSize);
 
-        //setup bottom timer size
-        //calculate timer scale factor
-        float timerToIconScaleFactor = avatarIconToAvatarBgScaleFactor + 0.105f;
-        final float bottomTimerSize = getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX).getSize().getX() * timerToIconScaleFactor;
-//        getNode(HudNodes.CIRCLE_TIMER_BOTTOM_RIGHT_INDEX).setSize(bottomTimerSize, bottomTimerSize);
-
-        //set top avatar_1 icons
-        final float topIconsSize = avatarBGTopRight.getSize().getX() * avatarIconToAvatarBgScaleFactor;
-        getNode(HudNodes.AVATAR_ICON_TOP_RIGHT_INDEX).setSize(topIconsSize, topIconsSize);
-        getNode(HudNodes.AVATAR_ICON_TOP_LEFT_INDEX).setSize(topIconsSize, topIconsSize);
-
-        //set top timers size
-        timerToIconScaleFactor += 0.335f;
-        final float topTimerSize = topIconsSize * timerToIconScaleFactor;
-        getNode(HudNodes.CIRCLE_TIMER_TOP_RIGHT_INDEX).setSize(topTimerSize, topTimerSize);
-        getNode(HudNodes.CIRCLE_TIMER_TOP_LEFT_INDEX).setSize(topTimerSize, topTimerSize);
-
+        //TODO : put into icon node
         //set action buttons size
         getNode(HudNodes.DONE_BUTTON_INDEX).setSize(bottomIconSize, bottomIconSize);
         getNode(HudNodes.TAKE_BUTTON_INDEX).setSize(bottomIconSize, bottomIconSize);
@@ -125,7 +104,6 @@ public class HudNodesPositioner {
         aspectRatio = fenceImage.getTextureRegion().getWidth() / fenceImage.getTextureRegion().getHeight();
         fenceImage.setSize(sceneSize.getX(), sceneSize.getX() / aspectRatio);
 
-
         //glade
         final YANTexturedNode gladeImage = getNode(HudNodes.GLADE_INDEX);
         aspectRatio = gladeImage.getTextureRegion().getWidth() / gladeImage.getTextureRegion().getHeight();
@@ -147,79 +125,26 @@ public class HudNodesPositioner {
         avatarBg.setPosition(sceneSize.getX() - offsetX - avatarBg.getSize().getX() / 2,
                 sceneSize.getY() - offsetX - avatarBg.getSize().getY() / 2);
 
-        AnimationHelper.createInfiniteBreathingAnimation(avatarBg,mHudManagementService.getTweenManager());
-
-        //setup bottom timer
-//        final YANBaseNode bottomTimer = getNode(HudNodes.CIRCLE_TIMER_BOTTOM_RIGHT_INDEX);
-        final float bottomTimerSize = getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX).getSize().getX() * 0.8f;
-        float offsetSize = (avatarBg.getSize().getX() - bottomTimerSize) / 2;
-//        bottomTimer.setSortingLayer(avatarBg.getSortingLayer() + 1);
-//        bottomTimer.setAnchorPoint(0.5f, 0.5f);
-//        bottomTimer.setPosition(avatarBg.getPosition().getX() - offsetSize, avatarBg.getPosition().getY() - offsetSize);
-//        bottomTimer.setPosition(avatarBg.getPosition().getX(),avatarBg.getPosition().getY());
-
-        //setup bottom avatar_1 icon
-        final YANTexturedNode bottomAvatarIcon = getNode(HudNodes.AVATAR_ICON_TOP_RIGHT_INDEX);
-//        final float bottomAvatarIconHalfSize = bottomAvatarIcon.getSize().getX() / 2;
-//        bottomAvatarIcon.setAnchorPoint(0.5f, 0.5f);
-//        bottomAvatarIcon.setSortingLayer(bottomTimer.getSortingLayer() + 1);
-//        offsetSize = (avatarBg.getSize().getX() - bottomAvatarIcon.getSize().getX()) / 2;
-//        bottomAvatarIcon.setPosition(avatarBg.getPosition().getX() - offsetSize - bottomAvatarIconHalfSize, avatarBg.getPosition().getY() - offsetSize - bottomAvatarIconHalfSize);
+        //TODO : remove , enable only when needed
+        AnimationHelper.createInfiniteBreathingAnimation(avatarBg, mHudManagementService.getTweenManager());
 
         //take action is at the same place as bottom avatarBg
         final YANTexturedNode takeButton = getNode(HudNodes.TAKE_BUTTON_INDEX);
         takeButton.setAnchorPoint(0.5f, 0.5f);
-        takeButton.setSortingLayer(bottomAvatarIcon.getSortingLayer() + 1);
-        takeButton.setPosition(bottomAvatarIcon.getPosition().getX(), bottomAvatarIcon.getPosition().getY());
-
-        //finish action is at the same place as bottom avatarBg
-        final YANTexturedNode doneButton = getNode(HudNodes.DONE_BUTTON_INDEX);
-        doneButton.setSortingLayer(bottomAvatarIcon.getSortingLayer() + 1);
-        doneButton.setAnchorPoint(0.5f, 0.5f);
-        doneButton.setPosition(takeButton.getPosition().getX(), takeButton.getPosition().getY());
 
         //setup avatarBg for top right player
         final float topOffset = sceneSize.getY() * 0.07f;
         avatarBg = getNode(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX);
-        avatarBg.setAnchorPoint(1f, 0f);
         avatarBg.setSortingLayer(HudManagementService.HUD_SORTING_LAYER + 1);
-        avatarBg.setPosition(sceneSize.getX() - offsetX, topOffset);
+        avatarBg.setPosition(sceneSize.getX() - (avatarBg.getSize().getX() / 2) - offsetX,
+                (avatarBg.getSize().getY() / 2) + topOffset);
 
-        //setup top right timer
-        final YANBaseNode topRightTimer = getNode(HudNodes.CIRCLE_TIMER_TOP_RIGHT_INDEX);
-        offsetSize = (avatarBg.getSize().getX() - topRightTimer.getSize().getX()) / 2;
-        topRightTimer.setSortingLayer(avatarBg.getSortingLayer() + 1);
-        topRightTimer.setAnchorPoint(1f, 0f);
-        topRightTimer.setPosition(avatarBg.getPosition().getX() - offsetSize, avatarBg.getPosition().getY() + offsetSize);
-
-        //setup icon for top right player
-        final YANTexturedNode topRightAvatarIcon = getNode(HudNodes.AVATAR_ICON_TOP_RIGHT_INDEX);
-        final float topRightAvatarHalfSize = topRightAvatarIcon.getSize().getX() / 2;
-        topRightAvatarIcon.setAnchorPoint(0.5f, 0.5f);
-        topRightAvatarIcon.setSortingLayer(topRightTimer.getSortingLayer() + 1);
-        offsetSize = (avatarBg.getSize().getX() - topRightAvatarIcon.getSize().getX()) / 2;
-        topRightAvatarIcon.setPosition(avatarBg.getPosition().getX() - offsetSize - topRightAvatarHalfSize, avatarBg.getPosition().getY() + offsetSize + topRightAvatarHalfSize);
 
         //setup avatarBg for top left player
         avatarBg = getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX);
-        avatarBg.setAnchorPoint(0f, 0f);
         avatarBg.setSortingLayer(HudManagementService.HUD_SORTING_LAYER + 1);
-        avatarBg.setPosition(offsetX, topOffset);
+        avatarBg.setPosition((avatarBg.getSize().getX() / 2) + offsetX, (avatarBg.getSize().getY() / 2) + topOffset);
 
-        //setup top left timer
-        final YANBaseNode topLeftTimer = getNode(HudNodes.CIRCLE_TIMER_TOP_LEFT_INDEX);
-        offsetSize = (avatarBg.getSize().getX() - topLeftTimer.getSize().getX()) / 2;
-        topLeftTimer.setSortingLayer(avatarBg.getSortingLayer() + 1);
-        topLeftTimer.setAnchorPoint(0f, 0f);
-        topLeftTimer.setPosition(avatarBg.getPosition().getX() + offsetSize, avatarBg.getPosition().getY() + offsetSize);
-
-        //setup icon for top left player
-        final YANTexturedNode topLeftAvatarIcon = getNode(HudNodes.AVATAR_ICON_TOP_LEFT_INDEX);
-        final float topLeftAvatarHalfSize = topLeftAvatarIcon.getSize().getX() / 2;
-        topLeftAvatarIcon.setAnchorPoint(0.5f, 0.5f);
-        topLeftAvatarIcon.setSortingLayer(topLeftTimer.getSortingLayer() + 1);
-        offsetSize = (avatarBg.getSize().getX() - topLeftAvatarIcon.getSize().getX()) / 2;
-        topLeftAvatarIcon.setPosition(avatarBg.getPosition().getX() + offsetSize + topLeftAvatarHalfSize, avatarBg.getPosition().getY() + offsetSize + topLeftAvatarHalfSize);
 
         //trump image
         getNode(HudNodes.TRUMP_IMAGE_INDEX).setPosition(
@@ -285,7 +210,7 @@ public class HudNodesPositioner {
         bottomSpeechBubble.setAnchorPoint(1f, 1f);
         bottomSpeechBubble.setSortingLayer(HudManagementService.HUD_SORTING_LAYER + 100);
         bottomSpeechBubble.setPosition(sceneSize.getX() - (sceneSize.getX() * 0.05f),
-                bottomAvatarIcon.getPosition().getY() - (bottomAvatarIcon.getSize().getY() / 2));
+                getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX).getPosition().getY() - (getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX).getSize().getY() / 2));
 
         //top right speech bubble
         final YANBaseNode topRightSpeechBubble = getNode(HudNodes.TOP_RIGHT_SPEECH_BUBBLE_INDEX);
@@ -294,7 +219,7 @@ public class HudNodesPositioner {
         topRightSpeechBubble.setAnchorPoint(1f, 0f);
         topRightSpeechBubble.setSortingLayer(HudManagementService.HUD_SORTING_LAYER + 100);
         topRightSpeechBubble.setPosition(sceneSize.getX() - (sceneSize.getX() * 0.05f),
-                topRightAvatarIcon.getPosition().getY() + (topRightAvatarIcon.getSize().getY() / 2));
+                getNode(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX).getPosition().getY() + (getNode(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX).getSize().getY() / 2));
 
         //top left speech bubble
         final YANBaseNode topLeftSpeechBubble = getNode(HudNodes.TOP_LEFT_SPEECH_BUBBLE_INDEX);
@@ -302,7 +227,7 @@ public class HudNodesPositioner {
         topLeftSpeechBubble.setAnchorPoint(0f, 0f);
         topLeftSpeechBubble.setSortingLayer(HudManagementService.HUD_SORTING_LAYER + 100);
         topLeftSpeechBubble.setPosition((sceneSize.getX() * 0.05f),
-                topLeftAvatarIcon.getPosition().getY() + (topLeftAvatarIcon.getSize().getY() / 2));
+                getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX).getPosition().getY() + (getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX).getSize().getY() / 2));
 
         //speech bubble texts
         final YANTextNode bottomSpeechBubbleText = getNode(HudNodes.BOTTOM_SPEECH_BUBBLE_TEXT_INDEX);
