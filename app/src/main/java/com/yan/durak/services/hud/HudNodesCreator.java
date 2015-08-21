@@ -6,6 +6,7 @@ import com.yan.durak.screens.BaseGameScreen;
 import com.yan.durak.services.hud.creator.NodeCreatorHelper;
 
 import glengine.yan.glengine.assets.YANAssetManager;
+import glengine.yan.glengine.assets.atlas.YANAtlasTextureRegion;
 import glengine.yan.glengine.assets.atlas.YANTextureAtlas;
 import glengine.yan.glengine.nodes.YANBaseNode;
 import glengine.yan.glengine.nodes.YANButtonNode;
@@ -148,8 +149,14 @@ public class HudNodesCreator {
         return trumpImage;
     }
 
-    private YANButtonNode createTakeButton(final YANTextureAtlas hudAtlas) {
-        return new YANButtonNode(hudAtlas.getTextureRegion("btn_take.png"), hudAtlas.getTextureRegion("btn_take.png"));
+    public YANButtonNode createTakeButton(final YANTextureAtlas hudAtlas) {
+        YANAtlasTextureRegion textureRegion = hudAtlas.getTextureRegion("btn_take.png");
+        return NodeCreatorHelper.createChildButtonNode(textureRegion, textureRegion, 1f, 1f);
+    }
+
+    public YANButtonNode createDoneButton(final YANTextureAtlas hudAtlas) {
+        YANAtlasTextureRegion textureRegion = hudAtlas.getTextureRegion("btn_done.png");
+        return NodeCreatorHelper.createChildButtonNode(textureRegion, textureRegion, 1f, 1f);
     }
 
 

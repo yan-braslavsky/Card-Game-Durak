@@ -75,7 +75,7 @@ public class PlayerMoveService implements IService {
      */
     public void throwInWhatIsSelected() {
         //hide the button
-        ServiceLocator.locateService(HudManagementService.class).hideFinishButton();
+        ServiceLocator.locateService(HudManagementService.class).hideActionButton();
 
         //cache services
         final PileManagerService pileManagerService = ServiceLocator.locateService(PileManagerService.class);
@@ -116,7 +116,7 @@ public class PlayerMoveService implements IService {
      */
     public void makePlayerTakesCardsMove() {
         //hide the take button
-        ServiceLocator.locateService(HudManagementService.class).hideTakeButton();
+        ServiceLocator.locateService(HudManagementService.class).hideActionButton();
 
         final PileManagerService pileManagerService = ServiceLocator.locateService(PileManagerService.class);
 

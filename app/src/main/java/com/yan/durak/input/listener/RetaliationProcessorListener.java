@@ -106,7 +106,7 @@ public class RetaliationProcessorListener implements CardsTouchProcessor.CardsTo
             }
 
             //hide the take button
-            ServiceLocator.locateService(HudManagementService.class).hideTakeButton();
+            ServiceLocator.locateService(HudManagementService.class).hideActionButton();
 
             //make cards disabled by setting other player state
             ServiceLocator.locateService(GameInfo.class).setActivePlayerState(YANObjectPool.getInstance().obtain(OtherPlayerTurnState.class));
