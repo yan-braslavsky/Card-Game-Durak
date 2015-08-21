@@ -2,12 +2,13 @@ package com.yan.durak.physics;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import glengine.yan.glengine.nodes.YANBaseNode;
+
+import static java.util.Collections.emptyList;
+import static java.util.Collections.sort;
 
 /**
  * Created by ybra on 24/04/15.
@@ -24,7 +25,7 @@ public class YANCollisionDetector {
     //used for sorting by sorting layer
     private static final Comparator<YANBaseNode> mSortingLayerComparator = new Comparator<YANBaseNode>() {
         @Override
-        public int compare(YANBaseNode lhs, YANBaseNode rhs) {
+        public int compare(final YANBaseNode lhs, final YANBaseNode rhs) {
             return lhs.getSortingLayer() - rhs.getSortingLayer();
         }
     };
@@ -38,7 +39,8 @@ public class YANCollisionDetector {
      * @param searchCollection collection of nodes that will be used to find the node
      * @return the closest node for touch point or null if none is found.
      */
-    public static final <T extends YANBaseNode> YANBaseNode findClosestNodeToWorldTouchPoint(float worldTouchPointX, float worldTouchPointY, Collection<T> searchCollection) {
+    public static final <T extends YANBaseNode> YANBaseNode findClosestNodeToWorldTouchPoint(
+            final float worldTouchPointX, final float worldTouchPointY, final List<T> searchCollection) {
 
         if (searchCollection == null || searchCollection.isEmpty())
             return null;
@@ -47,7 +49,8 @@ public class YANCollisionDetector {
         mTouchedNodes.clear();
 
         //find all touched nodes and put them into collection
-        for (YANBaseNode node : searchCollection) {
+        for (int i = 0; i < searchCollection.size(); i++) {
+            final YANBaseNode node = searchCollection.get(i);
             if (node.getBoundingRectangle().contains(worldTouchPointX, worldTouchPointY)) {
                 mTouchedNodes.add(node);
             }
@@ -58,13 +61,13 @@ public class YANCollisionDetector {
             return null;
 
         //sort touched cards by layer
-        Collections.sort(mTouchedNodes, mSortingLayerComparator);
+        sort(mTouchedNodes, mSortingLayerComparator);
 
         //the latest node is the one that was touched
         return mTouchedNodes.get(mTouchedNodes.size() - 1);
     }
 
-    public static boolean areTwoNodesCollide(YANBaseNode nodeA, YANBaseNode nodeB) {
+    public static boolean areTwoNodesCollide(final YANBaseNode nodeA, final YANBaseNode nodeB) {
         return (nodeA != null && nodeB != null) && nodeA.getBoundingRectangle().contains(nodeB.getBoundingRectangle());
     }
 
@@ -75,17 +78,19 @@ public class YANCollisionDetector {
      * @param searchCollection collection of nodes to be tested against
      * @return new allocated array containing all the collided nodes.
      */
-    public static final <T extends YANBaseNode> List<T> findAllNodesThatCollideWithGivenNode(T testedNode, Collection<YANBaseNode> searchCollection) {
+    public static final <T extends YANBaseNode> List<T> findAllNodesThatCollideWithGivenNode(
+            final T testedNode, final List<YANBaseNode> searchCollection) {
 
         //we are not initializing the actual list until there are no collided nodes
-        List<T> allCollidedNodes = Collections.emptyList();
+        List<T> allCollidedNodes = emptyList();
 
         //check edge cases
         if (searchCollection == null || searchCollection.isEmpty())
             return allCollidedNodes;
 
         //search collided nodes
-        for (YANBaseNode searchNode : searchCollection) {
+        for (int i = 0; i < searchCollection.size(); i++) {
+            final YANBaseNode searchNode = searchCollection.get(i);
             if (areTwoNodesCollide(testedNode, searchNode)) {
 
                 //lazy instantiating the list

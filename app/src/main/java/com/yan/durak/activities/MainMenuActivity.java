@@ -17,10 +17,9 @@ import com.yan.durak.communication.game_server.connector.RemoteGameServerConnect
 public class MainMenuActivity extends Activity {
 
     public static String EXTRA_CONNECTOR_CLASS_KEY = "EXTRA_CONNECTOR_CLASS_KEY";
-    public static String EXTRA_GAME_CONFIG_KEY = "EXTRA_NUM_PLAYERS_KEY";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_mode_chooser);
     }
@@ -28,16 +27,16 @@ public class MainMenuActivity extends Activity {
     /**
      * Called by reflection from layout xml
      */
-    public void onStartButtonClicked(View view) {
+    public void onStartButtonClicked(final View view) {
 
-        boolean isOnline = ((RadioGroup) (findViewById(R.id.onlineRadioGroup))).getCheckedRadioButtonId()
+        final boolean isOnline = ((RadioGroup) (findViewById(R.id.onlineRadioGroup))).getCheckedRadioButtonId()
                 == R.id.radioButtonOnline;
-        int numPlayers = ((RadioGroup) (findViewById(R.id.playerCountRadioGroup))).getCheckedRadioButtonId()
+        final int numPlayers = ((RadioGroup) (findViewById(R.id.playerCountRadioGroup))).getCheckedRadioButtonId()
                 == R.id.radioButtonTwoPlayers ? 2 : 3;
-        String nickname = ((EditText) findViewById(R.id.nickname_edit_text)).getText().toString();
-        String avatar = ((Spinner) findViewById(R.id.spinner)).getSelectedItem().toString();
+        final String nickname = ((EditText) findViewById(R.id.nickname_edit_text)).getText().toString();
+        final String avatar = ((Spinner) findViewById(R.id.spinner)).getSelectedItem().toString();
 
-        GameActivity.GameInitConfig gameInitConf = new GameActivity.GameInitConfig(nickname, avatar, numPlayers);
+        final GameActivity.GameInitConfig gameInitConf = new GameActivity.GameInitConfig(nickname, avatar, numPlayers);
 
         if (isOnline) {
             startOnlineGame(gameInitConf);
@@ -47,24 +46,22 @@ public class MainMenuActivity extends Activity {
     }
 
 
-    private void startOnlineGame(GameActivity.GameInitConfig gameInitConf) {
-        Class<? extends IGameServerConnector> connectorClass = RemoteGameServerConnector.class;
-        startGameActivity(connectorClass, gameInitConf);
+    private void startOnlineGame(final GameActivity.GameInitConfig gameInitConf) {
+        final Class<? extends IGameServerConnector> connectorClass = RemoteGameServerConnector.class;
+        startGameActivity(connectorClass);
     }
 
-    private void startLocalGame(GameActivity.GameInitConfig gameInitConf) {
+    private void startLocalGame(final GameActivity.GameInitConfig gameInitConf) {
         //start local server
-        LocalGameServer.start(gameInitConf.playersAmount);
+        LocalGameServer.start(gameInitConf.playersAmount, gameInitConf.avatarResource, gameInitConf.nickname);
 
-        Class<? extends IGameServerConnector> connectorClass = LocalGameServerConnector.class;
-        startGameActivity(connectorClass, gameInitConf);
+        final Class<? extends IGameServerConnector> connectorClass = LocalGameServerConnector.class;
+        startGameActivity(connectorClass);
     }
 
-    private void startGameActivity(Class<? extends IGameServerConnector> connectorClass,
-                                   GameActivity.GameInitConfig gameInitConf) {
-        Intent myIntent = new Intent(MainMenuActivity.this, GameActivity.class);
+    private void startGameActivity(final Class<? extends IGameServerConnector> connectorClass) {
+        final Intent myIntent = new Intent(MainMenuActivity.this, GameActivity.class);
         myIntent.putExtra(EXTRA_CONNECTOR_CLASS_KEY, connectorClass);
-        myIntent.putExtra(EXTRA_GAME_CONFIG_KEY, gameInitConf);
         startActivity(myIntent);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }

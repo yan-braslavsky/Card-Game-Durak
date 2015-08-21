@@ -26,7 +26,7 @@ public class CardMovedMsgSubProcessor extends BaseMsgSubProcessor<CardMovedProto
     }
 
     @Override
-    public void processMessage(CardMovedProtocolMessage serverMessage) {
+    public void processMessage(final CardMovedProtocolMessage serverMessage) {
 
         //get the indexes from the message
         final int fromPileIndex = serverMessage.getMessageData().getFromPileIndex();

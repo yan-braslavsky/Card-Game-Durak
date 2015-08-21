@@ -29,7 +29,7 @@ public class PlayerCardsTouchProcessorListener extends BasePlayerCardsTouchProce
     }
 
     @Override
-    public void onDraggedCardReleased(CardNode cardNode) {
+    public void onDraggedCardReleased(final CardNode cardNode) {
         super.onDraggedCardReleased(cardNode);
 
         //we don't need to handle this state if parent already handled it
@@ -41,7 +41,7 @@ public class PlayerCardsTouchProcessorListener extends BasePlayerCardsTouchProce
     }
 
     @Override
-    public void onCardDragProgress(CardNode cardNode) {
+    public void onCardDragProgress(final CardNode cardNode) {
         super.onCardDragProgress(cardNode);
         mTouchProcessors.get(ServiceLocator.locateService(GameInfo.class).getActivePlayerState().getClass()).onCardDragProgress(cardNode);
     }

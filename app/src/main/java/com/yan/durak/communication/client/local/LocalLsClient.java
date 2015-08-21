@@ -12,12 +12,12 @@ public class LocalLsClient implements IRemoteClient {
 
     private final SharedLocalMessageQueue mSharedMessageQueue;
 
-    public LocalLsClient(SharedLocalMessageQueue sharedMessageQueue) {
+    public LocalLsClient(final SharedLocalMessageQueue sharedMessageQueue) {
         mSharedMessageQueue = sharedMessageQueue;
     }
 
     @Override
-    public void sendMessage(String msg) {
+    public void sendMessage(final String msg) {
         mSharedMessageQueue.insertMessageForClientQueue(msg);
     }
 

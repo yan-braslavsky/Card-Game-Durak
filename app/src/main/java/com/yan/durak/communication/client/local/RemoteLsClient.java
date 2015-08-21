@@ -12,12 +12,12 @@ public class RemoteLsClient implements IRemoteClient {
 
     private final SharedLocalMessageQueue mSharedMessageQueue;
 
-    public RemoteLsClient(SharedLocalMessageQueue sharedMessageQueue) {
+    public RemoteLsClient(final SharedLocalMessageQueue sharedMessageQueue) {
         mSharedMessageQueue = sharedMessageQueue;
     }
 
     @Override
-    public void sendMessage(String msg) {
+    public void sendMessage(final String msg) {
         mSharedMessageQueue.insertMessageForServerQueue(msg);
     }
 

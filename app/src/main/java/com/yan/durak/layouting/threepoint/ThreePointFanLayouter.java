@@ -34,13 +34,13 @@ public class ThreePointFanLayouter implements ThreePointLayouter {
 
 
 
-    public ThreePointFanLayouter(int smallestSortingLayer) {
+    public ThreePointFanLayouter(final int smallestSortingLayer) {
         mSmallestSortingLayer = smallestSortingLayer;
         mDirection = LayoutDirection.LTR;
     }
 
     @Override
-    public void setThreePoints(YANVector2 originPoint, YANVector2 leftBasis, YANVector2 rightBasis) {
+    public void setThreePoints(final YANVector2 originPoint, final YANVector2 leftBasis, final YANVector2 rightBasis) {
         mOriginPoint = originPoint;
         mLeftBasis = leftBasis;
         mRightBasis = rightBasis;
@@ -57,39 +57,39 @@ public class ThreePointFanLayouter implements ThreePointLayouter {
 
     }
 
-    private float calculateDestinationAngle(YANVector2 originPoint, YANVector2 leftBasis, YANVector2 rightBasis) {
+    private float calculateDestinationAngle(final YANVector2 originPoint, final YANVector2 leftBasis, final YANVector2 rightBasis) {
 
         //We have a triangle with 3 points (R,P,Q) and 3 angles between the sides (r,p,q)
         //now we are calculating all the sides in order to find an angle R
 
-        double p = calculateDistanceBetween2Points(rightBasis, originPoint);
-        double q = calculateDistanceBetween2Points(leftBasis, originPoint);
-        double r = calculateDistanceBetween2Points(leftBasis, rightBasis);
+        final double p = calculateDistanceBetween2Points(rightBasis, originPoint);
+        final double q = calculateDistanceBetween2Points(leftBasis, originPoint);
+        final double r = calculateDistanceBetween2Points(leftBasis, rightBasis);
 
         //now we can calculate the actual angle
-        double angle = findAngleBetween2Sides(r, p, q);
+        final double angle = findAngleBetween2Sides(r, p, q);
         return (float) angle;
     }
 
-    private double findAngleBetween2Sides(double oppositeToAngleSide, double rightToAngleSide, double leftToAngleSide) {
+    private double findAngleBetween2Sides(final double oppositeToAngleSide, final double rightToAngleSide, final double leftToAngleSide) {
         //using the formula r^2 = p^2 + q^2 - 2pq*cos(R)
         //taken from http://www.mathsisfun.com/algebra/trig-solving-sas-triangles.html
-        double p = rightToAngleSide;
-        double q = leftToAngleSide;
-        double r = oppositeToAngleSide;
+        final double p = rightToAngleSide;
+        final double q = leftToAngleSide;
+        final double r = oppositeToAngleSide;
 
         //find cos(R)
-        double cosR = ((p * p) + (q * q) - (r * r)) / (2 * p * q);
+        final double cosR = ((p * p) + (q * q) - (r * r)) / (2 * p * q);
 
         //find angle in degrees
-        double angle = Math.toDegrees(Math.acos(cosR));
+        final double angle = Math.toDegrees(Math.acos(cosR));
         return angle;
     }
 
-    private double calculateDistanceBetween2Points(YANVector2 fromPoint, YANVector2 toPoint) {
+    private double calculateDistanceBetween2Points(final YANVector2 fromPoint, final YANVector2 toPoint) {
         //taken from http://www.purplemath.com/modules/distform.htm
-        float xDistance = fromPoint.getX() - toPoint.getX();
-        float yDistance = fromPoint.getY() - toPoint.getY();
+        final float xDistance = fromPoint.getX() - toPoint.getX();
+        final float yDistance = fromPoint.getY() - toPoint.getY();
         return Math.sqrt((xDistance * xDistance) + (yDistance * yDistance));
     }
 
@@ -101,7 +101,7 @@ public class ThreePointFanLayouter implements ThreePointLayouter {
         //AffinMatrix = DestinationTriangleMatrix * Inversion(sourceTriangleMatrix)
 
         //create matrix of the normalized points (source triangle)
-        double[][] normalizedTriangleMatrixData = {
+        final double[][] normalizedTriangleMatrixData = {
 
                 //first row contains data for normalized triangle : nTopX,nLeftX,nRightX
                 {mNormalizedOriginPoint.getX(), mNormalizedLeftBasis.getX(), mNormalizedRightBasis.getX()},
@@ -114,11 +114,11 @@ public class ThreePointFanLayouter implements ThreePointLayouter {
         };
 
         //create normalized triangle matrix
-        RealMatrix normalizedTriangleMatrix = MatrixUtils.createRealMatrix(normalizedTriangleMatrixData);
+        final RealMatrix normalizedTriangleMatrix = MatrixUtils.createRealMatrix(normalizedTriangleMatrixData);
 
 
         //create matrix data of the destination triangle
-        double[][] destinationTriangleMatrixData = {
+        final double[][] destinationTriangleMatrixData = {
 
                 //first row contains data for normalized triangle : nTopX,nLeftX,nRightX
                 {mOriginPoint.getX(), mLeftBasis.getX(), mRightBasis.getX()},
@@ -128,13 +128,13 @@ public class ThreePointFanLayouter implements ThreePointLayouter {
         };
 
         //create normalized triangle matrix
-        RealMatrix destinationTriangleMatrix = MatrixUtils.createRealMatrix(destinationTriangleMatrixData);
+        final RealMatrix destinationTriangleMatrix = MatrixUtils.createRealMatrix(destinationTriangleMatrixData);
 
         // Invert source matrix , using LU decomposition
-        RealMatrix sourceTriangleMatrixInverse = new LUDecomposition(normalizedTriangleMatrix).getSolver().getInverse();
+        final RealMatrix sourceTriangleMatrixInverse = new LUDecomposition(normalizedTriangleMatrix).getSolver().getInverse();
 
         // Now multiply destinationTriangleMatrix by sourceTriangleMatrixInverse
-        RealMatrix affineMatrix = destinationTriangleMatrix.multiply(sourceTriangleMatrixInverse);
+        final RealMatrix affineMatrix = destinationTriangleMatrix.multiply(sourceTriangleMatrixInverse);
 
         return affineMatrix;
     }
@@ -147,17 +147,17 @@ public class ThreePointFanLayouter implements ThreePointLayouter {
         mNormalizedRightBasis = new YANVector2(-1, 1);
 
         //calculate the angle between 2 basis meridians
-        float opposite = Math.abs(mNormalizedLeftBasis.getX() - mNormalizedRightBasis.getX()) / 2;
-        float adjacent = Math.abs(mNormalizedOriginPoint.getY() - mNormalizedLeftBasis.getY());
+        final float opposite = Math.abs(mNormalizedLeftBasis.getX() - mNormalizedRightBasis.getX()) / 2;
+        final float adjacent = Math.abs(mNormalizedOriginPoint.getY() - mNormalizedLeftBasis.getY());
         mSourceFanAngle = (float) Math.toDegrees(Math.atan(opposite / adjacent) * 2);
     }
 
     @Override
-    public void layoutRowOfSlots(List<CardsLayouterSlotImpl> slots) {
+    public void layoutRowOfSlots(final List<CardsLayouterSlotImpl> slots) {
 
         //we are are rotating left basis counter clockwise half the fan angle
         //to reach the centered highest point
-        YANVector2 startingPositionVector = (mDirection == LayoutDirection.LTR) ? mNormalizedLeftBasis : mNormalizedRightBasis;
+        final YANVector2 startingPositionVector = (mDirection == LayoutDirection.LTR) ? mNormalizedLeftBasis : mNormalizedRightBasis;
 
         int angleStepDivider = slots.size() - 1;
         int rotationStepDivider = slots.size();
@@ -179,7 +179,7 @@ public class ThreePointFanLayouter implements ThreePointLayouter {
 
         //rotate slots
         for (int i = 0; i < slots.size(); i++) {
-            CardsLayouterSlotImpl slot = slots.get(i);
+            final CardsLayouterSlotImpl slot = slots.get(i);
 
             //set slot to initial position and rotation
             slot.setPosition(startingPositionVector.getX(), startingPositionVector.getY());
@@ -190,21 +190,21 @@ public class ThreePointFanLayouter implements ThreePointLayouter {
 
             //Map back ...
             //create vector for slot point
-            double[][] pointData = {
+            final double[][] pointData = {
                     {slot.getPosition().getX()},
                     {slot.getPosition().getY()},
                     {1}
             };
-            RealMatrix slotNormalizedMatrix = MatrixUtils.createRealMatrix(pointData);
-            RealMatrix slotMappedBackMatrix = mAffineMappingMatrix.multiply(slotNormalizedMatrix);
+            final RealMatrix slotNormalizedMatrix = MatrixUtils.createRealMatrix(pointData);
+            final RealMatrix slotMappedBackMatrix = mAffineMappingMatrix.multiply(slotNormalizedMatrix);
 
-            double[] column = slotMappedBackMatrix.getColumn(0);
+            final double[] column = slotMappedBackMatrix.getColumn(0);
             slot.setPosition((float) column[0], (float) column[1]);
         }
     }
 
     @Override
-    public void setDirection(LayoutDirection direction) {
+    public void setDirection(final LayoutDirection direction) {
         mDirection = direction;
     }
 }

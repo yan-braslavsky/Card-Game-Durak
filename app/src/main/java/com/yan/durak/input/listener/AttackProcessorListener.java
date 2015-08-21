@@ -13,17 +13,17 @@ import glengine.yan.glengine.service.ServiceLocator;
 public class AttackProcessorListener implements CardsTouchProcessor.CardsTouchProcessorListener {
     private final PlayerCardsTouchProcessorListener mPlayerCardsTouchProcessorListener;
 
-    public AttackProcessorListener(PlayerCardsTouchProcessorListener playerCardsTouchProcessorListener) {
+    public AttackProcessorListener(final PlayerCardsTouchProcessorListener playerCardsTouchProcessorListener) {
         mPlayerCardsTouchProcessorListener = playerCardsTouchProcessorListener;
     }
 
     @Override
-    public void onSelectedCardTap(CardNode cardNode) {
+    public void onSelectedCardTap(final CardNode cardNode) {
         //Does nothing on tap
     }
 
     @Override
-    public void onDraggedCardReleased(CardNode cardNode) {
+    public void onDraggedCardReleased(final CardNode cardNode) {
 
         //if player didn't drag to the field , we will return the card back to his hand
         if (cardNode.getPosition().getY() > (ServiceLocator.locateService(SceneSizeProviderService.class).getSceneHeight() * BasePlayerCardsTouchProcessorListener.SCENE_HEIGHT_FOR_CARD_RETURN)) {
@@ -36,7 +36,7 @@ public class AttackProcessorListener implements CardsTouchProcessor.CardsTouchPr
     }
 
     @Override
-    public void onCardDragProgress(CardNode cardNode) {
+    public void onCardDragProgress(final CardNode cardNode) {
 
     }
 

@@ -37,14 +37,14 @@ public abstract class BaseGameScreen extends YANNodeScreen {
     YANTextNode mFpsTextNode;
     YANFPSLogger mFPSLogger;
 
-    public BaseGameScreen(YANGLRenderer renderer) {
+    public BaseGameScreen(final YANGLRenderer renderer) {
         super(renderer);
 
         //setup fps logger
         mFPSLogger = new YANFPSLogger();
         mFPSLogger.setFPSLoggerListener(new YANFPSLogger.FPSLoggerListener() {
             @Override
-            public void onValueChange(int newFpsValue) {
+            public void onValueChange(final int newFpsValue) {
                 mFpsTextNode.setText("FPS " + newFpsValue);
             }
         });
@@ -107,7 +107,7 @@ public abstract class BaseGameScreen extends YANNodeScreen {
     }
 
     @Override
-    public void onUpdate(float deltaTimeSeconds) {
+    public void onUpdate(final float deltaTimeSeconds) {
         super.onUpdate(deltaTimeSeconds);
 
         //TODO : put to updatable list

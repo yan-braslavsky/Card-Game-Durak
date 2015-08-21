@@ -1,16 +1,20 @@
 package com.yan.durak.input.cards;
 
 import com.yan.durak.gamelogic.cards.Card;
+import com.yan.durak.gamelogic.cards.CardsHelper;
 import com.yan.durak.nodes.CardNode;
-import com.yan.durak.physics.YANCollisionDetector;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
-import glengine.yan.glengine.input.YANInputManager;
 import glengine.yan.glengine.nodes.YANBaseNode;
 import glengine.yan.glengine.util.geometry.YANVector2;
-import glengine.yan.glengine.util.object_pool.YANObjectPool;
+
+import static com.yan.durak.nodes.CardNode.TAG_TOUCH_DISABLED;
+import static com.yan.durak.physics.YANCollisionDetector.findClosestNodeToWorldTouchPoint;
+import static glengine.yan.glengine.input.YANInputManager.touchToWorld;
+import static glengine.yan.glengine.util.object_pool.YANObjectPool.getInstance;
+import static java.lang.System.currentTimeMillis;
 
 
 /**
@@ -18,11 +22,11 @@ import glengine.yan.glengine.util.object_pool.YANObjectPool;
  */
 public class CardsTouchProcessorDefaultState extends CardsTouchProcessorState {
 
-    private final Collection<YANBaseNode> mPlayerCardNodes;
+    private final List<YANBaseNode> mPlayerCardNodes;
 
     public CardsTouchProcessorDefaultState() {
         super();
-        this.mPlayerCardNodes = new ArrayList<>();
+        this.mPlayerCardNodes = new ArrayList<>(CardsHelper.MAX_CARDS_IN_DECK);
     }
 
     @Override
@@ -33,38 +37,40 @@ public class CardsTouchProcessorDefaultState extends CardsTouchProcessorState {
 
 
     @Override
-    protected boolean onTouchUp(float normalizedX, float normalizedY) {
+    protected boolean onTouchUp(final float normalizedX, final float normalizedY) {
         return false;
     }
 
     @Override
-    protected boolean onTouchDrag(float normalizedX, float normalizedY) {
+    protected boolean onTouchDrag(final float normalizedX, final float normalizedY) {
         return false;
     }
 
     @Override
-    protected boolean onTouchDown(float normalizedX, float normalizedY) {
+    protected boolean onTouchDown(final float normalizedX, final float normalizedY) {
 
         //load the player card nodes
         mPlayerCardNodes.clear();
-        for (Card card : mCardsTouchProcessor.getPlayerPile().getCardsInPile()) {
+        for (int i = 0; i < mCardsTouchProcessor.getPlayerPile().getCardsInPile().size(); i++) {
+            final Card card = mCardsTouchProcessor.getPlayerPile().getCardsInPile().get(i);
             mPlayerCardNodes.add(mCardsTouchProcessor.getCardNodesManager().getCardNodeForCard(card));
         }
 
         //adapt to world touch point
-        YANVector2 touchToWorldPoint = YANInputManager.touchToWorld(normalizedX, normalizedY,
+        final YANVector2 touchToWorldPoint = touchToWorld(normalizedX, normalizedY,
                 mScreenSize.getX(), mScreenSize.getY());
 
         //find touched card under the touch point
-        CardNode touchedCard = (CardNode) YANCollisionDetector.findClosestNodeToWorldTouchPoint(touchToWorldPoint.getX(), touchToWorldPoint.getY(), mPlayerCardNodes);
-        if (touchedCard == null || touchedCard.containsTag(CardNode.TAG_TOUCH_DISABLED))
+        final CardNode touchedCard = (CardNode) findClosestNodeToWorldTouchPoint(
+                touchToWorldPoint.getX(), touchToWorldPoint.getY(), mPlayerCardNodes);
+        if (touchedCard == null || touchedCard.containsTag(TAG_TOUCH_DISABLED))
             return false;
 
         //we need to identify touch time to process tap later
-        long touchTime = System.currentTimeMillis();
+        final long touchTime = currentTimeMillis();
 
         //move to drag state
-        CardsTouchProcessorDragState dragState = YANObjectPool.getInstance().obtain(CardsTouchProcessorDragState.class);
+        final CardsTouchProcessorDragState dragState = getInstance().obtain(CardsTouchProcessorDragState.class);
         dragState.setCardsTouchProcessor(mCardsTouchProcessor);
         dragState.setDraggedCard(touchedCard);
         dragState.setTouchPositionOffset(touchToWorldPoint.getX() - touchedCard.getPosition().getX(), touchToWorldPoint.getY() - touchedCard.getPosition().getY());

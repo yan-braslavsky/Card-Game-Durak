@@ -21,6 +21,9 @@ import glengine.yan.glengine.nodes.YANBaseNode;
 import glengine.yan.glengine.service.ServiceLocator;
 import glengine.yan.glengine.util.math.YANMathUtils;
 
+import static com.yan.durak.physics.YANCollisionDetector.findAllNodesThatCollideWithGivenNode;
+import static glengine.yan.glengine.service.ServiceLocator.locateService;
+
 /**
  * Created by Yan-Home on 5/1/2015.
  */
@@ -44,13 +47,13 @@ public abstract class BasePlayerCardsTouchProcessorListener implements CardsTouc
     protected boolean mDragReleaseHandled;
 
     @Override
-    public void onSelectedCardTap(CardNode cardNode) {
+    public void onSelectedCardTap(final CardNode cardNode) {
         //just return the card back to player
         returnCardToPlayerHand(cardNode);
     }
 
     @Override
-    public void onDraggedCardReleased(CardNode cardNode) {
+    public void onDraggedCardReleased(final CardNode cardNode) {
 
         //when card is released we need to reset remembered dragged card
         ServiceLocator.locateService(CardsTouchProcessorService.class).setDraggedCardNode(null);
@@ -59,7 +62,7 @@ public abstract class BasePlayerCardsTouchProcessorListener implements CardsTouc
         mDragReleaseHandled = false;
 
         //we need to reset dragging state
-        BaseDraggableState draggableState = getActiveDraggableState();
+        final BaseDraggableState draggableState = getActiveDraggableState();
         draggableState.setDragging(false);
         draggableState.setDraggedCardDistanceFromPileField(1f);
 
@@ -72,7 +75,7 @@ public abstract class BasePlayerCardsTouchProcessorListener implements CardsTouc
     }
 
     @Override
-    public void onCardDragProgress(CardNode cardNode) {
+    public void onCardDragProgress(final CardNode cardNode) {
 
         //the dragged card is removed from all piles so we need to remember the node during the dragging
         ServiceLocator.locateService(CardsTouchProcessorService.class).setDraggedCardNode(cardNode);
@@ -80,12 +83,12 @@ public abstract class BasePlayerCardsTouchProcessorListener implements CardsTouc
         //we want that dragged card will be above all
         cardNode.setSortingLayer(DRAGGED_CARD_SORTING_LAYER);
 
-        PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
-        GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
-        PileLayouterManagerService pileLayouterManager = ServiceLocator.locateService(PileLayouterManagerService.class);
-        CardNodesManagerService cardNodesManagerService = ServiceLocator.locateService(CardNodesManagerService.class);
+        final PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
+        final GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
+        final PileLayouterManagerService pileLayouterManager = ServiceLocator.locateService(PileLayouterManagerService.class);
+        final CardNodesManagerService cardNodesManagerService = ServiceLocator.locateService(CardNodesManagerService.class);
 
-        BaseDraggableState draggableState;
+        final BaseDraggableState draggableState;
         if (gameInfo.getActivePlayerState() instanceof BaseDraggableState) {
             draggableState = (BaseDraggableState) gameInfo.getActivePlayerState();
         } else {
@@ -94,12 +97,12 @@ public abstract class BasePlayerCardsTouchProcessorListener implements CardsTouc
 
         //mark dragging
         draggableState.setDragging(true);
-        float sceneHeight = ServiceLocator.locateService(SceneSizeProviderService.class).getSceneHeight();
+        final float sceneHeight = ServiceLocator.locateService(SceneSizeProviderService.class).getSceneHeight();
 
         //TODO : implement
-        float screenMiddleY = sceneHeight / 2f;
-        float lowestYPosition = sceneHeight * DRAG_CARDS_HIDING_THRESHOLD;
-        float delta = lowestYPosition - screenMiddleY;
+        final float screenMiddleY = sceneHeight / 2f;
+        final float lowestYPosition = sceneHeight * DRAG_CARDS_HIDING_THRESHOLD;
+        final float delta = lowestYPosition - screenMiddleY;
 
         float distanceFromScreenMiddle = (((cardNode.getPosition().getY() - screenMiddleY) / delta));
 
@@ -107,9 +110,9 @@ public abstract class BasePlayerCardsTouchProcessorListener implements CardsTouc
         distanceFromScreenMiddle = YANMathUtils.clamp(distanceFromScreenMiddle, 0f, 1f);
 
         //adjust dragged card node size
-        float scaleFactor = Math.max(FieldPileLayouter.FIELD_PILE_SIZE_SCALE, distanceFromScreenMiddle);
-        float cardWidth = cardNodesManagerService.getCardNodeOriginalWidth() * scaleFactor;
-        float cardHeight = cardNodesManagerService.getCardNodeOriginalHeight() * scaleFactor;
+        final float scaleFactor = Math.max(FieldPileLayouter.FIELD_PILE_SIZE_SCALE, distanceFromScreenMiddle);
+        final float cardWidth = cardNodesManagerService.getCardNodeOriginalWidth() * scaleFactor;
+        final float cardHeight = cardNodesManagerService.getCardNodeOriginalHeight() * scaleFactor;
         cardNode.setSize(cardWidth, cardHeight);
 
         draggableState.setDraggedCardDistanceFromPileField(distanceFromScreenMiddle);
@@ -129,23 +132,24 @@ public abstract class BasePlayerCardsTouchProcessorListener implements CardsTouc
      * @param cardNode dragged card that was released
      * @return true if there was a repositioning and false otherwise
      */
-    private boolean handleRepositioning(CardNode cardNode) {
+    private boolean handleRepositioning(final CardNode cardNode) {
 
         //TODO : beautify this code !
 
         //cache services
-        CardNodesManagerService cardNodesManager = ServiceLocator.locateService(CardNodesManagerService.class);
-        PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
+        final CardNodesManagerService cardNodesManager = locateService(CardNodesManagerService.class);
+        final PileManagerService pileManager = locateService(PileManagerService.class);
 
         //TODO : cache not allocate
-        List<YANBaseNode> bottomPlayerCardNodes = new ArrayList<>();
+        final List<YANBaseNode> bottomPlayerCardNodes = new ArrayList<>();
 
-        for (Card card : pileManager.getBottomPlayerPile().getCardsInPile()) {
+        for (int i = 0; i < pileManager.getBottomPlayerPile().getCardsInPile().size(); i++) {
+            final Card card = pileManager.getBottomPlayerPile().getCardsInPile().get(i);
             bottomPlayerCardNodes.add(cardNodesManager.getCardNodeForCard(card));
         }
 
         //TODO : This detector also allocates array every time , this is not efficient
-        List<CardNode> allCollidedNodes = YANCollisionDetector.findAllNodesThatCollideWithGivenNode(cardNode, bottomPlayerCardNodes);
+        final List<CardNode> allCollidedNodes = findAllNodesThatCollideWithGivenNode(cardNode, bottomPlayerCardNodes);
 
         if (allCollidedNodes.isEmpty())
             return false;
@@ -173,7 +177,7 @@ public abstract class BasePlayerCardsTouchProcessorListener implements CardsTouc
         pileManager.getBottomPlayerPile().addCardAtIndex(cardNode.getCard(), repositionIndex);
 
         //layout player cards
-        ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(pileManager.getBottomPlayerPile()).layout();
+        locateService(PileLayouterManagerService.class).getPileLayouterForPile(pileManager.getBottomPlayerPile()).layout();
         return true;
     }
 
@@ -183,8 +187,8 @@ public abstract class BasePlayerCardsTouchProcessorListener implements CardsTouc
      *
      * @param cardNode node representing the card that will be put into bottom player pile.
      */
-    protected void returnCardToPlayerHand(CardNode cardNode) {
-        PileModel bottomPlayerPile = ServiceLocator.locateService(PileManagerService.class).getBottomPlayerPile();
+    protected void returnCardToPlayerHand(final CardNode cardNode) {
+        final PileModel bottomPlayerPile = ServiceLocator.locateService(PileManagerService.class).getBottomPlayerPile();
         bottomPlayerPile.addCard(cardNode.getCard());
         ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(bottomPlayerPile).layout();
     }

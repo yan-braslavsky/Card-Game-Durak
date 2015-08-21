@@ -25,13 +25,13 @@ public class RequestCardForAttackMsgSubProcessor extends BaseMsgSubProcessor<Req
 
         @Override
         public void onComplete() {
-            PileModel bottomPlayerPile = mPileManager.getBottomPlayerPile();
+            final PileModel bottomPlayerPile = mPileManager.getBottomPlayerPile();
             if (bottomPlayerPile.getCardsInPile().isEmpty())
                 return;
 
             //TODO : this is just a mock move
-            Iterator<Card> iterator = bottomPlayerPile.getCardsInPile().iterator();
-            Card cardForAttack = iterator.next();
+            final Iterator<Card> iterator = bottomPlayerPile.getCardsInPile().iterator();
+            final Card cardForAttack = iterator.next();
 
             //return task to the pool
             YANObjectPool.getInstance().offer(mTask);
@@ -50,7 +50,7 @@ public class RequestCardForAttackMsgSubProcessor extends BaseMsgSubProcessor<Req
     }
 
     @Override
-    public void processMessage(RequestCardForAttackMessage serverMessage) {
+    public void processMessage(final RequestCardForAttackMessage serverMessage) {
 
 //        mTask = YANObjectPool.getInstance().obtain(YANDelayedTask.class);
 //        mTask.setDurationSeconds(2);

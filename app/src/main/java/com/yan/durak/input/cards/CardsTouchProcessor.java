@@ -22,7 +22,7 @@ public class CardsTouchProcessor {
     private final PileModel mPlayerPile;
     private final YANVector2 mScreenSize;
 
-    public void setSceneSize(float screenWidth, float screenHeight) {
+    public void setSceneSize(final float screenWidth, final float screenHeight) {
         mScreenSize.setXY(screenWidth, screenHeight);
         mCardsTouchProcessorState.applyState(mScreenSize.getX(),mScreenSize.getY());
     }
@@ -61,24 +61,24 @@ public class CardsTouchProcessor {
         mScreenSize = new YANVector2();
 
         //starting from a default state
-        CardsTouchProcessorDefaultState defaultState = YANObjectPool.getInstance().obtain(CardsTouchProcessorDefaultState.class);
+        final CardsTouchProcessorDefaultState defaultState = YANObjectPool.getInstance().obtain(CardsTouchProcessorDefaultState.class);
         defaultState.setCardsTouchProcessor(this);
         setCardsTouchProcessorState(defaultState);
 
         //touch listener that is added to input processor
         mTouchListener = new YANInputManager.TouchListener() {
             @Override
-            public boolean onTouchDown(float normalizedX, float normalizedY) {
+            public boolean onTouchDown(final float normalizedX, final float normalizedY) {
                 return mCardsTouchProcessorState.onTouchDown(normalizedX, normalizedY);
             }
 
             @Override
-            public boolean onTouchUp(float normalizedX, float normalizedY) {
+            public boolean onTouchUp(final float normalizedX, final float normalizedY) {
                 return mCardsTouchProcessorState.onTouchUp(normalizedX, normalizedY);
             }
 
             @Override
-            public boolean onTouchDrag(float normalizedX, float normalizedY) {
+            public boolean onTouchDrag(final float normalizedX, final float normalizedY) {
                 return mCardsTouchProcessorState.onTouchDrag(normalizedX, normalizedY);
             }
 
@@ -107,7 +107,7 @@ public class CardsTouchProcessor {
     }
 
 
-    protected void setCardsTouchProcessorState(CardsTouchProcessorState cardsTouchProcessorState) {
+    protected void setCardsTouchProcessorState(final CardsTouchProcessorState cardsTouchProcessorState) {
         //release previous state to pool
         YANObjectPool.getInstance().offer(cardsTouchProcessorState);
         mCardsTouchProcessorState = cardsTouchProcessorState;

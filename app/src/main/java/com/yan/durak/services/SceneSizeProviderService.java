@@ -20,7 +20,7 @@ public class SceneSizeProviderService implements IService {
         return mSceneHeight;
     }
 
-    public void setSceneSize(float sceneWidth, float sceneHeight) {
+    public void setSceneSize(final float sceneWidth, final float sceneHeight) {
         mSceneWidth = sceneWidth;
         mSceneHeight = sceneHeight;
     }

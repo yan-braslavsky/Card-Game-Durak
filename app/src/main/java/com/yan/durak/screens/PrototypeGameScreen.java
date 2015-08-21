@@ -1,6 +1,5 @@
 package com.yan.durak.screens;
 
-import com.yan.durak.activities.GameActivity;
 import com.yan.durak.communication.game_server.LocalGameServer;
 import com.yan.durak.communication.game_server.connector.IGameServerConnector;
 import com.yan.durak.communication.game_server.connector.SocketConnectionManager;
@@ -21,11 +20,13 @@ import com.yan.durak.session.GameInfo;
 
 import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.nodes.YANBaseNode;
-import glengine.yan.glengine.nodes.YANButtonNode;
 import glengine.yan.glengine.nodes.YANCircleNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.renderer.YANGLRenderer;
 import glengine.yan.glengine.service.ServiceLocator;
+
+import static glengine.yan.glengine.nodes.YANButtonNode.YanButtonNodeClickListener;
+import static glengine.yan.glengine.service.ServiceLocator.locateService;
 
 /**
  * Created by Yan-Home on 10/3/2014.
@@ -39,7 +40,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
     private final TweenManager mSharedTweenManager;
 
 
-    public PrototypeGameScreen(YANGLRenderer renderer, IGameServerConnector gameServerConnector, GameActivity.GameInitConfig gameInitConfig) {
+    public PrototypeGameScreen(final YANGLRenderer renderer, final IGameServerConnector gameServerConnector) {
         super(renderer);
 
         //we received the connector that should be used
@@ -67,7 +68,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         ServiceLocator.addService(new CardsTouchProcessorService(new CardsTouchProcessor(new PlayerCardsTouchProcessorListener(), ServiceLocator.locateService(PileManagerService.class).getBottomPlayerPile())));
 
         //game session will store the game state and related info
-        ServiceLocator.addService(new GameInfo(gameInitConfig));
+        ServiceLocator.addService(new GameInfo());
 
         //layouters manager
         ServiceLocator.addService(new PileLayouterManagerService(mSharedTweenManager));
@@ -81,15 +82,14 @@ public class PrototypeGameScreen extends BaseGameScreen {
         //Auto move service helps to make an auto move for player
         ServiceLocator.addService(new PlayerMoveService());
 
-        //TODO : replace "this" by managers that are really required by the processor
         //message processor will receive messages and react on them
         //msg processor is the listener for game server connector
-        mGameServerConnector.setListener(new MsgProcessor(this));
+        mGameServerConnector.setListener(new MsgProcessor());
 
         //set timer listener
         ServiceLocator.locateService(HudManagementService.class).setTimerListener(new HudManagementService.TimerListener() {
             @Override
-            public void onTimerExpired(YANCircleNode activeTimerNode) {
+            public void onTimerExpired(final YANCircleNode activeTimerNode) {
                 ServiceLocator.locateService(PlayerMoveService.class)
                         .makeAutoMoveForState(ServiceLocator.locateService(GameInfo.class).getActivePlayerState().getStateDefinition());
             }
@@ -115,33 +115,30 @@ public class PrototypeGameScreen extends BaseGameScreen {
         super.onAddNodesToScene();
 
         //add card nodes
-        for (YANTexturedNode cardNode : ServiceLocator.locateService(CardNodesManagerService.class).getAllCardNodes()) {
+        for (final YANTexturedNode cardNode : ServiceLocator.locateService(CardNodesManagerService.class).getAllCardNodes()) {
             addNode(cardNode);
         }
 
-        for (YANBaseNode hudNode : ServiceLocator.locateService(HudManagementService.class).getNodes()) {
+        for (final YANBaseNode hudNode : ServiceLocator.locateService(HudManagementService.class).getNodes()) {
             addNode(hudNode);
         }
 
-        for (YANBaseNode hudNode : ServiceLocator.locateService(DialogManagerService.class).getNodes()) {
+        for (final YANBaseNode hudNode : ServiceLocator.locateService(DialogManagerService.class).getNodes()) {
             addNode(hudNode);
         }
 
-        //TODO : should be created as hidden by default
-        ServiceLocator.locateService(HudManagementService.class).hideFinishButton();
-        ServiceLocator.locateService(HudManagementService.class).hideTakeButton();
-        ServiceLocator.locateService(DialogManagerService.class).hideExitDialog();
-        ServiceLocator.locateService(DialogManagerService.class).setExitDialogClickListeners(new YANButtonNode.YanButtonNodeClickListener() {
+        locateService(DialogManagerService.class).hideExitDialog();
+        locateService(DialogManagerService.class).setExitDialogClickListeners(new YanButtonNodeClickListener() {
             @Override
             public void onButtonClick() {
                 //when confirm button clicked we are closing the game
                 getRenderer().shutDown();
             }
-        }, new YANButtonNode.YanButtonNodeClickListener() {
+        }, new YanButtonNodeClickListener() {
             @Override
             public void onButtonClick() {
                 //When decline button hit , we are simply closing the dialog
-                ServiceLocator.locateService(DialogManagerService.class).hideExitDialog();
+                locateService(DialogManagerService.class).hideExitDialog();
             }
         });
     }
@@ -159,23 +156,24 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
     private void relayoutPiles() {
         //we also need to initialize the pile layouter manager
-        ServiceLocator.locateService(PileLayouterManagerService.class).init(getSceneSize().getX(), getSceneSize().getY());
+        locateService(PileLayouterManagerService.class).init(getSceneSize().getX(), getSceneSize().getY());
 
         //if we are coming from background we must relayout piles
-        PileModel topRightPlayerPile = ServiceLocator.locateService(PileManagerService.class).getTopRightPlayerPile();
-        PileModel topLeftPlayerPile = ServiceLocator.locateService(PileManagerService.class).getTopLeftPlayerPile();
-        PileModel stockPile = ServiceLocator.locateService(PileManagerService.class).getStockPile();
-        ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(topRightPlayerPile).layout();
-        ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(topLeftPlayerPile).layout();
+        final PileModel topRightPlayerPile = locateService(PileManagerService.class).getTopRightPlayerPile();
+        final PileModel topLeftPlayerPile = locateService(PileManagerService.class).getTopLeftPlayerPile();
+        final PileModel stockPile = locateService(PileManagerService.class).getStockPile();
+        locateService(PileLayouterManagerService.class).getPileLayouterForPile(topRightPlayerPile).layout();
+        locateService(PileLayouterManagerService.class).getPileLayouterForPile(topLeftPlayerPile).layout();
 
-        //releayout also field piles
-        for (PileModel pileModel : ServiceLocator.locateService(PileManagerService.class).getFieldPiles()) {
+        //relayout also field piles
+        for (int i = 0; i < locateService(PileManagerService.class).getFieldPiles().size(); i++) {
+            final PileModel pileModel = locateService(PileManagerService.class).getFieldPiles().get(i);
             if (!pileModel.getCardsInPile().isEmpty())
-                ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(pileModel).layout();
+                locateService(PileLayouterManagerService.class).getPileLayouterForPile(pileModel).layout();
         }
 
         //layout stock pile
-        ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(stockPile).layout();
+        locateService(PileLayouterManagerService.class).getPileLayouterForPile(stockPile).layout();
     }
 
 
@@ -199,12 +197,11 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
         ServiceLocator.locateService(DialogManagerService.class).showExitDialog();
     }
 
     @Override
-    public void onUpdate(float deltaTimeSeconds) {
+    public void onUpdate(final float deltaTimeSeconds) {
         super.onUpdate(deltaTimeSeconds);
 
         //TODO: Create some updatable interface where all those

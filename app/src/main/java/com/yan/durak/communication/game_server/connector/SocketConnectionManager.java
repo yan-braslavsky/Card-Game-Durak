@@ -54,18 +54,18 @@ public class SocketConnectionManager implements IService {
             public void run() {
                 try {
 
-                    Future<WebSocket> future = AsyncHttpClient.getDefaultInstance().websocket("ws://" + serverDomain, null, null);
-                    WebSocket websocket = future.get();
+                    final Future<WebSocket> future = AsyncHttpClient.getDefaultInstance().websocket("ws://" + serverDomain, null, null);
+                    final WebSocket websocket = future.get();
                     mSocketClient = new RemoteWsClient(websocket);
                     mConnected = true;
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     e.printStackTrace();
-                } catch (ExecutionException e) {
+                } catch (final ExecutionException e) {
                     e.printStackTrace();
                 }
 
                 while (isConnected()) {
-                    String msg = mSocketClient.readMessage();
+                    final String msg = mSocketClient.readMessage();
                     if (msg != null) {
                         synchronized (mMessageQueue) {
                             YANLogger.log("[RECEIVED] " + msg);
@@ -97,12 +97,12 @@ public class SocketConnectionManager implements IService {
                 try {
                     mSocketClient = new RemoteSocketClient(new Socket(serverAddress, serverPort));
                     mConnected = true;
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
                 }
 
                 while (isConnected()) {
-                    String msg = mSocketClient.readMessage();
+                    final String msg = mSocketClient.readMessage();
                     if (msg != null) {
                         synchronized (mMessageQueue) {
                             YANLogger.log("[RECEIVED] " + msg);
@@ -135,7 +135,7 @@ public class SocketConnectionManager implements IService {
                 mConnected = true;
 
                 while (isConnected()) {
-                    String msg = mSocketClient.readMessage();
+                    final String msg = mSocketClient.readMessage();
                     if (msg != null) {
                         synchronized (mMessageQueue) {
                             YANLogger.log("[RECEIVED] " + msg);
@@ -160,7 +160,7 @@ public class SocketConnectionManager implements IService {
         mConnected = false;
     }
 
-    public void sendMessageToRemoteServer(String msg) {
+    public void sendMessageToRemoteServer(final String msg) {
 
         YANLogger.log("[SENT] " + msg);
         mSocketClient.sendMessage(msg);

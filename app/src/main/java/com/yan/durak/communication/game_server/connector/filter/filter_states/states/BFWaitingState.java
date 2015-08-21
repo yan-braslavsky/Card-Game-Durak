@@ -29,8 +29,8 @@ public class BFWaitingState extends BFBaseState {
         //Every time we are at this state we need to start a new task
 
         //obtain objects from an object pool
-        YANDelayedTask delayedTask = YANObjectPool.getInstance().obtain(YANDelayedTask.class);
-        BFWaitingStateDelayedTaskListener delayedTaskListener = YANObjectPool.getInstance().obtain(BFWaitingStateDelayedTaskListener.class);
+        final YANDelayedTask delayedTask = YANObjectPool.getInstance().obtain(YANDelayedTask.class);
+        final BFWaitingStateDelayedTaskListener delayedTaskListener = YANObjectPool.getInstance().obtain(BFWaitingStateDelayedTaskListener.class);
 
         //init the listener
         delayedTaskListener.setBatchFilter(mBatchFilter);
@@ -66,7 +66,7 @@ public class BFWaitingState extends BFBaseState {
         public void onComplete() {
 
             //we are caching the instance , because after recycling it will go away
-            CardMoveBatchMessageFilter cachedFilter = mBatchFilter;
+            final CardMoveBatchMessageFilter cachedFilter = mBatchFilter;
 
             //recycle delayed task
             YANObjectPool.getInstance().offer(mDelayedTask);
@@ -75,7 +75,7 @@ public class BFWaitingState extends BFBaseState {
             YANObjectPool.getInstance().offer(BFWaitingStateDelayedTaskListener.this);
 
             //obtain the next state from pool
-            BFInitState initState = YANObjectPool.getInstance().obtain(BFInitState.class);
+            final BFInitState initState = YANObjectPool.getInstance().obtain(BFInitState.class);
             initState.setBatchFilter(cachedFilter);
 
             //reset the waiting state and offer it to pool
@@ -92,15 +92,15 @@ public class BFWaitingState extends BFBaseState {
             mDelayedTask = null;
         }
 
-        public void setBatchFilter(CardMoveBatchMessageFilter batchFilter) {
+        public void setBatchFilter(final CardMoveBatchMessageFilter batchFilter) {
             mBatchFilter = batchFilter;
         }
 
-        public void setDelayedTask(YANDelayedTask delayedTask) {
+        public void setDelayedTask(final YANDelayedTask delayedTask) {
             mDelayedTask = delayedTask;
         }
 
-        public void setWaitingState(BFWaitingState waitingState) {
+        public void setWaitingState(final BFWaitingState waitingState) {
             mWaitingState = waitingState;
         }
     }

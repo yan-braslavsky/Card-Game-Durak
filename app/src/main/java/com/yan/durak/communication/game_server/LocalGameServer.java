@@ -3,7 +3,8 @@ package com.yan.durak.communication.game_server;
 import com.yan.durak.communication.client.local.LocalLsClient;
 import com.yan.durak.communication.client.local.SharedLocalMessageQueue;
 import com.yan.durak.gamelogic.GameStarter;
-import com.yan.durak.gamelogic.communication.connection.IRemoteClient;
+import com.yan.durak.gamelogic.communication.connection.ConnectedPlayer;
+import com.yan.durak.gamelogic.communication.protocol.data.PlayerMetaData;
 import com.yan.durak.gamelogic.game.IGameRules;
 
 /**
@@ -16,15 +17,21 @@ public class LocalGameServer {
     /**
      * Starts a local game server on another thread.
      */
-    public static void start(final int playersAmount) {
+    public static void start(final int playersAmount, final String playerAvatarResource, final String playerName) {
 
         //we must recreate the message queue to make sure we are using a fresh queue
         SharedLocalMessageQueue.recreateInstance();
 
         //create remote clients array
-        final IRemoteClient[] clients = new IRemoteClient[playersAmount];
+        final ConnectedPlayer[] clients = new ConnectedPlayer[playersAmount];
 
-        clients[0] = new LocalLsClient(SharedLocalMessageQueue.getInstance());
+        clients[0] = new ConnectedPlayer(new LocalLsClient(SharedLocalMessageQueue.getInstance())
+                , new PlayerMetaData(playerAvatarResource, playerName));
+
+        for (int i = 1; i < playersAmount; i++) {
+            //TODO : Bot names and avatar should depend on something , not just hardcoded values
+            clients[i] = new ConnectedPlayer(null, new PlayerMetaData("avatar_" + i + ".png", "Bot " + i));
+        }
 
         //open local server on different thread
         gameThread = new Thread(new Runnable() {

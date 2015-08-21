@@ -46,7 +46,7 @@ public class FieldPileLayouter extends BasePileLayouter {
     }
 
     @Override
-    public void init(float sceneWidth, float sceneHeight) {
+    public void init(final float sceneWidth, final float sceneHeight) {
         this.mCardWidhtForPile = mCardNodesManager.getCardNodeOriginalWidth() * FIELD_PILE_SIZE_SCALE;
         this.mCardHeightForPile = mCardNodesManager.getCardNodeOriginalHeight() * FIELD_PILE_SIZE_SCALE;
         mFieldPilePositioner.init(sceneWidth, sceneHeight, mCardWidhtForPile, mCardHeightForPile);
@@ -56,12 +56,12 @@ public class FieldPileLayouter extends BasePileLayouter {
     public void layout() {
         //before we layouting this pile , we will layout previous piles on field recursively
         if (mBoundpile.getPileIndex() > ServiceLocator.locateService(PileManagerService.class).getFirstFiledPileindex()) {
-            PileModel previousFieldPile = ServiceLocator.locateService(PileManagerService.class).getPileWithIndex(mBoundpile.getPileIndex() - 1);
+            final PileModel previousFieldPile = ServiceLocator.locateService(PileManagerService.class).getPileWithIndex(mBoundpile.getPileIndex() - 1);
             ServiceLocator.locateService(PileLayouterManagerService.class).getPileLayouterForPile(previousFieldPile).layout();
         }
 
         //get position for current pile
-        YANReadOnlyVector2 pilePositionOnField = mFieldPilePositioner.getPositionForPile(mBoundpile);
+        final YANReadOnlyVector2 pilePositionOnField = mFieldPilePositioner.getPositionForPile(mBoundpile);
 
         //update position of the first card
         mCardPositionVector.setXY(pilePositionOnField.getX(), pilePositionOnField.getY());
@@ -71,15 +71,15 @@ public class FieldPileLayouter extends BasePileLayouter {
 
         int index = 0;
         final Timeline tl = Timeline.createSequence().beginParallel();
-        for (Card card : mBoundpile.getCardsInPile()) {
-            CardNode cardNode = mCardNodesManager.getCardNodeForCard(card);
+        for (final Card card : mBoundpile.getCardsInPile()) {
+            final CardNode cardNode = mCardNodesManager.getCardNodeForCard(card);
 
             //field pile cards visible to all
             cardNode.useFrontTextureRegion();
 
             //rotation and sorting layer will change depending on position of the card in field pile
-            float rotationZ;
-            int sortingLayer;
+            final float rotationZ;
+            final int sortingLayer;
 
             //when the card is first , means it at the bottom
             if (index == 0) {

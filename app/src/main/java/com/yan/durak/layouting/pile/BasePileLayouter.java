@@ -37,7 +37,7 @@ public abstract class BasePileLayouter implements IPileLayouter {
     /**
      * Using an existing timeline object adds tween animation for card node.
      */
-    protected void addAnimationToTimelineForCardNode(Timeline tl, CardNode cardNode, float endPositionX, float endPositionY, float endRotationZ, float endWidth, float endHeight, float endAlpha, float duration) {
+    protected void addAnimationToTimelineForCardNode(final Timeline tl, final CardNode cardNode, final float endPositionX, final float endPositionY, final float endRotationZ, final float endWidth, final float endHeight, final float endAlpha, final float duration) {
         tl.push(Tween.to(cardNode, YANTweenNodeAccessor.OPACITY, duration).target(endAlpha))
                 .push(Tween.to(cardNode, YANTweenNodeAccessor.ROTATION_Z_CW, duration).target(endRotationZ))
                 .push(Tween.to(cardNode, YANTweenNodeAccessor.POSITION_X, duration).target(endPositionX))

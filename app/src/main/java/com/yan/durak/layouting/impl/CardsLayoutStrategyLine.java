@@ -10,11 +10,11 @@ import java.util.List;
 public class CardsLayoutStrategyLine extends CardsLayoutStrategy {
 
 
-    public void layoutRowOfSlots(List<CardsLayouterSlotImpl> slots) {
+    public void layoutRowOfSlots(final List<CardsLayouterSlotImpl> slots) {
 
-        float yStartPosition = mNormalizedBaseYPosition - mSlotHeight;
-        float distanceBetweenCards = mSlotWidth / 2;
-        float xStartPosition = mNormalizedBaseXPosition - (distanceBetweenCards * (slots.size() / 2));
+        final float yStartPosition = mNormalizedBaseYPosition - mSlotHeight;
+        final float distanceBetweenCards = mSlotWidth / 2;
+        final float xStartPosition = mNormalizedBaseXPosition - (distanceBetweenCards * (slots.size() / 2));
 
         CardsLayouterSlotImpl slot;
         float cursorPosition = xStartPosition;

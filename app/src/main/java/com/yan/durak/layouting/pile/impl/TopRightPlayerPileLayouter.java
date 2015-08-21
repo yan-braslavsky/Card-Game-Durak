@@ -17,6 +17,9 @@ import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.util.geometry.YANVector2;
 import glengine.yan.glengine.util.object_pool.YANObjectPool;
 
+import static aurelienribon.tweenengine.Timeline.createSequence;
+import static glengine.yan.glengine.util.object_pool.YANObjectPool.getInstance;
+
 /**
  * Created by ybra on 20/04/15.
  */
@@ -36,20 +39,20 @@ public class TopRightPlayerPileLayouter extends BasePileLayouter {
     }
 
     @Override
-    public void init(float sceneWidth, float sceneHeight) {
+    public void init(final float sceneWidth, final float sceneHeight) {
 
         //layout avatars
-        float offsetX = sceneWidth * 0.02f;
-        float topOffset = sceneHeight * 0.09f;
-        YANVector2 avatarSize = new YANVector2(sceneWidth * 0.25f, sceneWidth * 0.25f);
+        final float offsetX = sceneWidth * 0.02f;
+        final float topOffset = sceneHeight * 0.09f;
+        final YANVector2 avatarSize = new YANVector2(sceneWidth * 0.25f, sceneWidth * 0.25f);
 
         //setup 3 points for player at right top
-        float fanDistance = sceneWidth * 0.1f;
+        final float fanDistance = sceneWidth * 0.1f;
 
-        YANVector2 pos = new YANVector2(sceneWidth + offsetX, topOffset);
-        YANVector2 origin = new YANVector2(pos.getX() - avatarSize.getX(), pos.getY());
-        YANVector2 leftBasis = new YANVector2(origin.getX(), origin.getY() + fanDistance);
-        YANVector2 rightBasis = new YANVector2(origin.getX() - fanDistance, origin.getY());
+        final YANVector2 pos = new YANVector2(sceneWidth + offsetX, topOffset);
+        final YANVector2 origin = new YANVector2(pos.getX() - avatarSize.getX(), pos.getY());
+        final YANVector2 leftBasis = new YANVector2(origin.getX(), origin.getY() + fanDistance);
+        final YANVector2 rightBasis = new YANVector2(origin.getX() - fanDistance, origin.getY());
 
         mThreePointFanLayouterTopRightPlayer.setThreePoints(origin, leftBasis, rightBasis);
         mThreePointFanLayouterTopRightPlayer.setDirection(ThreePointLayouter.LayoutDirection.LTR);
@@ -65,13 +68,15 @@ public class TopRightPlayerPileLayouter extends BasePileLayouter {
     public void layout() {
 
         //offer to pool everything that was in list
-        for (CardsLayouterSlotImpl cardsLayouterSlot : mSlotsList) {
-            YANObjectPool.getInstance().offer(cardsLayouterSlot);
+        for (int i = 0; i < mSlotsList.size(); i++) {
+            final CardsLayouterSlotImpl cardsLayouterSlot = mSlotsList.get(i);
+            getInstance().offer(cardsLayouterSlot);
         }
 
         mSlotsList.clear();
-        for (Card card : mBoundpile.getCardsInPile()) {
-            mSlotsList.add(YANObjectPool.getInstance().obtain(CardsLayouterSlotImpl.class));
+        for (int i = 0; i < mBoundpile.getCardsInPile().size(); i++) {
+            final Card card = mBoundpile.getCardsInPile().get(i);
+            mSlotsList.add(getInstance().obtain(CardsLayouterSlotImpl.class));
         }
 
         //layout the slots
@@ -80,8 +85,8 @@ public class TopRightPlayerPileLayouter extends BasePileLayouter {
         int slotPosition = 0;
         CardsLayouterSlotImpl slot;
         CardNode cardNode;
-        final Timeline tl = Timeline.createSequence().beginParallel();
-        for (Card card : mBoundpile.getCardsInPile()) {
+        final Timeline tl = createSequence().beginParallel();
+        for (final Card card : mBoundpile.getCardsInPile()) {
             cardNode = mCardNodesManager.getCardNodeForCard(card);
             slot = mSlotsList.get(slotPosition);
 
@@ -92,7 +97,7 @@ public class TopRightPlayerPileLayouter extends BasePileLayouter {
             cardNode.useBackTextureRegion();
 
             //animate card to its place with new transform values
-            addAnimationToTimelineForCardNode(tl,cardNode, slot.getPosition().getX(), slot.getPosition().getY(),
+            addAnimationToTimelineForCardNode(tl, cardNode, slot.getPosition().getX(), slot.getPosition().getY(),
                     slot.getRotation(), mCardWidhtForPile, mCardHeightForPile, 1f, CARD_MOVEMENT_ANIMATION_DURATION);
 
             slotPosition++;

@@ -15,7 +15,7 @@ public class CardsTouchProcessorService implements IService {
     private final CardsTouchProcessor mCardsTouchProcessor;
     private CardNode mDraggedCardNode;
 
-    public CardsTouchProcessorService(CardsTouchProcessor cardsTouchProcessor) {
+    public CardsTouchProcessorService(final CardsTouchProcessor cardsTouchProcessor) {
         mCardsTouchProcessor = cardsTouchProcessor;
     }
 
@@ -27,7 +27,7 @@ public class CardsTouchProcessorService implements IService {
         mCardsTouchProcessor.register();
     }
 
-    public void setSceneSize(float screenWidth, float screenHeight) {
+    public void setSceneSize(final float screenWidth, final float screenHeight) {
         mCardsTouchProcessor.setSceneSize(screenWidth, screenHeight);
     }
 
@@ -36,7 +36,7 @@ public class CardsTouchProcessorService implements IService {
         unRegister();
     }
 
-    public void setDraggedCardNode(@Nullable CardNode draggedCardNode) {
+    public void setDraggedCardNode(@Nullable final CardNode draggedCardNode) {
         mDraggedCardNode = draggedCardNode;
     }
 

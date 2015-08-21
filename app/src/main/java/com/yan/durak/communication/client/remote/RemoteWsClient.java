@@ -18,7 +18,7 @@ public class RemoteWsClient implements IRemoteClient {
     private final WebSocket mWebSocket;
     private final Queue<String> mMessageQueue;
 
-    public RemoteWsClient(WebSocket webSocket) {
+    public RemoteWsClient(final WebSocket webSocket) {
         this.mWebSocket = webSocket;
         mMessageQueue = new LinkedBlockingDeque<>();
 
@@ -32,13 +32,13 @@ public class RemoteWsClient implements IRemoteClient {
     }
 
     @Override
-    public void sendMessage(String msg) {
+    public void sendMessage(final String msg) {
         mWebSocket.send(msg);
     }
 
     @Override
     public String readMessage() {
-        String msg = mMessageQueue.poll();
+        final String msg = mMessageQueue.poll();
         //we ignore socket specific messages
         return (WS_NEW_CONNECTION_KEY.equals(msg)) ? null : msg;
     }

@@ -49,7 +49,7 @@ public class ThrowInState extends BaseDraggableState {
         return mChosenCardsToThrowIn;
     }
 
-    public void setMaxCardsToThrowInAmount(int maxCardsToThrowInAmount) {
+    public void setMaxCardsToThrowInAmount(final int maxCardsToThrowInAmount) {
         mMaxCardsToThrowInAmount = maxCardsToThrowInAmount;
     }
 

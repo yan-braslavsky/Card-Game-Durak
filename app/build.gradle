@@ -1,16 +1,63 @@
 apply plugin: 'com.android.application'
+apply plugin: "maven-publish"
 
 configurations.all {
     // check for updates every build
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
+//Those are repositories we are looking into when building
+//the project
 repositories {
     mavenCentral()
     maven {
+        //this is a public path into my maven repository
         url "https://dl.dropboxusercontent.com/u/48976508/maven-repo"
     }
 }
+
+//here we specify source sets for maven publication
+sourceSets {
+    //we call this source set a publication , and including only the source
+    //folder that we want to ship into jar
+    publication {
+        java.srcDirs = ['src/main/publish']
+    }
+}
+
+//this is the task that defines jar that we will publish
+task publishJar(type: Jar) {
+    from sourceSets.publication.allJava
+}
+
+publishing {
+    //all publications defined here
+    publications {
+
+        //TODO : Run "gradle publish" to upload the Jar to maven repo
+        //we call this publication "gameLogicPublication" , and saying that it is a maven publication
+        gameLogicPublication(MavenPublication) {
+            groupId 'com.yan.durak'
+            artifactId 'gamelogic-lib'
+            version '1.1-SNAPSHOT'
+
+            //here we define the jar that will be published
+            artifact(publishJar) {
+                classifier null
+            }
+        }
+    }
+    repositories {
+        //maven repository is just a local path to the dropbox folder
+        //this is where published jar will go
+        maven {
+            url "file:///E:/Dropbox/public/maven-repo"
+//            url "file:///C:/Users/yan.braslavsky/Dropbox/public/maven-repo"
+        }
+    }
+}
+
+
 
 android {
     compileSdkVersion 22
@@ -28,6 +75,17 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
+
+    //we can specify multiple source sets
+    sourceSets {
+        //in order to compile android project
+        //we need to specify a dependency to the source folder that used
+        //to generate a jar
+        main {
+            java.srcDirs = ['src/main/publish','src/main/java']
+        }
+    }
+
 
     buildTypes {
         release {
@@ -48,7 +106,6 @@ android {
 
 dependencies {
     compile 'com.android.support:support-annotations:+'
-    compile 'com.yan.durak:gamelogic-lib:1.1-SNAPSHOT'
     compile 'com.yan.glengine:engine-lib:1.0-SNAPSHOT@aar'
     compile 'com.koushikdutta.async:androidasync:2.+'
 }

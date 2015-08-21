@@ -43,10 +43,10 @@ public class RemoteGameServerConnector extends BaseGameServerConnector {
         (new Thread(new Runnable() {
             @Override
             public void run() {
-                String domain = SERVER_ADDRESS;
+                final String domain = SERVER_ADDRESS;
 
                 //obtain socket adress
-                String socketRelativeAdress = requestSocketAdress("http://" + domain);
+                final String socketRelativeAdress = requestSocketAdress("http://" + domain);
 
                 //connect to socket adress
                 ServiceLocator.locateService(SocketConnectionManager.class).connectToRemoteServerViaWebSocket(SERVER_ADDRESS + socketRelativeAdress, -1);
@@ -60,21 +60,21 @@ public class RemoteGameServerConnector extends BaseGameServerConnector {
         })).start();
     }
 
-    private String requestSocketAdress(String adress) {
+    private String requestSocketAdress(final String adress) {
         /*
          * Create the POST request
          */
-        HttpClient httpClient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(adress);
+        final HttpClient httpClient = new DefaultHttpClient();
+        final HttpPost httpPost = new HttpPost(adress);
         // Request parameters and other properties.
-        List<NameValuePair> params = new ArrayList<>();
+        final List<NameValuePair> params = new ArrayList<>();
 
         //TODO : make it dynamic
 //        params.add(new BasicNameValuePair("payload", "{gameType:\"ONE_PLAYER_TWO_BOTS\",userId:\"s\"}"));
         params.add(new BasicNameValuePair("payload", "{gameType:\"TWO_PLAYERS_ONE_BOT\",userId:\"s\"}"));
         try {
             httpPost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
+        } catch (final UnsupportedEncodingException e) {
             // writing error to Log
             e.printStackTrace();
         }
@@ -82,18 +82,18 @@ public class RemoteGameServerConnector extends BaseGameServerConnector {
          * Execute the HTTP Request
          */
         try {
-            HttpResponse response = httpClient.execute(httpPost);
-            HttpEntity respEntity = response.getEntity();
+            final HttpResponse response = httpClient.execute(httpPost);
+            final HttpEntity respEntity = response.getEntity();
 
             if (respEntity != null) {
                 // EntityUtils to get the response content
-                String content = EntityUtils.toString(respEntity);
+                final String content = EntityUtils.toString(respEntity);
                 return content;
             }
-        } catch (ClientProtocolException e) {
+        } catch (final ClientProtocolException e) {
             // writing exception to log
             e.printStackTrace();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             // writing exception to log
             e.printStackTrace();
         }
@@ -107,7 +107,7 @@ public class RemoteGameServerConnector extends BaseGameServerConnector {
     }
 
     @Override
-    public void sentMessageToServer(BaseProtocolMessage message) {
+    public void sentMessageToServer(final BaseProtocolMessage message) {
         ServiceLocator.locateService(SocketConnectionManager.class).sendMessageToRemoteServer(message.toJsonString());
     }
 }

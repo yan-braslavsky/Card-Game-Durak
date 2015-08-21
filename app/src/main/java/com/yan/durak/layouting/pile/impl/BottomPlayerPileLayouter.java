@@ -37,7 +37,7 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
      * Initializes positions and all needed values for layouting
      */
     @Override
-    public void init(float sceneWidth, float sceneHeight) {
+    public void init(final float sceneWidth, final float sceneHeight) {
 
         //init the player cards layouter
         mPlayerCardsLayouter.init(mCardNodesManager.getCardNodeOriginalWidth(), mCardNodesManager.getCardNodeOriginalHeight(),
@@ -57,7 +57,7 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
         float animationDuration = CARD_MOVEMENT_ANIMATION_DURATION;
 
         //cache the state
-        IActivePlayerState activePlayerState = ServiceLocator.locateService(GameInfo.class).getActivePlayerState();
+        final IActivePlayerState activePlayerState = ServiceLocator.locateService(GameInfo.class).getActivePlayerState();
 
         //each state will be handled differently
         switch (activePlayerState.getStateDefinition()) {
@@ -88,25 +88,25 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
 
     private void activateBottomPile() {
         //make all cards in player hand enabled
-        CardNodesManagerService cardNodeManager = ServiceLocator.locateService(CardNodesManagerService.class);
-        for (Card card : getBoundpile().getCardsInPile()) {
-            CardNode nodeToDisable = cardNodeManager.getCardNodeForCard(card);
+        final CardNodesManagerService cardNodeManager = ServiceLocator.locateService(CardNodesManagerService.class);
+        for (final Card card : getBoundpile().getCardsInPile()) {
+            final CardNode nodeToDisable = cardNodeManager.getCardNodeForCard(card);
             cardNodeManager.enableCardNode(nodeToDisable);
         }
     }
 
     private void deactivateBottomPile() {
         //make all cards in player hand disabled
-        CardNodesManagerService cardNodeManager = ServiceLocator.locateService(CardNodesManagerService.class);
-        for (Card card : getBoundpile().getCardsInPile()) {
-            CardNode nodeToDisable = cardNodeManager.getCardNodeForCard(card);
+        final CardNodesManagerService cardNodeManager = ServiceLocator.locateService(CardNodesManagerService.class);
+        for (final Card card : getBoundpile().getCardsInPile()) {
+            final CardNode nodeToDisable = cardNodeManager.getCardNodeForCard(card);
             cardNodeManager.disableCardNode(nodeToDisable);
         }
     }
 
-    private float handleDraggingState(float duration, BaseDraggableState activePlayerState) {
+    private float handleDraggingState(float duration, final BaseDraggableState activePlayerState) {
         //Both states allow to drag a card
-        BaseDraggableState draggableState = activePlayerState;
+        final BaseDraggableState draggableState = activePlayerState;
         if (draggableState.isDragging()) {
             //adjust expansion level by dragging distance
             mPlayerCardsLayouter.adjustExpansionLevel(draggableState.getDraggingCardDistanceFromPileField());
@@ -122,18 +122,18 @@ public class BottomPlayerPileLayouter extends BasePileLayouter {
         return duration;
     }
 
-    private void layoutUsingSlots(float duration) {
+    private void layoutUsingSlots(final float duration) {
 
         //update layouter to recalculate positions
-        int cardsInPileAmount = getBoundpile().getCardsInPile().size();
+        final int cardsInPileAmount = getBoundpile().getCardsInPile().size();
         mPlayerCardsLayouter.setActiveSlotsAmount(cardsInPileAmount);
 
         CardsLayoutSlot slot;
         CardNode cardNode;
         int slotPosition = 0;
-        float endAlpha = 1f;
+        final float endAlpha = 1f;
         final Timeline tl = Timeline.createSequence().beginParallel();
-        for (Card card : mBoundpile.getCardsInPile()) {
+        for (final Card card : mBoundpile.getCardsInPile()) {
             cardNode = mCardNodesManager.getCardNodeForCard(card);
 
             slot = mPlayerCardsLayouter.getSlotAtPosition(slotPosition);

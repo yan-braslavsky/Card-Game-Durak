@@ -6,12 +6,12 @@ import com.yan.durak.gamelogic.communication.protocol.BaseProtocolMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.CardMovedProtocolMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.GameOverProtocolMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.GameSetupProtocolMessage;
+import com.yan.durak.gamelogic.communication.protocol.messages.PlayerJoinProtocolMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.PlayerTakesActionMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestCardForAttackMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestRetaliatePilesMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.RequestThrowInsMessage;
 import com.yan.durak.gamelogic.communication.protocol.messages.RetaliationInvalidProtocolMessage;
-import com.yan.durak.gamelogic.communication.protocol.messages.PlayerJoinProtocolMessage;
 import com.yan.durak.msg_processor.subprocessors.MsgSubProcessor;
 import com.yan.durak.msg_processor.subprocessors.impl.CardMovedMsgSubProcessor;
 import com.yan.durak.msg_processor.subprocessors.impl.GameOverMsgSubProcessor;
@@ -22,7 +22,6 @@ import com.yan.durak.msg_processor.subprocessors.impl.RequestCardForAttackMsgSub
 import com.yan.durak.msg_processor.subprocessors.impl.RequestRetaliatePilesMsgSubProcessor;
 import com.yan.durak.msg_processor.subprocessors.impl.RequestThrowInsMsgSubProcessor;
 import com.yan.durak.msg_processor.subprocessors.impl.RetaliationInvalidMsgSubProcessor;
-import com.yan.durak.screens.PrototypeGameScreen;
 import com.yan.durak.services.PileLayouterManagerService;
 import com.yan.durak.services.PileManagerService;
 import com.yan.durak.session.GameInfo;
@@ -34,21 +33,19 @@ import glengine.yan.glengine.service.ServiceLocator;
 
 /**
  * Created by ybra on 16/04/15.
- * <p/>
+ * <p>
  * PURPOSE:
  * Distribute received server messages across concrete handlers (subprocessors)
  */
 public class MsgProcessor implements IGameServerConnector.IGameServerCommunicatorListener {
 
-    private final PrototypeGameScreen mPrototypeGameScreen;
     private Map<Class<? extends BaseProtocolMessage>, MsgSubProcessor> mProcessorsMap;
 
     /**
      * Require a direct reference to prototype screen in order
      * to manipulate its nodes and fragments
      */
-    public MsgProcessor(PrototypeGameScreen prototypeGameScreen) {
-        this.mPrototypeGameScreen = prototypeGameScreen;
+    public MsgProcessor() {
         this.mProcessorsMap = new HashMap<>();
 
         //map between messages and their processors
@@ -57,10 +54,10 @@ public class MsgProcessor implements IGameServerConnector.IGameServerCommunicato
 
     private void fillProcessorsMap() {
 
-        PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
-        GameServerMessageSender messageSender = ServiceLocator.locateService(GameServerMessageSender.class);
-        GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
-        PileLayouterManagerService pileLayouterManager = ServiceLocator.locateService(PileLayouterManagerService.class);
+        final PileManagerService pileManager = ServiceLocator.locateService(PileManagerService.class);
+        final GameServerMessageSender messageSender = ServiceLocator.locateService(GameServerMessageSender.class);
+        final GameInfo gameInfo = ServiceLocator.locateService(GameInfo.class);
+        final PileLayouterManagerService pileLayouterManager = ServiceLocator.locateService(PileLayouterManagerService.class);
 
         //Card Moved
         mProcessorsMap.put(CardMovedProtocolMessage.class, new CardMovedMsgSubProcessor(pileManager, pileLayouterManager));
@@ -74,7 +71,7 @@ public class MsgProcessor implements IGameServerConnector.IGameServerCommunicato
                 messageSender));
 
         //Request Retaliation
-        mProcessorsMap.put(RequestRetaliatePilesMessage.class, new RequestRetaliatePilesMsgSubProcessor(gameInfo,messageSender));
+        mProcessorsMap.put(RequestRetaliatePilesMessage.class, new RequestRetaliatePilesMsgSubProcessor(gameInfo, messageSender));
 
         //Player Action
         mProcessorsMap.put(PlayerTakesActionMessage.class, new PlayerTakesActionMsgSubProcessor(pileManager,
@@ -94,14 +91,8 @@ public class MsgProcessor implements IGameServerConnector.IGameServerCommunicato
     }
 
     @Override
-    public void handleServerMessage(BaseProtocolMessage serverMessage) {
+    public void handleServerMessage(final BaseProtocolMessage serverMessage) {
         //delegate the processing to concrete processor
         mProcessorsMap.get(serverMessage.getClass()).processMessage(serverMessage);
     }
-
-    public PrototypeGameScreen getPrototypeGameScreen() {
-        return mPrototypeGameScreen;
-    }
-
-
 }

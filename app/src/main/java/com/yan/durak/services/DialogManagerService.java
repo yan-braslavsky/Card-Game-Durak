@@ -46,9 +46,9 @@ public class DialogManagerService implements IService {
     }
 
 
-    public void layoutNodes(YANReadOnlyVector2 sceneSize) {
-        float halfScreenWidth = sceneSize.getX() / 2;
-        float halfScreenHeight = sceneSize.getY() / 2;
+    public void layoutNodes(final YANReadOnlyVector2 sceneSize) {
+        final float halfScreenWidth = sceneSize.getX() / 2;
+        final float halfScreenHeight = sceneSize.getY() / 2;
 
         getNode(DIALOG_BG_OVERLAY_INDEX).setPosition(0, 0);
 
@@ -56,12 +56,12 @@ public class DialogManagerService implements IService {
         getNode(DIALOG_BG_INDEX).setAnchorPoint(0.5f, 0.5f);
 
         //position dialog items
-        float halfDialogBgWidth = getNode(DIALOG_BG_INDEX).getSize().getX() / 2;
+        final float halfDialogBgWidth = getNode(DIALOG_BG_INDEX).getSize().getX() / 2;
 
         //yes btn
         getNode(DIALOG_BG_INDEX).setPosition(halfScreenWidth, halfScreenHeight);
-        float buttonsYPosition = halfScreenHeight + (halfScreenHeight * 0.012f);
-        float buttonsXOffset = halfScreenWidth * 0.2f;
+        final float buttonsYPosition = halfScreenHeight + (halfScreenHeight * 0.012f);
+        final float buttonsXOffset = halfScreenWidth * 0.2f;
         getNode(DIALOG_YES_BUTTON_INDEX).setPosition(halfScreenWidth - halfDialogBgWidth + buttonsXOffset, buttonsYPosition);
 
         //no btn
@@ -69,20 +69,20 @@ public class DialogManagerService implements IService {
         getNode(DIALOG_NO_BUTTON_INDEX).setPosition(halfScreenWidth + halfDialogBgWidth - buttonsXOffset, buttonsYPosition);
     }
 
-    public void setNodesSizes(YANReadOnlyVector2 sceneSize) {
+    public void setNodesSizes(final YANReadOnlyVector2 sceneSize) {
 
         //overlay is as a size of a screen
         getNode(DIALOG_BG_OVERLAY_INDEX).setSize(sceneSize.getX(), sceneSize.getY());
 
         //dialog background
-        YANTexturedNode dialogBG = getNode(DIALOG_BG_INDEX);
+        final YANTexturedNode dialogBG = getNode(DIALOG_BG_INDEX);
         float aspectRatio = dialogBG.getTextureRegion().getWidth() / dialogBG.getTextureRegion().getHeight();
         float newWidth = sceneSize.getX() * 0.8f;
         float newHeight = newWidth / aspectRatio;
         dialogBG.setSize(newWidth, newHeight);
 
         //buttons
-        YANTexturedNode yesButton = getNode(DIALOG_YES_BUTTON_INDEX);
+        final YANTexturedNode yesButton = getNode(DIALOG_YES_BUTTON_INDEX);
         aspectRatio = yesButton.getTextureRegion().getWidth() / yesButton.getTextureRegion().getHeight();
         newWidth = dialogBG.getSize().getX() * 0.3f;
         newHeight = newWidth / aspectRatio;
@@ -90,7 +90,7 @@ public class DialogManagerService implements IService {
         getNode(DIALOG_NO_BUTTON_INDEX).setSize(newWidth, newHeight);
     }
 
-    public void createNodes(YANTextureAtlas dialogsAtlas) {
+    public void createNodes(final YANTextureAtlas dialogsAtlas) {
         //add background overlay
         putToNodeMap(DIALOG_BG_OVERLAY_INDEX, createBgOverlay(dialogsAtlas));
 
@@ -102,28 +102,28 @@ public class DialogManagerService implements IService {
         putToNodeMap(DIALOG_NO_BUTTON_INDEX, createDeclineButton(dialogsAtlas));
     }
 
-    private YANBaseNode createDeclineButton(YANTextureAtlas dialogsAtlas) {
-        YANButtonNode yanButtonNode = new YANButtonNode(dialogsAtlas.getTextureRegion("no_btn.png"),
+    private YANBaseNode createDeclineButton(final YANTextureAtlas dialogsAtlas) {
+        final YANButtonNode yanButtonNode = new YANButtonNode(dialogsAtlas.getTextureRegion("no_btn.png"),
                 dialogsAtlas.getTextureRegion("no_clicked_btn.png"));
         yanButtonNode.setSortingLayer(DIALOG_SORTING_LAYER + 2);
         return yanButtonNode;
     }
 
-    private YANBaseNode createConfirmButton(YANTextureAtlas dialogsAtlas) {
-        YANButtonNode yanButtonNode = new YANButtonNode(dialogsAtlas.getTextureRegion("yes_btn.png"),
+    private YANBaseNode createConfirmButton(final YANTextureAtlas dialogsAtlas) {
+        final YANButtonNode yanButtonNode = new YANButtonNode(dialogsAtlas.getTextureRegion("yes_btn.png"),
                 dialogsAtlas.getTextureRegion("yes_clicked_btn.png"));
         yanButtonNode.setSortingLayer(DIALOG_SORTING_LAYER + 2);
         return yanButtonNode;
     }
 
-    private YANBaseNode createDialogBg(YANTextureAtlas dialogsAtlas) {
-        YANBaseNode bgNode = new YANTexturedNode(dialogsAtlas.getTextureRegion("leave_game.png"));
+    private YANBaseNode createDialogBg(final YANTextureAtlas dialogsAtlas) {
+        final YANBaseNode bgNode = new YANTexturedNode(dialogsAtlas.getTextureRegion("leave_game.png"));
         bgNode.setSortingLayer(DIALOG_SORTING_LAYER + 1);
         return bgNode;
     }
 
-    private YANBaseNode createBgOverlay(YANTextureAtlas dialogsAtlas) {
-        YANButtonNode yanButtonNode = new YANButtonNode(dialogsAtlas.getTextureRegion("screen_shadow.png"), dialogsAtlas.getTextureRegion("screen_shadow.png"));
+    private YANBaseNode createBgOverlay(final YANTextureAtlas dialogsAtlas) {
+        final YANButtonNode yanButtonNode = new YANButtonNode(dialogsAtlas.getTextureRegion("screen_shadow.png"), dialogsAtlas.getTextureRegion("screen_shadow.png"));
         yanButtonNode.setSortingLayer(DIALOG_SORTING_LAYER);
         return yanButtonNode;
     }
@@ -132,11 +132,11 @@ public class DialogManagerService implements IService {
         return mDialogNodesMap.values();
     }
 
-    private <T extends YANBaseNode> void putToNodeMap(@DialogNode int nodeIndex, T node) {
+    private <T extends YANBaseNode> void putToNodeMap(@DialogNode final int nodeIndex, final T node) {
         mDialogNodesMap.put(nodeIndex, node);
     }
 
-    private <T extends YANBaseNode> T getNode(@DialogNode int nodeIndex) {
+    private <T extends YANBaseNode> T getNode(@DialogNode final int nodeIndex) {
         return (T) mDialogNodesMap.get(nodeIndex);
     }
 
@@ -152,8 +152,8 @@ public class DialogManagerService implements IService {
         //bring dialog to front
         getNode(DIALOG_BG_OVERLAY_INDEX).setSortingLayer(DIALOG_SORTING_LAYER);
         getNode(DIALOG_BG_INDEX).setSortingLayer(DIALOG_SORTING_LAYER + 1);
-        YANButtonNode yesButton = getNode(DIALOG_YES_BUTTON_INDEX);
-        YANButtonNode noButton = getNode(DIALOG_NO_BUTTON_INDEX);
+        final YANButtonNode yesButton = getNode(DIALOG_YES_BUTTON_INDEX);
+        final YANButtonNode noButton = getNode(DIALOG_NO_BUTTON_INDEX);
         yesButton.setSortingLayer(DIALOG_SORTING_LAYER + 2);
         noButton.setSortingLayer(DIALOG_SORTING_LAYER + 2);
 
@@ -162,7 +162,7 @@ public class DialogManagerService implements IService {
         noButton.setClickListener(mDeclineListener);
 
         //show all nodes
-        for (YANBaseNode node : mDialogNodesMap.values()) {
+        for (final YANBaseNode node : mDialogNodesMap.values()) {
             node.setOpacity(1f);
         }
 
@@ -175,13 +175,13 @@ public class DialogManagerService implements IService {
         getNode(DIALOG_BG_INDEX).setSortingLayer(-1);
         getNode(DIALOG_BG_OVERLAY_INDEX).setSortingLayer(-1);
 
-        YANButtonNode yesButton = getNode(DIALOG_YES_BUTTON_INDEX);
-        YANButtonNode noButton = getNode(DIALOG_NO_BUTTON_INDEX);
+        final YANButtonNode yesButton = getNode(DIALOG_YES_BUTTON_INDEX);
+        final YANButtonNode noButton = getNode(DIALOG_NO_BUTTON_INDEX);
         yesButton.setClickListener(null);
         noButton.setClickListener(null);
 
         //show all nodes
-        for (YANBaseNode node : mDialogNodesMap.values()) {
+        for (final YANBaseNode node : mDialogNodesMap.values()) {
             node.setOpacity(0f);
         }
     }

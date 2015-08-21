@@ -23,6 +23,8 @@ import glengine.yan.glengine.util.object_pool.YANObjectPool;
  */
 public class CardMoveBatchMessageFilter implements IGameServerMessageFilter {
 
+    //we are assume that there will be no more than certain amount of messages
+    private static final int MAX_BATCHED_MESSAGES = 20;
 
     private IGameServerConnector.IGameServerCommunicatorListener mWrappedServerListener;
     private ArrayList<CardMovedProtocolMessage> mBatchedMessages;
@@ -30,17 +32,17 @@ public class CardMoveBatchMessageFilter implements IGameServerMessageFilter {
     private IBatchFilterState mBatchFilterState;
 
     public CardMoveBatchMessageFilter() {
-        mBatchedMessages = new ArrayList<>();
+        mBatchedMessages = new ArrayList<>(MAX_BATCHED_MESSAGES);
         mIncomingMessagesQueue = new LinkedList<>();
 
-        BFInitState initState = YANObjectPool.getInstance().obtain(BFInitState.class);
+        final BFInitState initState = YANObjectPool.getInstance().obtain(BFInitState.class);
         initState.resetState();
         initState.setBatchFilter(this);
         setBatchFilterState(initState);
     }
 
     public void releaseBatchedMessages() {
-        for (CardMovedProtocolMessage batchedMessage : mBatchedMessages) {
+        for (final CardMovedProtocolMessage batchedMessage : mBatchedMessages) {
             //release message to the client
             sendMessageToClient(batchedMessage);
         }
@@ -48,29 +50,29 @@ public class CardMoveBatchMessageFilter implements IGameServerMessageFilter {
         mBatchedMessages.clear();
     }
 
-    public void sendMessageToClient(BaseProtocolMessage batchedMessage) {
+    public void sendMessageToClient(final BaseProtocolMessage batchedMessage) {
         if (mWrappedServerListener != null) {
             mWrappedServerListener.handleServerMessage(batchedMessage);
         }
     }
 
     @Override
-    public void handleServerMessage(BaseProtocolMessage serverMessage) {
+    public void handleServerMessage(final BaseProtocolMessage serverMessage) {
         //put in the queue for later processing
         mIncomingMessagesQueue.add(serverMessage);
     }
 
     @Override
-    public void setWrappedServerListener(IGameServerConnector.IGameServerCommunicatorListener wrappedServerListener) {
+    public void setWrappedServerListener(final IGameServerConnector.IGameServerCommunicatorListener wrappedServerListener) {
         mWrappedServerListener = wrappedServerListener;
     }
 
     @Override
-    public void update(float deltaTimeSeconds) {
+    public void update(final float deltaTimeSeconds) {
         mBatchFilterState.processNextMessageInQueue();
     }
 
-    public void setBatchFilterState(IBatchFilterState batchFilterState) {
+    public void setBatchFilterState(final IBatchFilterState batchFilterState) {
         mBatchFilterState = batchFilterState;
         mBatchFilterState.applyState();
     }

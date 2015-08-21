@@ -19,7 +19,7 @@ public class BFInitState extends BFBaseState {
     public void processNextMessageInQueue() {
 
         //poll the message
-        BaseProtocolMessage serverMessage = mBatchFilter.getIncomingMessagesQueue().poll();
+        final BaseProtocolMessage serverMessage = mBatchFilter.getIncomingMessagesQueue().poll();
 
         if (serverMessage == null)
             return;
