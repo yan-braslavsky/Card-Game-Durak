@@ -15,7 +15,7 @@ import glengine.yan.glengine.tween.YANTweenNodeAccessor;
  * Aggregates various animation related functions
  */
 public class AnimationHelper {
-    public static void setupButtonNodeClickAnimation(final YANButtonNode node, final TweenManager tweenManager) {
+    public static void createButtonNodeClickAnimation(final YANButtonNode node, final TweenManager tweenManager) {
         final float originalWidth = node.getSize().getX();
         final float originalHeight = node.getSize().getY();
         final float duration = 0.05f;

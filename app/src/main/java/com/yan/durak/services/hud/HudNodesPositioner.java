@@ -65,8 +65,8 @@ public class HudNodesPositioner {
         getNode(HudNodes.TOP_LEFT_SPEECH_BUBBLE_INDEX).setSize(newWidth, newHeight);
 
         //TODO : setup animation for button nodes
-//        AnimationHelper.setupButtonNodeClickAnimation(this.<YANButtonNode>getNode(HudNodes.DONE_BUTTON_INDEX), mHudManagementService.getTweenManager());
-//        AnimationHelper.setupButtonNodeClickAnimation(this.<YANButtonNode>getNode(HudNodes.TAKE_BUTTON_INDEX), mHudManagementService.getTweenManager());
+//        AnimationHelper.createButtonNodeClickAnimation(this.<YANButtonNode>getNode(HudNodes.DONE_BUTTON_INDEX), mHudManagementService.getTweenManager());
+//        AnimationHelper.createButtonNodeClickAnimation(this.<YANButtonNode>getNode(HudNodes.TAKE_BUTTON_INDEX), mHudManagementService.getTweenManager());
 
         //set trump image size
         final YANTexturedNode trumpImage = getNode(HudNodes.TRUMP_IMAGE_INDEX);

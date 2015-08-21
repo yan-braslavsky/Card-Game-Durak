@@ -82,10 +82,9 @@ public class PrototypeGameScreen extends BaseGameScreen {
         //Auto move service helps to make an auto move for player
         ServiceLocator.addService(new PlayerMoveService());
 
-        //TODO : replace "this" by managers that are really required by the processor
         //message processor will receive messages and react on them
         //msg processor is the listener for game server connector
-        mGameServerConnector.setListener(new MsgProcessor(this));
+        mGameServerConnector.setListener(new MsgProcessor());
 
         //set timer listener
         ServiceLocator.locateService(HudManagementService.class).setTimerListener(new HudManagementService.TimerListener() {
