@@ -2,6 +2,7 @@ package com.yan.durak.services.hud.creator;
 
 import android.support.annotation.NonNull;
 
+import com.yan.durak.nodes.TaggableTextureNode;
 import com.yan.durak.nodes.uniform.ChildButtonNode;
 import com.yan.durak.nodes.uniform.ChildCircularNode;
 import com.yan.durak.nodes.uniform.ChildTexturedNode;
@@ -26,7 +27,7 @@ public class NodeCreatorHelper {
      * @return
      */
     public static YANTexturedNode createAvatarBgWithTimerAndIcon(final YANAtlasTextureRegion backgroundTextureRegion, YANAtlasTextureRegion iconTextureRegion) {
-        final YANTexturedNode avatarBG = new YANTexturedNode(backgroundTextureRegion);
+        final YANTexturedNode avatarBG = new TaggableTextureNode(backgroundTextureRegion);
         avatarBG.setSortingLayer(HudManagementService.HUD_SORTING_LAYER);
         avatarBG.setAnchorPoint(0.5f, 0.5f);
 

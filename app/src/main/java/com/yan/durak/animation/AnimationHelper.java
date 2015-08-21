@@ -63,7 +63,7 @@ public class AnimationHelper {
                 .push(Tween.to(node, YANTweenNodeAccessor.SIZE_X, duration).target(originalWidth))
                 .push(Tween.to(node, YANTweenNodeAccessor.SIZE_Y, duration).target(originalHeight))
                 .end()
-                .repeat(500, 0.0f)
+                .repeat(Tween.INFINITY, 0.0f)
                 .start(tweenManager);
     }
 }

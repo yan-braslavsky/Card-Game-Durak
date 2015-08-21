@@ -3,7 +3,9 @@ package com.yan.durak.services.hud;
 
 import android.support.annotation.NonNull;
 
+import com.yan.durak.animation.AnimationHelper;
 import com.yan.durak.gamelogic.utils.math.MathHelper;
+import com.yan.durak.nodes.TaggableTextureNode;
 import com.yan.durak.services.SceneSizeProviderService;
 import com.yan.durak.session.GameInfo;
 import com.yan.durak.session.states.IActivePlayerState;
@@ -333,6 +335,9 @@ public class HudManagementService implements IService {
         //attach the button as a child of an icon
         cachedBottomRightIcon.addChildNode(actionBtn);
         actionBtn.setClickListener(buttonClickListener);
+
+        //enable breathing animation
+        AnimationHelper.createInfiniteBreathingAnimation(getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX), getTweenManager());
     }
 
     /**
@@ -341,6 +346,22 @@ public class HudManagementService implements IService {
     public void hideActionButton() {
         //remove all children from the icon which are the action buttons
         cachedBottomRightIcon.removeAllChildNodes();
+
+        //disable breathing animation for bottom avatar
+        TaggableTextureNode taggableNode = getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX);
+        getTweenManager().killTarget(taggableNode);
+
+        //we have the original size as a tag for this avatar node
+        YANVector2 originalSize = taggableNode.getTag();
+
+        //we don't want to immediately change size , but rather animate to it
+        final float duration = 0.6f;
+        Timeline.createSequence()
+                .beginParallel()
+                .push(Tween.to(taggableNode, YANTweenNodeAccessor.SIZE_X, duration).target(originalSize.getX()))
+                .push(Tween.to(taggableNode, YANTweenNodeAccessor.SIZE_Y, duration).target(originalSize.getY()))
+                .end()
+                .start(getTweenManager());
     }
 
     public void setTrumpSuit(final String suit) {

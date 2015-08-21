@@ -1,11 +1,12 @@
 package com.yan.durak.services.hud;
 
-import com.yan.durak.animation.AnimationHelper;
+import com.yan.durak.nodes.TaggableTextureNode;
 
 import glengine.yan.glengine.nodes.YANBaseNode;
 import glengine.yan.glengine.nodes.YANTextNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.util.geometry.YANReadOnlyVector2;
+import glengine.yan.glengine.util.geometry.YANVector2;
 
 /**
  * Created by yan.braslavsky on 6/12/2015.
@@ -27,7 +28,11 @@ public class HudNodesPositioner {
         float newHeight = newWidth / aspectRatio;
 
         //avatars
-        getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX).setSize(newWidth, newHeight);
+        TaggableTextureNode taggableBottomRightAvatar = getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX);
+        taggableBottomRightAvatar.setSize(newWidth, newHeight);
+
+        //we are setting original size as a tag for this node to reuse it later
+        taggableBottomRightAvatar.setTag(new YANVector2(newWidth, newHeight));
 
         //top avatars is smaller than bottom one
         final float topAvatarsScaleFactor = 0.8f;
@@ -114,9 +119,6 @@ public class HudNodesPositioner {
         avatarBg.setSortingLayer(HudManagementService.HUD_SORTING_LAYER + 1);
         avatarBg.setPosition(sceneSize.getX() - offsetX - avatarBg.getSize().getX() / 2,
                 sceneSize.getY() - offsetX - avatarBg.getSize().getY() / 2);
-
-        //TODO : remove , enable only when needed
-        AnimationHelper.createInfiniteBreathingAnimation(avatarBg, mHudManagementService.getTweenManager());
 
         //setup avatarBg for top right player
         final float topOffset = sceneSize.getY() * 0.07f;
