@@ -3,12 +3,13 @@ package com.yan.durak.services.hud;
 import android.opengl.GLES20;
 
 import com.yan.durak.screens.BaseGameScreen;
+import com.yan.durak.services.hud.creator.NodeCreatorHelper;
 
 import glengine.yan.glengine.assets.YANAssetManager;
+import glengine.yan.glengine.assets.atlas.YANAtlasTextureRegion;
 import glengine.yan.glengine.assets.atlas.YANTextureAtlas;
 import glengine.yan.glengine.nodes.YANBaseNode;
 import glengine.yan.glengine.nodes.YANButtonNode;
-import glengine.yan.glengine.nodes.YANCircleNode;
 import glengine.yan.glengine.nodes.YANTextNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.renderer.YANGLRenderer;
@@ -43,10 +44,10 @@ public class HudNodesCreator {
         //add image of the trump
         putToNodeMap(HudNodes.TRUMP_IMAGE_INDEX, createTrumpImage(hudAtlas));
 
-        //create avatars
-        putToNodeMap(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX, createAvatar(hudAtlas));
-        putToNodeMap(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX, createAvatar(hudAtlas));
-        putToNodeMap(HudNodes.AVATAR_BG_TOP_LEFT_INDEX, createAvatar(hudAtlas));
+        //create full avatars with background and icon
+        putToNodeMap(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX, createBottomAvatar(hudAtlas));
+        putToNodeMap(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX, NodeCreatorHelper.createAvatarBgWithTimerAndIcon(hudAtlas.getTextureRegion("stump_bg.png"), hudAtlas.getTextureRegion("avatar_2.png")));
+        putToNodeMap(HudNodes.AVATAR_BG_TOP_LEFT_INDEX, NodeCreatorHelper.createAvatarBgWithTimerAndIcon(hudAtlas.getTextureRegion("stump_bg.png"), hudAtlas.getTextureRegion("avatar_3.png")));
 
         //create name backgrounds
         putToNodeMap(HudNodes.NAME_BG_TOP_RIGHT_INDEX, createNameBackground(hudAtlas));
@@ -66,20 +67,6 @@ public class HudNodesCreator {
         putToNodeMap(HudNodes.TOP_RIGHT_SPEECH_BUBBLE_TEXT_INDEX, createSpeechBubbleText());
         putToNodeMap(HudNodes.TOP_LEFT_SPEECH_BUBBLE_TEXT_INDEX, createSpeechBubbleText());
 
-        //create avatar_1 icons
-        putToNodeMap(HudNodes.AVATAR_ICON_BOTTOM_RIGHT_INDEX, createAvatarIcon(hudAtlas, "avatar_1.png"));
-        putToNodeMap(HudNodes.AVATAR_ICON_TOP_RIGHT_INDEX, createAvatarIcon(hudAtlas, "avatar_2.png"));
-        putToNodeMap(HudNodes.AVATAR_ICON_TOP_LEFT_INDEX, createAvatarIcon(hudAtlas, "avatar_3.png"));
-
-        //create timers
-        putToNodeMap(HudNodes.CIRCLE_TIMER_BOTTOM_RIGHT_INDEX, createCircleTimer());
-        putToNodeMap(HudNodes.CIRCLE_TIMER_TOP_RIGHT_INDEX, createCircleTimer());
-        putToNodeMap(HudNodes.CIRCLE_TIMER_TOP_LEFT_INDEX, createCircleTimer());
-
-        //create action buttons
-        putToNodeMap(HudNodes.DONE_BUTTON_INDEX, createDoneButton(hudAtlas));
-        putToNodeMap(HudNodes.TAKE_BUTTON_INDEX, createTakeButton(hudAtlas));
-
         //end game popups
         putToNodeMap(HudNodes.YOU_WIN_IMAGE_INDEX, createYouWonImage(hudAtlas));
         putToNodeMap(HudNodes.YOU_LOOSE_IMAGE_INDEX, createYouLooseImage(hudAtlas));
@@ -87,14 +74,17 @@ public class HudNodesCreator {
         //create v button for popup
         putToNodeMap(HudNodes.V_BUTTON_INDEX, createVButton(hudAtlas));
 
-        //TODO : add back card image to the hud atlas
         //create v button for popup
         putToNodeMap(HudNodes.MASK_CARD_INDEX, createMaskCard(hudAtlas));
-
         putToNodeMap(HudNodes.GLOW_INDEX, createCardGlow(hudAtlas));
         putToNodeMap(HudNodes.ROOF_INDEX, createRoof(hudAtlas));
-
     }
+
+    private YANTexturedNode createBottomAvatar(YANTextureAtlas hudAtlas) {
+        YANTexturedNode avatar = NodeCreatorHelper.createAvatarBgWithTimerAndIcon(hudAtlas.getTextureRegion("stump_bg.png"), hudAtlas.getTextureRegion("avatar_1.png"));
+        return avatar;
+    }
+
 
     private YANBaseNode createNameBackground(final YANTextureAtlas hudAtlas) {
         final YANTexturedNode nameBg = new YANTexturedNode(hudAtlas.getTextureRegion("name_bg.png"));
@@ -159,13 +149,16 @@ public class HudNodesCreator {
         return trumpImage;
     }
 
-    private YANButtonNode createTakeButton(final YANTextureAtlas hudAtlas) {
-        return new YANButtonNode(hudAtlas.getTextureRegion("btn_take.png"), hudAtlas.getTextureRegion("btn_take.png"));
+    public YANButtonNode createTakeButton(final YANTextureAtlas hudAtlas) {
+        YANAtlasTextureRegion textureRegion = hudAtlas.getTextureRegion("btn_take.png");
+        return NodeCreatorHelper.createChildButtonNode(textureRegion, textureRegion, 1f, 1f);
     }
 
-    private YANButtonNode createDoneButton(final YANTextureAtlas hudAtlas) {
-        return new YANButtonNode(hudAtlas.getTextureRegion("btn_done.png"), hudAtlas.getTextureRegion("btn_done.png"));
+    public YANButtonNode createDoneButton(final YANTextureAtlas hudAtlas) {
+        YANAtlasTextureRegion textureRegion = hudAtlas.getTextureRegion("btn_done.png");
+        return NodeCreatorHelper.createChildButtonNode(textureRegion, textureRegion, 1f, 1f);
     }
+
 
     private YANBaseNode createSpeechBubbleText() {
         final YANTextNode yanTextNode = new YANTextNode(ServiceLocator.locateService(YANAssetManager.class).getLoadedFont(BaseGameScreen.SPEECH_BUBBLES_FONT_NAME), "I will Take This !".length());
@@ -190,26 +183,6 @@ public class HudNodesCreator {
 
     private YANBaseNode createRoof(final YANTextureAtlas hudAtlas) {
         return new YANTexturedNode(hudAtlas.getTextureRegion("roof.png"));
-    }
-
-    private YANCircleNode createCircleTimer() {
-        final YANCircleNode yanCircleNode = new YANCircleNode();
-        yanCircleNode.setColor(HudManagementService.TIMER_RETALIATION_COLOR.getR(),
-                HudManagementService.TIMER_RETALIATION_COLOR.getG(),
-                HudManagementService.TIMER_RETALIATION_COLOR.getB());
-        yanCircleNode.setClockWiseDraw(false);
-        yanCircleNode.setPieCirclePercentage(1f);
-        return yanCircleNode;
-    }
-
-    private YANTexturedNode createAvatar(final YANTextureAtlas hudAtlas) {
-        final YANTexturedNode avatar = new YANTexturedNode(hudAtlas.getTextureRegion("stump_bg.png"));
-        avatar.setSortingLayer(HudManagementService.HUD_SORTING_LAYER);
-        return avatar;
-    }
-
-    private YANTexturedNode createAvatarIcon(final YANTextureAtlas hudAtlas, final String avatarTextureName) {
-        return new YANTexturedNode(hudAtlas.getTextureRegion(avatarTextureName));
     }
 
     private YANTexturedNode createCardGlow(final YANTextureAtlas hudAtlas) {

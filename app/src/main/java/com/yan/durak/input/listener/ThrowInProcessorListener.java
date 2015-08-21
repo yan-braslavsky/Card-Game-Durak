@@ -83,7 +83,7 @@ public class ThrowInProcessorListener implements CardsTouchProcessor.CardsTouchP
 
     private void enableAllDisabledCards(final ThrowInState throwInState) {
         //hide the button
-        ServiceLocator.locateService(HudManagementService.class).hideFinishButton();
+        ServiceLocator.locateService(HudManagementService.class).hideActionButton();
 
         //cache services
         final PileManagerService pileManagerService = ServiceLocator.locateService(PileManagerService.class);

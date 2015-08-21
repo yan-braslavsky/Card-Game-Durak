@@ -82,10 +82,9 @@ public class PrototypeGameScreen extends BaseGameScreen {
         //Auto move service helps to make an auto move for player
         ServiceLocator.addService(new PlayerMoveService());
 
-        //TODO : replace "this" by managers that are really required by the processor
         //message processor will receive messages and react on them
         //msg processor is the listener for game server connector
-        mGameServerConnector.setListener(new MsgProcessor(this));
+        mGameServerConnector.setListener(new MsgProcessor());
 
         //set timer listener
         ServiceLocator.locateService(HudManagementService.class).setTimerListener(new HudManagementService.TimerListener() {
@@ -128,9 +127,6 @@ public class PrototypeGameScreen extends BaseGameScreen {
             addNode(hudNode);
         }
 
-        //TODO : should be created as hidden by default
-        locateService(HudManagementService.class).hideFinishButton();
-        locateService(HudManagementService.class).hideTakeButton();
         locateService(DialogManagerService.class).hideExitDialog();
         locateService(DialogManagerService.class).setExitDialogClickListeners(new YanButtonNodeClickListener() {
             @Override
@@ -169,7 +165,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         locateService(PileLayouterManagerService.class).getPileLayouterForPile(topRightPlayerPile).layout();
         locateService(PileLayouterManagerService.class).getPileLayouterForPile(topLeftPlayerPile).layout();
 
-        //releayout also field piles
+        //relayout also field piles
         for (int i = 0; i < locateService(PileManagerService.class).getFieldPiles().size(); i++) {
             final PileModel pileModel = locateService(PileManagerService.class).getFieldPiles().get(i);
             if (!pileModel.getCardsInPile().isEmpty())
@@ -201,7 +197,6 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
         ServiceLocator.locateService(DialogManagerService.class).showExitDialog();
     }
 

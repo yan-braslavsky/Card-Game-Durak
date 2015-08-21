@@ -3,6 +3,9 @@ package com.yan.durak.services.hud;
 
 import android.support.annotation.NonNull;
 
+import com.yan.durak.animation.AnimationHelper;
+import com.yan.durak.gamelogic.utils.math.MathHelper;
+import com.yan.durak.nodes.TaggableTextureNode;
 import com.yan.durak.services.SceneSizeProviderService;
 import com.yan.durak.session.GameInfo;
 import com.yan.durak.session.states.IActivePlayerState;
@@ -65,6 +68,18 @@ public class HudManagementService implements IService {
 
     private static final float TOTAL_RETALIATION_TIMER_DURATION_SECONDS = 12f;
 
+    /**
+     * Take button will be added and removed to his parent
+     * as needed.
+     */
+    private YANButtonNode mTakeActionBtn;
+
+    /**
+     * Done button will be added and removed to his parent
+     * as needed.
+     */
+    private YANButtonNode mDoneActionBtn;
+
 
     /**
      * Used to perform tween animations
@@ -83,6 +98,12 @@ public class HudManagementService implements IService {
     private static YANVector2 _cachedVector = new YANVector2();
 
     /**
+     * Cached bottom right icon node for efficiency
+     */
+    private YANTexturedNode cachedBottomRightIcon;
+
+
+    /**
      * Text can appear differently on different screens.
      * In order to scale the node properly we need to do some calculations.
      *
@@ -94,16 +115,13 @@ public class HudManagementService implements IService {
         final float rangeDelta = 5f;
         float neededScale = 1.0f;
         textNode.calculateSizeForString(text, neededScale, _cachedVector);
-        if (!isFloatInRange(_cachedVector.getX(), maxAllowedTextWidth - rangeDelta, maxAllowedTextWidth + rangeDelta)) {
+        if (!MathHelper.isFloatInRange(_cachedVector.getX(), maxAllowedTextWidth - rangeDelta, maxAllowedTextWidth + rangeDelta)) {
             neededScale = maxAllowedTextWidth / _cachedVector.getX();
         }
         textNode.setTextScale(neededScale);
         textNode.setText(text);
     }
 
-    private static boolean isFloatInRange(final float num, final float min, final float max) {
-        return num < max && num > min;
-    }
 
     private YANTextureAtlas mHudAtlas;
     private TweenCallback showVButtonTweenCallback = new TweenCallback() {
@@ -130,10 +148,14 @@ public class HudManagementService implements IService {
     /**
      * Hides all related UI for given player
      */
-    public void hidePlayerUI(final GameInfo.PlayerLocation player) {
+    public void removePlayerUI(final GameInfo.PlayerLocation player) {
+
+        //TODO : remove the nodes rather than just hiding them
         getSpeechBubbleTextNodeForPlayer(player).setOpacity(0);
-        getBGAvatarForPlayer(player).setOpacity(0);
-        getIconForPlayer(player).setOpacity(0);
+        getAvatarForPlayer(player).setOpacity(0);
+        //remove icon only for now , as it doesn't change opacity according to parent
+        getAvatarForPlayer(player).getChildNodes().iterator().next().removeAllChildNodes();
+
         getTimerNodeForPlayer(player).setOpacity(0);
         getNameBgForPlayer(player).setOpacity(0);
         getNameTextNodeForPlayer(player).setOpacity(0);
@@ -205,6 +227,14 @@ public class HudManagementService implements IService {
         mHudAtlas = hudAtlas;
         mHudNodesCreator.createNodes(hudAtlas);
 
+        //create action button nodes
+        mTakeActionBtn = mHudNodesCreator.createTakeButton(hudAtlas);
+        mDoneActionBtn = mHudNodesCreator.createDoneButton(hudAtlas);
+
+        //we are caching the icon nodes for later usage
+        YANBaseNode timer = (YANBaseNode) getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX).getChildNodes().iterator().next();
+        cachedBottomRightIcon = (YANTexturedNode) timer.getChildNodes().iterator().next();
+
         //at the beginning some nodes might have a different state
         setupInitialState();
     }
@@ -216,9 +246,9 @@ public class HudManagementService implements IService {
         getNode(HudNodes.YOU_LOOSE_IMAGE_INDEX).setOpacity(0);
 
         //timers are invisible
-        getNode(HudNodes.CIRCLE_TIMER_BOTTOM_RIGHT_INDEX).setOpacity(0);
-        getNode(HudNodes.CIRCLE_TIMER_TOP_RIGHT_INDEX).setOpacity(0);
-        getNode(HudNodes.CIRCLE_TIMER_TOP_LEFT_INDEX).setOpacity(0);
+        getTimerNodeForPlayer(GameInfo.PlayerLocation.BOTTOM_PLAYER).setOpacity(0);
+        getTimerNodeForPlayer(GameInfo.PlayerLocation.TOP_LEFT_PLAYER).setOpacity(0);
+        getTimerNodeForPlayer(GameInfo.PlayerLocation.TOP_RIGHT_PLAYER).setOpacity(0);
 
         //popups anchor is at the middle
         getNode(HudNodes.YOU_WIN_IMAGE_INDEX).setAnchorPoint(0.5f, 0.5f);
@@ -226,10 +256,6 @@ public class HudManagementService implements IService {
 
         //v button
         getNode(HudNodes.V_BUTTON_INDEX).setOpacity(0);
-
-        //action buttons also have zero opacity
-        getNode(HudNodes.TAKE_BUTTON_INDEX).setOpacity(0);
-        getNode(HudNodes.DONE_BUTTON_INDEX).setOpacity(0);
         getNode(HudNodes.GLOW_INDEX).setOpacity(0);
 
         //all speech bubbles and their texts are invisible at the beginning
@@ -298,33 +324,44 @@ public class HudManagementService implements IService {
     }
 
     public void showFinishButton() {
-
-        //attach a click listener at the end of animation
-        final YANButtonNode doneBtn = getNode(HudNodes.DONE_BUTTON_INDEX);
-        doneBtn.setSortingLayer(getNode(HudNodes.TAKE_BUTTON_INDEX).getSortingLayer() + 1);
-        doneBtn.setOpacity(1f);
-        doneBtn.setClickListener(mDoneBtnClickListener);
+        attachActionButton(mDoneActionBtn, mDoneBtnClickListener);
     }
 
     public void showTakeButton() {
-        final YANButtonNode takeBtn = getNode(HudNodes.TAKE_BUTTON_INDEX);
-        takeBtn.setSortingLayer(getNode(HudNodes.DONE_BUTTON_INDEX).getSortingLayer() + 1);
-        takeBtn.setOpacity(1f);
-        takeBtn.setClickListener(mTakeButtonClickListener);
+        attachActionButton(mTakeActionBtn, mTakeButtonClickListener);
     }
 
-    public void hideTakeButton() {
-        final YANButtonNode takeBtn = getNode(HudNodes.TAKE_BUTTON_INDEX);
-        takeBtn.setSortingLayer(takeBtn.getSortingLayer() - 1);
-        takeBtn.setClickListener(null);
-        takeBtn.setOpacity(0);
+    private void attachActionButton(YANButtonNode actionBtn, YANButtonNode.YanButtonNodeClickListener buttonClickListener) {
+        //attach the button as a child of an icon
+        cachedBottomRightIcon.addChildNode(actionBtn);
+        actionBtn.setClickListener(buttonClickListener);
+
+        //enable breathing animation
+        AnimationHelper.createInfiniteBreathingAnimation(getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX), getTweenManager());
     }
 
-    public void hideFinishButton() {
-        final YANButtonNode doneBtn = getNode(HudNodes.DONE_BUTTON_INDEX);
-        doneBtn.setSortingLayer(doneBtn.getSortingLayer() - 1);
-        doneBtn.setClickListener(null);
-        doneBtn.setOpacity(0);
+    /**
+     * Hides the action button that appears at the bottom right corner icon.
+     */
+    public void hideActionButton() {
+        //remove all children from the icon which are the action buttons
+        cachedBottomRightIcon.removeAllChildNodes();
+
+        //disable breathing animation for bottom avatar
+        TaggableTextureNode taggableNode = getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX);
+        getTweenManager().killTarget(taggableNode);
+
+        //we have the original size as a tag for this avatar node
+        YANVector2 originalSize = taggableNode.getTag();
+
+        //we don't want to immediately change size , but rather animate to it
+        final float duration = 0.6f;
+        Timeline.createSequence()
+                .beginParallel()
+                .push(Tween.to(taggableNode, YANTweenNodeAccessor.SIZE_X, duration).target(originalSize.getX()))
+                .push(Tween.to(taggableNode, YANTweenNodeAccessor.SIZE_Y, duration).target(originalSize.getY()))
+                .end()
+                .start(getTweenManager());
     }
 
     public void setTrumpSuit(final String suit) {
@@ -364,7 +401,7 @@ public class HudManagementService implements IService {
 
     public void animateScaleUpPlayerAvatar(@NonNull final GameInfo.PlayerLocation player) {
 
-        final YANBaseNode avatarIconNode = getIconForPlayer(player);
+        final YANBaseNode avatarIconNode = getAvatarForPlayer(player);
         final int originalSortingLayer = avatarIconNode.getSortingLayer();
         avatarIconNode.setSortingLayer(HUD_SORTING_LAYER + 1000);
 
@@ -393,14 +430,14 @@ public class HudManagementService implements IService {
         sequence.start(mTweenManager);
     }
 
-    private YANTexturedNode getIconForPlayer(final GameInfo.PlayerLocation player) {
+    private YANTexturedNode getAvatarForPlayer(final GameInfo.PlayerLocation player) {
         switch (player) {
             case BOTTOM_PLAYER:
-                return getNode(HudNodes.AVATAR_ICON_BOTTOM_RIGHT_INDEX);
+                return getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX);
             case TOP_RIGHT_PLAYER:
-                return getNode(HudNodes.AVATAR_ICON_TOP_RIGHT_INDEX);
+                return getNode(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX);
             case TOP_LEFT_PLAYER:
-                return getNode(HudNodes.AVATAR_ICON_TOP_LEFT_INDEX);
+                return getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX);
             default:
                 return null;
         }
@@ -415,6 +452,21 @@ public class HudManagementService implements IService {
      */
     public void setIconForPlayer(final GameInfo.PlayerLocation playerLocation, final String avatarResource) {
         getIconForPlayer(playerLocation).setTextureRegion(mHudAtlas.getTextureRegion(avatarResource));
+    }
+
+    private YANTexturedNode getIconForPlayer(final GameInfo.PlayerLocation playerLocation) {
+        switch (playerLocation) {
+            case BOTTOM_PLAYER:
+                return cachedBottomRightIcon;
+            case TOP_RIGHT_PLAYER:
+                return (YANTexturedNode) ((YANBaseNode) getNode(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX)
+                        .getChildNodes().iterator().next()).getChildNodes().iterator().next();
+            case TOP_LEFT_PLAYER:
+                return (YANTexturedNode) ((YANBaseNode) getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX)
+                        .getChildNodes().iterator().next()).getChildNodes().iterator().next();
+            default:
+                throw new UnsupportedOperationException("Not supported player : " + playerLocation);
+        }
     }
 
     public void showSpeechBubbleWithText(@NonNull @HudNodes.SpeechBubbleText final String text, @NonNull final GameInfo.PlayerLocation player) {
@@ -460,18 +512,6 @@ public class HudManagementService implements IService {
         throw new IllegalStateException("cannot find a node for give player");
     }
 
-    private YANTexturedNode getBGAvatarForPlayer(final GameInfo.PlayerLocation player) {
-        switch (player) {
-            case BOTTOM_PLAYER:
-                return getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX);
-            case TOP_RIGHT_PLAYER:
-                return getNode(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX);
-            case TOP_LEFT_PLAYER:
-                return getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX);
-        }
-        throw new IllegalStateException("cannot find a node for give player");
-    }
-
     private YANBaseNode getSpeechBubbleForPlayer(@NonNull final GameInfo.PlayerLocation player) {
         switch (player) {
             case BOTTOM_PLAYER:
@@ -513,11 +553,12 @@ public class HudManagementService implements IService {
     private YANCircleNode getTimerNodeForPlayer(final GameInfo.PlayerLocation player) {
         switch (player) {
             case BOTTOM_PLAYER:
-                return getNode(HudNodes.CIRCLE_TIMER_BOTTOM_RIGHT_INDEX);
+                //TODO : make it sane
+                return (YANCircleNode) getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX).getChildNodes().iterator().next();
             case TOP_RIGHT_PLAYER:
-                return getNode(HudNodes.CIRCLE_TIMER_TOP_RIGHT_INDEX);
+                return (YANCircleNode) getNode(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX).getChildNodes().iterator().next();
             case TOP_LEFT_PLAYER:
-                return getNode(HudNodes.CIRCLE_TIMER_TOP_LEFT_INDEX);
+                return (YANCircleNode) getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX).getChildNodes().iterator().next();
             default:
                 return null;
         }
@@ -530,5 +571,9 @@ public class HudManagementService implements IService {
 
     public void setTimerListener(final TimerListener timerListener) {
         mTimerListener = timerListener;
+    }
+
+    protected TweenManager getTweenManager() {
+        return mTweenManager;
     }
 }
