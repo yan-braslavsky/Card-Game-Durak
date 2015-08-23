@@ -8,18 +8,20 @@ import java.util.ArrayList;
 import glengine.yan.glengine.assets.atlas.YANAtlasTextureRegion;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.renderer.YANGLRenderer;
+import glengine.yan.glengine.util.geometry.YANVector2;
 
 /**
  * Created by yan.braslavsky on 8/21/2015.
  */
 public class AutoMatchingScreen extends BaseGameScreen {
 
-    private static final int AVATARS_COUNT = 4;
+    private static final int AVATARS_COUNT = 10;
+    private static final int BASE_SORTING_LAYER = 10;
     private final IGameServerConnector gameServerConnector;
-    private float secondsToWait = 8;
-    private float speedPerSecond = 600;
+    private float angleSpeed = 40;
+    private float currentOffset = 0;
     private ArrayList<YANTexturedNode> mAvatarList;
-    private float xDistanceBetweenAvatars;
+    private YANVector2 mOriginalSize;
 
     public AutoMatchingScreen(YANGLRenderer renderer, final IGameServerConnector gameServerConnector) {
         super(renderer);
@@ -45,6 +47,7 @@ public class AutoMatchingScreen extends BaseGameScreen {
         float aspectRatio = textureRegion.getWidth() / textureRegion.getHeight();
         float newWidth = getSceneSize().getX() * bottomAvatarScaleFactor;
         float newHeight = newWidth / aspectRatio;
+        mOriginalSize = new YANVector2(newWidth, newHeight);
 
         for (YANTexturedNode avatar : mAvatarList) {
             avatar.setSize(newWidth, newHeight);
@@ -62,12 +65,34 @@ public class AutoMatchingScreen extends BaseGameScreen {
     @Override
     protected void onLayoutNodes() {
         super.onLayoutNodes();
-        xDistanceBetweenAvatars = mAvatarList.get(0).getSize().getX() + 50;
-        float x = getSceneSize().getX() + xDistanceBetweenAvatars;
-        float y = getSceneSize().getY() / 2;
-        for (YANTexturedNode avatar : mAvatarList) {
+        layoutInEllipse(0);
+    }
+
+    private void layoutInEllipse(final float angleOffset) {
+        float centerX = getSceneSize().getX() / 2;
+        float centerY = getSceneSize().getY() / 2;
+        float x;
+        float y;
+        float angle = angleOffset;
+        float angleStep = 360f / mAvatarList.size();
+        float radiusX = getSceneSize().getX() * 0.4f;
+        float radiusY = getSceneSize().getY() / 8;
+        float rad;
+        for (int i = 0; i < mAvatarList.size(); i++) {
+            YANTexturedNode avatar = mAvatarList.get(i);
+            rad = (float) Math.toRadians(angle);
+            x = (float) ((double) centerX + (double) radiusX * Math.cos((double) rad));
+            y = (float) ((double) centerY + (double) radiusY * Math.sin((double) rad));
             avatar.setPosition(x, y);
-            x -= xDistanceBetweenAvatars;
+
+            //sorting layer
+            avatar.setSortingLayer((angle > 180) ? BASE_SORTING_LAYER - Math.round(angle) : BASE_SORTING_LAYER + Math.round(angle));
+            angle += angleStep;
+            angle = angle % 360;
+
+            float percentage = Math.abs((angle / 360f) - 0.5f);
+            avatar.setSize(mOriginalSize.getX() * percentage, mOriginalSize.getY() * percentage);
+            avatar.setOpacity(percentage);
         }
     }
 
@@ -79,19 +104,8 @@ public class AutoMatchingScreen extends BaseGameScreen {
     @Override
     public void onUpdate(float deltaTimeSeconds) {
         super.onUpdate(deltaTimeSeconds);
-
-        secondsToWait -= deltaTimeSeconds;
-        if (secondsToWait < 0)
-            getRenderer().setActiveScreen(new PrototypeGameScreen(getRenderer(), gameServerConnector));
-
-        for (YANTexturedNode avatar : mAvatarList) {
-            float newXPos = avatar.getPosition().getX() - (deltaTimeSeconds * speedPerSecond);
-
-            if (newXPos < -xDistanceBetweenAvatars)
-                newXPos = getSceneSize().getX() + xDistanceBetweenAvatars;
-
-            avatar.setPosition(newXPos,
-                    avatar.getPosition().getY());
-        }
+        currentOffset += angleSpeed * deltaTimeSeconds;
+        currentOffset %= 360;
+        layoutInEllipse(currentOffset);
     }
 }

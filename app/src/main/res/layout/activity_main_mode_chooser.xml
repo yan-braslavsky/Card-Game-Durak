@@ -75,7 +75,7 @@
         android:layout_toRightOf="@+id/onlineRadioGroup"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Akhmed" />
+        android:text="MyNickname" />
 
     <Button
         android:id="@+id/btn_start"
