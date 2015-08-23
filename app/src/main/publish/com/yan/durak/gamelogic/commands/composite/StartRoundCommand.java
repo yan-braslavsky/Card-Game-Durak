@@ -8,7 +8,15 @@ import com.yan.durak.gamelogic.commands.control.AttackRequestControlCommand;
 import com.yan.durak.gamelogic.commands.control.PlayerThrowInRequestControlCommand;
 import com.yan.durak.gamelogic.commands.control.RetaliationExecutionControlCommand;
 import com.yan.durak.gamelogic.commands.control.RetaliationValidationControlCommand;
-import com.yan.durak.gamelogic.commands.custom.*;
+import com.yan.durak.gamelogic.commands.custom.CheckFieldPilesStatusCommand;
+import com.yan.durak.gamelogic.commands.custom.CheckWinningConditionCommand;
+import com.yan.durak.gamelogic.commands.custom.IdentifyNextRoundPlayersCommand;
+import com.yan.durak.gamelogic.commands.custom.LogPilesStatusCommand;
+import com.yan.durak.gamelogic.commands.custom.MoveAllFieldPilesCardsCommand;
+import com.yan.durak.gamelogic.commands.custom.PlayerAttackRequestCommand;
+import com.yan.durak.gamelogic.commands.custom.PlayerRetaliationRequestCommand;
+import com.yan.durak.gamelogic.commands.custom.PlayerTakesCardsFromFieldCommand;
+import com.yan.durak.gamelogic.commands.custom.PlayerThrowInRequestCommand;
 import com.yan.durak.gamelogic.game.IGameRules;
 import com.yan.durak.gamelogic.player.IPlayer;
 
@@ -74,14 +82,22 @@ public class StartRoundCommand extends BaseSessionCommand {
         int amountOfCardsAllowedToThrowIn = findAmountOfCardsAllowedToThrowIn();
 
         //throw in command for attacker
-        totalThrowInAmount += letPlayerThrowInCards(amountOfCardsAllowedToThrowIn, mRoundAttackingPlayerIndex);
+        final int firstPlayerToThrowIn = mRoundAttackingPlayerIndex;
+        totalThrowInAmount += letPlayerThrowInCards(amountOfCardsAllowedToThrowIn, firstPlayerToThrowIn);
 
         //we need to find how much cards is it possible to throw in
         amountOfCardsAllowedToThrowIn = findAmountOfCardsAllowedToThrowIn();
         if (amountOfCardsAllowedToThrowIn > 0) {
 
             //throw in command for third player not the retaliator and not the attacker of this round
-            totalThrowInAmount += letPlayerThrowInCards(amountOfCardsAllowedToThrowIn, getGameSession().retrieveNextPlayerIndex(mRoundDefendingPlayerIndex));
+            final int secondPlayerToThrowIn = getGameSession().retrieveNextPlayerIndex(mRoundDefendingPlayerIndex);
+
+            //TODO : Must restructure the logic to generic state machine.Current implementation is not scalable
+            //in case this is a game for 2 players , it may be that the next player is the same as the first
+            if (secondPlayerToThrowIn == firstPlayerToThrowIn)
+                return totalThrowInAmount;
+
+            totalThrowInAmount += letPlayerThrowInCards(amountOfCardsAllowedToThrowIn, secondPlayerToThrowIn);
         }
 
         return totalThrowInAmount;

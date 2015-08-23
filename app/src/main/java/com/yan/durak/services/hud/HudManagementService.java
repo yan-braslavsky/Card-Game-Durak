@@ -366,7 +366,7 @@ public class HudManagementService implements IService {
         YANVector2 originalSize = taggableNode.getTag();
 
         //we don't want to immediately change size , but rather animate to it
-        final float duration = 0.6f;
+        final float duration = 0.2f;
         Timeline.createSequence()
                 .beginParallel()
                 .push(Tween.to(taggableNode, YANTweenNodeAccessor.SIZE_X, duration).target(originalSize.getX()))
