@@ -338,6 +338,17 @@ public class HudManagementService implements IService {
 
         //enable breathing animation
         AnimationHelper.createInfiniteBreathingAnimation(getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX), getTweenManager());
+
+        //create press animation
+        AnimationHelper.createButtonNodeClickAnimation(actionBtn, getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX),
+                getTweenManager(), new Runnable() {
+            @Override
+            public void run() {
+                //once button is back from pressed state , we want it to continue playing breathing animation
+                AnimationHelper.createInfiniteBreathingAnimation(getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX), getTweenManager());
+            }
+        });
+
     }
 
     /**
