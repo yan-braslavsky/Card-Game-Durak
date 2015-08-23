@@ -77,6 +77,8 @@ public class AnimationHelper {
         final float duration = 0.6f;
         final float originalWidth = node.getSize().getX();
         final float originalHeight = node.getSize().getY();
+        tweenManager.killTarget(node);
+
         Timeline.createSequence()
                 .beginParallel()
                 .push(Tween.to(node, YANTweenNodeAccessor.SIZE_X, duration).target(originalWidth * 1.05f))

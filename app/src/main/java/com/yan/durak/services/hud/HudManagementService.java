@@ -19,6 +19,7 @@ import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenManager;
+import aurelienribon.tweenengine.equations.Quad;
 import glengine.yan.glengine.assets.atlas.YANTextureAtlas;
 import glengine.yan.glengine.nodes.YANBaseNode;
 import glengine.yan.glengine.nodes.YANButtonNode;
@@ -51,7 +52,7 @@ public class HudManagementService implements IService {
     /**
      * Duration of scale up scale down animation
      */
-    private static final float SCALE_UP_SCALE_DOWN_ANIMATION_DURATION = 0.4f;
+    private static final float SCALE_UP_SCALE_DOWN_ANIMATION_DURATION = 0.25f;
 
     /**
      * Time when speech bubble is fully visible
@@ -342,12 +343,12 @@ public class HudManagementService implements IService {
         //create press animation
         AnimationHelper.createButtonNodeClickAnimation(actionBtn, getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX),
                 getTweenManager(), new Runnable() {
-            @Override
-            public void run() {
-                //once button is back from pressed state , we want it to continue playing breathing animation
-                AnimationHelper.createInfiniteBreathingAnimation(getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX), getTweenManager());
-            }
-        });
+                    @Override
+                    public void run() {
+                        //once button is back from pressed state , we want it to continue playing breathing animation
+                        AnimationHelper.createInfiniteBreathingAnimation(getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX), getTweenManager());
+                    }
+                });
 
     }
 
@@ -413,32 +414,20 @@ public class HudManagementService implements IService {
     public void animateScaleUpPlayerAvatar(@NonNull final GameInfo.PlayerLocation player) {
 
         final YANBaseNode avatarIconNode = getAvatarForPlayer(player);
-        final int originalSortingLayer = avatarIconNode.getSortingLayer();
-        avatarIconNode.setSortingLayer(HUD_SORTING_LAYER + 1000);
-
         final float originSize = avatarIconNode.getSize().getX();
         final float targetSize = originSize * 1.3f;
 
-        final Timeline sequence = Timeline.createSequence()
-                .beginSequence().beginParallel()
-                .push(Tween.to(avatarIconNode, YANTweenNodeAccessor.SIZE_X, SCALE_UP_SCALE_DOWN_ANIMATION_DURATION).target(targetSize))
-                .push(Tween.to(avatarIconNode, YANTweenNodeAccessor.SIZE_Y, SCALE_UP_SCALE_DOWN_ANIMATION_DURATION).target(targetSize))
+        getTweenManager().killTarget(avatarIconNode);
+        Timeline.createSequence()
+                .beginParallel()
+                .push(Tween.to(avatarIconNode, YANTweenNodeAccessor.SIZE_X, SCALE_UP_SCALE_DOWN_ANIMATION_DURATION).target(targetSize).ease(Quad.OUT))
+                .push(Tween.to(avatarIconNode, YANTweenNodeAccessor.SIZE_Y, SCALE_UP_SCALE_DOWN_ANIMATION_DURATION).target(targetSize).ease(Quad.OUT))
                 .end()
-                .beginSequence().beginParallel()
-                .push(Tween.to(avatarIconNode, YANTweenNodeAccessor.SIZE_X, SCALE_UP_SCALE_DOWN_ANIMATION_DURATION).target(originSize))
-
-                        //TODO : avoid allocations
-                .push(Tween.to(avatarIconNode, YANTweenNodeAccessor.SIZE_Y, SCALE_UP_SCALE_DOWN_ANIMATION_DURATION).target(originSize)).setCallback(new TweenCallback() {
-                    @Override
-                    public void onEvent(final int type, final BaseTween<?> baseTween) {
-                        if (TweenCallback.COMPLETE == type) {
-                            avatarIconNode.setSortingLayer(originalSortingLayer);
-                        }
-                    }
-                });
-
-        //animate
-        sequence.start(mTweenManager);
+                .beginParallel()
+                .push(Tween.to(avatarIconNode, YANTweenNodeAccessor.SIZE_X, SCALE_UP_SCALE_DOWN_ANIMATION_DURATION).target(originSize).ease(Quad.IN))
+                .push(Tween.to(avatarIconNode, YANTweenNodeAccessor.SIZE_Y, SCALE_UP_SCALE_DOWN_ANIMATION_DURATION).target(originSize).ease(Quad.IN))
+                .end()
+                .start(getTweenManager());
     }
 
     private YANTexturedNode getAvatarForPlayer(final GameInfo.PlayerLocation player) {
