@@ -26,14 +26,16 @@ public class NodeCreatorHelper {
      * @param iconTextureRegion
      * @return
      */
-    public static YANTexturedNode createAvatarBgWithTimerAndIcon(final YANAtlasTextureRegion backgroundTextureRegion, YANAtlasTextureRegion iconTextureRegion) {
+    public static YANTexturedNode createAvatarBgWithTimerAndIcon(final YANAtlasTextureRegion backgroundTextureRegion,
+                                                                 final YANAtlasTextureRegion iconTextureRegion ,
+                                                                 final boolean isIconOpacityChangesWithParent) {
         final YANTexturedNode avatarBG = new TaggableTextureNode(backgroundTextureRegion);
         avatarBG.setSortingLayer(HudManagementService.HUD_SORTING_LAYER);
         avatarBG.setAnchorPoint(0.5f, 0.5f);
 
         //we creating a circle timer
         YANCircleNode circleTimer = createChildCircleTimer();
-        final YANTexturedNode avatarIcon = createChildIcon(iconTextureRegion);
+        final YANTexturedNode avatarIcon = createChildIcon(iconTextureRegion,isIconOpacityChangesWithParent);
 
         //parenting
         avatarBG.addChildNode(circleTimer);
@@ -59,7 +61,7 @@ public class NodeCreatorHelper {
         return buttonNode;
     }
 
-    private static YANTexturedNode createChildIcon(final YANAtlasTextureRegion iconTextureRegion) {
+    private static YANTexturedNode createChildIcon(final YANAtlasTextureRegion iconTextureRegion, final boolean isOpacityChanges) {
         final YANTexturedNode avatarIcon = new ChildTexturedNode(iconTextureRegion) {
             @Override
             public void scaleWithParent(@NonNull YANIParentNode parentNode) {
@@ -68,7 +70,11 @@ public class NodeCreatorHelper {
 
             @Override
             public void adjustOpacityInParent(YANIParentNode parentNode) {
-                //parent opacity is not influencing icon
+                if (!isOpacityChanges) {
+                    //parent opacity is not influencing icon
+                    return;
+                }
+                super.adjustOpacityInParent(parentNode);
             }
         };
         avatarIcon.setAnchorPoint(0.5f, 0.5f);

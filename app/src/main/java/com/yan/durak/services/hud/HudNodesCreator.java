@@ -46,8 +46,8 @@ public class HudNodesCreator {
 
         //create full avatars with background and icon
         putToNodeMap(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX, createBottomAvatar(hudAtlas));
-        putToNodeMap(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX, NodeCreatorHelper.createAvatarBgWithTimerAndIcon(hudAtlas.getTextureRegion("stump_bg.png"), hudAtlas.getTextureRegion("avatar_2.png")));
-        putToNodeMap(HudNodes.AVATAR_BG_TOP_LEFT_INDEX, NodeCreatorHelper.createAvatarBgWithTimerAndIcon(hudAtlas.getTextureRegion("stump_bg.png"), hudAtlas.getTextureRegion("avatar_3.png")));
+        putToNodeMap(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX, NodeCreatorHelper.createAvatarBgWithTimerAndIcon(hudAtlas.getTextureRegion("stump_bg.png"), hudAtlas.getTextureRegion("avatar_2.png"), false));
+        putToNodeMap(HudNodes.AVATAR_BG_TOP_LEFT_INDEX, NodeCreatorHelper.createAvatarBgWithTimerAndIcon(hudAtlas.getTextureRegion("stump_bg.png"), hudAtlas.getTextureRegion("avatar_3.png"), false));
 
         //create name backgrounds
         putToNodeMap(HudNodes.NAME_BG_TOP_RIGHT_INDEX, createNameBackground(hudAtlas));
@@ -81,7 +81,7 @@ public class HudNodesCreator {
     }
 
     private YANTexturedNode createBottomAvatar(YANTextureAtlas hudAtlas) {
-        YANTexturedNode avatar = NodeCreatorHelper.createAvatarBgWithTimerAndIcon(hudAtlas.getTextureRegion("stump_bg.png"), hudAtlas.getTextureRegion("avatar_1.png"));
+        YANTexturedNode avatar = NodeCreatorHelper.createAvatarBgWithTimerAndIcon(hudAtlas.getTextureRegion("stump_bg.png"), hudAtlas.getTextureRegion("avatar_1.png"), false);
         return avatar;
     }
 
