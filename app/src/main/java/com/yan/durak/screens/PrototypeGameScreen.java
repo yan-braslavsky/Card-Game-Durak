@@ -18,7 +18,6 @@ import com.yan.durak.services.SceneSizeProviderService;
 import com.yan.durak.services.hud.HudManagementService;
 import com.yan.durak.session.GameInfo;
 
-import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.nodes.YANBaseNode;
 import glengine.yan.glengine.nodes.YANCircleNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
@@ -36,18 +35,12 @@ public class PrototypeGameScreen extends BaseGameScreen {
     //communication
     private final IGameServerConnector mGameServerConnector;
 
-    //updatables
-    private final TweenManager mSharedTweenManager;
-
 
     public PrototypeGameScreen(final YANGLRenderer renderer, final IGameServerConnector gameServerConnector) {
         super(renderer);
 
         //we received the connector that should be used
         mGameServerConnector = gameServerConnector;
-
-        //tween manager is used for various tween animations
-        mSharedTweenManager = new TweenManager();
 
         //TODO : redefine socket manager
         ServiceLocator.addService(new SocketConnectionManager());
@@ -56,7 +49,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         ServiceLocator.addService(new DialogManagerService());
 
         //service that manages all the HUD nodes
-        ServiceLocator.addService(new HudManagementService(mSharedTweenManager));
+        ServiceLocator.addService(new HudManagementService(getSharedTweenManager()));
 
         //pile manager
         ServiceLocator.addService(new PileManagerService());
@@ -71,7 +64,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
         ServiceLocator.addService(new GameInfo());
 
         //layouters manager
-        ServiceLocator.addService(new PileLayouterManagerService(mSharedTweenManager));
+        ServiceLocator.addService(new PileLayouterManagerService(getSharedTweenManager()));
 
         //used to send concrete messages to server
         ServiceLocator.addService(new GameServerMessageSender(mGameServerConnector));
@@ -206,7 +199,7 @@ public class PrototypeGameScreen extends BaseGameScreen {
 
         //TODO: Create some updatable interface where all those
         //can be put into
-        mSharedTweenManager.update(deltaTimeSeconds * 1);
+
         mGameServerConnector.update(deltaTimeSeconds);
         ServiceLocator.locateService(HudManagementService.class).update(deltaTimeSeconds);
     }

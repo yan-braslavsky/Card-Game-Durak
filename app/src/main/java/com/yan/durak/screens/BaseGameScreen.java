@@ -1,5 +1,6 @@
 package com.yan.durak.screens;
 
+import aurelienribon.tweenengine.TweenManager;
 import glengine.yan.glengine.assets.YANAssetManager;
 import glengine.yan.glengine.assets.atlas.YANTextureAtlas;
 import glengine.yan.glengine.nodes.YANTextNode;
@@ -36,9 +37,14 @@ public abstract class BaseGameScreen extends YANNodeScreen {
     //Used to log FPS data on screen
     YANTextNode mFpsTextNode;
     YANFPSLogger mFPSLogger;
+    //updatables
+    private final TweenManager mSharedTweenManager;
 
     public BaseGameScreen(final YANGLRenderer renderer) {
         super(renderer);
+
+        //tween manager is used for various tween animations
+        mSharedTweenManager = new TweenManager();
 
         //setup fps logger
         mFPSLogger = new YANFPSLogger();
@@ -113,5 +119,10 @@ public abstract class BaseGameScreen extends YANNodeScreen {
         //TODO : put to updatable list
         //update logger value
         mFPSLogger.update(deltaTimeSeconds);
+        mSharedTweenManager.update(deltaTimeSeconds * 1);
+    }
+
+    public TweenManager getSharedTweenManager() {
+        return mSharedTweenManager;
     }
 }
