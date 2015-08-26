@@ -16,6 +16,7 @@ public class DurakGameApp extends Application {
     public void onCreate() {
         super.onCreate();
 
+
         //It's absolutely fine to keep reference to appContext
         //For those in doubt http://stackoverflow.com/questions/14871792/is-it-safe-to-keep-a-reference-to-android-application-context
         appContext = getApplicationContext();
