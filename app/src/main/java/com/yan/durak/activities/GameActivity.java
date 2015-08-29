@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.yan.durak.BuildConfig;
 import com.yan.durak.communication.game_server.connector.IGameServerConnector;
-import com.yan.durak.screens.AutoMatchingScreen;
+import com.yan.durak.screens.MatchingScreen;
 
 import java.io.File;
 import java.io.Serializable;
@@ -48,7 +48,7 @@ public class GameActivity extends EngineActivity {
             e.printStackTrace();
         }
 
-        return new AutoMatchingScreen(renderer, connector);
+        return new MatchingScreen(renderer, connector);
 //        return new PrototypeGameScreen(renderer, connector);
     }
 

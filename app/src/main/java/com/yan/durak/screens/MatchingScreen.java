@@ -13,7 +13,7 @@ import glengine.yan.glengine.util.geometry.YANVector2;
 /**
  * Created by yan.braslavsky on 8/21/2015.
  */
-public class AutoMatchingScreen extends BaseGameScreen {
+public class MatchingScreen extends BaseGameScreen {
 
     private static final int AVATARS_COUNT = 10;
     private static final int BASE_SORTING_LAYER = 10;
@@ -23,7 +23,7 @@ public class AutoMatchingScreen extends BaseGameScreen {
     private ArrayList<YANTexturedNode> mAvatarList;
     private YANVector2 mOriginalSize;
 
-    public AutoMatchingScreen(YANGLRenderer renderer, final IGameServerConnector gameServerConnector) {
+    public MatchingScreen(YANGLRenderer renderer, final IGameServerConnector gameServerConnector) {
         super(renderer);
         this.gameServerConnector = gameServerConnector;
         mAvatarList = new ArrayList<>(AVATARS_COUNT);
