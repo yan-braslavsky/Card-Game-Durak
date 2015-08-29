@@ -1,13 +1,17 @@
 package com.yan.durak.screens;
 
 import com.yan.durak.communication.game_server.connector.IGameServerConnector;
+import com.yan.durak.services.hud.HudManagementService;
 import com.yan.durak.services.hud.creator.NodeCreatorHelper;
 
 import java.util.ArrayList;
 
+import glengine.yan.glengine.assets.YANAssetManager;
 import glengine.yan.glengine.assets.atlas.YANAtlasTextureRegion;
+import glengine.yan.glengine.nodes.YANTextNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.renderer.YANGLRenderer;
+import glengine.yan.glengine.service.ServiceLocator;
 import glengine.yan.glengine.util.geometry.YANVector2;
 import glengine.yan.glengine.util.math.YANMathUtils;
 
@@ -25,6 +29,7 @@ public class MatchingScreen extends BaseGameScreen {
     private final YANVector2 mOriginalSize;
     private final YANAtlasTextureRegion[] mAvatarIcons;
     private float mDistanceBetweenAvatars;
+    private YANTextNode mConnectingLabel;
 
     public MatchingScreen(YANGLRenderer renderer, final IGameServerConnector gameServerConnector) {
         super(renderer);
@@ -49,6 +54,10 @@ public class MatchingScreen extends BaseGameScreen {
             mAvatarList.add(NodeCreatorHelper.createAvatarBgWithTimerAndIcon(
                     mUiAtlas.getTextureRegion("stump_bg.png"), avatar, true));
         }
+
+        final String connectingText = "Looking for players ...";
+        mConnectingLabel = new YANTextNode(ServiceLocator.locateService(YANAssetManager.class).getLoadedFont(STANDARD_FONT_NAME), connectingText.length());
+        mConnectingLabel.setText(connectingText);
     }
 
     @Override
@@ -67,6 +76,9 @@ public class MatchingScreen extends BaseGameScreen {
         float newWidth = getSceneSize().getX() * bottomAvatarScaleFactor;
         float newHeight = newWidth / aspectRatio;
         mOriginalSize.setXY(newWidth, newHeight);
+
+        //adjust text size
+        HudManagementService.adjustTextScaleToFitBounds(mConnectingLabel.getText(), getSceneSize().getX() * 0.6f, mConnectingLabel);
     }
 
     @Override
@@ -75,11 +87,14 @@ public class MatchingScreen extends BaseGameScreen {
         for (YANTexturedNode avatar : mAvatarList) {
             addNode(avatar);
         }
+        addNode(mConnectingLabel);
     }
 
     @Override
     protected void onLayoutNodes() {
         super.onLayoutNodes();
+
+        mConnectingLabel.setPosition(getSceneSize().getX() * 0.1f, getSceneSize().getY() * 0.2f);
 
         mDistanceBetweenAvatars = getSceneSize().getX() * 0.4f;
         float screenHalfHeight = getSceneSize().getY() / 2f;
