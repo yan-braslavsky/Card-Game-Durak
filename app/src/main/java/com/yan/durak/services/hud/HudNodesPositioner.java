@@ -64,10 +64,6 @@ public class HudNodesPositioner {
         getNode(HudNodes.TOP_RIGHT_SPEECH_BUBBLE_INDEX).setSize(newWidth, newHeight);
         getNode(HudNodes.TOP_LEFT_SPEECH_BUBBLE_INDEX).setSize(newWidth, newHeight);
 
-        //TODO : setup animation for button nodes
-//        AnimationHelper.createButtonNodeClickAnimation(this.<YANButtonNode>getNode(HudNodes.DONE_BUTTON_INDEX), mHudManagementService.getTweenManager());
-//        AnimationHelper.createButtonNodeClickAnimation(this.<YANButtonNode>getNode(HudNodes.TAKE_BUTTON_INDEX), mHudManagementService.getTweenManager());
-
         //set trump image size
         final YANTexturedNode trumpImage = getNode(HudNodes.TRUMP_IMAGE_INDEX);
         aspectRatio = trumpImage.getTextureRegion().getWidth() / trumpImage.getTextureRegion().getHeight();
@@ -110,29 +106,13 @@ public class HudNodesPositioner {
     }
 
     public void layoutNodes(final YANReadOnlyVector2 sceneSize) {
+
         //layout avatars
         final float offsetX = sceneSize.getX() * 0.01f;
-
-        //setup avatarBg for bottom player
-        YANTexturedNode avatarBg = getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX);
-        avatarBg.setAnchorPoint(0.5f, 0.5f);
-        avatarBg.setSortingLayer(HudManagementService.HUD_SORTING_LAYER + 1);
-        avatarBg.setPosition(sceneSize.getX() - offsetX - avatarBg.getSize().getX() / 2,
-                sceneSize.getY() - offsetX - avatarBg.getSize().getY() / 2);
-
-        //setup avatarBg for top right player
         final float topOffset = sceneSize.getY() * 0.07f;
-        avatarBg = getNode(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX);
-        avatarBg.setSortingLayer(HudManagementService.HUD_SORTING_LAYER + 1);
-        avatarBg.setPosition(sceneSize.getX() - (avatarBg.getSize().getX() / 2) - offsetX,
-                (avatarBg.getSize().getY() / 2) + topOffset);
-
-
-        //setup avatarBg for top left player
-        avatarBg = getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX);
-        avatarBg.setSortingLayer(HudManagementService.HUD_SORTING_LAYER + 1);
-        avatarBg.setPosition((avatarBg.getSize().getX() / 2) + offsetX, (avatarBg.getSize().getY() / 2) + topOffset);
-
+        positionBottomRightAvatar(sceneSize, offsetX, getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX));
+        positionTopRightAvatar(sceneSize, offsetX, topOffset, getNode(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX));
+        positionTopLeftAvatar(offsetX, topOffset, getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX));
 
         //trump image
         getNode(HudNodes.TRUMP_IMAGE_INDEX).setPosition(
@@ -242,6 +222,22 @@ public class HudNodesPositioner {
                 topLeftSpeechBubble.getPosition().getX() + (topLeftSpeechBubble.getSize().getX() / 2),
                 topLeftSpeechBubble.getPosition().getY() + (topLeftSpeechBubble.getSize().getY() * 0.5f) + (topLeftSpeechBubbleText.getSize().getY() * 0.05f));
         topLeftSpeechBubbleText.setSortingLayer(topLeftSpeechBubble.getSortingLayer() + 1);
+    }
+
+    public void positionTopLeftAvatar(final float offsetX, final float topOffset, final YANBaseNode avatar) {
+        avatar.setPosition((avatar.getSize().getX() / 2) + offsetX, (avatar.getSize().getY() / 2) + topOffset);
+    }
+
+    public void positionTopRightAvatar(final YANReadOnlyVector2 sceneSize, final float offsetX,
+                                        final float topOffset, final YANBaseNode avatar) {
+        avatar.setPosition(sceneSize.getX() - (avatar.getSize().getX() / 2) - offsetX,
+                (avatar.getSize().getY() / 2) + topOffset);
+    }
+
+    public void positionBottomRightAvatar(final YANReadOnlyVector2 sceneSize, final float offsetX,
+                                           final YANBaseNode avatar) {
+        avatar.setPosition(sceneSize.getX() - offsetX - avatar.getSize().getX() / 2,
+                sceneSize.getY() - offsetX - avatar.getSize().getY() / 2);
     }
 
     public <T extends YANBaseNode> T getNode(@HudNodes.HudNode final int nodeIndex) {
