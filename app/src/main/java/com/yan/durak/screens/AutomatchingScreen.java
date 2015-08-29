@@ -35,7 +35,7 @@ public class AutoMatchingScreen extends BaseGameScreen {
         for (int i = 0; i < AVATARS_COUNT; i++) {
             int avatarNumber = (i % 3) + 1;
             mAvatarList.add(NodeCreatorHelper.createAvatarBgWithTimerAndIcon(
-                    mUiAtlas.getTextureRegion("stump_bg.png"), mUiAtlas.getTextureRegion("avatar_" + avatarNumber + ".png")));
+                    mUiAtlas.getTextureRegion("stump_bg.png"), mUiAtlas.getTextureRegion("avatar_" + avatarNumber + ".png"), true));
         }
     }
 
