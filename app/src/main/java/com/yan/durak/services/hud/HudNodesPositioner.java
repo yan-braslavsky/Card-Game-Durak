@@ -12,6 +12,8 @@ import glengine.yan.glengine.util.geometry.YANVector2;
  * Created by yan.braslavsky on 6/12/2015.
  */
 public class HudNodesPositioner {
+    public static final float BOTTOM_AVATAR_RELATIVE_WIDTH = 0.3f;
+    public static final float BOTTOM_TO_TOP_AVATAR_SCALE_FACTOR = 0.8f;
     private final HudManagementService mHudManagementService;
 
     public HudNodesPositioner(final HudManagementService hudManagementService) {
@@ -21,35 +23,20 @@ public class HudNodesPositioner {
     public void setNodesSizes(final YANReadOnlyVector2 sceneSize) {
 
         //set avatars sizes
-        final float bottomAvatarScaleFactor = 0.3f;
-        final YANTexturedNode avatar = getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX);
-        float aspectRatio = avatar.getTextureRegion().getWidth() / avatar.getTextureRegion().getHeight();
-        float newWidth = sceneSize.getX() * bottomAvatarScaleFactor;
-        float newHeight = newWidth / aspectRatio;
-
-        //avatars
-        TaggableTextureNode taggableBottomRightAvatar = getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX);
-        taggableBottomRightAvatar.setSize(newWidth, newHeight);
-
-        //we are setting original size as a tag for this node to reuse it later
-        taggableBottomRightAvatar.setTag(new YANVector2(newWidth, newHeight));
-
-        //top avatars is smaller than bottom one
-        final float topAvatarsScaleFactor = 0.8f;
-        final YANTexturedNode avatarBGTopRight = getNode(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX);
-        avatarBGTopRight.setSize(newWidth * topAvatarsScaleFactor, newHeight * topAvatarsScaleFactor);
-        getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX).setSize(newWidth * topAvatarsScaleFactor, newHeight * topAvatarsScaleFactor);
+        adjustBottomRightAvatarSize(this.<TaggableTextureNode>getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX), sceneSize);
+        adjustTopAvatarSize(this.<YANTexturedNode>getNode(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX), sceneSize);
+        adjustTopAvatarSize(this.<YANTexturedNode>getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX), sceneSize);
 
         //roof
         final YANTexturedNode roofImage = getNode(HudNodes.ROOF_INDEX);
-        aspectRatio = roofImage.getTextureRegion().getWidth() / roofImage.getTextureRegion().getHeight();
+        float aspectRatio = roofImage.getTextureRegion().getWidth() / roofImage.getTextureRegion().getHeight();
         roofImage.setSize(sceneSize.getX(), sceneSize.getX() / aspectRatio);
 
         //names background
         final YANTexturedNode nameBgTopLeft = getNode(HudNodes.NAME_BG_TOP_LEFT_INDEX);
         final YANTexturedNode nameBgTopRight = getNode(HudNodes.NAME_BG_TOP_RIGHT_INDEX);
         aspectRatio = nameBgTopLeft.getTextureRegion().getWidth() / nameBgTopLeft.getTextureRegion().getHeight();
-        newWidth = sceneSize.getX() / 3f;
+        float newWidth = sceneSize.getX() / 3f;
         nameBgTopLeft.setSize(newWidth, newWidth / aspectRatio);
         nameBgTopRight.setSize(nameBgTopLeft.getSize().getX(), nameBgTopLeft.getSize().getY());
 
@@ -58,7 +45,7 @@ public class HudNodesPositioner {
         final YANTexturedNode bottomSpeechBubble = getNode(HudNodes.BOTTOM_SPEECH_BUBBLE_INDEX);
         aspectRatio = bottomSpeechBubble.getTextureRegion().getWidth() / bottomSpeechBubble.getTextureRegion().getHeight();
         newWidth = sceneSize.getX() * 0.4f;
-        newHeight = newWidth / aspectRatio;
+        float newHeight = newWidth / aspectRatio;
 
         getNode(HudNodes.BOTTOM_SPEECH_BUBBLE_INDEX).setSize(newWidth, newHeight);
         getNode(HudNodes.TOP_RIGHT_SPEECH_BUBBLE_INDEX).setSize(newWidth, newHeight);
@@ -103,6 +90,24 @@ public class HudNodesPositioner {
 
         //later glow size will be overridden
         getNode(HudNodes.GLOW_INDEX).setSize(0, 0);
+    }
+
+    public void adjustTopAvatarSize(final YANTexturedNode avatar, final YANReadOnlyVector2 sceneSize) {
+        float aspectRatio = avatar.getTextureRegion().getWidth() / avatar.getTextureRegion().getHeight();
+        float newWidth = sceneSize.getX() * BOTTOM_AVATAR_RELATIVE_WIDTH;
+        float newHeight = newWidth / aspectRatio;
+
+        avatar.setSize(newWidth * BOTTOM_TO_TOP_AVATAR_SCALE_FACTOR, newHeight * BOTTOM_TO_TOP_AVATAR_SCALE_FACTOR);
+        avatar.setSize(newWidth * BOTTOM_TO_TOP_AVATAR_SCALE_FACTOR, newHeight * BOTTOM_TO_TOP_AVATAR_SCALE_FACTOR);
+    }
+
+    public void adjustBottomRightAvatarSize(final TaggableTextureNode avatar, YANReadOnlyVector2 sceneSize) {
+        float aspectRatio = avatar.getTextureRegion().getWidth() / avatar.getTextureRegion().getHeight();
+        float newWidth = sceneSize.getX() * BOTTOM_AVATAR_RELATIVE_WIDTH;
+        float newHeight = newWidth / aspectRatio;
+        avatar.setSize(newWidth, newHeight);
+        //we are setting original size as a tag for this node to reuse it later
+        avatar.setTag(new YANVector2(newWidth, newHeight));
     }
 
     public void layoutNodes(final YANReadOnlyVector2 sceneSize) {
@@ -229,13 +234,13 @@ public class HudNodesPositioner {
     }
 
     public void positionTopRightAvatar(final YANReadOnlyVector2 sceneSize, final float offsetX,
-                                        final float topOffset, final YANBaseNode avatar) {
+                                       final float topOffset, final YANBaseNode avatar) {
         avatar.setPosition(sceneSize.getX() - (avatar.getSize().getX() / 2) - offsetX,
                 (avatar.getSize().getY() / 2) + topOffset);
     }
 
     public void positionBottomRightAvatar(final YANReadOnlyVector2 sceneSize, final float offsetX,
-                                           final YANBaseNode avatar) {
+                                          final YANBaseNode avatar) {
         avatar.setPosition(sceneSize.getX() - offsetX - avatar.getSize().getX() / 2,
                 sceneSize.getY() - offsetX - avatar.getSize().getY() / 2);
     }
