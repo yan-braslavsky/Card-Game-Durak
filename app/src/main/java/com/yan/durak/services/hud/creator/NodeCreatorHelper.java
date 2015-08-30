@@ -26,10 +26,10 @@ public class NodeCreatorHelper {
      * @param iconTextureRegion
      * @return
      */
-    public static YANTexturedNode createAvatarBgWithTimerAndIcon(final YANAtlasTextureRegion backgroundTextureRegion,
+    public static TaggableTextureNode createAvatarBgWithTimerAndIcon(final YANAtlasTextureRegion backgroundTextureRegion,
                                                                  final YANAtlasTextureRegion iconTextureRegion ,
                                                                  final boolean isIconOpacityChangesWithParent) {
-        final YANTexturedNode avatarBG = new TaggableTextureNode(backgroundTextureRegion);
+        final TaggableTextureNode avatarBG = new TaggableTextureNode(backgroundTextureRegion);
         avatarBG.setSortingLayer(HudManagementService.HUD_SORTING_LAYER);
         avatarBG.setAnchorPoint(0.5f, 0.5f);
 

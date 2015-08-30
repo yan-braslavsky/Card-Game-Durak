@@ -14,6 +14,8 @@ import glengine.yan.glengine.util.geometry.YANVector2;
 public class HudNodesPositioner {
     public static final float BOTTOM_AVATAR_RELATIVE_WIDTH = 0.3f;
     public static final float BOTTOM_TO_TOP_AVATAR_SCALE_FACTOR = 0.8f;
+    public static final float AVATAR_RELATIVE_OFFSET_FROM_SCREEN_EDGE = 0.01f;
+    public static final float AVATAR_RELATIVE_OFFSET_FROM_SCREEN_TOP = 0.07f;
     private final HudManagementService mHudManagementService;
 
     public HudNodesPositioner(final HudManagementService hudManagementService) {
@@ -113,11 +115,9 @@ public class HudNodesPositioner {
     public void layoutNodes(final YANReadOnlyVector2 sceneSize) {
 
         //layout avatars
-        final float offsetX = sceneSize.getX() * 0.01f;
-        final float topOffset = sceneSize.getY() * 0.07f;
-        positionBottomRightAvatar(sceneSize, offsetX, getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX));
-        positionTopRightAvatar(sceneSize, offsetX, topOffset, getNode(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX));
-        positionTopLeftAvatar(offsetX, topOffset, getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX));
+        positionBottomRightAvatar(sceneSize, getNode(HudNodes.AVATAR_BG_BOTTOM_RIGHT_INDEX));
+        positionTopRightAvatar(getNode(HudNodes.AVATAR_BG_TOP_RIGHT_INDEX), sceneSize);
+        positionTopLeftAvatar(getNode(HudNodes.AVATAR_BG_TOP_LEFT_INDEX), sceneSize);
 
         //trump image
         getNode(HudNodes.TRUMP_IMAGE_INDEX).setPosition(
@@ -229,18 +229,22 @@ public class HudNodesPositioner {
         topLeftSpeechBubbleText.setSortingLayer(topLeftSpeechBubble.getSortingLayer() + 1);
     }
 
-    public void positionTopLeftAvatar(final float offsetX, final float topOffset, final YANBaseNode avatar) {
+    public void positionTopLeftAvatar(final YANBaseNode avatar, final YANReadOnlyVector2 sceneSize) {
+        final float offsetX = sceneSize.getX() * AVATAR_RELATIVE_OFFSET_FROM_SCREEN_EDGE;
+        final float topOffset = sceneSize.getY() * AVATAR_RELATIVE_OFFSET_FROM_SCREEN_TOP;
         avatar.setPosition((avatar.getSize().getX() / 2) + offsetX, (avatar.getSize().getY() / 2) + topOffset);
     }
 
-    public void positionTopRightAvatar(final YANReadOnlyVector2 sceneSize, final float offsetX,
-                                       final float topOffset, final YANBaseNode avatar) {
+    public void positionTopRightAvatar(final YANBaseNode avatar, final YANReadOnlyVector2 sceneSize) {
+        final float offsetX = sceneSize.getX() * AVATAR_RELATIVE_OFFSET_FROM_SCREEN_EDGE;
+        final float topOffset = sceneSize.getY() * AVATAR_RELATIVE_OFFSET_FROM_SCREEN_TOP;
         avatar.setPosition(sceneSize.getX() - (avatar.getSize().getX() / 2) - offsetX,
                 (avatar.getSize().getY() / 2) + topOffset);
     }
 
-    public void positionBottomRightAvatar(final YANReadOnlyVector2 sceneSize, final float offsetX,
+    public void positionBottomRightAvatar(final YANReadOnlyVector2 sceneSize,
                                           final YANBaseNode avatar) {
+        final float offsetX = sceneSize.getX() * AVATAR_RELATIVE_OFFSET_FROM_SCREEN_EDGE;
         avatar.setPosition(sceneSize.getX() - offsetX - avatar.getSize().getX() / 2,
                 sceneSize.getY() - offsetX - avatar.getSize().getY() / 2);
     }

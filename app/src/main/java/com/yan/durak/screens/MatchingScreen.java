@@ -1,17 +1,29 @@
 package com.yan.durak.screens;
 
 import com.yan.durak.communication.game_server.connector.IGameServerConnector;
+import com.yan.durak.nodes.TaggableTextureNode;
 import com.yan.durak.services.hud.HudManagementService;
+import com.yan.durak.services.hud.HudNodesPositioner;
 import com.yan.durak.services.hud.creator.NodeCreatorHelper;
 
 import java.util.ArrayList;
 
+import aurelienribon.tweenengine.BaseTween;
+import aurelienribon.tweenengine.Timeline;
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenCallback;
+import aurelienribon.tweenengine.equations.Elastic;
+import aurelienribon.tweenengine.equations.Expo;
+import aurelienribon.tweenengine.equations.Quad;
+import aurelienribon.tweenengine.equations.Sine;
 import glengine.yan.glengine.assets.YANAssetManager;
 import glengine.yan.glengine.assets.atlas.YANAtlasTextureRegion;
+import glengine.yan.glengine.nodes.YANBaseNode;
 import glengine.yan.glengine.nodes.YANTextNode;
 import glengine.yan.glengine.nodes.YANTexturedNode;
 import glengine.yan.glengine.renderer.YANGLRenderer;
 import glengine.yan.glengine.service.ServiceLocator;
+import glengine.yan.glengine.tween.YANTweenNodeAccessor;
 import glengine.yan.glengine.util.geometry.YANVector2;
 import glengine.yan.glengine.util.math.YANMathUtils;
 
@@ -21,15 +33,24 @@ import glengine.yan.glengine.util.math.YANMathUtils;
 public class MatchingScreen extends BaseGameScreen {
 
     private static final int AVATARS_COUNT = 7;
-    private static float MOVEMENT_SPEED = 700;
+    private static float MOVEMENT_SPEED = 400;
+    private static float TOTAL_SCREEN_TIME_SECONDS = 12;
+    private static float MATCH_FOUND_INTERVAL_SECONDS = TOTAL_SCREEN_TIME_SECONDS / 3;
 
-    private float mAnimationTimeBeforeNextScreen = 5;
+    private float mTotalScreenTimeElapsed;
+    private float mTimeElapsedAfterMatchFound;
     private final PrototypeGameScreen mGameScreen;
     private final ArrayList<YANTexturedNode> mAvatarList;
     private final YANVector2 mOriginalSize;
     private final YANAtlasTextureRegion[] mAvatarIcons;
     private float mDistanceBetweenAvatars;
     private YANTextNode mConnectingLabel;
+    private final HudNodesPositioner mPositioner;
+    private TaggableTextureNode mBottomRightAvatar;
+    private TaggableTextureNode mTopRightAvatar;
+    private TaggableTextureNode mTopLeftAvatar;
+    private YANTexturedNode middleRotatingAvatar;
+    private int mPlayersToBeMatched = 2;
 
     public MatchingScreen(YANGLRenderer renderer, final IGameServerConnector gameServerConnector) {
         super(renderer);
@@ -37,6 +58,7 @@ public class MatchingScreen extends BaseGameScreen {
         mAvatarList = new ArrayList<>(AVATARS_COUNT);
         mOriginalSize = new YANVector2();
         mAvatarIcons = new YANAtlasTextureRegion[3];
+        mPositioner = new HudNodesPositioner(null);
     }
 
     @Override
@@ -50,14 +72,23 @@ public class MatchingScreen extends BaseGameScreen {
 
         //create avatars
         for (int i = 0; i < AVATARS_COUNT; i++) {
-            YANAtlasTextureRegion avatar = mAvatarIcons[(i % mAvatarIcons.length)];
-            mAvatarList.add(NodeCreatorHelper.createAvatarBgWithTimerAndIcon(
-                    mUiAtlas.getTextureRegion("stump_bg.png"), avatar, true));
+            mAvatarList.add(createAvatar(mAvatarIcons[(i % mAvatarIcons.length)]));
         }
 
         final String connectingText = "Looking for players ...";
         mConnectingLabel = new YANTextNode(ServiceLocator.locateService(YANAssetManager.class).getLoadedFont(STANDARD_FONT_NAME), connectingText.length());
         mConnectingLabel.setText(connectingText);
+
+        //create bottom right user mBottomRightAvatar
+        mBottomRightAvatar = createAvatar(mAvatarIcons[0]);
+        mTopLeftAvatar = createAvatar(mAvatarIcons[0]);
+        mTopRightAvatar = createAvatar(mAvatarIcons[1]);
+
+    }
+
+    private TaggableTextureNode createAvatar(final YANAtlasTextureRegion avatarIcon) {
+        return NodeCreatorHelper.createAvatarBgWithTimerAndIcon(
+                mUiAtlas.getTextureRegion("stump_bg.png"), avatarIcon, true);
     }
 
     @Override
@@ -66,6 +97,10 @@ public class MatchingScreen extends BaseGameScreen {
         for (YANTexturedNode avatar : mAvatarList) {
             avatar.setSize(mOriginalSize.getX(), mOriginalSize.getY());
         }
+
+        mPositioner.adjustBottomRightAvatarSize(mBottomRightAvatar, getSceneSize());
+        mPositioner.adjustTopAvatarSize(mTopLeftAvatar, getSceneSize());
+        mPositioner.adjustTopAvatarSize(mTopRightAvatar, getSceneSize());
     }
 
     private void calculateAvatarSize() {
@@ -88,6 +123,9 @@ public class MatchingScreen extends BaseGameScreen {
             addNode(avatar);
         }
         addNode(mConnectingLabel);
+        addNode(mBottomRightAvatar);
+        addNode(mTopLeftAvatar);
+        addNode(mTopRightAvatar);
     }
 
     @Override
@@ -95,7 +133,6 @@ public class MatchingScreen extends BaseGameScreen {
         super.onLayoutNodes();
 
         mConnectingLabel.setPosition(getSceneSize().getX() * 0.1f, getSceneSize().getY() * 0.2f);
-
         mDistanceBetweenAvatars = getSceneSize().getX() * 0.4f;
         float screenHalfHeight = getSceneSize().getY() / 2f;
 
@@ -105,6 +142,14 @@ public class MatchingScreen extends BaseGameScreen {
             avatar.setPosition((i * mDistanceBetweenAvatars) - mDistanceBetweenAvatars, screenHalfHeight);
             avatar.setOpacity(0);
         }
+
+        mPositioner.positionBottomRightAvatar(getSceneSize(), mBottomRightAvatar);
+        mPositioner.positionTopLeftAvatar(mTopLeftAvatar, getSceneSize());
+        mPositioner.positionTopRightAvatar(mTopRightAvatar, getSceneSize());
+        mTopLeftAvatar.setOpacity(0);
+        mTopRightAvatar.setOpacity(0);
+        mTopLeftAvatar.setSortingLayer(9999);
+        mTopRightAvatar.setSortingLayer(9999);
     }
 
 
@@ -116,11 +161,70 @@ public class MatchingScreen extends BaseGameScreen {
     @Override
     public void onUpdate(float deltaTimeSeconds) {
         super.onUpdate(deltaTimeSeconds);
+
+        if (mPlayersToBeMatched == 0)
+            return;
+
         moveAvatars(MOVEMENT_SPEED * deltaTimeSeconds);
 
-        mAnimationTimeBeforeNextScreen -= deltaTimeSeconds;
-        if (mAnimationTimeBeforeNextScreen < 0)
-            getRenderer().setActiveScreen(mGameScreen);
+        mTotalScreenTimeElapsed += deltaTimeSeconds;
+        mTimeElapsedAfterMatchFound += deltaTimeSeconds;
+
+        //play match animation
+        if (mTimeElapsedAfterMatchFound > MATCH_FOUND_INTERVAL_SECONDS) {
+            //TODO : create opponent mBottomRightAvatar and animate it to place
+            if (mPlayersToBeMatched > 1)
+                animateMatchedTopAvatar(mTopRightAvatar);
+            else
+                animateMatchedTopAvatar(mTopLeftAvatar);
+
+            mTimeElapsedAfterMatchFound = 0;
+            mPlayersToBeMatched--;
+        }
+
+        if (mPlayersToBeMatched == 0)
+            collapseAllMatches();
+
+    }
+
+    private void collapseAllMatches() {
+        final float duration = 4;
+        final Timeline anim = Timeline.createParallel()
+                .beginParallel();
+
+        final float screenMiddleX = getSceneSize().getX() / 2;
+
+        for (int i = 0; i < mAvatarList.size(); i++) {
+            final YANTexturedNode avatar = mAvatarList.get(i);
+            anim
+                    .push(Tween.to(avatar, YANTweenNodeAccessor.SIZE_XY, duration).target(0f))
+                    .push(Tween.to(avatar, YANTweenNodeAccessor.POSITION_X, duration).target(screenMiddleX))
+                    .push(Tween.to(avatar, YANTweenNodeAccessor.POSITION_Y, duration).target(avatar.getPosition().getY()))
+                    .push(Tween.to(avatar, YANTweenNodeAccessor.OPACITY, duration).target(1f));
+        }
+
+
+        anim.end().setCallback(new TweenCallback() {
+            @Override
+            public void onEvent(final int type, final BaseTween<?> baseTween) {
+                if (type == TweenCallback.COMPLETE) {
+                    getRenderer().setActiveScreen(mGameScreen);
+                }
+            }
+        }).start(getSharedTweenManager());
+    }
+
+    private void animateMatchedTopAvatar(final YANBaseNode topAvatar) {
+        final float duration = 3;
+        Timeline.createParallel()
+                .beginParallel()
+                .push(Tween.from(topAvatar, YANTweenNodeAccessor.SIZE_X, duration).target(middleRotatingAvatar.getSize().getX()).ease(Quad.OUT))
+                .push(Tween.from(topAvatar, YANTweenNodeAccessor.SIZE_Y, duration).target(middleRotatingAvatar.getSize().getY()).ease(Sine.IN))
+                .push(Tween.from(topAvatar, YANTweenNodeAccessor.POSITION_X, duration).target(middleRotatingAvatar.getPosition().getX()).ease(Elastic.INOUT))
+                .push(Tween.from(topAvatar, YANTweenNodeAccessor.POSITION_Y, duration).target(middleRotatingAvatar.getPosition().getY()).ease(Elastic.INOUT))
+                .push(Tween.to(topAvatar, YANTweenNodeAccessor.OPACITY, duration).target(1f).ease(Expo.OUT))
+                .end()
+                .start(getSharedTweenManager());
     }
 
     private void moveAvatars(final float xDistance) {
@@ -137,6 +241,10 @@ public class MatchingScreen extends BaseGameScreen {
             if (avatar.getPosition().getX() > offscreen) {
                 offScreenAvatar = avatar;
             }
+
+            //cache middle avatar for matching animation
+            if (percentage > 0.9 && percentage < 1f)
+                middleRotatingAvatar = avatar;
         }
 
         if (offScreenAvatar != null) {
