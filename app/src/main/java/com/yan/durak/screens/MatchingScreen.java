@@ -33,11 +33,11 @@ import glengine.yan.glengine.util.math.YANMathUtils;
 public class MatchingScreen extends BaseGameScreen {
 
     private static final int AVATARS_COUNT = 9;
-    private static float MOVEMENT_SPEED = 400;
-    private static float TOTAL_SCREEN_TIME_SECONDS = 12;
+    private static float MOVEMENT_SPEED = 300;
+    private static float TOTAL_SCREEN_TIME_SECONDS = 14;
+    private static float ANIM_DELAY_FOR_SECONDS = 0.5f;
     private static float MATCH_FOUND_INTERVAL_SECONDS = TOTAL_SCREEN_TIME_SECONDS / 3;
 
-    private float mTotalScreenTimeElapsed;
     private float mTimeElapsedAfterMatchFound;
     private final PrototypeGameScreen mGameScreen;
     private final ArrayList<YANTexturedNode> mAvatarList;
@@ -51,6 +51,7 @@ public class MatchingScreen extends BaseGameScreen {
     private TaggableTextureNode mTopLeftAvatar;
     private YANTexturedNode middleRotatingAvatar;
     private int mPlayersToBeMatched = 2;
+    private float mDelayAnimForSeconds;
 
     public MatchingScreen(YANGLRenderer renderer, final IGameServerConnector gameServerConnector) {
         super(renderer);
@@ -140,7 +141,6 @@ public class MatchingScreen extends BaseGameScreen {
         for (int i = 0; i < mAvatarList.size(); i++) {
             final YANTexturedNode avatar = mAvatarList.get(i);
             avatar.setPosition((i * mDistanceBetweenAvatars) - mDistanceBetweenAvatars, screenHalfHeight);
-//            avatar.setOpacity(0);
         }
 
         mPositioner.positionBottomRightAvatar(getSceneSize(), mBottomRightAvatar);
@@ -151,8 +151,8 @@ public class MatchingScreen extends BaseGameScreen {
         mTopLeftAvatar.setSortingLayer(9999);
         mTopRightAvatar.setSortingLayer(9999);
 
-        moveAvatars(3000);
-//        moveAvatars(-getSceneSize().getX());
+        //reset all avatars to off screen
+        moveAvatars(13000);
     }
 
 
@@ -165,33 +165,40 @@ public class MatchingScreen extends BaseGameScreen {
     public void onUpdate(float deltaTimeSeconds) {
         super.onUpdate(deltaTimeSeconds);
 
-        if (mPlayersToBeMatched == 0)
+        if (mPlayersToBeMatched == -1)
             return;
 
-        moveAvatars(MOVEMENT_SPEED * deltaTimeSeconds);
 
-        mTotalScreenTimeElapsed += deltaTimeSeconds;
         mTimeElapsedAfterMatchFound += deltaTimeSeconds;
+        mDelayAnimForSeconds -= deltaTimeSeconds;
 
         //play match animation
         if (mTimeElapsedAfterMatchFound > MATCH_FOUND_INTERVAL_SECONDS) {
             //TODO : create opponent mBottomRightAvatar and animate it to place
-            if (mPlayersToBeMatched > 1)
+            if (mPlayersToBeMatched == 2) {
+                mDelayAnimForSeconds = ANIM_DELAY_FOR_SECONDS;
                 animateMatchedTopAvatar(mTopRightAvatar);
-            else
+            } else if (mPlayersToBeMatched == 1) {
+                mDelayAnimForSeconds = ANIM_DELAY_FOR_SECONDS;
                 animateMatchedTopAvatar(mTopLeftAvatar);
+            } else {
+            }//do nothing
 
             mTimeElapsedAfterMatchFound = 0;
             mPlayersToBeMatched--;
         }
 
-        if (mPlayersToBeMatched == 0)
+        if (mPlayersToBeMatched == -1)
             collapseAllMatches();
+
+        if (mDelayAnimForSeconds > 0)
+            return;
+        moveAvatars(MOVEMENT_SPEED * deltaTimeSeconds);
 
     }
 
     private void collapseAllMatches() {
-        final float duration = 4;
+        final float duration = 1;
         final Timeline anim = Timeline.createParallel()
                 .beginParallel();
 
@@ -218,6 +225,7 @@ public class MatchingScreen extends BaseGameScreen {
     }
 
     private void animateMatchedTopAvatar(final YANBaseNode topAvatar) {
+        middleRotatingAvatar.setOpacity(0);
         final float duration = 3;
         Timeline.createParallel()
                 .beginParallel()
@@ -233,13 +241,12 @@ public class MatchingScreen extends BaseGameScreen {
     private void moveAvatars(final float xDistance) {
         YANTexturedNode offScreenAvatar = null;
         final float offscreen = getSceneSize().getX() + mOriginalSize.getX();
-        float percentage = 0;
+        float percentage;
         final float screenHalfWidth = getSceneSize().getX() / 2;
         for (int i = 0; i < mAvatarList.size(); i++) {
             final YANTexturedNode avatar = mAvatarList.get(i);
             avatar.setPosition(avatar.getPosition().getX() + xDistance, avatar.getPosition().getY());
             percentage = 1 - (Math.abs(avatar.getPosition().getX() - screenHalfWidth) / screenHalfWidth);
-//            avatar.setOpacity(percentage);
             final float width = mOriginalSize.getX() * percentage;
             final float height = mOriginalSize.getY() * percentage;
             final float minWidth = mOriginalSize.getX() * 0.2f;
@@ -262,6 +269,7 @@ public class MatchingScreen extends BaseGameScreen {
             mAvatarList.add(offScreenAvatar);
             YANTexturedNode icon = (YANTexturedNode) offScreenAvatar.getChildNodes().get(0).getChildNodes().get(0);
             icon.setTextureRegion(mAvatarIcons[((int) Math.floor(YANMathUtils.randomInRange(0, mAvatarIcons.length)))]);
+            offScreenAvatar.setOpacity(1f);
         }
 
     }
