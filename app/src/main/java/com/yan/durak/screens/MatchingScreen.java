@@ -32,7 +32,7 @@ import glengine.yan.glengine.util.math.YANMathUtils;
  */
 public class MatchingScreen extends BaseGameScreen {
 
-    private static final int AVATARS_COUNT = 7;
+    private static final int AVATARS_COUNT = 9;
     private static float MOVEMENT_SPEED = 400;
     private static float TOTAL_SCREEN_TIME_SECONDS = 12;
     private static float MATCH_FOUND_INTERVAL_SECONDS = TOTAL_SCREEN_TIME_SECONDS / 3;
@@ -133,14 +133,14 @@ public class MatchingScreen extends BaseGameScreen {
         super.onLayoutNodes();
 
         mConnectingLabel.setPosition(getSceneSize().getX() * 0.1f, getSceneSize().getY() * 0.2f);
-        mDistanceBetweenAvatars = getSceneSize().getX() * 0.4f;
+        mDistanceBetweenAvatars = mOriginalSize.getX() * 0.9f;
         float screenHalfHeight = getSceneSize().getY() / 2f;
 
         //set initial position
         for (int i = 0; i < mAvatarList.size(); i++) {
             final YANTexturedNode avatar = mAvatarList.get(i);
             avatar.setPosition((i * mDistanceBetweenAvatars) - mDistanceBetweenAvatars, screenHalfHeight);
-            avatar.setOpacity(0);
+//            avatar.setOpacity(0);
         }
 
         mPositioner.positionBottomRightAvatar(getSceneSize(), mBottomRightAvatar);
@@ -150,6 +150,9 @@ public class MatchingScreen extends BaseGameScreen {
         mTopRightAvatar.setOpacity(0);
         mTopLeftAvatar.setSortingLayer(9999);
         mTopRightAvatar.setSortingLayer(9999);
+
+        moveAvatars(3000);
+//        moveAvatars(-getSceneSize().getX());
     }
 
 
@@ -236,8 +239,12 @@ public class MatchingScreen extends BaseGameScreen {
             final YANTexturedNode avatar = mAvatarList.get(i);
             avatar.setPosition(avatar.getPosition().getX() + xDistance, avatar.getPosition().getY());
             percentage = 1 - (Math.abs(avatar.getPosition().getX() - screenHalfWidth) / screenHalfWidth);
-            avatar.setOpacity(percentage);
-            avatar.setSize(mOriginalSize.getX() * percentage, mOriginalSize.getY() * percentage);
+//            avatar.setOpacity(percentage);
+            final float width = mOriginalSize.getX() * percentage;
+            final float height = mOriginalSize.getY() * percentage;
+            final float minWidth = mOriginalSize.getX() * 0.2f;
+            final float minHeight = mOriginalSize.getY() * 0.2f;
+            avatar.setSize(YANMathUtils.clamp(width, minWidth, width), YANMathUtils.clamp(height, minHeight, height));
             if (avatar.getPosition().getX() > offscreen) {
                 offScreenAvatar = avatar;
             }
