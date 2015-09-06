@@ -85,13 +85,17 @@ public class HudNodesPositioner {
         fenceImage.setSize(sceneSize.getX(), sceneSize.getX() / aspectRatio);
 
         //glade
-        final YANTexturedNode gladeImage = getNode(HudNodes.GLADE_INDEX);
-        aspectRatio = gladeImage.getTextureRegion().getWidth() / gladeImage.getTextureRegion().getHeight();
-        final float gladeWidth = Math.min(sceneSize.getX(), sceneSize.getY()) * 0.9f;
-        gladeImage.setSize(gladeWidth, gladeWidth / aspectRatio);
+        adjustGladeSize(this.<YANTexturedNode>getNode(HudNodes.GLADE_INDEX), sceneSize);
 
         //later glow size will be overridden
         getNode(HudNodes.GLOW_INDEX).setSize(0, 0);
+    }
+
+    public void adjustGladeSize(final YANTexturedNode gladeNode, final YANReadOnlyVector2 sceneSize) {
+        final float aspectRatio;
+        aspectRatio = gladeNode.getTextureRegion().getWidth() / gladeNode.getTextureRegion().getHeight();
+        final float gladeWidth = Math.min(sceneSize.getX(), sceneSize.getY()) * 0.9f;
+        gladeNode.setSize(gladeWidth, gladeWidth / aspectRatio);
     }
 
     public void adjustTopAvatarSize(final YANTexturedNode avatar, final YANReadOnlyVector2 sceneSize) {
@@ -170,12 +174,10 @@ public class HudNodesPositioner {
                 , topLeftNameBgText.getPosition().getY());
 
         //glade
-        centerX = (sceneSize.getX() - getNode(HudNodes.GLADE_INDEX).getSize().getX()) / 2;
-        centerY = (sceneSize.getY() - getNode(HudNodes.GLADE_INDEX).getSize().getY()) / 2;
-        getNode(HudNodes.GLADE_INDEX).setPosition(centerX, centerY);
+        positionGlade(getNode(HudNodes.GLADE_INDEX), sceneSize);
 
         //background gradient
-        getNode(HudNodes.BG_GRADIENT_INDEX).setSize(sceneSize.getX(), sceneSize.getY());
+        adjustBackgroundGradientSize(getNode(HudNodes.BG_GRADIENT_INDEX), sceneSize);
         getNode(HudNodes.BG_GRADIENT_INDEX).setSortingLayer(getNode(HudNodes.GLADE_INDEX).getSortingLayer() + 1);
 
         //speech bubbles
@@ -227,6 +229,14 @@ public class HudNodesPositioner {
                 topLeftSpeechBubble.getPosition().getX() + (topLeftSpeechBubble.getSize().getX() / 2),
                 topLeftSpeechBubble.getPosition().getY() + (topLeftSpeechBubble.getSize().getY() * 0.5f) + (topLeftSpeechBubbleText.getSize().getY() * 0.05f));
         topLeftSpeechBubbleText.setSortingLayer(topLeftSpeechBubble.getSortingLayer() + 1);
+    }
+
+    public void positionGlade(final YANBaseNode glade, final YANReadOnlyVector2 sceneSize) {
+        glade.setPosition((sceneSize.getX() - glade.getSize().getX()) / 2, (sceneSize.getY() - glade.getSize().getY()) / 2);
+    }
+
+    public void adjustBackgroundGradientSize(final YANBaseNode gradientNode, final YANReadOnlyVector2 sceneSize) {
+        gradientNode.setSize(sceneSize.getX(), sceneSize.getY());
     }
 
     public void positionTopLeftAvatar(final YANBaseNode avatar, final YANReadOnlyVector2 sceneSize) {

@@ -3,6 +3,7 @@ package com.yan.durak.screens;
 import com.yan.durak.communication.game_server.connector.IGameServerConnector;
 import com.yan.durak.nodes.TaggableTextureNode;
 import com.yan.durak.services.hud.HudManagementService;
+import com.yan.durak.services.hud.HudNodesCreator;
 import com.yan.durak.services.hud.HudNodesPositioner;
 import com.yan.durak.services.hud.creator.NodeCreatorHelper;
 
@@ -46,12 +47,15 @@ public class MatchingScreen extends BaseGameScreen {
     private float mDistanceBetweenAvatars;
     private YANTextNode mConnectingLabel;
     private final HudNodesPositioner mPositioner;
+    private final HudNodesCreator mCreator;
     private TaggableTextureNode mBottomRightAvatar;
     private TaggableTextureNode mTopRightAvatar;
     private TaggableTextureNode mTopLeftAvatar;
     private YANTexturedNode middleRotatingAvatar;
     private int mPlayersToBeMatched = 2;
     private float mDelayAnimForSeconds;
+    private YANTexturedNode mBg;
+    private YANTexturedNode mGlade;
 
     public MatchingScreen(YANGLRenderer renderer, final IGameServerConnector gameServerConnector) {
         super(renderer);
@@ -60,6 +64,7 @@ public class MatchingScreen extends BaseGameScreen {
         mOriginalSize = new YANVector2();
         mAvatarIcons = new YANAtlasTextureRegion[3];
         mPositioner = new HudNodesPositioner(null);
+        mCreator = new HudNodesCreator(null);
     }
 
     @Override
@@ -85,6 +90,8 @@ public class MatchingScreen extends BaseGameScreen {
         mTopLeftAvatar = createAvatar(mAvatarIcons[0]);
         mTopRightAvatar = createAvatar(mAvatarIcons[1]);
 
+        mBg = mCreator.createBgGradientImage(mUiAtlas.getTextureRegion("bg_gradient.png"));
+        mGlade = mCreator.createImage(mUiAtlas.getTextureRegion("glade.png"));
     }
 
     private TaggableTextureNode createAvatar(final YANAtlasTextureRegion avatarIcon) {
@@ -102,6 +109,9 @@ public class MatchingScreen extends BaseGameScreen {
         mPositioner.adjustBottomRightAvatarSize(mBottomRightAvatar, getSceneSize());
         mPositioner.adjustTopAvatarSize(mTopLeftAvatar, getSceneSize());
         mPositioner.adjustTopAvatarSize(mTopRightAvatar, getSceneSize());
+
+        mPositioner.adjustGladeSize(mGlade, getSceneSize());
+        mPositioner.adjustBackgroundGradientSize(mBg, getSceneSize());
     }
 
     private void calculateAvatarSize() {
@@ -127,13 +137,16 @@ public class MatchingScreen extends BaseGameScreen {
         addNode(mBottomRightAvatar);
         addNode(mTopLeftAvatar);
         addNode(mTopRightAvatar);
+        addNode(mBg);
+        addNode(mGlade);
     }
 
     @Override
     protected void onLayoutNodes() {
         super.onLayoutNodes();
 
-        mConnectingLabel.setPosition(getSceneSize().getX() * 0.1f, getSceneSize().getY() * 0.2f);
+        mConnectingLabel.setPosition(getSceneSize().getX() * 0.1f, getSceneSize().getY() - mConnectingLabel.getSize().getY());
+        mConnectingLabel.setSortingLayer(10);
         mDistanceBetweenAvatars = mOriginalSize.getX() * 0.9f;
         float screenHalfHeight = getSceneSize().getY() / 2f;
 
@@ -151,14 +164,17 @@ public class MatchingScreen extends BaseGameScreen {
         mTopLeftAvatar.setSortingLayer(9999);
         mTopRightAvatar.setSortingLayer(9999);
 
-        //reset all avatars to off screen
-        moveAvatars(13000);
+        mBg.setSortingLayer(mGlade.getSortingLayer() + 1);
+        mPositioner.positionGlade(mGlade, getSceneSize());
     }
 
 
     @Override
     public void onSetActive() {
         super.onSetActive();
+
+        //reset all avatars to off screen
+        moveAvatars(13000);
     }
 
     @Override
