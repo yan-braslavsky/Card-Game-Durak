@@ -1,5 +1,6 @@
-# DurakGameClient
-Android single player card game "Durak".
+# Card Game "Durak"
+Implementation of a popular Russian game "Durak" as a signle player on Android.
+Using my own written custom graphics engine.
 
 
 ### Engine
